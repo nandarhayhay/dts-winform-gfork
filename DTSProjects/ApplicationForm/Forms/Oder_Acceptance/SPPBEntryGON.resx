@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="mcbOA_REF_NO_DesignTimeLayout.LayoutString" xml:space="preserve">
+    <value>&lt;GridEXLayoutData&gt;&lt;RootTable&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="PO_REF_NO"&gt;&lt;Caption&gt;PO_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_NO&lt;/DataMember&gt;&lt;Key&gt;PO_REF_NO&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Width&gt;200&lt;/Width&gt;&lt;/Column0&gt;&lt;Column1 ID="PO_REF_DATE"&gt;&lt;Caption&gt;PO_REF_DATE&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_DATE&lt;/DataMember&gt;&lt;EditType&gt;CalendarCombo&lt;/EditType&gt;&lt;FormatString&gt;D&lt;/FormatString&gt;&lt;Key&gt;PO_REF_DATE&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;Width&gt;150&lt;/Width&gt;&lt;/Column1&gt;&lt;Column2 ID="OA_REF_NO"&gt;&lt;Caption&gt;OA_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;OA_REF_NO&lt;/DataMember&gt;&lt;Key&gt;OA_REF_NO&lt;/Key&gt;&lt;Position&gt;2&lt;/Position&gt;&lt;Width&gt;220&lt;/Width&gt;&lt;/Column2&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;/RootTable&gt;&lt;RowWithErrorsFormatStyle&gt;&lt;PredefinedStyle&gt;RowWithErrorsFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowWithErrorsFormatStyle&gt;&lt;LinkFormatStyle&gt;&lt;PredefinedStyle&gt;LinkFormatStyle&lt;/PredefinedStyle&gt;&lt;/LinkFormatStyle&gt;&lt;CardCaptionFormatStyle&gt;&lt;PredefinedStyle&gt;CardCaptionFormatStyle&lt;/PredefinedStyle&gt;&lt;/CardCaptionFormatStyle&gt;&lt;GroupByBoxFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxFormatStyle&gt;&lt;GroupByBoxInfoFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxInfoFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxInfoFormatStyle&gt;&lt;GroupRowFormatStyle&gt;&lt;PredefinedStyle&gt;GroupRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupRowFormatStyle&gt;&lt;HeaderFormatStyle&gt;&lt;PredefinedStyle&gt;HeaderFormatStyle&lt;/PredefinedStyle&gt;&lt;/HeaderFormatStyle&gt;&lt;PreviewRowFormatStyle&gt;&lt;PredefinedStyle&gt;PreviewRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/PreviewRowFormatStyle&gt;&lt;RowFormatStyle&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;PredefinedStyle&gt;RowFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowFormatStyle&gt;&lt;SelectedFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedFormatStyle&gt;&lt;SelectedInactiveFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedInactiveFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedInactiveFormatStyle&gt;&lt;WatermarkImage /&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;VisualStyle&gt;Office2007&lt;/VisualStyle&gt;&lt;AllowEdit&gt;False&lt;/AllowEdit&gt;&lt;ExpandableGroups&gt;False&lt;/ExpandableGroups&gt;&lt;GridLines&gt;None&lt;/GridLines&gt;&lt;GroupByBoxVisible&gt;False&lt;/GroupByBoxVisible&gt;&lt;HideSelection&gt;Highlight&lt;/HideSelection&gt;&lt;DisplayMember&gt;PO_REF_NO&lt;/DisplayMember&gt;&lt;ValueMember&gt;PO_REF_NO&lt;/ValueMember&gt;&lt;VisibleRows&gt;20&lt;/VisibleRows&gt;&lt;/GridEXLayoutData&gt;</value>
+  </data>
+  <metadata name="ImageList1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>132, 17</value>
+  </metadata>
+  <data name="ImageList1.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
+        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAB+
+        DQAAAk1TRnQBSQFMAgEBBgEAARwBAQEcAQEBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        AwABQAMAASADAAEBAQABCAYAAQgYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
+        AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
+        AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
+        AWYDAAGZAwABzAIAATMDAAIzAgABMwFmAgABMwGZAgABMwHMAgABMwH/AgABZgMAAWYBMwIAAmYCAAFm
+        AZkCAAFmAcwCAAFmAf8CAAGZAwABmQEzAgABmQFmAgACmQIAAZkBzAIAAZkB/wIAAcwDAAHMATMCAAHM
+        AWYCAAHMAZkCAALMAgABzAH/AgAB/wFmAgAB/wGZAgAB/wHMAQABMwH/AgAB/wEAATMBAAEzAQABZgEA
+        ATMBAAGZAQABMwEAAcwBAAEzAQAB/wEAAf8BMwIAAzMBAAIzAWYBAAIzAZkBAAIzAcwBAAIzAf8BAAEz
+        AWYCAAEzAWYBMwEAATMCZgEAATMBZgGZAQABMwFmAcwBAAEzAWYB/wEAATMBmQIAATMBmQEzAQABMwGZ
+        AWYBAAEzApkBAAEzAZkBzAEAATMBmQH/AQABMwHMAgABMwHMATMBAAEzAcwBZgEAATMBzAGZAQABMwLM
+        AQABMwHMAf8BAAEzAf8BMwEAATMB/wFmAQABMwH/AZkBAAEzAf8BzAEAATMC/wEAAWYDAAFmAQABMwEA
+        AWYBAAFmAQABZgEAAZkBAAFmAQABzAEAAWYBAAH/AQABZgEzAgABZgIzAQABZgEzAWYBAAFmATMBmQEA
+        AWYBMwHMAQABZgEzAf8BAAJmAgACZgEzAQADZgEAAmYBmQEAAmYBzAEAAWYBmQIAAWYBmQEzAQABZgGZ
+        AWYBAAFmApkBAAFmAZkBzAEAAWYBmQH/AQABZgHMAgABZgHMATMBAAFmAcwBmQEAAWYCzAEAAWYBzAH/
+        AQABZgH/AgABZgH/ATMBAAFmAf8BmQEAAWYB/wHMAQABzAEAAf8BAAH/AQABzAEAApkCAAGZATMBmQEA
+        AZkBAAGZAQABmQEAAcwBAAGZAwABmQIzAQABmQEAAWYBAAGZATMBzAEAAZkBAAH/AQABmQFmAgABmQFm
+        ATMBAAGZATMBZgEAAZkBZgGZAQABmQFmAcwBAAGZATMB/wEAApkBMwEAApkBZgEAA5kBAAKZAcwBAAKZ
+        Af8BAAGZAcwCAAGZAcwBMwEAAWYBzAFmAQABmQHMAZkBAAGZAswBAAGZAcwB/wEAAZkB/wIAAZkB/wEz
+        AQABmQHMAWYBAAGZAf8BmQEAAZkB/wHMAQABmQL/AQABzAMAAZkBAAEzAQABzAEAAWYBAAHMAQABmQEA
+        AcwBAAHMAQABmQEzAgABzAIzAQABzAEzAWYBAAHMATMBmQEAAcwBMwHMAQABzAEzAf8BAAHMAWYCAAHM
+        AWYBMwEAAZkCZgEAAcwBZgGZAQABzAFmAcwBAAGZAWYB/wEAAcwBmQIAAcwBmQEzAQABzAGZAWYBAAHM
+        ApkBAAHMAZkBzAEAAcwBmQH/AQACzAIAAswBMwEAAswBZgEAAswBmQEAA8wBAALMAf8BAAHMAf8CAAHM
+        Af8BMwEAAZkB/wFmAQABzAH/AZkBAAHMAf8BzAEAAcwC/wEAAcwBAAEzAQAB/wEAAWYBAAH/AQABmQEA
+        AcwBMwIAAf8CMwEAAf8BMwFmAQAB/wEzAZkBAAH/ATMBzAEAAf8BMwH/AQAB/wFmAgAB/wFmATMBAAHM
+        AmYBAAH/AWYBmQEAAf8BZgHMAQABzAFmAf8BAAH/AZkCAAH/AZkBMwEAAf8BmQFmAQAB/wKZAQAB/wGZ
+        AcwBAAH/AZkB/wEAAf8BzAIAAf8BzAEzAQAB/wHMAWYBAAH/AcwBmQEAAf8CzAEAAf8BzAH/AQAC/wEz
+        AQABzAH/AWYBAAL/AZkBAAL/AcwBAAJmAf8BAAFmAf8BZgEAAWYC/wEAAf8CZgEAAf8BZgH/AQAC/wFm
+        AQABIQEAAaUBAANfAQADdwEAA4YBAAOWAQADywEAA7IBAAPXAQAD3QEAA+MBAAPqAQAD8QEAA/gBAAHw
+        AfsB/wEAAaQCoAEAA4ADAAH/AgAB/wMAAv8BAAH/AwAB/wEAAf8BAAL/AgAD/xYAAV8BKgNSAUoBhSkA
+        Aa0BoQ0AAUQDUgJMAlIBBCcAAYUBtAGLAWYBIAEmAiwBHwGFBgABKQICBC0BAgEiAaEmAAG0AYsBPwEr
+        AiwBAQGhBQABJwGhAScBTwFWA30BVgFVAi0BAgFfJAABpgG0AYsDLAFoA9wBGQGFAgABVgFPBVYFfQEu
+        AS0BDSIAAaEB3AGLAR8CLAEfBNwBrQGhAQABhQFVAVYBVQExBFkBWAEvBFYBLSIAAbMBHwFnASUBLAFN
+        AQkE3AG0AgABpgJlAQ0BMAc4AU8BVQFWAVUhAAGKAbQBHwMsAXoBrgIJAhkBtAYACDgBSwFIAaYhAAGh
+        AQkB2wGuBCwBdQFFAhkCtAQAAoUIOAFLAoUBBCIAAbMBCQElAiwBegHvAxkBswGLAgABBAECAS0BAgg4
+        ATABVgGXAX0iAAGmAbQBRQEsAXUFGQG0AYoCAAENAS0BTwFVATgH+wEwAlYBSCQAAYoBJQGuAbMDGQH0
+        AbQBigIAAUgBfQGXAVYB+wE4AVMDUgFZAfsBMQJIAaElAAGhAYsDtAEJAfMBtAGmAwABSAJWATgHUwFL
+        KwABigG7A7QBigQAAaEBZQg4AUsuAAGmAooGAAGGBvsBNwGhOQABZgFLATABSwGGJQAQ/RYAAQ8BFRgA
+        B/0PAAGhAdwB1QGGCwABDQG0AdwBiwEOBwABpwLPAq4ChgNmBQAH/QEAB/8HAAGhAdwB2wGLCgABZgG6
+        AdwB2wHcAdsBiwEOBQABzwG1Aa0BFAHsAfAB7wEUAYYBZgUAB/0BAAH/AgAB/wIAAf8HAAGhAdwB2wGL
+        CQABZgHcAQkB3APVAdwBtAFmBAABzwK1ARIBbQHvAbwBEgKGAmYDAAf9AQAH/wcAAaEB3AHbAYsHAAEQ
+        AWYBCQEZAdwC9AHyAQkCtAEJAbQBZQIAAc8CtQUSAYsChgFmAwAH/QEAAf8CAAH/AgAB/wcAAaEB1QHb
+        AYsGAAEOAYsCGQEJARkC/wP0AfMBrQGzAQkBZQEAAbUB1gO1BM8DhgJmAQAH/QEAB/8HAAGGAtwBtAGF
+        BQABuwEZAeICGQH0Af8B9AG8AvIBtAOtAQ0BAAG1AdYDzwGnAoYBzwGGAYsChgFmAQAH/QkEBQABhQHc
+        AQkB3AHbAa0BoQQAAgkB4gIZAf8C9AG8AQcBtQOtAQ4CAAG1AQkBzwL/AfMB8AGnAc8BhgHPA4YBAAL9
+        BAAB/QkEBAABoQG0AdwBGQHcAdsBswGmBQABQwG0AQkE9AEaAZoBtAGzAYsCCgIAAbUB3QHWA/8B8wHP
+        Aq4BzwGGAYsBhgEAAv0BAAL7AQAK/QQAAaYB2wEZAdwB2wHVAbMBiwGhBgABrgHwAfMC9AGaAXoBdAGL
+        BAoBAAG1Ad0B1gT/Ac8BZgGuAc8BhgHPAYYEAAL7AwAI/QMAAaEB2wHcARkB3AHbAdUBswGtAYYBoQYA
+        Aa4BZgG0AgkCegEiAgACCgEABrUEzwGuAYwBzwGGAgAG+wEACP0CAAGhAbMB2wIZAdwB2wG0AbMBrQGG
+        AaYIAAFmAYsBtAF5AVkBTAcAAbUB3QHWBP8BtQGuAYwBzwGuAgAG+wEACP0CAAGmAdUB2wL0AdsB1QG0
+        AbMBrQGGAWUBoQkAAa0BKgE4AVMBDgYABrUFzwGuBAAC+wMACP0BAAGhAbQB2wEJAf8BCQHbAdUCswGt
+        AYoBpgFlCgABIwE3ATgBKggAAbUB3QHWBP8BtQKuAQAC/QEAAvsBAAr9AQAOoQsAASsBegF0CAAGtQPP
+        Aa4BAAL9BAAK/RoAAewBmQHsEwABQgFNAT4HAAE+AwABKAMAAUADAAEgAwABAQEAAQEGAAEBFgAD/wEA
+        Av8B+AEPBAAB+QH/AfABBwQAAfABAwHwAQMEAAHwAQ8BgAEBBAAB4AEBAYAFAAHAAQEGAAHAAQMGAAGA
+        AQMB8AEBBQABAwHABQABwAEDBgABwAEDBgAB8AEDBgAB+AEDAYABBwQAAf8BAwHAAQcEAAH/AeMB8AEH
+        BAAC/wH8AR8GAAL/AfwBfwL/AgAB/AE/AfgBHwGAAR8CAAH8AT8B8AEHAYABHwIAAfwBPwHgAQEBgAEH
+        AgAB/AE/AYABAAGAAQcCAAH8AT8CAAGAAQECAAH8AR8CAAGAAQECAAH4AQ8BAAEBAYABAQIAAfABDwGA
+        AQABgAEBAgAB8AEHAeABAAGAAQECAAHgAQMB8AEMAYABAQIAAcABAwH8AQcB4AEBAgABwAEBAf8BBwHg
+        AQECAAGAAQEB/wGDAfgBAQIAAYABAQH/AcMB+AEBAgAD/wHHAv8L
+</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="grdSPPB.WatermarkImage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
+  <data name="chkProduct_DesignTimeLayout.LayoutString" xml:space="preserve">
+    <value>&lt;GridEXLayoutData&gt;&lt;RootTable&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="colCheck"&gt;&lt;BoundMode&gt;UnboundFetch&lt;/BoundMode&gt;&lt;ColumnType&gt;CheckBox&lt;/ColumnType&gt;&lt;DataMember&gt;colCheck&lt;/DataMember&gt;&lt;Key&gt;colCheck&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Width&gt;22&lt;/Width&gt;&lt;ActAsSelector&gt;True&lt;/ActAsSelector&gt;&lt;/Column0&gt;&lt;Column1 ID="SPPB_BRANDPACK_ID"&gt;&lt;Caption&gt;SPPB_BRANDPACK_ID&lt;/Caption&gt;&lt;DataMember&gt;SPPB_BRANDPACK_ID&lt;/DataMember&gt;&lt;Key&gt;SPPB_BRANDPACK_ID&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;/Column1&gt;&lt;Column2 ID="BRANDPACK_ID"&gt;&lt;Caption&gt;BRANDPACK_ID&lt;/Caption&gt;&lt;DataMember&gt;BRANDPACK_ID&lt;/DataMember&gt;&lt;Key&gt;BRANDPACK_ID&lt;/Key&gt;&lt;Position&gt;2&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;/Column2&gt;&lt;Column3 ID="BRANDPACK_NAME"&gt;&lt;Caption&gt;BRANDPACK_NAME&lt;/Caption&gt;&lt;DataMember&gt;BRANDPACK_NAME&lt;/DataMember&gt;&lt;Key&gt;BRANDPACK_NAME&lt;/Key&gt;&lt;Position&gt;3&lt;/Position&gt;&lt;Width&gt;200&lt;/Width&gt;&lt;/Column3&gt;&lt;Column4 ID="LEFT_QTY"&gt;&lt;Caption&gt;LEFT_QTY&lt;/Caption&gt;&lt;DataMember&gt;LEFT_QTY&lt;/DataMember&gt;&lt;FormatString&gt;#,##0.000&lt;/FormatString&gt;&lt;Key&gt;LEFT_QTY&lt;/Key&gt;&lt;Position&gt;4&lt;/Position&gt;&lt;TextAlignment&gt;Far&lt;/TextAlignment&gt;&lt;/Column4&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;/RootTable&gt;&lt;RowWithErrorsFormatStyle&gt;&lt;PredefinedStyle&gt;RowWithErrorsFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowWithErrorsFormatStyle&gt;&lt;LinkFormatStyle&gt;&lt;PredefinedStyle&gt;LinkFormatStyle&lt;/PredefinedStyle&gt;&lt;/LinkFormatStyle&gt;&lt;CardCaptionFormatStyle&gt;&lt;PredefinedStyle&gt;CardCaptionFormatStyle&lt;/PredefinedStyle&gt;&lt;/CardCaptionFormatStyle&gt;&lt;GroupByBoxFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxFormatStyle&gt;&lt;GroupByBoxInfoFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxInfoFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxInfoFormatStyle&gt;&lt;GroupRowFormatStyle&gt;&lt;PredefinedStyle&gt;GroupRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupRowFormatStyle&gt;&lt;HeaderFormatStyle&gt;&lt;PredefinedStyle&gt;HeaderFormatStyle&lt;/PredefinedStyle&gt;&lt;/HeaderFormatStyle&gt;&lt;PreviewRowFormatStyle&gt;&lt;PredefinedStyle&gt;PreviewRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/PreviewRowFormatStyle&gt;&lt;RowFormatStyle&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;PredefinedStyle&gt;RowFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowFormatStyle&gt;&lt;SelectedFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedFormatStyle&gt;&lt;SelectedInactiveFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedInactiveFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedInactiveFormatStyle&gt;&lt;WatermarkImage /&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;VisualStyle&gt;Office2007&lt;/VisualStyle&gt;&lt;AllowEdit&gt;False&lt;/AllowEdit&gt;&lt;ExpandableGroups&gt;False&lt;/ExpandableGroups&gt;&lt;GroupByBoxVisible&gt;False&lt;/GroupByBoxVisible&gt;&lt;HideSelection&gt;Highlight&lt;/HideSelection&gt;&lt;DisplayMember&gt;BRANDPACK_NAME&lt;/DisplayMember&gt;&lt;ValueMember&gt;SPPB_BRANDPACK_ID&lt;/ValueMember&gt;&lt;/GridEXLayoutData&gt;</value>
+  </data>
+  <data name="mcbGonArea_DesignTimeLayout.LayoutString" xml:space="preserve">
+    <value>&lt;GridEXLayoutData&gt;&lt;RootTable&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="PO_REF_NO"&gt;&lt;Caption&gt;PO_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_NO&lt;/DataMember&gt;&lt;Key&gt;PO_REF_NO&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Width&gt;200&lt;/Width&gt;&lt;/Column0&gt;&lt;Column1 ID="PO_REF_DATE"&gt;&lt;Caption&gt;PO_REF_DATE&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_DATE&lt;/DataMember&gt;&lt;EditType&gt;CalendarCombo&lt;/EditType&gt;&lt;FormatString&gt;D&lt;/FormatString&gt;&lt;Key&gt;PO_REF_DATE&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;Width&gt;150&lt;/Width&gt;&lt;/Column1&gt;&lt;Column2 ID="OA_REF_NO"&gt;&lt;Caption&gt;OA_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;OA_REF_NO&lt;/DataMember&gt;&lt;Key&gt;OA_REF_NO&lt;/Key&gt;&lt;Position&gt;2&lt;/Position&gt;&lt;Width&gt;220&lt;/Width&gt;&lt;/Column2&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;/RootTable&gt;&lt;RowWithErrorsFormatStyle&gt;&lt;PredefinedStyle&gt;RowWithErrorsFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowWithErrorsFormatStyle&gt;&lt;LinkFormatStyle&gt;&lt;PredefinedStyle&gt;LinkFormatStyle&lt;/PredefinedStyle&gt;&lt;/LinkFormatStyle&gt;&lt;CardCaptionFormatStyle&gt;&lt;PredefinedStyle&gt;CardCaptionFormatStyle&lt;/PredefinedStyle&gt;&lt;/CardCaptionFormatStyle&gt;&lt;GroupByBoxFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxFormatStyle&gt;&lt;GroupByBoxInfoFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxInfoFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxInfoFormatStyle&gt;&lt;GroupRowFormatStyle&gt;&lt;PredefinedStyle&gt;GroupRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupRowFormatStyle&gt;&lt;HeaderFormatStyle&gt;&lt;PredefinedStyle&gt;HeaderFormatStyle&lt;/PredefinedStyle&gt;&lt;/HeaderFormatStyle&gt;&lt;PreviewRowFormatStyle&gt;&lt;PredefinedStyle&gt;PreviewRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/PreviewRowFormatStyle&gt;&lt;RowFormatStyle&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;PredefinedStyle&gt;RowFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowFormatStyle&gt;&lt;SelectedFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedFormatStyle&gt;&lt;SelectedInactiveFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedInactiveFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedInactiveFormatStyle&gt;&lt;WatermarkImage /&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;VisualStyle&gt;Office2007&lt;/VisualStyle&gt;&lt;AllowEdit&gt;False&lt;/AllowEdit&gt;&lt;ExpandableGroups&gt;False&lt;/ExpandableGroups&gt;&lt;GridLines&gt;None&lt;/GridLines&gt;&lt;GroupByBoxVisible&gt;False&lt;/GroupByBoxVisible&gt;&lt;HideSelection&gt;Highlight&lt;/HideSelection&gt;&lt;VisibleRows&gt;20&lt;/VisibleRows&gt;&lt;/GridEXLayoutData&gt;</value>
+  </data>
+  <data name="mcbTransporter_DesignTimeLayout.LayoutString" xml:space="preserve">
+    <value>&lt;GridEXLayoutData&gt;&lt;RootTable&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="PO_REF_NO"&gt;&lt;Caption&gt;PO_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_NO&lt;/DataMember&gt;&lt;Key&gt;PO_REF_NO&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Width&gt;200&lt;/Width&gt;&lt;/Column0&gt;&lt;Column1 ID="PO_REF_DATE"&gt;&lt;Caption&gt;PO_REF_DATE&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_DATE&lt;/DataMember&gt;&lt;EditType&gt;CalendarCombo&lt;/EditType&gt;&lt;FormatString&gt;D&lt;/FormatString&gt;&lt;Key&gt;PO_REF_DATE&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;Width&gt;150&lt;/Width&gt;&lt;/Column1&gt;&lt;Column2 ID="OA_REF_NO"&gt;&lt;Caption&gt;OA_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;OA_REF_NO&lt;/DataMember&gt;&lt;Key&gt;OA_REF_NO&lt;/Key&gt;&lt;Position&gt;2&lt;/Position&gt;&lt;Width&gt;220&lt;/Width&gt;&lt;/Column2&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;/RootTable&gt;&lt;RowWithErrorsFormatStyle&gt;&lt;PredefinedStyle&gt;RowWithErrorsFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowWithErrorsFormatStyle&gt;&lt;LinkFormatStyle&gt;&lt;PredefinedStyle&gt;LinkFormatStyle&lt;/PredefinedStyle&gt;&lt;/LinkFormatStyle&gt;&lt;CardCaptionFormatStyle&gt;&lt;PredefinedStyle&gt;CardCaptionFormatStyle&lt;/PredefinedStyle&gt;&lt;/CardCaptionFormatStyle&gt;&lt;GroupByBoxFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxFormatStyle&gt;&lt;GroupByBoxInfoFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxInfoFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxInfoFormatStyle&gt;&lt;GroupRowFormatStyle&gt;&lt;PredefinedStyle&gt;GroupRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupRowFormatStyle&gt;&lt;HeaderFormatStyle&gt;&lt;PredefinedStyle&gt;HeaderFormatStyle&lt;/PredefinedStyle&gt;&lt;/HeaderFormatStyle&gt;&lt;PreviewRowFormatStyle&gt;&lt;PredefinedStyle&gt;PreviewRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/PreviewRowFormatStyle&gt;&lt;RowFormatStyle&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;PredefinedStyle&gt;RowFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowFormatStyle&gt;&lt;SelectedFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedFormatStyle&gt;&lt;SelectedInactiveFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedInactiveFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedInactiveFormatStyle&gt;&lt;WatermarkImage /&gt;&lt;BackColor&gt;158, 190, 245&lt;/BackColor&gt;&lt;VisualStyle&gt;Office2007&lt;/VisualStyle&gt;&lt;AllowEdit&gt;False&lt;/AllowEdit&gt;&lt;ExpandableGroups&gt;False&lt;/ExpandableGroups&gt;&lt;GridLines&gt;None&lt;/GridLines&gt;&lt;GroupByBoxVisible&gt;False&lt;/GroupByBoxVisible&gt;&lt;HideSelection&gt;Highlight&lt;/HideSelection&gt;&lt;VisibleRows&gt;20&lt;/VisibleRows&gt;&lt;/GridEXLayoutData&gt;</value>
+  </data>
+  <data name="grdGon.WatermarkImage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAJYAAAAlCAIAAAAvPYduAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADr8AAA6/ATgFUyQAAATtSURBVHhe7ZuxbhQxEIbvEXgEHoFH4AkQLR0FPdQ0dLSI
+        HomOgiaioEFIqRASTQqoKEhDA02aVDThuxvHGX57fbPevXAX7a9f6NaeHdvz79izi7K6+BdHPz+fnv9K
+        FxNw9uccV8++vbl7/PT+p+f84DL1LZgVVxISdGK9envv1tEDIs5l6hiJk7MfD7+8xE9JPL/4/i7ZLZgJ
+        SUJShPhKuF+ffrTeIEhfcs47qRKb7udjQYkV0Xxy8kqinHn7/aPj31+T7TDaTkre+fB4UXEurBBJ4luS
+        vGF7THcUQOOIE+HBqcgew0qNezXzlUS2QU64stIZlXxCHCYvI8FR7f1U9wlvMGQTAWoxTzllZqn45sII
+        CaGvdPiXTBKDsewrU0VC9oDU4eANYJ+ErFHEM6bu/cA4CY2sisJyun4QVx2bkkgIaUl9lxCDPgmrpTUL
+        T937gR4J52UZ/a0oJeRRkM1NDPokFCcQ/Tg7Uvd+4P9L2JGIpYSQl9rUvYH0dkhIBec9lE/JnqBfQjYZ
+        Qs867YPAFI5NxKqE0OvU6AqCW7yHfUu+jH4Jk4MNqmdGnGMTcUhCX9dIl0mIDLwgZZqlwXeZWiIhzrOB
+        ffRgGrnFSIt8DylHtDLCfmPse8kHBvUpgaVVfMRH6g/M7E1vHgmB997BUR/ehiSEdJmNtJuEhMk3mqXB
+        d/GbFpHQ08Iq3jIRO79Gi02Okg0hCxnKBIIz9Oa93u2lKU6bYgbnBMkkNnFWXwyG0JAQ2okljfNKaAo1
+        1puXIyNmViXs4DplpSlOm6LHxAnF3xHbA1l0pHG6hH4jzbcYqyliMtMr7UYSjt7qQtpPhrSsjaUpzs0q
+        FNXFBCklZQPlyiVSPA3+Ek6XkEHNsgrOKinrqiMScXbFfPDLQoiebSHcK0KyA9tdHJ++fU29DnMzB0Vl
+        gDEMFjWlhKzcX5ZP0i4kJM/Qg3ZWzQRk7dURZaeRheAhdRRfLv2N4nNmCcGURAwWNaWE1UbPeSUscw7K
+        wreOCGTOdosh3jW/hFMSke0ieWmiVItGwtp4emaUkIEi5fcBSwimJKIdBm1UJQTlEZg5o4QyOoUJljy4
+        cnptHRHEdWp07URC9kMxjtNeq9vQNbjJSMgytwY0LqF/QP22Ias+bAnZahqVcZsEKHkZRkNCqWsyqwH1
+        Ge8n3JbQN5qlIVLOmGXG/koIyijHmT9tDKF0njo2qA5dDSg5hIo8cPJZJC4htBIM4xu1kYIpibh1Ly1F
+        Sh0bVOsaC0F5Y5VtCctatMqDlxAE41US7ZOLAZSeU8clhl7tRZUhtiUMOrERdyGh+NyhhEPHUoTyCizY
+        KiGQdeYQ6Po3ZEf17wltCUH1xUl2432XMFJ0gKFP71vZ/thGBFmGZ+pw4AHyBv58JTq0MArpzg+80ej/
+        V8h2cm7JLdDMMogpk8QDoWCZGIu9jejdQrs3QxbiJ9noEp+jJWTSwW8oYEoi+nJxQQPjJER/ioV0awzd
+        iciNycWCJqISkrB9acFd3aXpkogRrDgY2iFmr/dnaQfkZI7T3tuSlwUDWP9ZDGGqbnejjr02fL03lnZo
+        T3yMbjCu/jiNGPlAdxx7DVBQdW+ncDkXG9A/ESXtqJV3sX1RJYswQS76taES7hRjVZxxJ7/BuFYJAdt1
+        +QGzSpJvqWUiuG4JAUdsowxGYI7hRbwoLi7+Aikt5ZHjXuH1AAAAAElFTkSuQmCC
+</value>
+  </data>
+</root>

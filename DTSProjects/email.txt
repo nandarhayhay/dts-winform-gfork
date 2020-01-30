@@ -1,0 +1,54 @@
+//Kira2 ada yg tau gak, waktu kirim email lewat vb net dengan smtp Gmail pakai port 587 bisa berhasil, sedang kan saya coba di smtp di kantor terjadi error , kira2 gini errornya seperti digambar.
+
+                //smtp port nya saya samakan dengan di outlook di kantor mohon pentunjuknya. thx before
+                //berikut cuplikan codingnya
+
+                //Dim SmtpServer As New SmtpClient()
+                //SmtpServer.Credentials = New Net.NetworkCredential("xxx@gmail.com", "password")
+                //SmtpServer.Port = 587 ''gmail 587
+                //SmtpServer.Host = "smtp.gmail.com" '"smtp.gmail.com"
+                //SmtpServer.EnableSsl = True
+                //Mail = New MailMessage()
+
+                //Dim addr() As String = alamat.Split(",")
+                //Try
+
+                //Mail.From = New MailAddress("xxx@gmail.com", "Email si pengirim", System.Text.Encoding.UTF8)
+
+                //Dim i As Byte
+                //For i = 0 To addr.Length - 1
+                //Mail.To.Add(addr(i))
+                //Next
+                //Mail.Subject = "Judul coba kirim data storage"
+                //Dim temp As String = ""
+
+                //If ListBox1.Items.Count <> 0 Then
+                //For i = 0 To ListBox1.Items.Count - 1
+                //temp &= ListBox1.Items.Item(i) & vbCrLf
+                //Next
+                //End If
+
+                //Mail.Body = temp
+
+                //'If ListBox1.Items.Count <> 0 Then
+                //' For i = 0 To ListBox1.Items.Count - 1
+                //' Mail.Attachments.Add(New Attachment(ListBox1.Items.Item(i)))
+                //' Next
+                //'End If
+                //'Mail.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure()
+
+                //Mail.ReplyTo = New MailAddress(alamat)
+                //SmtpServer.Send(Mail)
+                //MsgBox("Sukses kirim email", MsgBoxStyle.Information)
+                //Catch ex As Exception
+                //MsgBox(ex.ToString())
+                //End Try
+
+                //                exchange/mdaemon atau zimbra suka nyangkut) caranya tambahin ini :
+
+                //SmtpClient smtp = new SmtpClient();
+                //smtp.EnableSsl = true;
+
+                //ServicePointManager.ServerCertificateValidationCallback = delegate(object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+
+                //smtp.Send(Mail);

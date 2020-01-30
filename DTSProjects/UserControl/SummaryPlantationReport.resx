@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <metadata name="GridEX1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="GridEX1_DesignTimeLayout.LayoutString" xml:space="preserve">
+    <value>&lt;GridEXLayoutData&gt;&lt;RootTable&gt;&lt;Caption&gt;PLANTATION REPORT(HEADER)&lt;/Caption&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="PLANTATION_ID"&gt;&lt;Caption&gt;PLANTATION_ID&lt;/Caption&gt;&lt;DataMember&gt;PLANTATION_ID&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;PLANTATION_ID&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;/Column0&gt;&lt;Column1 ID="TERRITORY_AREA"&gt;&lt;Caption&gt;TERRITORY_AREA&lt;/Caption&gt;&lt;DataMember&gt;TERRITORY_AREA&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;TERRITORY_AREA&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Width&gt;141&lt;/Width&gt;&lt;/Column1&gt;&lt;Column2 ID="GROUP_NAME"&gt;&lt;Caption&gt;GROUP_NAME&lt;/Caption&gt;&lt;DataMember&gt;GROUP_NAME&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;GROUP_NAME&lt;/Key&gt;&lt;Position&gt;2&lt;/Position&gt;&lt;Width&gt;192&lt;/Width&gt;&lt;/Column2&gt;&lt;Column3 ID="ESTATE_NAME"&gt;&lt;Caption&gt;ESTATE_NAME&lt;/Caption&gt;&lt;DataMember&gt;PLANTATION_NAME&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;ESTATE_NAME&lt;/Key&gt;&lt;Position&gt;3&lt;/Position&gt;&lt;Width&gt;239&lt;/Width&gt;&lt;/Column3&gt;&lt;Column4 ID="BRAND_ID"&gt;&lt;Caption&gt;BRAND_ID&lt;/Caption&gt;&lt;DataMember&gt;BRAND_ID&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;BRAND_ID&lt;/Key&gt;&lt;Position&gt;4&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;/Column4&gt;&lt;Column5 ID="BRAND_NAME"&gt;&lt;Caption&gt;BRAND_NAME&lt;/Caption&gt;&lt;DataMember&gt;BRAND_NAME&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;BRAND_NAME&lt;/Key&gt;&lt;Position&gt;5&lt;/Position&gt;&lt;Width&gt;150&lt;/Width&gt;&lt;/Column5&gt;&lt;Column6 ID="BRANDPACK_ID"&gt;&lt;Caption&gt;BRANDPACK_ID&lt;/Caption&gt;&lt;DataMember&gt;BRANDPACK_ID&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;BRANDPACK_ID&lt;/Key&gt;&lt;Position&gt;6&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;/Column6&gt;&lt;Column7 ID="BRANDPACK_NAME"&gt;&lt;Caption&gt;BRANDPACK_NAME&lt;/Caption&gt;&lt;DataMember&gt;BRANDPACK_NAME&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;BRANDPACK_NAME&lt;/Key&gt;&lt;Position&gt;7&lt;/Position&gt;&lt;Width&gt;308&lt;/Width&gt;&lt;/Column7&gt;&lt;Column8 ID="TOTAL_ACTUAL"&gt;&lt;Caption&gt;TOTAL_ACTUAL&lt;/Caption&gt;&lt;DataMember&gt;TOTAL_ACTUAL&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;FormatString&gt;#,##0.000&lt;/FormatString&gt;&lt;Key&gt;TOTAL_ACTUAL&lt;/Key&gt;&lt;Position&gt;8&lt;/Position&gt;&lt;TextAlignment&gt;Far&lt;/TextAlignment&gt;&lt;Width&gt;157&lt;/Width&gt;&lt;TotalFormatString&gt;#,##0.000&lt;/TotalFormatString&gt;&lt;DefaultFilterRowComparison&gt;Equal&lt;/DefaultFilterRowComparison&gt;&lt;/Column8&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;TableHeader&gt;True&lt;/TableHeader&gt;&lt;TableHeaderFormatStyle&gt;&lt;ForeColor&gt;Maroon&lt;/ForeColor&gt;&lt;Font&gt;Microsoft Sans Serif, 9pt, style=Bold&lt;/Font&gt;&lt;FontBold&gt;True&lt;/FontBold&gt;&lt;TextAlignment&gt;Center&lt;/TextAlignment&gt;&lt;/TableHeaderFormatStyle&gt;&lt;/RootTable&gt;&lt;/GridEXLayoutData&gt;</value>
+  </data>
+  <metadata name="XpCaptionPane1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="dtpicFrom.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="dtPicUntil.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="btnFilteDate.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label2.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="XpGradientPanel1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="GridEX2.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="GridEX2_DesignTimeLayout.LayoutString" xml:space="preserve">
+    <value>&lt;GridEXLayoutData&gt;&lt;RootTable&gt;&lt;Caption&gt;PLANTATION REPORT (DETAIL)&lt;/Caption&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="PLANTATION_ID"&gt;&lt;Caption&gt;PLANTATION_ID&lt;/Caption&gt;&lt;DataMember&gt;PLANTATION_ID&lt;/DataMember&gt;&lt;Key&gt;PLANTATION_ID&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;/Column0&gt;&lt;Column1 ID="DISTRIBUTOR_ID"&gt;&lt;Caption&gt;DISTRIBUTOR_ID&lt;/Caption&gt;&lt;DataMember&gt;DISTRIBUTOR_ID&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;DISTRIBUTOR_ID&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Visible&gt;False&lt;/Visible&gt;&lt;/Column1&gt;&lt;Column2 ID="DISTRIBUTOR_NAME"&gt;&lt;Caption&gt;DISTRIBUTOR_NAME&lt;/Caption&gt;&lt;DataMember&gt;DISTRIBUTOR_NAME&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;DISTRIBUTOR_NAME&lt;/Key&gt;&lt;Position&gt;2&lt;/Position&gt;&lt;Width&gt;245&lt;/Width&gt;&lt;/Column2&gt;&lt;Column3 ID="PO_REF_NO"&gt;&lt;Caption&gt;PO_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_NO&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;PO_REF_NO&lt;/Key&gt;&lt;Position&gt;3&lt;/Position&gt;&lt;Width&gt;110&lt;/Width&gt;&lt;DefaultFilterRowComparison&gt;Contains&lt;/DefaultFilterRowComparison&gt;&lt;/Column3&gt;&lt;Column4 ID="PO_DATE"&gt;&lt;Caption&gt;PO_DATE&lt;/Caption&gt;&lt;DataMember&gt;PO_DATE&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;CalendarCombo&lt;/FilterEditType&gt;&lt;FormatString&gt;d&lt;/FormatString&gt;&lt;Key&gt;PO_DATE&lt;/Key&gt;&lt;Position&gt;4&lt;/Position&gt;&lt;Width&gt;128&lt;/Width&gt;&lt;DefaultFilterRowComparison&gt;Equal&lt;/DefaultFilterRowComparison&gt;&lt;/Column4&gt;&lt;Column5 ID="BRANDPACK_NAME"&gt;&lt;Caption&gt;BRANDPACK_NAME&lt;/Caption&gt;&lt;DataMember&gt;BRANDPACK_NAME&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;BRANDPACK_NAME&lt;/Key&gt;&lt;Position&gt;5&lt;/Position&gt;&lt;Width&gt;271&lt;/Width&gt;&lt;DefaultFilterRowComparison&gt;Contains&lt;/DefaultFilterRowComparison&gt;&lt;/Column5&gt;&lt;Column6 ID="PLANTATION_NAME"&gt;&lt;Caption&gt;PLANTATION_NAME&lt;/Caption&gt;&lt;DataMember&gt;PLANTATION_NAME&lt;/DataMember&gt;&lt;Key&gt;PLANTATION_NAME&lt;/Key&gt;&lt;Position&gt;6&lt;/Position&gt;&lt;Width&gt;180&lt;/Width&gt;&lt;/Column6&gt;&lt;Column7 ID="PO_ORIGINAL_QTY"&gt;&lt;Caption&gt;PO_ORIGINAL_QTY&lt;/Caption&gt;&lt;DataMember&gt;PO_ORIGINAL_QTY&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;FormatString&gt;#,##0.000&lt;/FormatString&gt;&lt;Key&gt;PO_ORIGINAL_QTY&lt;/Key&gt;&lt;Position&gt;7&lt;/Position&gt;&lt;TextAlignment&gt;Far&lt;/TextAlignment&gt;&lt;Width&gt;128&lt;/Width&gt;&lt;TotalFormatString&gt;#,##0.000&lt;/TotalFormatString&gt;&lt;DefaultFilterRowComparison&gt;Equal&lt;/DefaultFilterRowComparison&gt;&lt;/Column7&gt;&lt;Column8 ID="PRICE"&gt;&lt;AggregateFunction&gt;Sum&lt;/AggregateFunction&gt;&lt;Caption&gt;PRICE&lt;/Caption&gt;&lt;DataMember&gt;PRICE&lt;/DataMember&gt;&lt;DefaultGroupPrefix /&gt;&lt;FormatString&gt;#,##0.00&lt;/FormatString&gt;&lt;Key&gt;PRICE&lt;/Key&gt;&lt;Position&gt;8&lt;/Position&gt;&lt;TextAlignment&gt;Far&lt;/TextAlignment&gt;&lt;Width&gt;112&lt;/Width&gt;&lt;TotalFormatString&gt;#,##0.00&lt;/TotalFormatString&gt;&lt;/Column8&gt;&lt;Column9 ID="INVNUMBER"&gt;&lt;Caption&gt;INVNUMBER&lt;/Caption&gt;&lt;DataMember&gt;INVNUMBER&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;INVNUMBER&lt;/Key&gt;&lt;Position&gt;9&lt;/Position&gt;&lt;Width&gt;111&lt;/Width&gt;&lt;DefaultFilterRowComparison&gt;Contains&lt;/DefaultFilterRowComparison&gt;&lt;/Column9&gt;&lt;Column10 ID="INVDATE"&gt;&lt;Caption&gt;INVDATE&lt;/Caption&gt;&lt;DataMember&gt;INVDATE&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;CalendarCombo&lt;/FilterEditType&gt;&lt;FormatString&gt;d&lt;/FormatString&gt;&lt;Key&gt;INVDATE&lt;/Key&gt;&lt;Position&gt;10&lt;/Position&gt;&lt;Width&gt;131&lt;/Width&gt;&lt;DefaultFilterRowComparison&gt;Equal&lt;/DefaultFilterRowComparison&gt;&lt;/Column10&gt;&lt;Column11 ID="INVOICE_QTY"&gt;&lt;Caption&gt;INVOICE_QTY&lt;/Caption&gt;&lt;DataMember&gt;INVOICE_QTY&lt;/DataMember&gt;&lt;EditType&gt;NoEdit&lt;/EditType&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;FormatString&gt;#,##0.000&lt;/FormatString&gt;&lt;Key&gt;INVOICE_QTY&lt;/Key&gt;&lt;Position&gt;11&lt;/Position&gt;&lt;TextAlignment&gt;Far&lt;/TextAlignment&gt;&lt;Width&gt;109&lt;/Width&gt;&lt;TotalFormatString&gt;#,##0.000&lt;/TotalFormatString&gt;&lt;DefaultFilterRowComparison&gt;Equal&lt;/DefaultFilterRowComparison&gt;&lt;/Column11&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;TableHeader&gt;True&lt;/TableHeader&gt;&lt;TableHeaderFormatStyle&gt;&lt;ForeColor&gt;Maroon&lt;/ForeColor&gt;&lt;Font&gt;Microsoft Sans Serif, 9pt, style=Bold&lt;/Font&gt;&lt;TextAlignment&gt;Center&lt;/TextAlignment&gt;&lt;/TableHeaderFormatStyle&gt;&lt;/RootTable&gt;&lt;/GridEXLayoutData&gt;</value>
+  </data>
+  <metadata name="ExpandableSplitter1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Panel1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="chkFilter.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+</root>
