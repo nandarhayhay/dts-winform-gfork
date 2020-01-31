@@ -360,7 +360,7 @@ Partial Class AchievementFMP
         Me.FilterEditor1.Office2007ColorScheme = Janus.Windows.Common.Office2007ColorScheme.[Default]
         Me.FilterEditor1.ScrollMode = Janus.Windows.UI.Dock.ScrollMode.Both
         Me.FilterEditor1.ScrollStep = 15
-        Me.FilterEditor1.Size = New System.Drawing.Size(915, 50)
+        Me.FilterEditor1.Size = New System.Drawing.Size(915, 45)
         Me.FilterEditor1.SortFieldList = False
         Me.FilterEditor1.SourceControl = Me.GridEX1
         Me.FilterEditor1.Visible = False
@@ -391,7 +391,7 @@ Partial Class AchievementFMP
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
         Me.GridEX1.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.GridEX1.Size = New System.Drawing.Size(911, 191)
+        Me.GridEX1.Size = New System.Drawing.Size(911, 196)
         Me.GridEX1.TabIndex = 25
         Me.GridEX1.TableHeaderFormatStyle.FontBold = Janus.Windows.GridEX.TriState.[True]
         Me.GridEX1.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
@@ -416,13 +416,13 @@ Partial Class AchievementFMP
         'cxmnComputeByVolume
         '
         Me.cxmnComputeByVolume.Name = "cxmnComputeByVolume"
-        Me.cxmnComputeByVolume.Size = New System.Drawing.Size(246, 22)
+        Me.cxmnComputeByVolume.Size = New System.Drawing.Size(245, 22)
         Me.cxmnComputeByVolume.Text = "(Computed)Discount By Volume"
         '
         'ctmnComputeByValue
         '
         Me.ctmnComputeByValue.Name = "ctmnComputeByValue"
-        Me.ctmnComputeByValue.Size = New System.Drawing.Size(246, 22)
+        Me.ctmnComputeByValue.Size = New System.Drawing.Size(245, 22)
         Me.ctmnComputeByValue.Text = "(Computed)Discount By Value"
         '
         'GridEX3
@@ -569,7 +569,7 @@ Partial Class AchievementFMP
         Me.ExpandablePanel1.Controls.Add(Me.Label1)
         Me.ExpandablePanel1.Controls.Add(Me.Label2)
         Me.ExpandablePanel1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ExpandablePanel1.Location = New System.Drawing.Point(0, 75)
+        Me.ExpandablePanel1.Location = New System.Drawing.Point(0, 70)
         Me.ExpandablePanel1.Name = "ExpandablePanel1"
         Me.ExpandablePanel1.Size = New System.Drawing.Size(915, 39)
         Me.ExpandablePanel1.Style.Alignment = System.Drawing.StringAlignment.Center
@@ -789,9 +789,9 @@ Partial Class AchievementFMP
         Me.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.Panel2.Controls.Add(Me.GridEX1)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(0, 114)
+        Me.Panel2.Location = New System.Drawing.Point(0, 109)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(915, 195)
+        Me.Panel2.Size = New System.Drawing.Size(915, 200)
         Me.Panel2.TabIndex = 34
         '
         'AchievementFMP
