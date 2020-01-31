@@ -56,13 +56,6 @@ Partial Class AchievementF
         Me.btnRecomputeF2 = New DevComponents.DotNetBar.ButtonItem
         Me.btnRecomputeF3 = New DevComponents.DotNetBar.ButtonItem
         Me.chkFilter = New DevComponents.DotNetBar.CheckBoxItem
-        Me.btnQuarter1 = New DevComponents.DotNetBar.ButtonItem
-        Me.btnQuarter2 = New DevComponents.DotNetBar.ButtonItem
-        Me.btnQuarter3 = New DevComponents.DotNetBar.ButtonItem
-        Me.btnQuarter4 = New DevComponents.DotNetBar.ButtonItem
-        Me.btnSemester1 = New DevComponents.DotNetBar.ButtonItem
-        Me.btnSemester2 = New DevComponents.DotNetBar.ButtonItem
-        Me.btnYearly = New DevComponents.DotNetBar.ButtonItem
         Me.Panel1 = New System.Windows.Forms.Panel
         Me.GridEX1 = New Janus.Windows.GridEX.GridEX
         Me.ExpandablePanel1 = New DevComponents.DotNetBar.ExpandablePanel
@@ -158,13 +151,13 @@ Partial Class AchievementF
         'cxmnComputeByVolume
         '
         Me.cxmnComputeByVolume.Name = "cxmnComputeByVolume"
-        Me.cxmnComputeByVolume.Size = New System.Drawing.Size(246, 22)
+        Me.cxmnComputeByVolume.Size = New System.Drawing.Size(245, 22)
         Me.cxmnComputeByVolume.Text = "(Computed)Discount By Volume"
         '
         'ctmnComputeByValue
         '
         Me.ctmnComputeByValue.Name = "ctmnComputeByValue"
-        Me.ctmnComputeByValue.Size = New System.Drawing.Size(246, 22)
+        Me.ctmnComputeByValue.Size = New System.Drawing.Size(245, 22)
         Me.ctmnComputeByValue.Text = "(Computed)Discount By Value"
         '
         'Bar2
@@ -299,41 +292,6 @@ Partial Class AchievementF
         '
         Me.chkFilter.Name = "chkFilter"
         Me.chkFilter.Text = "Filter Detail with header(row on header data is selected)"
-        '
-        'btnQuarter1
-        '
-        Me.btnQuarter1.Name = "btnQuarter1"
-        Me.btnQuarter1.Text = "Quarter 1"
-        '
-        'btnQuarter2
-        '
-        Me.btnQuarter2.Name = "btnQuarter2"
-        Me.btnQuarter2.Text = "Quarter 2"
-        '
-        'btnQuarter3
-        '
-        Me.btnQuarter3.Name = "btnQuarter3"
-        Me.btnQuarter3.Text = "Quarter 3"
-        '
-        'btnQuarter4
-        '
-        Me.btnQuarter4.Name = "btnQuarter4"
-        Me.btnQuarter4.Text = "Quarter 4"
-        '
-        'btnSemester1
-        '
-        Me.btnSemester1.Name = "btnSemester1"
-        Me.btnSemester1.Text = "Semester 1"
-        '
-        'btnSemester2
-        '
-        Me.btnSemester2.Name = "btnSemester2"
-        Me.btnSemester2.Text = "Semester 2"
-        '
-        'btnYearly
-        '
-        Me.btnYearly.Name = "btnYearly"
-        Me.btnYearly.Text = "Yearly"
         '
         'Panel1
         '
@@ -547,6 +505,7 @@ Partial Class AchievementF
         '
         'GridEX2
         '
+        Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
         Me.GridEX2.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX2.AutoEdit = True
         Me.GridEX2.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
@@ -658,13 +617,7 @@ Partial Class AchievementF
     Private WithEvents btnExport As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnRefresh As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnFlag As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnQuarter1 As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnQuarter2 As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnQuarter3 As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnQuarter4 As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnSemester1 As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnSemester2 As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnYearly As DevComponents.DotNetBar.ButtonItem
+
     Private WithEvents btnRecomputeF1 As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnRecomputeF2 As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnRecomputeF3 As DevComponents.DotNetBar.ButtonItem

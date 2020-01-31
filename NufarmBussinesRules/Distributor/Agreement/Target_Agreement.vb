@@ -26,7 +26,7 @@ Namespace DistributorAgreement
         ''' <param name="StrDecStartDate">varchar in server = numeric</param>
         ''' <param name="strDecEndDate">varchar in server = numeric</param>
         ''' <remarks></remarks>
-        Private Sub CreateTempTable(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal StrDecStartDate As String, ByVal strDecEndDate As String)
+        Protected Sub CreateTempTable(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal StrDecStartDate As String, ByVal strDecEndDate As String)
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
                    "IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                    " BEGIN " & vbCrLf & _
@@ -66,7 +66,7 @@ Namespace DistributorAgreement
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
                         "IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                         " BEGIN  EXEC Usp_Create_Temp_Invoice_Table @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME; END " '& vbCrLf & _
-               
+
             End If
             Me.ResetCommandText(CommandType.Text, Query)
             'Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
@@ -445,7 +445,7 @@ Namespace DistributorAgreement
             Dim Key(1) As DataColumn : Key(0) = tblAcrDetail.Columns("ACHIEVEMENT_BRANDPACK_ID")
             tblAcrDetail.PrimaryKey = Key
         End Sub
-        Private Sub CreateTempInvoiceTable(ByVal Flag As String, ByVal DISTRIBUTOR_ID As String, ByVal ListAGREEMENT_NO As List(Of String), ByVal strAgreementNos As String)
+        Protected Sub CreateTempInvoiceTable(ByVal Flag As String, ByVal DISTRIBUTOR_ID As String, ByVal ListAGREEMENT_NO As List(Of String), ByVal strAgreementNos As String)
             Dim strDecStartDate As String = "", strDecEndDate As String = ""
             Dim StartDate As DateTime = Nothing, EndDate As DateTime = Nothing, StartDateQ1 As DateTime = Nothing, EndDateQ1 As DateTime = Nothing, _
                       StartDateQ2 As DateTime = Nothing, EndDateQ2 As DateTime = Nothing, StartDateQ3 As DateTime = Nothing, EndDateQ3 As DateTime = Nothing, _
@@ -6080,7 +6080,7 @@ Namespace DistributorAgreement
                 mustRecomputeYear = False
             End Try
         End Function
-        Private Sub DisposeTempDB()
+        Protected Sub DisposeTempDB()
             Query = "SET NOCOUNT ON ;" & vbCrLf & _
                       "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                       " BEGIN  DROP TABLE  tempdb..##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _

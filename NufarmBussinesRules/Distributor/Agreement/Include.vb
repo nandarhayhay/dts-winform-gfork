@@ -234,7 +234,7 @@ Namespace DistributorAgreement
             End Try
         End Sub
 
-        Public Sub UpdateBrandInclude(ByVal QS_FLAG As String, Optional ByRef ds As DataSet = Nothing, Optional ByVal BRANDPACK_IDS As Collection = Nothing, Optional ByVal IsRoundUP As Boolean = False)
+        Public Sub UpdateBrandInclude(ByVal QS_FLAG As String, Optional ByRef ds As DataSet = Nothing, Optional ByVal ds4months As DataSet = Nothing, Optional ByVal BRANDPACK_IDS As Collection = Nothing, Optional ByVal IsRoundUP As Boolean = False)
             Try
                 Me.GetConnection()
                 'If IsNothing(Me.SqlCom) Then
@@ -294,10 +294,22 @@ Namespace DistributorAgreement
                         Next
                     End If
                 End If
-                Me.SaveGivenProgressive()
+                If Not IsNothing(ds4months) Then
+                    If ds4months.HasChanges() Then
+                        SaveDS4Month(ds.Tables(0))
+                    End If
+                End If
+                If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
+                Else
+                    Me.SaveGivenProgressive()
+                End If
                 If Not IsNothing(ds) Then
                     ds.AcceptChanges()
-                End If : Me.CommiteTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
+                End If
+                If Not IsNothing(ds4months) Then
+                    ds4months.AcceptChanges()
+                End If
+                Me.CommiteTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
             Catch ex As Exception
                 Me.RollbackTransaction()
                 Me.CloseConnection()
@@ -451,14 +463,63 @@ Namespace DistributorAgreement
             Dim insertedRows() As DataRow = dt.Select("", "", DataViewRowState.Added)
             Dim updatedRows() As DataRow = dt.Select("", "", DataViewRowState.ModifiedOriginal)
             Dim deletedRows() As DataRow = dt.Select("", "", DataViewRowState.Deleted)
+            SqlDat = New SqlDataAdapter()
             If insertedRows.Length > 0 Then
-                '                Query = "INSERT INTO AGREE_PROG_DISC_R"
-                '                         (AGREEMENT_NO, PS_CATEGORY, ACH_METHODE, UP_TO_PCT, DISC_PCT, FLAG, Createdby, CreatedDate)
-                'VALUES        (,,,,,,,)"
+                Query = " SET NOCOUNT ON; " & vbCrLf & _
+                        " INSERT INTO AGREE_PROG_DISC_R(AGREEMENT_NO, PS_CATEGORY, ACH_METHODE, UP_TO_PCT, DISC_PCT, FLAG, Createdby, CreatedDate)" & vbCrLf & _
+                        " VALUES (@AGREEMENT_NO, @PS_CATEGORY, @ACH_METHODE, @UP_TO_PCT, @DISC_PCT, @FLAG, @Createdby, @CreatedDat);"
+                With commandInsert
+                    .CommandType = CommandType.Text
+                    .CommandText = Query
+                    .Transaction = Me.SqlTrans
+                    .Parameters.Add("@AGREEMENT_NO", SqlDbType.VarChar, 25, "AGREEMENT_NO")
+                    .Parameters.Add("@PS_CATEGORY", SqlDbType.Char, 1, "PS_CATEGORY")
+                    .Parameters.Add("@ACH_METHODE", SqlDbType.VarChar, 5, "ACH_METHODE")
+                    .Parameters.Add("@UP_TO_PCT", SqlDbType.Decimal, 0, "UP_TO_PCT")
+                    .Parameters.Add("@DISC_PCT", SqlDbType.Decimal, 0, "DISC_PCT")
+                    .Parameters.Add("@FLAG", SqlDbType.VarChar, 3, "FLAG")
+                    .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100, "CreatedBy")
+                    .Parameters.Add("@CreatedDate", SqlDbType.SmallDateTime, 0, "CreatedDate")
+                    SqlDat.InsertCommand = commandInsert
+                    SqlDat.Update(insertedRows)
+                    commandInsert.Parameters.Clear()
+                End With
             End If
-            With commandInsert
-
-            End With
+            If updatedRows.Length > 0 Then
+                Query = " SET NOCOUNT ON; " & vbCrLf & _
+                        " UPDATE AGREE_PROG_DISC_R SET PS_CATEGORY =, ACH_METHODE =, AGREEMENT_NO =, UP_TO_PCT =, DISC_PCT =, FLAG =, ModifiedBy =, ModifiedDate = " & vbCrLf & _
+                        " WHERE IDApp = @IDApp ;"
+                With commandUpdate
+                    .CommandType = CommandType.Text
+                    .CommandText = Query
+                    .Transaction = Me.SqlTrans
+                    .Parameters.Add("@AGREEMENT_NO", SqlDbType.VarChar, 25, "AGREEMENT_NO")
+                    .Parameters.Add("@PS_CATEGORY", SqlDbType.Char, 1, "PS_CATEGORY")
+                    .Parameters.Add("@ACH_METHODE", SqlDbType.VarChar, 5, "ACH_METHODE")
+                    .Parameters.Add("@UP_TO_PCT", SqlDbType.Decimal, 0, "UP_TO_PCT")
+                    .Parameters.Add("@DISC_PCT", SqlDbType.Decimal, 0, "DISC_PCT")
+                    .Parameters.Add("@FLAG", SqlDbType.VarChar, 3, "FLAG")
+                    .Parameters.Add("@ModifiedBy", SqlDbType.VarChar, 100, "ModifiedBy")
+                    .Parameters.Add("@ModifiedDate", SqlDbType.SmallDateTime, 0, "ModifiedDate")
+                    .Parameters.Add("@IDApp", SqlDbType.Int, 0, "IDApp").SourceVersion = DataRowVersion.Original
+                    SqlDat.UpdateCommand = commandUpdate
+                    SqlDat.Update(updatedRows)
+                    commandUpdate.Parameters.Clear()
+                End With
+            End If
+            If deletedRows.Length > 0 Then
+                With commandDelete
+                    Query = "SET NOCOUNT ON; " & vbCrLf & _
+                    " DELETE FROM AGREE_PROG_DISC_R WHERE IDApp = @IDApp ;"
+                    .CommandType = CommandType.Text
+                    .CommandText = Query
+                    .Transaction = Me.SqlTrans
+                    .Parameters.Add("@IDApp", SqlDbType.Int, 0, "IDApp").SourceVersion = DataRowVersion.Original
+                    SqlDat.DeleteCommand = commandDelete
+                    SqlDat.Update(deletedRows)
+                    commandDelete.Parameters.Clear()
+                End With
+            End If
         End Sub
 
         Private Sub SaveGivenProgressive()
@@ -1033,10 +1094,11 @@ Namespace DistributorAgreement
                        "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
                        "   BEGIN " & vbCrLf & _
                        "    DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                       "    WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG =  UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                       "         DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                       "        WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG =  UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                       "    DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
                        "         AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
                        "         WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
+                       "   END " & vbCrLf & _
                        " IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
                        "      BEGIN " & vbCrLf & _
                        "        DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _

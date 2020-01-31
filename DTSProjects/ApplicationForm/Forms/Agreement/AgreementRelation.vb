@@ -1388,7 +1388,7 @@ Public Class AgreementRelation
                                 Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
                                 Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
                                 'transisi
-                                Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+                                'Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
                                 'Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableFMPV()
                             ElseIf Me.QS_FLAG = "S" Then
                                 Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableSemesterly()
@@ -1732,7 +1732,7 @@ Public Class AgreementRelation
                 End If
                 Me.ds4MPeriode = New DataSet("DS4periode")
                 Me.ds4MPeriode.Tables.Add(tbl)
-                    BindGrid4MPeriode(
+                'BindGrid4MPeriode(
             ElseIf Me.QS_FLAG = "Q" Then
                 If Me.isTransitionTime Then
                     'me.ds4MPeriode = 
@@ -2629,23 +2629,23 @@ Public Class AgreementRelation
                         If Not IsNothing(Me.clsAgInclude.getDsPeriod()) Then
                             'Me.fillAgreebrandIDinGridProgressive()
                             If (Me.clsAgInclude.getDsPeriod.HasChanges()) Then
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), BRANDPACKIDS, IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp)
                             Else
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , BRANDPACKIDS, IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp)
                             End If
                         Else
-                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , BRANDPACKIDS, IsRoundUp)
+                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp)
                         End If
                     Else
                         If Not IsNothing(Me.clsAgInclude.getDsPeriod()) Then
                             'Me.fillAgreebrandIDinGridProgressive()
                             If (Me.clsAgInclude.getDsPeriod.HasChanges()) Then
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), , IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, , IsRoundUp)
                             Else
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , , IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, , IsRoundUp)
                             End If
                         Else
-                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , , IsRoundUp)
+                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, , IsRoundUp)
                         End If
                     End If
             End Select
@@ -3162,11 +3162,44 @@ Public Class AgreementRelation
                 e.Cancel = True
                 Me.GridEX2.MoveToNewRecord()
                 Me.GridEX2.Select()
-
+            ElseIf IsNothing(GridEX2.GetValue("UP_TO_PCT")) Or IsDBNull(Me.GridEX2.GetValue("UP_TO_PCT")) Then
+                Me.ShowMessageInfo("Please enter percent achievement")
+                e.Cancel = True
+                Me.GridEX2.MoveToNewRecord()
+                Me.GridEX2.Select()
+            ElseIf CDec(Me.GridEX2.GetValue("UP_TO_PCT")) <= 0 Then
+                Me.ShowMessageInfo("Please enter percent achievement")
+                e.Cancel = True
+                Me.GridEX2.MoveToNewRecord()
+                Me.GridEX2.Select()
+            ElseIf IsNothing(Me.GridEX2.GetValue("DISC_PCT")) Or IsDBNull(Me.GridEX2.GetValue("DISC_PCT")) Then
+                Me.ShowMessageInfo("Please enter Disc %")
+                e.Cancel = True
+                Me.GridEX2.MoveToNewRecord()
+                Me.GridEX2.Select()
+            ElseIf CDec(Me.GridEX2.GetValue("DISC_PCT")) <= 0 Then
+                Me.ShowMessageInfo("Please enter Disc %")
+                e.Cancel = True
+                Me.GridEX2.MoveToNewRecord()
+                Me.GridEX2.Select()
+            ElseIf IsNothing(Me.GridEX2.GetValue("FLAG")) Or IsDBNull(Me.GridEX2.GetValue("FLAG")) Then
+                Me.ShowMessageInfo("Please enter Flag")
+                e.Cancel = True
+                Me.GridEX2.MoveToNewRecord()
+                Me.GridEX2.Select()
             End If
+            Cursor = Cursors.WaitCursor
+            'set agreement_no,ach_methode,IDrow,createdby,CreatedDate
+            Me.GridEX2.SetValue("AGREEMENT_NO", Me.MultiColumnCombo1.Value)
+            Me.GridEX2.SetValue("ACH_METHODE", "PSG")
+            Me.GridEX2.SetValue("IDRow", Me.MultiColumnCombo1.Value + Me.GridEX2.GetValue("PS_CATEGORY") + Me.GridEX2.GetValue("FLAG"))
+            Me.GridEX2.SetValue("CreatedBy", NufarmBussinesRules.User.UserLogin.UserName)
+            Me.GridEX2.SetValue("CreatedDate", NufarmBussinesRules.SharedClass.ServerDate)
         Catch ex As Exception
-
+            Me.ShowMessageError(ex.Message)
+            e.Cancel = True
         End Try
+        Cursor = Cursors.Default
     End Sub
 
     Private Sub GridEX2_CurrentCellChanging(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.CurrentCellChangingEventArgs) Handles GridEX2.CurrentCellChanging
@@ -3186,16 +3219,27 @@ Public Class AgreementRelation
                 If NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.AgreementRelation Then
                     Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
                 Else
-                    e.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
+                    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
                 End If
             End If
         End If
     End Sub
 
     Private Sub GridEX2_UpdatingCell(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.UpdatingCellEventArgs) Handles GridEX2.UpdatingCell
-        If e.Row.RowType = Janus.Windows.GridEX.RowType.Record Then
-            If e.Column.Key = "PS_CATEGORY" Or e.Column.Key = "FLAG" Then
-                Dim ID As String = Me.MultiColumnCombo1 + Me.GridEX2.GetValue("PS_CATEGORY") + Me.GridEX2.GetValue("FLAG")
+        If Me.GridEX2.GetRow.RowType = Janus.Windows.GridEX.RowType.Record Then
+            If e.Column.Key = "PS_CATEGORY" Then
+                Dim ID As String = Me.MultiColumnCombo1.Value + e.Value + Me.GridEX2.GetValue("FLAG")
+                Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                Dim rowFilter As String = DV.RowFilter
+                DV.RowFilter = ""
+                Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
+                dummyDV.Sort = "IDRow"
+                If DV.Find(ID) >= 0 Then
+                    Me.ShowMessageInfo(Me.MessageDataCantChanged)
+                    e.Cancel = True
+                End If
+            ElseIf e.Column.Key = "FLAG" Then
+                Dim ID As String = Me.MultiColumnCombo1.Value + Me.GridEX2.GetValue("PS_CATEGORY") + e.Value
                 Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
                 Dim rowFilter As String = DV.RowFilter
                 DV.RowFilter = ""
@@ -3206,8 +3250,6 @@ Public Class AgreementRelation
                     e.Cancel = True
                 End If
             End If
-        Else
-            e.Cancel = True
         End If
     End Sub
 
@@ -3219,7 +3261,19 @@ Public Class AgreementRelation
                 e.Cancel = True
             End If
         Catch ex As Exception
-
+            e.Cancel = True
         End Try
+    End Sub
+
+    Private Sub GridEX2_CellUpdated(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.ColumnActionEventArgs) Handles GridEX2.CellUpdated
+        Me.GridEX2.UpdateData()
+    End Sub
+
+    Private Sub GridEX2_RecordAdded(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GridEX2.RecordAdded
+        Me.GridEX2.UpdateData()
+    End Sub
+
+    Private Sub GridEX2_RecordsDeleted(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GridEX2.RecordsDeleted
+        Me.GridEX2.UpdateData()
     End Sub
 End Class
