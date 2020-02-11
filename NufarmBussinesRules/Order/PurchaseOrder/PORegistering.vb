@@ -393,19 +393,19 @@ Namespace PurchaseOrder
 #End Region
 
 #Region " Sub "
-        Public Sub FetchDataView()
-            Try
-                Me.GetConnection()
-                Me.CreateCommandSql("Sp_GetView_PURCHASE_ORDER_AGREE_STILL_APPLY", "")
-                Dim tblPurchaseOrder As New DataTable("PURCHASE_ORDER")
-                tblPurchaseOrder.Clear()
-                Me.FillDataTable(tblPurchaseOrder)
-                Me.VIEWPurchaseOrder = tblPurchaseOrder.DefaultView
-            Catch ex As Exception
-                Me.CloseConnection()
-                Throw ex
-            End Try
-        End Sub
+        'Public Sub FetchDataView()
+        '    Try
+        '        Me.GetConnection()
+        '        Me.CreateCommandSql("Sp_GetView_PURCHASE_ORDER_AGREE_STILL_APPLY", "")
+        '        Dim tblPurchaseOrder As New DataTable("PURCHASE_ORDER")
+        '        tblPurchaseOrder.Clear()
+        '        Me.FillDataTable(tblPurchaseOrder)
+        '        Me.VIEWPurchaseOrder = tblPurchaseOrder.DefaultView
+        '    Catch ex As Exception
+        '        Me.CloseConnection()
+        '        Throw ex
+        '    End Try
+        'End Sub
 
         Public Sub FetchDataView_1()
             Try

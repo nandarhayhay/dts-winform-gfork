@@ -353,7 +353,7 @@ Public Class DistributorAgreement
                 EndDateF1 = StartDateF1.AddMonths(4).AddDays(-1)
                 StartDateF2 = EndDateF1.AddDays(1)
                 EndDateF2 = StartDateF2.AddMonths(4).AddDays(-1)
-                StartDateF3.AddDays(1)
+                StartDateF3 = EndDateF2.AddDays(1)
                 EndDateF3 = EndDate
             End If
             'simpan di memory agar tidak redraw listview
@@ -611,6 +611,8 @@ Public Class DistributorAgreement
             Me.ExpandablePanel1.Expanded = False
             Me.dtPicFilterStart.Text = ""
             Me.dtPicFilterEnd.Text = ""
+            Me.tbProgressive.Visible = False 'sembunyikan tab pogressive karena sudah tidak di pakai lagi
+
         Catch ex As Exception
             Me.ShowMessageError(ex.Message)
             Me.LogMyEvent(ex.Message, "DistributorAgreement_Load")
@@ -695,7 +697,7 @@ Public Class DistributorAgreement
                 Me.clsDiscAgreement.QS_Treatment_Flag = "Q"
             ElseIf Me.rdbSemeterly.Checked = True Then
                 Me.clsDiscAgreement.QS_Treatment_Flag = "S"
-            ElseIf Me.rdbFMP.CheckedValue Then
+            ElseIf Me.rdbFMP.Checked Then
                 Me.clsDiscAgreement.QS_Treatment_Flag = "F"
             End If
             If Me.txtAgrementDescription.Text = "" Then
@@ -706,23 +708,13 @@ Public Class DistributorAgreement
             'Me.clsDiscAgreement.TargetYear = Me.txtTargetYear.Value
             Me.clsDiscAgreement.StartDate = Convert.ToDateTime(Me.dtPicStart.Value.ToShortDateString())
             Me.clsDiscAgreement.EndDate = Convert.ToDateTime(Me.dtPicEnd.Value.ToShortDateString())
-            If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
-                Me.clsDiscAgreement.dsProghasChanged = True
-            Else
-                Me.clsDiscAgreement.dsProghasChanged = False
+            If Not IsNothing(Me.clsDiscAgreement.GetDataSetPeriod()) Then
+                If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
+                    Me.clsDiscAgreement.dsProghasChanged = True
+                Else
+                    Me.clsDiscAgreement.dsProghasChanged = False
+                End If
             End If
-            'If Me.Mode = SaveMode.Save Then
-            '    If Me.ShowConfirmedMessage(Me.MessageInsertData) = Windows.Forms.DialogResult.No Then
-            '        Me.WhileSaving = Saving.Failed
-            '        Return
-            '    End If
-            'ElseIf Me.Mode = SaveMode.Update Then
-            '    If Me.ShowConfirmedMessage(Me.MessageUpdateData) = Windows.Forms.DialogResult.No Then
-            '        Me.WhileSaving = Saving.Failed
-            '        Return
-            '    End If
-            'End If
-            'Me.ShowProgress()
             Select Case Me.Mode
                 Case SaveMode.Save
                     If Me.clsDiscAgreement.IsExistAgreementNo(Me.txtAgreementNumber.Text.Trim()) = True Then
@@ -740,14 +732,22 @@ Public Class DistributorAgreement
                             DISTRIBUTOR_IDS.Add(Me.chkComboDistributor.CheckedValues.GetValue(i), x)
                             x += 1
                         Next
-                        If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
-                            Me.clsDiscAgreement.SaveAgreementGroup("Save", DISTRIBUTOR_IDS, True, Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                        If Not IsNothing(Me.clsDiscAgreement.GetDataSetPeriod()) Then
+                            If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
+                                Me.clsDiscAgreement.SaveAgreementGroup("Save", DISTRIBUTOR_IDS, True, Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                            Else
+                                Me.clsDiscAgreement.SaveAgreementGroup("Save", DISTRIBUTOR_IDS, True)
+                            End If
                         Else
                             Me.clsDiscAgreement.SaveAgreementGroup("Save", DISTRIBUTOR_IDS, True)
                         End If
                     Else
-                        If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
-                            Me.clsDiscAgreement.SaveAgreement(Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                        If Not IsNothing(Me.clsDiscAgreement.GetDataSetPeriod()) Then
+                            If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
+                                Me.clsDiscAgreement.SaveAgreement(Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                            Else
+                                Me.clsDiscAgreement.SaveAgreement(Nothing)
+                            End If
                         Else
                             Me.clsDiscAgreement.SaveAgreement(Nothing)
                         End If
@@ -781,11 +781,19 @@ Public Class DistributorAgreement
                             Next
                         End If
 
-                        If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
-                            If Me.btnAddDistributor.Text = "&Cancel" Then
-                                Me.clsDiscAgreement.SaveAgreementGroup("Update", DISTRIBUTOR_IDS, True, Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                        If Not IsNothing(Me.clsDiscAgreement.GetDataSetPeriod()) Then
+                            If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
+                                If Me.btnAddDistributor.Text = "&Cancel" Then
+                                    Me.clsDiscAgreement.SaveAgreementGroup("Update", DISTRIBUTOR_IDS, True, Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                                Else
+                                    Me.clsDiscAgreement.SaveAgreementGroup("Update", DISTRIBUTOR_IDS, False, Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                                End If
                             Else
-                                Me.clsDiscAgreement.SaveAgreementGroup("Update", DISTRIBUTOR_IDS, False, Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                                If Me.btnAddDistributor.Text = "&Cancel" Then
+                                    Me.clsDiscAgreement.SaveAgreementGroup("Update", DISTRIBUTOR_IDS, True)
+                                Else
+                                    Me.clsDiscAgreement.SaveAgreementGroup("Update", DISTRIBUTOR_IDS, False)
+                                End If
                             End If
                         Else
                             If Me.btnAddDistributor.Text = "&Cancel" Then
@@ -795,8 +803,12 @@ Public Class DistributorAgreement
                             End If
                         End If
                     Else
-                        If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
-                            Me.clsDiscAgreement.UpdateAgreement(Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                        If Not IsNothing(Me.clsDiscAgreement.GetDataSetPeriod()) Then
+                            If Me.clsDiscAgreement.GetDataSetPeriod().HasChanges() Then
+                                Me.clsDiscAgreement.UpdateAgreement(Me.clsDiscAgreement.GetDataSetPeriod().GetChanges())
+                            Else
+                                Me.clsDiscAgreement.UpdateAgreement(Nothing)
+                            End If
                         Else
                             Me.clsDiscAgreement.UpdateAgreement(Nothing)
                         End If
@@ -951,7 +963,7 @@ Public Class DistributorAgreement
         If Me.SFG = StateFillingGrid.Filling Then
             Return
         End If
-        If Me.rdbQuarterly.Checked = False And Me.rdbSemeterly.Checked = False Then
+        If Me.rdbQuarterly.Checked = False And Me.rdbSemeterly.Checked = False And rdbFMP.Checked = False Then
             Me.baseTooltip.Show("Please define Flag", Me.grpPeriod, 2500) : Me.grpPeriod.Focus() : Return
         End If
         Try
@@ -1190,11 +1202,15 @@ Public Class DistributorAgreement
             End If
             If Not Me.GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.Record Then
                 'Me.HasLoad = False : Me.btnAdd_Click(Me.btnAdd, New EventArgs()) : Me.HasLoad = True : Me.SFG = StateFillingGrid.HasFilled
+                Me.SFG = StateFillingGrid.Filling
+                Me.ClearControl()
+                Me.SFG = StateFillingGrid.HasFilled
                 Return
             End If
             If Me.HasLoad = True Then
                 Me.SFG = StateFillingGrid.Filling
                 Me.Mode = SaveMode.Update
+                Me.rdbFMP.Checked = False : Me.rdbQuarterly.Checked = False : Me.rdbSemeterly.Checked = False : Me.chkAgreementGroup.Visible = False
                 If Me.clsDiscAgreement.CheckAgreement_Group(Me.GridEX1.GetValue("AGREEMENT_NO").ToString()) = True Then
                     Me.BINDcheckedCombo(Me.clsDiscAgreement.ViewDistributor(), "")
                     Me.MultiColumnCombo1.Visible = False : Me.chkAgreementGroup.Checked = True : Me.btnAddDistributor.Enabled = True
@@ -1213,6 +1229,8 @@ Public Class DistributorAgreement
                 ElseIf (CStr(Me.GridEX1.GetValue("QS_TREATMENT_FLAG")) = "S") Then
                     'Me.rdbSemeterly.Checked = False
                     Me.rdbSemeterly.Checked = True : Me.rdbSemeterly_Click(Me.rdbSemeterly, New System.EventArgs())
+                Else
+                    Me.rdbFMP.Checked = True : Me.tbProgressive.Visible = False
                 End If
                 Me.dtPicStart.Value = Convert.ToDateTime(Me.GridEX1.GetValue("START_DATE"))
                 Me.DateFromGridEx = Convert.ToDateTime(Me.GridEX1.GetValue("START_DATE"))
@@ -1234,6 +1252,7 @@ Public Class DistributorAgreement
                     Me.dgvYearlyVal.Enabled = True : Me.dgvPeriodicVal.Enabled = True
                     Me.MultiColumnCombo1.ReadOnly = True : Me.chkComboDistributor.ReadOnly = True
                     If Me.chkAgreementGroup.Checked = True Then
+                        Me.chkAgreementGroup.Visible = True
                         Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
                     Else
                         Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
@@ -1250,6 +1269,7 @@ Public Class DistributorAgreement
                     End If
                     'CHECK_GROUP
                 End If
+
                 If Me.rdbQuarterly.Checked = True Then
                     If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "Q", False) = True Then
                         HasGeneratedDiscountProgressive = True
@@ -1276,22 +1296,28 @@ Public Class DistributorAgreement
                     Else
                         Me.MultiColumnCombo1.ReadOnly = False
                     End If
-                End If
-                If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "Y", True) = True Then
-                    Me.dgvYearly.Enabled = False : HasGeneratedDiscountProgressive = True
-                    Me.MultiColumnCombo1.ReadOnly = True
-                    Me.dgvYearlyVal.Enabled = True
-                    If Me.chkAgreementGroup.Checked = True Then
-                        Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
-                    Else
-                        Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
-                    End If
-                Else
-                    Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
+                ElseIf Me.rdbFMP.Checked = True Then
                     Me.MultiColumnCombo1.ReadOnly = False
+                End If
+
+                If Me.rdbQuarterly.Checked Or Me.rdbSemeterly.Checked Then
+                    If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "Y", True) = True Then
+                        Me.dgvYearly.Enabled = False : HasGeneratedDiscountProgressive = True
+                        Me.MultiColumnCombo1.ReadOnly = True
+                        Me.dgvYearlyVal.Enabled = True
+                        If Me.chkAgreementGroup.Checked = True Then
+                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
+                        Else
+                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
+                        End If
+                    Else
+                        Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
+                        Me.MultiColumnCombo1.ReadOnly = False
+                    End If
                 End If
                 Me.txtAgreementNumber.Enabled = False : Me.rdbQuarterly.Enabled = False
                 Me.rdbSemeterly.Enabled = False 'Me.txtTargetYear.Enabled = False
+                Me.rdbFMP.Enabled = False
                 Dim Flag As String = ""
                 If Me.rdbSemeterly.Checked Then : Flag = "S"
                 ElseIf Me.rdbQuarterly.Checked Then : Flag = "Q"
@@ -1387,6 +1413,7 @@ Public Class DistributorAgreement
             Me.dgvPeriodicVal.Enabled = True
             Me.dgvYearly.Enabled = True
             Me.dgvYearlyVal.Enabled = True
+            Me.rdbFMP.Enabled = True
             'Me.dgvPeriodic.Enabled = True
             'Me.dgvYearly.Enabled = True
         Else
@@ -1419,6 +1446,7 @@ Public Class DistributorAgreement
             Me.rdbSemeterly.Checked = False
             Me.rdbSemeterly.Enabled = False
             Me.rdbQuarterly.Enabled = False
+            Me.rdbFMP.Checked = False
             Me.dgvPeriodic.Enabled = False
             Me.dgvPeriodicVal.Enabled = False
             Me.dgvYearly.Enabled = False
@@ -1519,25 +1547,32 @@ Public Class DistributorAgreement
                         Me.ClearData(Me.dgvPeriodic)
                         Me.ClearData(Me.dgvYearly)
                     Case SaveMode.Update
+
                         Me.clsDiscAgreement.FetchDsSetPeriod(Me.txtAgreementNumber.Text.Trim(), "Q", False)
 
                         Me.DVQuarterly = Me.clsDiscAgreement.GetTableQuarterly().DefaultView()
+
                         Me.dgvPeriodic.DataSource = Me.DVQuarterly
                         Me.DVYearly = Me.clsDiscAgreement.GetTableYearly().DefaultView()
                         Me.dgvYearly.DataSource = Me.DVYearly
+                        If DVQuarterly.Count > 0 Then
+                            Me.tbProgressive.Visible = True
+                            Me.DVQuarterlyV = Me.clsDiscAgreement.getTableQuarterlyV().DefaultView()
+                            Me.dgvPeriodicVal.DataSource = Me.DVQuarterlyV
+                            Me.DVYearlyV = Me.clsDiscAgreement.getTableYearlyV().DefaultView()
+                            Me.dgvYearlyVal.DataSource = Me.DVYearlyV
+                            Me.tbPeriode.Text = "Quarterly Discount"
+                            Me.dgvPeriodic.Enabled = True
+                            Me.dgvYearly.Enabled = True
 
-                        Me.DVQuarterlyV = Me.clsDiscAgreement.getTableQuarterlyV().DefaultView()
-                        Me.dgvPeriodicVal.DataSource = Me.DVQuarterlyV
-                        Me.DVYearlyV = Me.clsDiscAgreement.getTableYearlyV().DefaultView()
-                        Me.dgvYearlyVal.DataSource = Me.DVYearlyV
+                            Me.TbPeriodeVal.Text = "Quarterly Discount"
+                            Me.dgvPeriodicVal.Enabled = True
+                            Me.dgvYearlyVal.Enabled = True
+
+                        Else
+                            Me.tbProgressive.Visible = False ''tn 2018 tidak ada lagi agreement discount by master( progressive one agreement for all brand), all agreement progressive by brand
+                        End If
                 End Select
-                Me.tbPeriode.Text = "Quarterly Discount"
-                Me.dgvPeriodic.Enabled = True
-                Me.dgvYearly.Enabled = True
-
-                Me.TbPeriodeVal.Text = "Quarterly Discount"
-                Me.dgvPeriodicVal.Enabled = True
-                Me.dgvYearlyVal.Enabled = True
 
             End If
             'next result
@@ -1562,26 +1597,27 @@ Public Class DistributorAgreement
                         Me.ClearData(Me.dgvYearly)
                     Case SaveMode.Update
                         Me.clsDiscAgreement.FetchDsSetPeriod(Me.txtAgreementNumber.Text.Trim(), "S", False)
-                        'bind grid
                         Me.DVSemesterly = Me.clsDiscAgreement.GetTableSemesterly().DefaultView()
-                        Me.dgvPeriodic.DataSource = Me.DVSemesterly
+                        If Me.DVSemesterly.Count > 0 Then
+                            Me.dgvPeriodic.DataSource = Me.DVSemesterly
+                            Me.DVYearly = Me.clsDiscAgreement.GetTableYearly().DefaultView()
+                            Me.dgvYearly.DataSource = Me.DVYearly
 
-                        Me.DVYearly = Me.clsDiscAgreement.GetTableYearly().DefaultView()
-                        Me.dgvYearly.DataSource = Me.DVYearly
+                            Me.DVSemesterlyV = Me.clsDiscAgreement.getTableSemesterlyV().DefaultView()
+                            Me.dgvPeriodicVal.DataSource = Me.DVSemesterlyV
+                            Me.DVYearlyV = Me.clsDiscAgreement.getTableYearlyV().DefaultView()
+                            Me.dgvYearlyVal.DataSource = Me.clsDiscAgreement.getTableYearlyV()
+                            Me.tbPeriode.Text = "Semesterly Discount"
+                            Me.dgvPeriodic.Enabled = True
+                            Me.dgvYearly.Enabled = True
 
-                        Me.DVSemesterlyV = Me.clsDiscAgreement.getTableSemesterlyV().DefaultView()
-                        Me.dgvPeriodicVal.DataSource = Me.DVSemesterlyV
-                        Me.DVYearlyV = Me.clsDiscAgreement.getTableYearlyV().DefaultView()
-                        Me.dgvYearlyVal.DataSource = Me.clsDiscAgreement.getTableYearlyV()
+                            Me.TbPeriodeVal.Text = "Semesterly Discount"
+                            Me.dgvPeriodicVal.Enabled = True
+                            Me.dgvYearlyVal.Enabled = True
+                        Else
+                            Me.tbProgressive.Visible = False
+                        End If
                 End Select
-                Me.tbPeriode.Text = "Semesterly Discount"
-                Me.dgvPeriodic.Enabled = True
-                Me.dgvYearly.Enabled = True
-
-                Me.TbPeriodeVal.Text = "Semesterly Discount"
-                Me.dgvPeriodicVal.Enabled = True
-                Me.dgvYearlyVal.Enabled = True
-
                 Me.dtPicEnd_ValueChanged(Me.dtPicFilterEnd, New EventArgs())
             End If
         Catch ex As Exception

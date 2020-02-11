@@ -321,12 +321,13 @@ Partial Class AgreementRelation
         '
         tbQuarter.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         tbQuarter.Controls.Add(Me.grpQuarterly)
-        tbQuarter.Location = New System.Drawing.Point(4, 25)
+        tbQuarter.Location = New System.Drawing.Point(4, 22)
         tbQuarter.Name = "tbQuarter"
         tbQuarter.Padding = New System.Windows.Forms.Padding(3)
-        tbQuarter.Size = New System.Drawing.Size(337, 171)
+        tbQuarter.Size = New System.Drawing.Size(337, 174)
         tbQuarter.TabIndex = 1
         tbQuarter.Text = "Quarter"
+        tbQuarter.UseVisualStyleBackColor = True
         '
         'grpQuarterly
         '
@@ -356,11 +357,12 @@ Partial Class AgreementRelation
         Me.grpQuarterly.Controls.Add(Me.Label5)
         Me.grpQuarterly.Controls.Add(Me.Label4)
         Me.grpQuarterly.Controls.Add(Me.Label3)
+        Me.grpQuarterly.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpQuarterly.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.grpQuarterly.Location = New System.Drawing.Point(6, 15)
+        Me.grpQuarterly.Location = New System.Drawing.Point(3, 3)
         Me.grpQuarterly.Name = "grpQuarterly"
         Me.grpQuarterly.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.grpQuarterly.Size = New System.Drawing.Size(325, 153)
+        Me.grpQuarterly.Size = New System.Drawing.Size(331, 168)
         Me.grpQuarterly.TabIndex = 8
         Me.grpQuarterly.TabStop = False
         Me.grpQuarterly.Text = "Q1"
@@ -728,7 +730,6 @@ Partial Class AgreementRelation
         '
         'TabControl1
         '
-        Me.TabControl1.Appearance = System.Windows.Forms.TabAppearance.FlatButtons
         Me.TabControl1.Controls.Add(Me.tbSemester)
         Me.TabControl1.Controls.Add(tbQuarter)
         Me.TabControl1.Controls.Add(Me.tbFMP)
@@ -742,12 +743,13 @@ Partial Class AgreementRelation
         '
         Me.tbSemester.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbSemester.Controls.Add(Me.grpSemesterly)
-        Me.tbSemester.Location = New System.Drawing.Point(4, 25)
+        Me.tbSemester.Location = New System.Drawing.Point(4, 22)
         Me.tbSemester.Name = "tbSemester"
         Me.tbSemester.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbSemester.Size = New System.Drawing.Size(337, 171)
+        Me.tbSemester.Size = New System.Drawing.Size(337, 174)
         Me.tbSemester.TabIndex = 0
         Me.tbSemester.Text = "Semester"
+        Me.tbSemester.UseVisualStyleBackColor = True
         '
         'grpSemesterly
         '
@@ -766,10 +768,11 @@ Partial Class AgreementRelation
         Me.grpSemesterly.Controls.Add(Me.lblTargetSemesterly)
         Me.grpSemesterly.Controls.Add(Me.Label8)
         Me.grpSemesterly.Controls.Add(Me.Label7)
-        Me.grpSemesterly.Location = New System.Drawing.Point(6, 23)
+        Me.grpSemesterly.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grpSemesterly.Location = New System.Drawing.Point(3, 3)
         Me.grpSemesterly.Name = "grpSemesterly"
         Me.grpSemesterly.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.grpSemesterly.Size = New System.Drawing.Size(325, 135)
+        Me.grpSemesterly.Size = New System.Drawing.Size(331, 168)
         Me.grpSemesterly.TabIndex = 9
         Me.grpSemesterly.TabStop = False
         Me.grpSemesterly.Text = "Semesterly"
@@ -912,7 +915,7 @@ Partial Class AgreementRelation
         '
         'tbFMP
         '
-        Me.tbFMP.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.tbFMP.BackColor = System.Drawing.Color.Transparent
         Me.tbFMP.Controls.Add(Me.lblTargetFPY)
         Me.tbFMP.Controls.Add(Me.Label42)
         Me.tbFMP.Controls.Add(Me.Label41)
@@ -932,12 +935,12 @@ Partial Class AgreementRelation
         Me.tbFMP.Controls.Add(Me.Label37)
         Me.tbFMP.Controls.Add(Me.Label38)
         Me.tbFMP.Controls.Add(Me.Label39)
-        Me.tbFMP.Location = New System.Drawing.Point(4, 25)
+        Me.tbFMP.Location = New System.Drawing.Point(4, 22)
         Me.tbFMP.Name = "tbFMP"
         Me.tbFMP.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbFMP.Size = New System.Drawing.Size(337, 171)
+        Me.tbFMP.Size = New System.Drawing.Size(337, 174)
         Me.tbFMP.TabIndex = 2
-        Me.tbFMP.Text = "Four Months Period"
+        Me.tbFMP.Text = "4 Months Period"
         '
         'lblTargetFPY
         '
@@ -1070,9 +1073,9 @@ Partial Class AgreementRelation
         'txtFMP3
         '
         Me.txtFMP3.FormatString = "#,##0.000"
-        Me.txtFMP3.Location = New System.Drawing.Point(72, 62)
+        Me.txtFMP3.Location = New System.Drawing.Point(73, 62)
         Me.txtFMP3.Name = "txtFMP3"
-        Me.txtFMP3.Size = New System.Drawing.Size(70, 20)
+        Me.txtFMP3.Size = New System.Drawing.Size(69, 20)
         Me.txtFMP3.TabIndex = 36
         Me.txtFMP3.Text = "0.000"
         Me.txtFMP3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -1101,7 +1104,7 @@ Partial Class AgreementRelation
         '
         Me.Label37.AutoSize = True
         Me.Label37.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label37.Location = New System.Drawing.Point(6, 63)
+        Me.Label37.Location = New System.Drawing.Point(7, 63)
         Me.Label37.Name = "Label37"
         Me.Label37.Size = New System.Drawing.Size(64, 15)
         Me.Label37.TabIndex = 33
@@ -1141,7 +1144,6 @@ Partial Class AgreementRelation
         'grdunAddedBrandPack
         '
         Me.grdunAddedBrandPack.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
-        Me.grdunAddedBrandPack.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.grdunAddedBrandPack.ContextMenuStrip = Me.ContextMenuStrip1
         grdunAddedBrandPack_DesignTimeLayout.LayoutString = resources.GetString("grdunAddedBrandPack_DesignTimeLayout.LayoutString")
         Me.grdunAddedBrandPack.DesignTimeLayout = grdunAddedBrandPack_DesignTimeLayout
@@ -1149,7 +1151,6 @@ Partial Class AgreementRelation
         Me.grdunAddedBrandPack.GroupByBoxVisible = False
         Me.grdunAddedBrandPack.Location = New System.Drawing.Point(0, 0)
         Me.grdunAddedBrandPack.Name = "grdunAddedBrandPack"
-        Me.grdunAddedBrandPack.RowFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.grdunAddedBrandPack.Size = New System.Drawing.Size(351, 148)
         Me.grdunAddedBrandPack.TabIndex = 0
         Me.grdunAddedBrandPack.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
@@ -1190,14 +1191,12 @@ Partial Class AgreementRelation
         '
         Me.grdAddedBrandPack.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.grdAddedBrandPack.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
-        Me.grdAddedBrandPack.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         grdAddedBrandPack_DesignTimeLayout.LayoutString = resources.GetString("grdAddedBrandPack_DesignTimeLayout.LayoutString")
         Me.grdAddedBrandPack.DesignTimeLayout = grdAddedBrandPack_DesignTimeLayout
         Me.grdAddedBrandPack.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.grdAddedBrandPack.GroupByBoxVisible = False
         Me.grdAddedBrandPack.Location = New System.Drawing.Point(0, 148)
         Me.grdAddedBrandPack.Name = "grdAddedBrandPack"
-        Me.grdAddedBrandPack.RowFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.grdAddedBrandPack.Size = New System.Drawing.Size(351, 123)
         Me.grdAddedBrandPack.TabIndex = 1
         Me.grdAddedBrandPack.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
@@ -1232,7 +1231,7 @@ Partial Class AgreementRelation
         Me.txtBrandName.Location = New System.Drawing.Point(3, 10)
         Me.txtBrandName.Name = "txtBrandName"
         Me.txtBrandName.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtBrandName.Size = New System.Drawing.Size(309, 20)
+        Me.txtBrandName.Size = New System.Drawing.Size(341, 20)
         Me.txtBrandName.TabIndex = 5
         '
         'Label2
@@ -1321,7 +1320,6 @@ Partial Class AgreementRelation
         '
         'MainTbBrandProgressive
         '
-        Me.MainTbBrandProgressive.Appearance = System.Windows.Forms.TabAppearance.FlatButtons
         Me.MainTbBrandProgressive.ContextMenuStrip = Me.ContextMenuStrip2
         Me.MainTbBrandProgressive.Controls.Add(Me.tbProgByVolume)
         Me.MainTbBrandProgressive.Controls.Add(Me.tbProgF)
@@ -1362,10 +1360,10 @@ Partial Class AgreementRelation
         '
         Me.tbProgByVolume.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbProgByVolume.Controls.Add(Me.tbPeriodic)
-        Me.tbProgByVolume.Location = New System.Drawing.Point(4, 25)
+        Me.tbProgByVolume.Location = New System.Drawing.Point(4, 22)
         Me.tbProgByVolume.Name = "tbProgByVolume"
         Me.tbProgByVolume.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbProgByVolume.Size = New System.Drawing.Size(247, 174)
+        Me.tbProgByVolume.Size = New System.Drawing.Size(247, 177)
         Me.tbProgByVolume.TabIndex = 0
         Me.tbProgByVolume.Text = "Q/S Dispro"
         Me.tbProgByVolume.UseVisualStyleBackColor = True
@@ -1376,7 +1374,7 @@ Partial Class AgreementRelation
         Me.tbPeriodic.FlatBorderColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.tbPeriodic.Location = New System.Drawing.Point(3, 3)
         Me.tbPeriodic.Name = "tbPeriodic"
-        Me.tbPeriodic.Size = New System.Drawing.Size(241, 168)
+        Me.tbPeriodic.Size = New System.Drawing.Size(241, 171)
         Me.tbPeriodic.TabIndex = 14
         Me.tbPeriodic.TabPages.AddRange(New Janus.Windows.UI.Tab.UITabPage() {Me.tbPeriode, Me.tbYearly})
         Me.tbPeriodic.VisualStyle = Janus.Windows.UI.Tab.TabVisualStyle.Office2007
@@ -1386,7 +1384,7 @@ Partial Class AgreementRelation
         Me.tbPeriode.Controls.Add(Me.dgvPeriodic)
         Me.tbPeriode.Location = New System.Drawing.Point(1, 21)
         Me.tbPeriode.Name = "tbPeriode"
-        Me.tbPeriode.Size = New System.Drawing.Size(239, 146)
+        Me.tbPeriode.Size = New System.Drawing.Size(239, 149)
         Me.tbPeriode.TabStop = True
         Me.tbPeriode.Text = "Periodic Discount"
         '
@@ -1429,7 +1427,7 @@ Partial Class AgreementRelation
         DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgvPeriodic.RowHeadersDefaultCellStyle = DataGridViewCellStyle5
         Me.dgvPeriodic.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvPeriodic.Size = New System.Drawing.Size(239, 146)
+        Me.dgvPeriodic.Size = New System.Drawing.Size(239, 149)
         Me.dgvPeriodic.StandardTab = True
         Me.dgvPeriodic.TabIndex = 10
         Me.dgvPeriodic.VirtualMode = True
@@ -1484,7 +1482,7 @@ Partial Class AgreementRelation
         Me.tbYearly.Controls.Add(Me.dgvYearly)
         Me.tbYearly.Location = New System.Drawing.Point(1, 21)
         Me.tbYearly.Name = "tbYearly"
-        Me.tbYearly.Size = New System.Drawing.Size(239, 221)
+        Me.tbYearly.Size = New System.Drawing.Size(239, 149)
         Me.tbYearly.TabStop = True
         Me.tbYearly.Text = "Yearly discount"
         '
@@ -1528,7 +1526,7 @@ Partial Class AgreementRelation
         DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgvYearly.RowHeadersDefaultCellStyle = DataGridViewCellStyle10
         Me.dgvYearly.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvYearly.Size = New System.Drawing.Size(239, 221)
+        Me.dgvYearly.Size = New System.Drawing.Size(239, 149)
         Me.dgvYearly.StandardTab = True
         Me.dgvYearly.TabIndex = 11
         '
@@ -1577,24 +1575,27 @@ Partial Class AgreementRelation
         '
         'tbProgF
         '
+        Me.tbProgF.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbProgF.Controls.Add(Me.GridEX2)
-        Me.tbProgF.Location = New System.Drawing.Point(4, 25)
+        Me.tbProgF.Location = New System.Drawing.Point(4, 22)
         Me.tbProgF.Name = "tbProgF"
         Me.tbProgF.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbProgF.Size = New System.Drawing.Size(247, 174)
+        Me.tbProgF.Size = New System.Drawing.Size(247, 177)
         Me.tbProgF.TabIndex = 2
         Me.tbProgF.Text = "4 Months periode"
         Me.tbProgF.UseVisualStyleBackColor = True
         '
         'GridEX2
         '
-        Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
+        Me.GridEX2.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.[True]
+        Me.GridEX2.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX2.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX2.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
+        Me.GridEX2.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
         GridEX2_DesignTimeLayout.LayoutString = resources.GetString("GridEX2_DesignTimeLayout.LayoutString")
         Me.GridEX2.DesignTimeLayout = GridEX2_DesignTimeLayout
         Me.GridEX2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GridEX2.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
+        Me.GridEX2.FilterRowButtonStyle = Janus.Windows.GridEX.FilterRowButtonStyle.ConditionOperatorDropDown
         Me.GridEX2.FilterRowFormatStyle.BackColor = System.Drawing.SystemColors.Window
         Me.GridEX2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
         Me.GridEX2.GroupByBoxVisible = False
@@ -1606,19 +1607,19 @@ Partial Class AgreementRelation
         Me.GridEX2.Name = "GridEX2"
         Me.GridEX2.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX2.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
-        Me.GridEX2.Size = New System.Drawing.Size(241, 168)
+        Me.GridEX2.Size = New System.Drawing.Size(241, 171)
         Me.GridEX2.TabIndex = 1
-        Me.GridEX2.VisualStyle = Janus.Windows.GridEX.VisualStyle.VS2005
+        Me.GridEX2.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
         Me.GridEX2.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
         '
         'tbProgByValue
         '
         Me.tbProgByValue.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbProgByValue.Controls.Add(Me.tbPeriodicVal)
-        Me.tbProgByValue.Location = New System.Drawing.Point(4, 25)
+        Me.tbProgByValue.Location = New System.Drawing.Point(4, 22)
         Me.tbProgByValue.Name = "tbProgByValue"
         Me.tbProgByValue.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbProgByValue.Size = New System.Drawing.Size(247, 174)
+        Me.tbProgByValue.Size = New System.Drawing.Size(247, 177)
         Me.tbProgByValue.TabIndex = 1
         Me.tbProgByValue.UseVisualStyleBackColor = True
         '
@@ -1628,7 +1629,7 @@ Partial Class AgreementRelation
         Me.tbPeriodicVal.FlatBorderColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.tbPeriodicVal.Location = New System.Drawing.Point(3, 3)
         Me.tbPeriodicVal.Name = "tbPeriodicVal"
-        Me.tbPeriodicVal.Size = New System.Drawing.Size(241, 168)
+        Me.tbPeriodicVal.Size = New System.Drawing.Size(241, 171)
         Me.tbPeriodicVal.TabIndex = 15
         Me.tbPeriodicVal.TabPages.AddRange(New Janus.Windows.UI.Tab.UITabPage() {Me.UiTabPage1, Me.UiTabPage3})
         Me.tbPeriodicVal.VisualStyle = Janus.Windows.UI.Tab.TabVisualStyle.Office2007
@@ -1638,7 +1639,7 @@ Partial Class AgreementRelation
         Me.UiTabPage1.Controls.Add(Me.dgvPeriodicVal)
         Me.UiTabPage1.Location = New System.Drawing.Point(1, 21)
         Me.UiTabPage1.Name = "UiTabPage1"
-        Me.UiTabPage1.Size = New System.Drawing.Size(239, 146)
+        Me.UiTabPage1.Size = New System.Drawing.Size(239, 149)
         Me.UiTabPage1.TabStop = True
         Me.UiTabPage1.Text = "Periodic Discount"
         '
@@ -1681,7 +1682,7 @@ Partial Class AgreementRelation
         DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgvPeriodicVal.RowHeadersDefaultCellStyle = DataGridViewCellStyle14
         Me.dgvPeriodicVal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvPeriodicVal.Size = New System.Drawing.Size(239, 146)
+        Me.dgvPeriodicVal.Size = New System.Drawing.Size(239, 149)
         Me.dgvPeriodicVal.StandardTab = True
         Me.dgvPeriodicVal.TabIndex = 10
         Me.dgvPeriodicVal.VirtualMode = True
@@ -1724,7 +1725,7 @@ Partial Class AgreementRelation
         Me.UiTabPage3.Controls.Add(Me.dgvYearlyVal)
         Me.UiTabPage3.Location = New System.Drawing.Point(1, 21)
         Me.UiTabPage3.Name = "UiTabPage3"
-        Me.UiTabPage3.Size = New System.Drawing.Size(239, 221)
+        Me.UiTabPage3.Size = New System.Drawing.Size(239, 149)
         Me.UiTabPage3.TabStop = True
         Me.UiTabPage3.Text = "Yearly discount"
         '
@@ -1767,7 +1768,7 @@ Partial Class AgreementRelation
         DataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgvYearlyVal.RowHeadersDefaultCellStyle = DataGridViewCellStyle18
         Me.dgvYearlyVal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvYearlyVal.Size = New System.Drawing.Size(239, 221)
+        Me.dgvYearlyVal.Size = New System.Drawing.Size(239, 149)
         Me.dgvYearlyVal.StandardTab = True
         Me.dgvYearlyVal.TabIndex = 11
         Me.dgvYearlyVal.VirtualMode = True
@@ -2981,7 +2982,6 @@ Partial Class AgreementRelation
     Friend WithEvents UP_TO_PCT As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents PRGSV_DISC_PCT As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents QSY_DISC_FLAG As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TabControl1 As System.Windows.Forms.TabControl
     Private WithEvents tbSemester As System.Windows.Forms.TabPage
     Private WithEvents txtFMPPL3 As Janus.Windows.GridEX.EditControls.NumericEditBox
     Private WithEvents txtFMPPL2 As Janus.Windows.GridEX.EditControls.NumericEditBox
@@ -3005,4 +3005,5 @@ Partial Class AgreementRelation
     Private WithEvents tbProgF As System.Windows.Forms.TabPage
     Private WithEvents GridEX2 As Janus.Windows.GridEX.GridEX
     Private WithEvents tbFMP As System.Windows.Forms.TabPage
+    Private WithEvents TabControl1 As System.Windows.Forms.TabControl
 End Class

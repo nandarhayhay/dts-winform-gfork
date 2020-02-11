@@ -4584,7 +4584,7 @@ Namespace DistributorAgreement
 
         End Sub
 
-        Private Sub ResetAdapterCRUD()
+        Protected Sub ResetAdapterCRUD()
             If IsNothing(Me.SqlDat) Then : Me.SqlDat = New SqlDataAdapter()
             End If
             Me.SqlDat.InsertCommand = Nothing
@@ -6205,7 +6205,9 @@ Namespace DistributorAgreement
                     End If
                 Next
                 strAgreementNo &= ")"
-
+                If strAgreementNo.Trim() = "IN(')" Then
+                    strAgreementNo = "IN('')"
+                End If
                 Dim strListFlag As String = " IN('"
                 For i As Integer = 0 To ListFlag.Count - 1
                     strListFlag = strListFlag & ListFlag(i) & "'"
@@ -6214,6 +6216,8 @@ Namespace DistributorAgreement
                     End If
                 Next
                 strListFlag &= ")"
+                If strListFlag.Trim() = "IN(')" Then : strListFlag = "IN('')" : End If
+
                 Dim retval As Object = Nothing
                 'CHECK APakah Sudah di hitung DPD semester sebelumnya
                 Query = "SET NOCOUNT ON; " & vbCrLf & _

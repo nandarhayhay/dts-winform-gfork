@@ -122,7 +122,7 @@ Public Class Agreement
                     Me.frmAgBrand.CMain = Me.CMain
                     frmAgBrand.InitializeData()
                     Me.frmAgBrand.ShowInTaskbar = False
-                    Me.frmAgBrand.ShowDialog(Me)
+                    Me.frmAgBrand.ShowDialog()
                     Me.btnAplyrange_Click(Me.btnAplyrange, New System.EventArgs())
                 Case "btnExport"
                     Me.SaveFileDialog1.OverwritePrompt = True

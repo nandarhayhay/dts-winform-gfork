@@ -613,6 +613,9 @@ Namespace DistributorAgreement
                     " INNER JOIN AGREE_BRANDPACK_INCLUDE ABI ON ABI.AGREE_BRANDPACK_ID = BBS.AGREE_BRANDPACK_ID WHERE ABI.AGREEMENT_NO = '" & _
                     AGREEMENT_NO & "' AND SUBSTRING(BBS.QSY_FLAG,1,1) = '" & FLAG & "')),0)"
                 Else
+                    If FLAG = "F" Then
+
+                    End If
                     Query &= "SELECT 1 WHERE EXISTS(SELECT OOBD.ACHIEVEMENT_BRANDPACK_ID FROM ORDR_OA_BRANDPACK_DISC OOBD INNER JOIN ACCRUED_DETAIL AD " & vbCrLf & _
                              " ON OOBD.ACHIEVEMENT_BRANDPACK_ID = AD.ACHIEVEMENT_BRANDPACK_ID INNER JOIN ACCRUED_HEADER ACRH " & vbCrLf & _
                              " ON AD.ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID WHERE ACRH.AGREEMENT_NO = '" & AGREEMENT_NO & "' AND SUBSTRING(ACRH.FLAG,1,1) = '" & FLAG & "') " & vbCrLf & _
@@ -766,7 +769,8 @@ Namespace DistributorAgreement
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                 " SELECT 1 WHERE EXISTS(SELECT AGREEMENT_NO FROM AGREE_BRAND_INCLUDE WHERE AGREEMENT_NO = @AGREEMENT_NO) " & vbCrLf & _
                 " OR EXISTS(SELECT AGREEMENT_NO FROM AGREE_PROGRESSIVE_DISCOUNT WHERE AGREEMENT_NO = @AGREEMENT_NO) " & vbCrLf & _
-                " OR EXISTS(SELECT AGREEMENT_NO FROM AGREE_PROGRESSIVE_DISC_VAL WHERE AGREEMENT_NO = @AGREEMENT_NO) ;"
+                " OR EXISTS(SELECT AGREEMENT_NO FROM AGREE_PROGRESSIVE_DISC_VAL WHERE AGREEMENT_NO = @AGREEMENT_NO) " & vbCrLf & _
+                " OR EXISTS(SELECT AGREEMENT_NO FROM AGREE_PROG_DISC_R WHERE AGREEMENT_NO = @AGREEMENT_NO) ;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If

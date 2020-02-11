@@ -9,8 +9,6 @@ Public Class AchievementF
     Private DS As DataSet = Nothing
     Private isLoadingRow As Boolean = True
     Private IsHasLoadedForm As Boolean = False
-    Private HasLoadReport As Boolean = True
-    'Private LRF As LoadReportFrom = LoadReportFrom.FirsLoadedForm
     Private IsGeneratingOA As Boolean = False : Private Flag As String = ""
     Private CounterTimer2 As Integer = 0
     Private LD As Loading = Nothing
@@ -43,10 +41,6 @@ Public Class AchievementF
         LoadingAchiement
         None
     End Enum
-    Private Enum LoadReportFrom
-        FirsLoadedForm
-        AfterLoadedForm
-    End Enum
     Private Sub CheckedFilter()
         If Me.chkFilter.Checked Then
             Me.GridEX1_CurrentCellChanged(Me.GridEX1, New EventArgs())
@@ -55,17 +49,84 @@ Public Class AchievementF
                 Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
                 DV.RowFilter = ""
                 Me.GridEX2.SetDataBinding(DV, "")
+                For Each item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX2.RootTable.Columns
+                    If item.Type Is Type.GetType("System.Decimal") Then
+                        If item.Key.Contains("QTY") Or item.Key.Contains("TOTAL") Then
+                            item.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
+                            item.TotalFormatString = "#,##.000"
+                        End If
+                    End If
+                Next
             End If
-            'If Not IsNothing(Me.GridEX3.DataSource) Then
-            '    Dim DV As DataView = CType(Me.GridEX3.DataSource, DataView)
-            '    DV.RowFilter = ""
-            '    Me.GridEX3.SetDataBinding(DV, "")
-            'End If
+            Me.GridEX2.TotalRow = Janus.Windows.GridEX.InheritableBoolean.False
         End If
     End Sub
 
     Private Sub GridEX1_CurrentCellChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles GridEX1.CurrentCellChanged
-
+        Try
+            If Me.isLoadingRow Then : Return : End If
+            If IsNothing(Me.GridEX1.DataSource) Then : Return : End If
+            If Me.GridEX1.RecordCount <= 0 Then : Return : End If
+            If Me.chkFilter.Checked Then
+                If Me.GridEX1.SelectedItems.Count > 0 Then
+                    Me.Cursor = Cursors.WaitCursor
+                    Me.isLoadingRow = True
+                    If Me.GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.Record Then
+                        If Not IsNothing(Me.GridEX2.DataSource) Then
+                            Dim AchHeaderID As String = Me.GridEX1.GetValue("ACH_HEADER_ID").ToString()
+                            Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                            DV.RowFilter = "ACH_HEADER_ID = '" & AchHeaderID & "'"
+                            Me.GridEX2.SetDataBinding(DV, "")
+                        End If
+                    ElseIf Me.GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.FilterRow _
+                    Or GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.GroupFooter _
+                    Or GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.GroupHeader _
+                    Or GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.NewRecord _
+                    Or GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.TotalRow Then
+                        If Not IsNothing(Me.GridEX2.DataSource) Then
+                            Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                            DV.RowFilter = ""
+                            Me.GridEX2.SetDataBinding(DV, "")
+                        End If
+                    End If
+                    For Each item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX2.RootTable.Columns
+                        If item.Type Is Type.GetType("System.Decimal") Then
+                            If item.Key.Contains("QTY") Or item.Key.Contains("TOTAL") Or item.Key.Contains("QTY") Then
+                                item.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
+                                item.TotalFormatString = "#,##.000"
+                            End If
+                        End If
+                    Next
+                    Me.GridEX2.TotalRow = Janus.Windows.GridEX.InheritableBoolean.True
+                Else
+                    If Not IsNothing(Me.GridEX2.DataSource) Then
+                        Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                        DV.RowFilter = ""
+                        Me.GridEX2.SetDataBinding(DV, "")
+                    End If
+                End If
+            Else
+                If Not IsNothing(Me.GridEX2.DataSource) Then
+                    Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                    DV.RowFilter = ""
+                    Me.GridEX2.SetDataBinding(DV, "")
+                    For Each item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX2.RootTable.Columns
+                        If item.Type Is Type.GetType("System.Decimal") Then
+                            If item.Key.Contains("QTY") Or item.Key.Contains("TOTAL") Or item.Key.Contains("QTY") Then
+                                item.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
+                                item.TotalFormatString = "#,##.000"
+                            End If
+                        End If
+                    Next
+                End If
+                Me.GridEX2.TotalRow = Janus.Windows.GridEX.InheritableBoolean.False
+            End If
+            Me.isLoadingRow = False
+        Catch ex As Exception
+            Me.isLoadingRow = False
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
     End Sub
 
 
@@ -113,46 +174,16 @@ Public Class AchievementF
             Me.Cursor = Cursors.Default
         End Try
     End Sub
-    Private Sub HideColumnsPBOrCP(ByVal Grid As Janus.Windows.GridEX.GridEX, ByVal cols As List(Of String), ByVal isVisible As Boolean)
-        Select Case Grid.Name
-            Case "GridEX1"
-                For Each col As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                    If col.Caption.Contains("LEFT_PERIODE_") Or col.Caption.Contains("TOTAL_LEFT_") Then
-                        If cols.Contains(col.Caption) Then
-                            col.Visible = isVisible
-                        Else
-                            col.Visible = Not isVisible
-                        End If
-                    End If
-                Next
-            Case "GridEX2"
-                For Each col As Janus.Windows.GridEX.GridEXColumn In Me.GridEX2.RootTable.Columns
-                    If col.Caption.Contains("LEFT_PERIODE_") Then
-                        If cols.Contains(col.Caption) Then
-                            col.Visible = isVisible
-                        Else
-                            col.Visible = Not isVisible
-                        End If
-                    End If
-                Next
-        End Select
-    End Sub
     Private Sub getDS(ByVal Sprog As StatusProgress)
         Try
             Select Case Sprog
                 Case StatusProgress.LoadingAchiement
-                    If Me.Flag = "" Then
-                        Me.SP = StatusProgress.None : Me.Cursor = Cursors.Default
-                        MessageBox.Show("System can not view data when flag is not defined", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        Return
-                    End If
-                    ''check if Disc has been Applied by (Volume/Value
 
                     If (Not IsNothing(Me.mcbDistributor.Value)) And (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
                         If Me.chkDistributors.CheckedValues.Length > 0 Then
-                            Me.DS = Me.clsDPD.getAccrued(Me.Flag, Me.mcbDistributor.Value.ToString(), ListAgreementNo)
+                            Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString(), ListAgreementNo)
                         Else
-                            Me.DS = Me.clsDPD.getAccrued(Me.Flag, Me.mcbDistributor.Value.ToString())
+                            Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
                         End If
                     ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
                         If Me.chkDistributors.CheckedValues.Length > 0 Then
@@ -161,12 +192,12 @@ Public Class AchievementF
                                     ListAgreementNo.Add(Me.chkDistributors.CheckedValues.GetValue(i).ToString())
                                 End If
                             Next
-                            Me.DS = Me.clsDPD.getAccrued(Me.Flag, , ListAgreementNo)
+                            Me.DS = Me.clsDPD.getAchievement(Me.Flag, , ListAgreementNo)
                         End If
                     ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
-                        Me.DS = Me.clsDPD.getAccrued(Me.Flag, Me.mcbDistributor.Value.ToString())
+                        Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
                     Else
-                        Me.DS = Me.clsDPD.getAccrued(Me.Flag, True)
+                        Me.DS = Me.clsDPD.getAchievement(Me.Flag, True)
                     End If
                 Case StatusProgress.ProcessingDisc
                     Dim DVAgreement As DataView = Nothing 'DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable()
@@ -191,12 +222,12 @@ Public Class AchievementF
                                     DrV.EndEdit()
                                 End If
                             Next
-                            'Me.DS = Me.clsTA.CalculateAccrue(Me.Flag, Me.mcbDistributor.Value.ToString(), DVAgreement.ToTable())
+                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, DVAgreement.ToTable(), Me.mcbDistributor.Value.ToString())
                         Else
-                            'Me.DS = Me.clsTA.CalculateAccrue(Me.Flag, Me.mcbDistributor.Value.ToString())
+                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, , Me.mcbDistributor.Value.ToString())
                         End If
                     ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
-                        'Me.DS = Me.clsTA.CalculateAccrue(Me.Flag, Me.mcbDistributor.Value.ToString())
+                        Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, , Me.mcbDistributor.Value.ToString())
                     ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
                         If Me.chkDistributors.CheckedValues.Length > 0 Then
                             DVAgreement = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
@@ -216,21 +247,20 @@ Public Class AchievementF
                                     DrV.EndEdit()
                                 End If
                             Next
-                            'Me.DS = Me.clsTA.CalculateAccrue(Me.Flag, , DVAgreement.ToTable())
+                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, DVAgreement.ToTable())
                         Else
-                            'Me.DS = Me.clsTA.CalculateAccrue(Me.Flag)
+                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag)
                         End If
                     ElseIf Me.Flag <> "" Then
-                        'Me.DS = Me.clsTA.CalculateAccrue(Me.Flag)
+                        Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag)
                     End If
             End Select
+            If Not IsNothing(Me.DS) Then
+                Me.BindGrid()
+            End If
         Catch ex As Exception
-            'If Me.SP = StatusProgress.ProcessingAcrrue Then : Me.EnabledFlag("") : End If
-            Me.HasLoadReport = True : Me.SP = StatusProgress.None : Me.Timer1.Stop() : Me.Timer1.Enabled = False : Me.TickCount = 0
+            Me.SP = StatusProgress.None : Me.Timer1.Stop() : Me.Timer1.Enabled = False : Me.TickCount = 0
             Me.ShowMessageInfo(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_getDS") : Me.Cursor = Cursors.Default
-            'Me.LAF = LoadAchievementFrom.None
-            'Finally
-            '    Me.SP = StatusProgress.None
         End Try
     End Sub
     Private Sub BindGrid()
@@ -246,56 +276,8 @@ Public Class AchievementF
         Else
             Me.GridEX1.SetDataBinding(Nothing, "") : Me.GridEX2.SetDataBinding(Nothing, "")
         End If
-        'Dim listCols As New List(Of String)
-        'Dim ListColsCopy As New List(Of String)
-        ''LEFT_PREVIOUS_Q1,LEFT_CURRENT_Q2,LEFT_PREVIOUS_Q3,LEFT_CURRENT_Q3,LEFT_CURRENT_F1,LEFT_CURRENT_F2,LEFT_PREVIOUS_F3
-        'Select Case Me.Flag
-        '    Case "F1" : listCols.AddRange(New String() {"LEFT_PREVIOUS_Q3", "LEFT_CURRENT_Q2", "LEFT_CURRENT_Q3", "LEFT_PREVIOUS_F3"})
-        '        ListColsCopy.AddRange(New String() {"LEFT_PREVIOUS_Q3", "LEFT_CURRENT_Q2", "LEFT_CURRENT_Q3", "LEFT_PREVIOUS_F3"})
-        '    Case "F2" : listCols.AddRange(New String() {"LEFT_CURRENT_Q2", "LEFT_CURRENT_Q3", "LEFT_CURRENT_F1"})
-        '        ListColsCopy.AddRange(New String() {"LEFT_CURRENT_Q2", "LEFT_CURRENT_Q3", "LEFT_CURRENT_F1"})
-        '    Case "F3" : listCols.AddRange(New String() {"LEFT_CURRENT_Q3", "LEFT_CURRENT_F2"})
-        '        ListColsCopy.AddRange(New String() {"LEFT_PERIODE_Q1", "TOTAL_LEFT_Q1", "LEFT_PERIODE_Q2", "TOTAL_LEFT_Q2"})
-        '    Case "Q4" : listCols.AddRange(New String() {"LEFT_PERIODE_Q2", "TOTAL_LEFT_Q2", "LEFT_PERIODE_CUR_Q3", "TOTAL_LEFT_CUR_Q3"})
-        '        ListColsCopy.AddRange(New String() {"LEFT_PERIODE_Q2", "TOTAL_LEFT_Q2", "LEFT_PERIODE_CUR_Q3", "TOTAL_LEFT_CUR_Q3"})
-        '    Case "S1" : listCols.AddRange(New String() {"LEFT_PERIODE_S2", "TOTAL_LEFT_S2", "LEFT_PERIODE_Q3_BEFORE", "TOTAL_LEFT_Q3_BEFORE", "LEFT_PERIODE_Q4", "TOTAL_LEFT_Q4"})
-        '        ListColsCopy.AddRange(New String() {"LEFT_PERIODE_S2", "TOTAL_LEFT_S2", "LEFT_PERIODE_Q3_BEFORE", "TOTAL_LEFT_Q3_BEFORE", "LEFT_PERIODE_Q4", "TOTAL_LEFT_Q4"})
-        '    Case "S2" : listCols.AddRange(New String() {"LEFT_PERIODE_S1", "TOTAL_LEFT_S1"})
-        '        ListColsCopy.AddRange(New String() {"LEFT_PERIODE_S1", "TOTAL_LEFT_S1"})
-        'End Select
-        'TOTAL_PBQ1, TOTAL_PBQ2, TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3
-        'Me.HideColumnsPBOrCP(Me.GridEX1, listCols, True)
-        'For Each colTotal As String In ListColsCopy
-        '    If colTotal.Contains("TOTAL_LEFT") Then
-        '        listCols.Remove(colTotal)
-        '    End If
-        'Next
-        'Me.HideColumnsPBOrCP(Me.GridEX2, listCols, True)
-    End Sub
-    Private Sub Timer1_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer1.Tick
-        Try
-            Me.Cursor = Cursors.WaitCursor
-            Me.Timer1.Stop()
-            Me.Timer1.Enabled = False
 
-            If Me.SP = StatusProgress.LoadingAchiement Then ''DS di peroleh di procedure ApplyDiscByVolume
-            Else
-                Me.getDS(Me.SP)
-            End If
-            Me.HasLoadReport = True : Me.BindGrid()
-            Me.SP = StatusProgress.None
-            If Me.clsDPD.MessageError <> "" Then
-                'Me.ShowMessageInfo(Me.clsTA.MessageError)
-            End If
-            Me.SP = StatusProgress.None
-            If Me.isLoadingRow Then : isLoadingRow = False : End If
-        Catch ex As Exception
-            Me.SP = StatusProgress.None : Me.Timer1.Stop() : Me.Timer1.Enabled = False
-            'Me.OtherUserProcessing = ""
-            Me.Cursor = Cursors.Default
-        End Try
     End Sub
-
     Private Sub AchievementF_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         If Not IsNothing(Me.DS) Then
             Me.isLoadingRow = True
@@ -318,11 +300,6 @@ Public Class AchievementF
         Me.btnRecomputeF1.Enabled = False
         Me.btnRecomputeF2.Enabled = False
         Me.btnRecomputeF3.Enabled = False
-        'Me.btnQuarter4V.Enabled = False
-        'Me.btnSemester1V.Enabled = False
-        'Me.btnSemester2V.Enabled = False
-        'Me.btnYearlyV.Enabled = False
-
         Dim Flag As String = ""
         Dim BFind As Boolean = False
         If Me.cmbFlag.Text <> "<< Choose Flag >>" Then
@@ -338,16 +315,12 @@ Public Class AchievementF
             Select Case Flag
                 Case "F1" : Me.btnRecomputeF1.Enabled = True
                 Case "F2" : Me.btnRecomputeF2.Enabled = True
-                Case "Q3" : Me.btnRecomputeF3.Enabled = True
+                Case "F3" : Me.btnRecomputeF3.Enabled = True
             End Select
         End If
         If Not Me.btnRecomputeF1.Enabled Then : Me.btnRecomputeF1.Checked = False : End If
         If Not Me.btnRecomputeF2.Enabled Then : Me.btnRecomputeF2.Checked = False : End If
         If Not Me.btnRecomputeF3.Enabled Then : Me.btnRecomputeF3.Checked = False : End If
-        'If Not Me.btnQuarter4V.Enabled Then : Me.btnQuarter4V.Checked = False : End If
-        'If Not Me.btnSemester1V.Enabled Then : Me.btnSemester1V.Checked = False : End If
-        'If Not Me.btnSemester2V.Enabled Then : Me.btnSemester2V.Checked = False : End If
-        'If Not Me.btnYearlyV.Enabled Then : Me.btnYearlyV.Checked = False : End If
     End Sub
     Private Sub EnabledFlag(ByVal flag As String)
         Me.btnRecomputeF1.Enabled = (flag = "F1")
@@ -357,8 +330,20 @@ Public Class AchievementF
         Me.btnRecomputeF2.Enabled = (flag = "F3")
         If Not btnRecomputeF3.Enabled Then : Me.btnRecomputeF3.Checked = False : End If
     End Sub
+    Private Sub ShowLoading()
+        LD = New Loading
+        LD.Show() : LD.TopMost = True
+        Application.DoEvents()
+        While Not Me.SP = StatusProgress.None
+            Me.LD.Label1.Text = "Processing procedure...."
+            Thread.Sleep(50)
+            LD.Refresh()
+            Application.DoEvents()
+        End While
+        Thread.Sleep(50)
+        LD.Close() : LD = Nothing
+    End Sub
     Private Sub AchievementF_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        'AddHandler Timer1.Tick, AddressOf ChekTimer
         Me.GridEX1_Enter(Me.GridEX1, New EventArgs())
         Me.IsHasLoadedForm = True
         Me.isLoadingCombo = False
@@ -374,8 +359,8 @@ Public Class AchievementF
         Me.Panel1.BorderStyle = BorderStyle.Fixed3D
         Me.Panel2.BorderStyle = BorderStyle.None
         Me.SelectGrid = SelectedGrid.Detail
-        Dim B As Boolean = Me.FilterEditor1.Visible
-        Me.FilterEditor1.Visible = B
+        'Dim B As Boolean = Me.FilterEditor1.Visible
+        'Me.FilterEditor1.Visible = B
         Me.FilterEditor1.SourceControl = Me.Grid
         Me.FilterEditor1.SortFieldList = False
     End Sub
@@ -385,9 +370,227 @@ Public Class AchievementF
         Me.Panel1.BorderStyle = BorderStyle.Fixed3D
         Me.Panel2.BorderStyle = BorderStyle.None
         Me.SelectGrid = SelectedGrid.Header
-        Dim B As Boolean = Me.FilterEditor1.Visible
-        Me.FilterEditor1.Visible = B
+        'Dim B As Boolean = Me.FilterEditor1.Visible
+        'Me.FilterEditor1.Visible = B
         Me.FilterEditor1.SourceControl = Me.Grid
         Me.FilterEditor1.SortFieldList = False
+    End Sub
+
+    Private Sub Bar2_ItemClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Bar2.ItemClick
+        Dim Btn As Object = Nothing
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            Select Case CType(sender, DevComponents.DotNetBar.BaseItem).Name
+                Case "btnShowFieldChooser"
+                    Me.Grid.ShowFieldChooser(Me)
+                Case "btnSettingGrid"
+                    Dim SetGrid As New SettingGrid()
+                    SetGrid.Grid = Me.Grid
+                    SetGrid.GridExPrintDock = Me.GridEXPrintDocument1
+                    SetGrid.ShowDialog(Me)
+                Case "btnPrint"
+                    Me.GridEXPrintDocument1.GridEX = Me.Grid
+                    Me.PrintPreviewDialog1.Document = Me.GridEXPrintDocument1
+                    If Not IsNothing(Me.PageSetupDialog1.PageSettings) Then
+                        Me.PrintPreviewDialog1.Document.DefaultPageSettings = Me.PageSetupDialog1.PageSettings
+                    End If
+                    If Me.PrintPreviewDialog1.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+                        Me.PrintPreviewDialog1.Document.Print()
+                    End If
+                Case "btnPageSettings"
+                    Me.PageSetupDialog1.Document = Me.GridEXPrintDocument1
+                    Me.PageSetupDialog1.ShowDialog(Me)
+                Case "btnCustomFilter"
+                    Me.FilterEditor1.SourceControl = Me.Grid
+                    Me.Grid.RemoveFilters()
+                    Me.FilterEditor1.Visible = True
+                    GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.None
+                Case "btnFilterEqual"
+                    Me.FilterEditor1.Visible = False
+                    Grid.RemoveFilters()
+                    Grid.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
+                Case "btnExport"
+                    Me.SaveFileDialog1.OverwritePrompt = True
+                    Me.SaveFileDialog1.DefaultExt = ".xls"
+                    Me.SaveFileDialog1.Filter = "All Files|*.*"
+                    Me.SaveFileDialog1.InitialDirectory = "C:\"
+                    If Me.SaveFileDialog1.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+                        Dim FS As New System.IO.FileStream(Me.SaveFileDialog1.FileName, IO.FileMode.Create)
+                        Me.GridEXExporter1.GridEX = Grid
+                        Me.GridEXExporter1.Export(FS)
+                        FS.Close()
+                        MessageBox.Show("Data Exported to " & Me.SaveFileDialog1.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End If
+                Case "btnRecomputeF1"
+                    Me.Flag = "Q1"
+                    Btn = btnRecomputeF1
+                    Me.btnRecomputeF1.Checked = True
+                    '===================COMMENT THIS AFTER DEBUGGING=================
+                    'Me.SP = StatusProgress.ProcessingAcrrue
+                    '================================================================
+
+                    '================UNCOMMENT THIS AFTER DEBUGGING===================
+
+                    Me.SP = StatusProgress.ProcessingDisc
+                    ThreadProcess = New Thread(AddressOf ShowLoading)
+                    ThreadProcess.Start()
+                    '=================================================================
+                    getDS(Me.SP)
+                    BindGrid()
+
+                Case "btnRecomputeF2" : Me.Flag = "F2" : Me.btnRecomputeF2.Checked = True
+                    '===================COMMENT THIS AFTER DEBUGGING=================
+                    'Me.SP = StatusProgress.ProcessingAcrrue
+                    '================================================================
+
+                    '================UNCOMMENT THIS AFTER DEBUGGING===================
+                    Me.Flag = "F2"
+                    Btn = btnRecomputeF2
+
+                    Me.SP = StatusProgress.ProcessingDisc
+                    ThreadProcess = New Thread(AddressOf ShowLoading)
+                    ThreadProcess.Start()
+                    '=================================================================
+                    getDS(Me.SP)
+                    BindGrid()
+                Case "btnRecomputeF2" : Me.Flag = "F3" : Me.btnRecomputeF2.Checked = True
+
+                    ''===================COMMENT THIS AFTER DEBUGGING=================
+                    'Me.SP = StatusProgress.ProcessingAcrrue
+                    '================================================================
+
+                    '================UNCOMMENT THIS AFTER DEBUGGING===================
+                    Me.SP = StatusProgress.ProcessingDisc
+                    ThreadProcess = New Thread(AddressOf ShowLoading)
+                    ThreadProcess.Start()
+                    getDS(Me.SP)
+                    BindGrid()
+                Case "btnRefresh"
+                    Me.btnAplyRange_Click(Me.btnAplyRange, New EventArgs())
+            End Select
+            Me.SP = StatusProgress.None
+        Catch ex As Exception
+            Me.SP = StatusProgress.None : Me.ShowMessageInfo(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_Bar2_ItemClick")
+            If Not IsNothing(Btn) Then
+                CType(sender, DevComponents.DotNetBar.ButtonItem).Checked = False
+            End If
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+    Private Sub BindMultiColumnCombo(ByVal DV As DataView, ByVal mcb As Janus.Windows.GridEX.EditControls.MultiColumnCombo, _
+    ByVal ClearCombo As Boolean, ByVal DMember As String, ByVal VMember As String)
+        isLoadingCombo = True
+        If ClearCombo Then
+            mcb.Value = Nothing : mcb.Text = ""
+        End If
+        With mcb
+            .DataSource = DV
+            .DropDownList.RetrieveStructure()
+            .DroppedDown = True
+            .DropDownList.VisibleRows = 20
+            .DropDownList.AutoSizeColumns()
+            .DisplayMember = DMember
+            .ValueMember = VMember
+            .DroppedDown = False
+        End With
+        isLoadingCombo = False
+    End Sub
+    Private Sub BindCheckedCombo(ByVal DV As DataView, ByVal DMember As String, ByVal VMember As String, ByVal IsCheckedAll As Boolean)
+        Me.isLoadingCombo = True
+        Me.chkDistributors.Text = ""
+        If DV Is Nothing Then
+            Me.chkDistributors.SetDataBinding(Nothing, "") : Me.isLoadingCombo = False : Return
+        End If
+        With Me.chkDistributors
+            .SetDataBinding(DV, "")
+            .DropDownList.AutoSizeColumns()
+        End With
+        If IsCheckedAll Then : Me.chkDistributors.CheckAll() : Else : Me.chkDistributors.UncheckAll() : End If
+        Me.isLoadingCombo = False
+    End Sub
+    Private Sub cmbFlag_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmbFlag.SelectedIndexChanged
+        Try
+            'bind multicolumn dimana agreement nya masih valid
+            Me.Cursor = Cursors.WaitCursor
+            If Me.isLoadingCombo Then : Return : End If
+            Dim strFlag As String = ""
+            If Me.cmbFlag.SelectedIndex <> -1 And Me.cmbFlag.Text <> "<< Choose flag >>" Then
+                strFlag = Me.GetFlag(Me.cmbFlag.Text)
+                Dim DV As DataView = Me.clsDPD.GetDistributorAgrement(strFlag)
+                Me.BindMultiColumnCombo(DV, Me.mcbDistributor, True, "DISTRIBUTOR_NAME", "DISTRIBUTOR_ID")
+                Me.BindCheckedCombo(Nothing, "", "", True)
+                Me.Flag = Me.GetFlag(Me.cmbFlag.Text) : Me.EnabledFlag(Me.Flag)
+            Else
+                Me.EnabledFlag("")
+            End If
+            Me.checkEnabledFlagValue()
+        Catch ex As Exception
+            Me.ShowMessageInfo(ex.Message)
+            Me.LogMyEvent(ex.Message, "_cmbFlag_SelectedIndexChanged")
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub btnSearchDistributor_btnClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSearchDistributor.btnClick
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            If Me.cmbFlag.Text = "" Then
+                Me.baseTooltip.Show("Please define Flag before", Me.cmbFlag, 2500) : Me.cmbFlag.Focus() : Return
+            End If
+            Dim RefFlag As String = Me.Flag
+            If Me.Flag = "" Then : Me.ShowMessageInfo("Please define flag !!") : Return : End If
+            Dim DV As DataView = Me.clsDPD.GetDistributorAgrement(RefFlag, Me.mcbDistributor.Text)
+            Me.BindMultiColumnCombo(DV, Me.mcbDistributor, True, "DISTRIBUTOR_NAME", "DISTRIBUTOR_ID")
+            Me.BindCheckedCombo(Nothing, "", "", True)
+            Dim itemCount As Integer = Me.mcbDistributor.DropDownList.RecordCount()
+            Me.ShowMessageInfo(itemCount.ToString() & " item(s) found")
+        Catch ex As Exception
+            Me.ShowMessageInfo(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_btnSearchDistributor_btnClick")
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub btnSearchAgreement_btnClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSearchAgreement.btnClick
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            If Me.cmbFlag.Text = "" Then
+                Me.baseTooltip.Show("Please define Flag", Me.cmbFlag, 2500) : Me.cmbFlag.Focus() : Return
+            End If
+            Dim Dv As DataView = Nothing
+            If (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
+                Dv = Me.clsDPD.GetAgreementNo(Me.Flag, Me.mcbDistributor.Value.ToString(), Me.chkDistributors.Text, 5)
+            Else
+                Dv = Me.clsDPD.GetAgreementNo(Me.Flag, , Me.chkDistributors.Text, 5)
+            End If
+            Me.BindCheckedCombo(Dv, "AGREEMENT_NO", "AGREEMENT_NO", False)
+            Dim ItemCount As Integer = Me.chkDistributors.DropDownList.RecordCount
+            Me.ShowMessageInfo(ItemCount.ToString() & " item(s) found")
+        Catch ex As Exception
+            Me.ShowMessageInfo(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_btnSearchAgreement_btnClick")
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub btnAplyRange_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAplyRange.Click
+        Try
+            If Me.Flag = "" Then
+                Me.ShowMessageInfo("Can not view Data " & vbCrLf & "Because flag is not defined.") : Return
+            End If
+            Me.Cursor = Cursors.WaitCursor
+            Me.SP = StatusProgress.LoadingAchiement
+            ThreadProcess = New Thread(AddressOf ShowLoading)
+            ThreadProcess.Start()
+            Me.getDS(Me.SP)
+            Me.BindGrid()
+            Me.SP = StatusProgress.None
+            Me.Cursor = Cursors.Default
+        Catch ex As Exception
+            Me.SP = StatusProgress.None : Me.ShowMessageInfo(ex.Message)
+            Me.Cursor = Cursors.Default
+        End Try
     End Sub
 End Class

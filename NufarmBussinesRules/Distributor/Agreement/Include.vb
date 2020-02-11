@@ -47,12 +47,12 @@ Namespace DistributorAgreement
         Public S2_PL As Decimal = 0
 
         Public FMP1 As Decimal = 0, FMP2 As Decimal = 0, FMP3 As Decimal = 0
-        Public FMP1_FM As Decimal
-        Public FMP2_FM As Decimal
-        Public FMP3_FM As Decimal
-        Public FMP1_PL As Decimal
-        Public FMP2_PL As Decimal
-        Public FMP3_PL As Decimal
+        Public FMP_FM1 As Decimal
+        Public FMP_FM2 As Decimal
+        Public FMP_FM3 As Decimal
+        Public FMP_PL1 As Decimal
+        Public FMP_PL2 As Decimal
+        Public FMP_PL3 As Decimal
         Public GIvenDiscount As Decimal = 0
         Public Agree_Brand_ID As String
         Public Comb_Agree_Brand_ID As Object
@@ -296,7 +296,7 @@ Namespace DistributorAgreement
                 End If
                 If Not IsNothing(ds4months) Then
                     If ds4months.HasChanges() Then
-                        SaveDS4Month(ds.Tables(0))
+                        SaveDS4Month(ds4months.Tables(0))
                     End If
                 End If
                 If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
@@ -422,13 +422,13 @@ Namespace DistributorAgreement
                 Me.AddParameter("@TARGET_FMP2", SqlDbType.Decimal, Me.FMP2)
                 Me.AddParameter("@TARGET_FMP3", SqlDbType.Decimal, Me.FMP3)
 
-                Me.AddParameter("@TARGET_FMP_FM1", SqlDbType.Decimal, Me.FMP1_FM)
-                Me.AddParameter("@TARGET_FMP_FM2", SqlDbType.Decimal, Me.FMP2_FM)
-                Me.AddParameter("@TARGET_FMP_FM3", SqlDbType.Decimal, Me.FMP3_FM)
+                Me.AddParameter("@TARGET_FMP_FM1", SqlDbType.Decimal, Me.FMP_FM1)
+                Me.AddParameter("@TARGET_FMP_FM2", SqlDbType.Decimal, Me.FMP_FM2)
+                Me.AddParameter("@TARGET_FMP_FM3", SqlDbType.Decimal, Me.FMP_FM3)
 
-                Me.AddParameter("@TARGET_FMP_PL1", SqlDbType.Decimal, Me.FMP1_PL)
-                Me.AddParameter("@TARGET_FMP_PL2", SqlDbType.Decimal, Me.FMP2_PL)
-                Me.AddParameter("@TARGET_FMP_PL3", SqlDbType.Decimal, Me.FMP3_PL)
+                Me.AddParameter("@TARGET_FMP_PL1", SqlDbType.Decimal, Me.FMP_PL1)
+                Me.AddParameter("@TARGET_FMP_PL2", SqlDbType.Decimal, Me.FMP_PL2)
+                Me.AddParameter("@TARGET_FMP_PL3", SqlDbType.Decimal, Me.FMP_PL3)
 
                 Me.AddParameter("@COMB_AGREE_BRAND_ID", SqlDbType.VarChar, Me.Comb_Agree_Brand_ID, 32) ' VARCHAR(32),
                 Me.AddParameter("@CREATE_BY", SqlDbType.VarChar, NufarmBussinesRules.User.UserLogin.UserName, 30) 'SETELAH DEBUGING MESTI DIGANTI DENGAN NAMA USER NufarmBussinesRules.User.UserLogin.UserName) ' VARCHAR(30)
@@ -466,13 +466,14 @@ Namespace DistributorAgreement
             SqlDat = New SqlDataAdapter()
             If insertedRows.Length > 0 Then
                 Query = " SET NOCOUNT ON; " & vbCrLf & _
-                        " INSERT INTO AGREE_PROG_DISC_R(AGREEMENT_NO, PS_CATEGORY, ACH_METHODE, UP_TO_PCT, DISC_PCT, FLAG, Createdby, CreatedDate)" & vbCrLf & _
-                        " VALUES (@AGREEMENT_NO, @PS_CATEGORY, @ACH_METHODE, @UP_TO_PCT, @DISC_PCT, @FLAG, @Createdby, @CreatedDat);"
+                        " INSERT INTO AGREE_PROG_DISC_R(AGREEMENT_NO,PRODUCT_CATEGORY,PS_CATEGORY, ACH_METHODE, UP_TO_PCT, DISC_PCT, FLAG, Createdby, CreatedDate)" & vbCrLf & _
+                        " VALUES (@AGREEMENT_NO,@PRODUCT_CATEGORY, @PS_CATEGORY, @ACH_METHODE, @UP_TO_PCT, @DISC_PCT, @FLAG, @Createdby, @CreatedDate);"
                 With commandInsert
                     .CommandType = CommandType.Text
                     .CommandText = Query
                     .Transaction = Me.SqlTrans
                     .Parameters.Add("@AGREEMENT_NO", SqlDbType.VarChar, 25, "AGREEMENT_NO")
+                    .Parameters.Add("@PRODUCT_CATEGORY", SqlDbType.Char, 20, "PRODUCT_CATEGORY")
                     .Parameters.Add("@PS_CATEGORY", SqlDbType.Char, 1, "PS_CATEGORY")
                     .Parameters.Add("@ACH_METHODE", SqlDbType.VarChar, 5, "ACH_METHODE")
                     .Parameters.Add("@UP_TO_PCT", SqlDbType.Decimal, 0, "UP_TO_PCT")
@@ -487,7 +488,9 @@ Namespace DistributorAgreement
             End If
             If updatedRows.Length > 0 Then
                 Query = " SET NOCOUNT ON; " & vbCrLf & _
-                        " UPDATE AGREE_PROG_DISC_R SET PS_CATEGORY =, ACH_METHODE =, AGREEMENT_NO =, UP_TO_PCT =, DISC_PCT =, FLAG =, ModifiedBy =, ModifiedDate = " & vbCrLf & _
+                        " UPDATE AGREE_PROG_DISC_R SET PRODUCT_CATEGORY = @PRODUCT_CATEGORY,PS_CATEGORY =@PS_CATEGORY, " & vbCrLf & _
+                        " ACH_METHODE=@ACH_METHODE, AGREEMENT_NO=@AGREEMENT_NO, UP_TO_PCT =@UP_TO_PCT, DISC_PCT=@DISC_PCT, FLAG=@FLAG," & vbCrLf & _
+                        " ModifiedBy =@ModifiedBy, ModifiedDate = @ModifiedDate " & vbCrLf & _
                         " WHERE IDApp = @IDApp ;"
                 With commandUpdate
                     .CommandType = CommandType.Text
@@ -1163,7 +1166,7 @@ Namespace DistributorAgreement
         Public Function getSchemaR(ByVal AgreementNo As String, ByRef hasRef As Boolean, ByVal mustCloseConnection As Boolean) As DataTable
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                "SELECT A.*,IDRow = A.AGREEMENT_NO+A.PS_CATEGORY+A.FLAG FROM AGREE_PROG_DISC_R A WHERE A.AGREEMENT_NO = @AGREEMENT_NO;"
+                "SELECT A.*,IDRow = A.AGREEMENT_NO+A.PRODUCT_CATEGORY + A.PS_CATEGORY+A.FLAG FROM AGREE_PROG_DISC_R A WHERE A.AGREEMENT_NO = @AGREEMENT_NO;"
                 If IsNothing(Me.SqlCom) Then
                     Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
@@ -1925,6 +1928,7 @@ Namespace DistributorAgreement
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                         "SELECT ABI.*,ProgressiveDiscountType = CASE " & vbCrLf & _
                         " WHEN EXISTS(SELECT AGREE_BRAND_ID FROM AGREE_PROG_DISC WHERE AGREE_BRAND_ID = ABI.[ID])  THEN 'Custom' " & vbCrLf & _
+                        " WHEN EXISTS(SELECT IDApp FROM AGREE_PROG_DISC_R WHERE AGREEMENT_NO = '" & AGREEMENT_NO & "') THEN 'Custom' " & vbCrLf & _
                         " WHEN EXISTS(SELECT AGREEMENT_NO FROM AGREE_PROGRESSIVE_DISCOUNT WHERE AGREEMENT_NO = '" & AGREEMENT_NO & "') THEN 'General' " & vbCrLf & _
                         " ELSE 'Unspecified' END " & vbCrLf & _
                         " FROM VIEW_AGREE_BRAND_INCLUDE ABI WHERE AGREEMENT_NO = '" + AGREEMENT_NO + "';"

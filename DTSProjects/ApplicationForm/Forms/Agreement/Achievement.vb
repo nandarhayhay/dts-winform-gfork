@@ -298,7 +298,7 @@ Public Class AchievementFMP
                     ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
                         Me.DS = Me.clsTA.GetAccrued(Me.Flag, Me.mcbDistributor.Value.ToString())
                     Else
-                        Me.DS = Me.clsTA.GetAccrued(Me.Flag, True)
+                        Me.DS = Me.clsTA.GetAccrued(Me.Flag)
                     End If
 
                 Case StatusProgress.ProcessingAcrrue
@@ -765,6 +765,19 @@ Public Class AchievementFMP
             bar.Checked = False
         Next
     End Sub
+    Private Function CheckValidProcDiscount()
+        Dim ValProc As Boolean = True
+        If IsNothing(Me.chkDistributors.CheckedValues()) Then
+            Me.baseTooltip.Show("Please define agreementno", Me.chkDistributors, 2500)
+            Me.chkDistributors.Focus()
+            Return False
+        ElseIf Me.chkDistributors.CheckedValues.Length <= 0 Then
+            Me.baseTooltip.Show("Please define agreementno", Me.chkDistributors, 2500)
+            Me.chkDistributors.Focus()
+            Return False
+        End If
+        Return ValProc
+    End Function
     Private Sub Bar2_ItemClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Bar2.ItemClick
         Try
             Me.Cursor = Cursors.WaitCursor
@@ -811,6 +824,7 @@ Public Class AchievementFMP
                         MessageBox.Show("Data Exported to " & Me.SaveFileDialog1.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
                 Case "btnQuarter1"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     Me.Flag = "Q1" : Me.btnQuarter1.Checked = True : Me.LAF = LoadAchievementFrom.Volume
                     'Me.SP = StatusProgress.WaitingForAnotherProcess
 
@@ -827,7 +841,9 @@ Public Class AchievementFMP
                     '=================================================================
                     Me.Timer1.Enabled = True : Me.Timer1.Start()
                     'hidupkan timer
-                Case "btnQuarter2" : Me.Flag = "Q2" : Me.btnQuarter2.Checked = True : Me.LAF = LoadAchievementFrom.Volume
+                Case "btnQuarter2" : Me.Flag = "Q2"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
+                    Me.btnQuarter2.Checked = True : Me.LAF = LoadAchievementFrom.Volume
 
                     '===================COMMENT THIS AFTER DEBUGGING=================
                     'Me.isAwaiting = False
@@ -843,7 +859,10 @@ Public Class AchievementFMP
 
                     'hidupkan timer
                     Me.Timer1.Enabled = True : Me.Timer1.Start()
-                Case "btnQuarter3" : Me.Flag = "Q3" : Me.btnQuarter3.Checked = True : Me.LAF = LoadAchievementFrom.Volume
+                Case "btnQuarter3" : Me.Flag = "Q3"
+
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
+                    Me.btnQuarter3.Checked = True : Me.LAF = LoadAchievementFrom.Volume
 
                     ''===================COMMENT THIS AFTER DEBUGGING=================
                     'Me.isAwaiting = False
@@ -858,7 +877,9 @@ Public Class AchievementFMP
                     '=================================================================
                     'hidupkan timer
                     Me.Timer1.Enabled = True : Me.Timer1.Start()
-                Case "btnQuarter4" : Me.Flag = "Q4" : Me.btnQuarter4.Checked = True : Me.LAF = LoadAchievementFrom.Volume
+                Case "btnQuarter4" : Me.Flag = "Q4"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
+                    Me.btnQuarter4.Checked = True : Me.LAF = LoadAchievementFrom.Volume
                     '===================COMMENT THIS AFTER DEBUGGING=================
                     'Me.isAwaiting = False
                     'Me.SP = StatusProgress.ProcessingAcrrue
@@ -872,7 +893,9 @@ Public Class AchievementFMP
 
                     'hidupkan timer
                     Me.Timer1.Enabled = True : Me.Timer1.Start()
-                Case "btnSemester1" : Me.Flag = "S1" : Me.btnSemester1.Checked = True : Me.LAF = LoadAchievementFrom.Volume
+                Case "btnSemester1" : Me.Flag = "S1"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
+                    Me.btnSemester1.Checked = True : Me.LAF = LoadAchievementFrom.Volume
                     '===================COMMENT THIS AFTER DEBUGGING=================
                     'Me.isAwaiting = False
                     'Me.SP = StatusProgress.ProcessingAcrrue
@@ -887,7 +910,9 @@ Public Class AchievementFMP
 
                     'hidupkan timer
                     Me.Timer1.Enabled = True : Me.Timer1.Start()
-                Case "btnSemester2" : Me.Flag = "S2" : Me.btnSemester2.Checked = True : Me.LAF = LoadAchievementFrom.Volume
+                Case "btnSemester2" : Me.Flag = "S2"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
+                    Me.btnSemester2.Checked = True : Me.LAF = LoadAchievementFrom.Volume
                     '===================COMMENT THIS AFTER DEBUGGING=================
                     'Me.isAwaiting = False
                     'Me.SP = StatusProgress.ProcessingAcrrue
@@ -900,7 +925,9 @@ Public Class AchievementFMP
                     '=================================================================
                     'hidupkan timer
                     Me.Timer1.Enabled = True : Me.Timer1.Start()
-                Case "btnYearly" : Me.Flag = "Y" : Me.btnYearly.Checked = True : Me.LAF = LoadAchievementFrom.Volume
+                Case "btnYearly" : Me.Flag = "Y"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
+                    Me.btnYearly.Checked = True : Me.LAF = LoadAchievementFrom.Volume
                     Me.clsTA.mustRecomputeYear = True
 
                     '===================COMMENT THIS AFTER DEBUGGING=================
@@ -916,21 +943,29 @@ Public Class AchievementFMP
                     'hidupkan timer
                     Me.Timer1.Enabled = True : Me.Timer1.Start()
                 Case "btnQuarter1V"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     Me.CalculateDPDtoValue("Q1")
                 Case "btnQuarter2V"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     CalculateDPDtoValue("Q2")
                 Case "btnQuarter3V"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     Me.CalculateDPDtoValue("Q3")
                 Case "btnQuarter4V"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     Me.CalculateDPDtoValue("Q4")
                 Case "btnSemester1V"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     Me.CalculateDPDtoValue("S1")
                 Case "btnSemester2V"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     Me.CalculateDPDtoValue("S2")
                 Case "btnYearlyV"
+                    If Not Me.CheckValidProcDiscount() Then : Return : End If
                     Me.CalculateDPDtoValue("Y")
                 Case "btnApplyDiscByVolume"
-                    If Not Me.ApplyDiscByVolume() Then : Me.SP = StatusProgress.None : Cursor = Cursors.Default : Return : End If
+                    If Not Me.ApplyDiscByVolume() Then
+                        Me.SP = StatusProgress.None : Cursor = Cursors.Default : Return : End If
                 Case "btnApplyDiscByValue"
                     If Not Me.ApplyDiscByValue() Then : Me.SP = StatusProgress.None : Cursor = Cursors.Default : Return : End If
                 Case "btnRefresh"

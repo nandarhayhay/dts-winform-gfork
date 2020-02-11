@@ -769,6 +769,10 @@ Public Class DiscountDDOrDR
             End If
             'get listBrands
             Me.txtProgramID.Text = strProgID
+            'reset dulu
+            Me.chkTargetPOPerBrand.Checked = False
+            Me.chkTargetPOPerPackSize.Checked = False
+
             Me.DVBrand = Me.clsDiscountPrice.getBrand(IDApp, .ApplyDate, .EndDate, .ListBrands, False)
             Me.DVBrandPack = Me.clsDiscountPrice.getBrandBrandPack(IDApp, .ApplyDate, .EndDate, .ListBrands, .ListBrandPacks, False)
             Dim checkedBrands(.ListBrands.Count - 1) As String
@@ -941,7 +945,7 @@ Public Class DiscountDDOrDR
             'Me.grdProgDisc.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
             Me.chlCertainDisc.ReadOnly = True
             Me.chkGroupDist.ReadOnly = True
-            Me.btnSave.Enabled = False
+            'Me.btnSave.Enabled = False
             Me.chkTargetPOPerPackSize.Enabled = False
             Me.chkTargetPOPerBrand.Enabled = False
         Else
@@ -958,8 +962,8 @@ Public Class DiscountDDOrDR
             Me.chkGroupDist.ReadOnly = False
             Me.chkTargetPOPerPackSize.Enabled = Me.chkTargetPOPerPackSize.Checked
             Me.chkTargetPOPerBrand.Enabled = Me.chkTargetPOPerBrand.Checked
-            Me.btnSave.Enabled = NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR
         End If
+        Me.btnSave.Enabled = CMain.IsSystemAdministrator Or NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR
         Me.grdProgDisc.AllowAddNew = IIf(NufarmBussinesRules.User.Privilege.ALLOW_INSERT.DiscPrice, Janus.Windows.GridEX.InheritableBoolean.True, Janus.Windows.GridEX.InheritableBoolean.True)
         Me.grdProgDisc.AllowEdit = IIf(NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR, Janus.Windows.GridEX.InheritableBoolean.True, Janus.Windows.GridEX.InheritableBoolean.True)
         Me.grdProgDisc.AllowDelete = IIf(NufarmBussinesRules.User.Privilege.ALLOW_DELETE.DiscDDorDR, Janus.Windows.GridEX.InheritableBoolean.True, Janus.Windows.GridEX.InheritableBoolean.True)
@@ -1392,9 +1396,12 @@ Public Class DiscountDDOrDR
                         Me.btnAddNew.Checked = False
                         Me.Isloadingrow = False
                         isLoadingCombo = False
+
                     End If
                     'End If
-                    Me.btnEditRow.Enabled = NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR
+                    TManager1.GridEX1.Focus()
+                    Me.btnEditRow.Enabled = CMain.IsSystemAdministrator Or NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR
+                    'Me.btnSave.Enabled = NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR
                 Else
                     Me.btnEditRow.Enabled = False
                     Me.Isloadingrow = True : Me.isLoadingCombo = True : Me.ClearEntry()
@@ -2013,6 +2020,7 @@ Public Class DiscountDDOrDR
                 If Me.chkTargetPOPerPackSize.Checked Then
                     Dim i As Integer = -1
                     Dim lstCheckedBrandPacks As New List(Of String)
+                    DVBrandPackDummy.Sort = "BRANDPACK_ID"
                     For Each row As Janus.Windows.GridEX.GridEXRow In Me.grdProgDisc.GetRows()
                         Dim BrandPackID As String = row.Cells("BRANDPACK_ID").Value.ToString()
                         Dim index As Integer = DVBrandPackDummy.Find(BrandPackID)
@@ -2149,11 +2157,10 @@ Public Class DiscountDDOrDR
                 If isChecked Then
                     If Me.CheckRefGridProgDiscForBrandPack() Then : Me.isLoadingCombo = False : Me.Cursor = Cursors.Default : Return : End If
                 Else
-                    Dim DVCopy As DataView = CType(Me.grdProgDisc.DataSource, DataView)
-                    For i As Integer = 0 To DVCopy.Count - 1
-                        'chek reference
-                        If Not IsNothing(DVCopy(i)("HasRef")) And Not IsDBNull(DVCopy(i)("HasRef")) Then
-                            If CInt(DVCopy(i)("HasRef")) > 0 Then
+                    For Each Jrow As Janus.Windows.GridEX.GridEXRow In grdProgDisc.GetRows()
+                        Jrow.BeginEdit()
+                        If Not IsNothing(Jrow.Cells("HasRef").Value) And Not IsDBNull(Jrow.Cells("HasRef").Value) And Not IsNothing(Jrow.Cells("BRANDPACK_ID").Value) And Not IsDBNull(Jrow.Cells("BRANDPACK_ID").Value) Then
+                            If CInt(Jrow.Cells("HasRef").Value) > 0 Then
                                 Me.ShowMessageError(Me.MessageCantDeleteData)
                                 If Not Me.isLoadingCombo Then : Me.isLoadingCombo = True : End If
                                 'balikan data
@@ -2162,16 +2169,15 @@ Public Class DiscountDDOrDR
                                 Exit Sub
                             End If
                         End If
+                        Jrow.Cells("BRANDPACK_ID").Value = DBNull.Value
+                        Jrow.EndEdit()
                     Next
+                    grdProgDisc.UpdateData()
                     'hapus grid grid disc prog
-                    CType(Me.grdProgDisc.DataSource, DataView).Table.Rows.Clear()
-                    CType(Me.grdProgDisc.DataSource, DataView).Table.AcceptChanges()
+                    'CType(Me.grdProgDisc.DataSource, DataView).Table.Rows.Clear()
+                    'CType(Me.grdProgDisc.DataSource, DataView).Table.AcceptChanges()
                 End If
             End If
-
-            'matikan checkbox target po by brand
-
-
             If Me.rdbAllDist.Checked Then : Return : End If
             If Me.rdbCertainDisc.Checked Then
                 rdbCertainDisc_CheckedChanged(Me.rdbCertainDisc, New EventArgs())

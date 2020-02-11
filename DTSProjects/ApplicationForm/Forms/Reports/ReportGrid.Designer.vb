@@ -46,6 +46,7 @@ Partial Class ReportGrid
         Me.RecapNasionalDPRD = New DevComponents.DotNetBar.ButtonItem
         Me.btnSummaryPlantation = New DevComponents.DotNetBar.ButtonItem
         Me.btnReportSales = New DevComponents.DotNetBar.ButtonItem
+        Me.btnReportDDDR = New DevComponents.DotNetBar.ButtonItem
         Me.ButtonItem2 = New DevComponents.DotNetBar.ButtonItem
         Me.btnCardView = New DevComponents.DotNetBar.ButtonItem
         Me.btnSingleCard = New DevComponents.DotNetBar.ButtonItem
@@ -57,7 +58,6 @@ Partial Class ReportGrid
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
         Me.ExpandablePanel1 = New DevComponents.DotNetBar.ExpandablePanel
-        Me.btnReportDDDR = New DevComponents.DotNetBar.ButtonItem
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -234,6 +234,7 @@ Partial Class ReportGrid
         Me.btnPODisproByBrand.ImageIndex = 22
         Me.btnPODisproByBrand.Name = "btnPODisproByBrand"
         Me.btnPODisproByBrand.Text = "Summary Dispro By Brand"
+        Me.btnPODisproByBrand.Visible = False
         '
         'btnDPRD
         '
@@ -266,6 +267,11 @@ Partial Class ReportGrid
         '
         Me.btnReportSales.Name = "btnReportSales"
         Me.btnReportSales.Text = "SalesProgram/Sales PO by TM"
+        '
+        'btnReportDDDR
+        '
+        Me.btnReportDDDR.Name = "btnReportDDDR"
+        Me.btnReportDDDR.Text = "Report DD DR"
         '
         'ButtonItem2
         '
@@ -353,11 +359,6 @@ Partial Class ReportGrid
         Me.ExpandablePanel1.TitleStyle.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText
         Me.ExpandablePanel1.TitleStyle.GradientAngle = 90
         Me.ExpandablePanel1.TitleText = "Type of Report"
-        '
-        'btnReportDDDR
-        '
-        Me.btnReportDDDR.Name = "btnReportDDDR"
-        Me.btnReportDDDR.Text = "Report DD DR"
         '
         'ReportGrid
         '

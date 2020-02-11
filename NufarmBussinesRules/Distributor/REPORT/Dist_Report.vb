@@ -9,23 +9,25 @@ Namespace DistributorReport
         Public Function Create_View_ReportPODispro(ByVal START_DATE As Object, ByVal END_DATE As Object, Optional ByVal _
             DISTRIBUTOR_ID As String = "") As DataView
             Try
+
                 'Me.CreateViewDistributor()
-                Dim AllowRulesReportDisprobyBrand As Boolean = False
-                Dim ConfigSetting As common.SettingConfigurations = Nothing
-                ''cari settingan dispro by brand codeapp = RPT001
-                'Setting untuk menentukan Report Report Summary Dispro by Brand di hubungkan ke invoice = 1,PO = 0
-                For Each ConfigSetting In NufarmBussinesRules.SharedClass.ListSettings
-                    If ConfigSetting.CodeApp = "RPT001" Then
-                        If ConfigSetting.AllowRules = True Then
-                            AllowRulesReportDisprobyBrand = True
-                        End If
-                    End If
-                Next
-                If Not AllowRulesReportDisprobyBrand Then
-                    Me.CreateCommandSql(CommandType.StoredProcedure, "Usp_Get_Detail_Qty_Dispro", ConnectionTo.Nufarm)
-                Else
-                    Me.CreateCommandSql(CommandType.StoredProcedure, "Usp_Get_Detail_Qty_Dispro_By_Invoice", ConnectionTo.Nufarm)
-                End If
+                'Dim AllowRulesReportDisprobyBrand As Boolean = False
+                'Dim ConfigSetting As common.SettingConfigurations = Nothing
+                ' ''cari settingan dispro by brand codeapp = RPT001
+                ''Setting untuk menentukan Report Report Summary Dispro by Brand di hubungkan ke invoice = 1,PO = 0
+                'For Each ConfigSetting In NufarmBussinesRules.SharedClass.ListSettings
+                '    If ConfigSetting.CodeApp = "RPT001" Then
+                '        If ConfigSetting.AllowRules = True Then
+                '            AllowRulesReportDisprobyBrand = True
+                '        End If
+                '    End If
+                'Next
+                'If Not AllowRulesReportDisprobyBrand Then
+                '    Me.CreateCommandSql(CommandType.StoredProcedure, "Usp_Get_Detail_Qty_Dispro", ConnectionTo.Nufarm)
+                'Else
+                Me.CreateCommandSql(CommandType.StoredProcedure, "Usp_Get_Detail_Qty_Dispro_By_Invoice", ConnectionTo.Nufarm)
+                'End If
+
                 If DISTRIBUTOR_ID = "" Then
                     Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DBNull.Value, 10) ' VARCHAR(10),
                 Else

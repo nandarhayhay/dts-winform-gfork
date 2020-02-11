@@ -23,26 +23,26 @@ Partial Class DistributorAgreement
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DistributorAgreement))
         Dim MultiColumnCombo1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim chkComboDistributor_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle24 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle25 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle22 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle23 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle26 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle29 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle30 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle27 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle28 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle31 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle34 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle35 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle32 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle33 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle36 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle39 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle40 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle37 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle38 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.grpData = New System.Windows.Forms.GroupBox
@@ -95,6 +95,7 @@ Partial Class DistributorAgreement
         Me.DataGridViewTextBoxColumn9 = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.DataGridViewTextBoxColumn10 = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.grpPeriod = New System.Windows.Forms.GroupBox
+        Me.rdbFMP = New Janus.Windows.EditControls.UIRadioButton
         Me.rdbSemeterly = New Janus.Windows.EditControls.UIRadioButton
         Me.rdbQuarterly = New Janus.Windows.EditControls.UIRadioButton
         Me.btnChekExisting = New Janus.Windows.EditControls.UIButton
@@ -146,7 +147,6 @@ Partial Class DistributorAgreement
         Me.dtPicFilterStart = New Janus.Windows.CalendarCombo.CalendarCombo
         Me.Label5 = New System.Windows.Forms.Label
         Me.Label1 = New System.Windows.Forms.Label
-        Me.rdbFMP = New Janus.Windows.EditControls.UIRadioButton
         Me.grpData.SuspendLayout()
         Me.grpDate.SuspendLayout()
         Me.grpStartAndDate.SuspendLayout()
@@ -223,7 +223,6 @@ Partial Class DistributorAgreement
         '
         Me.grpDate.Controls.Add(Me.ListView1)
         Me.grpDate.Controls.Add(Me.grpStartAndDate)
-        Me.grpDate.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.grpDate.Location = New System.Drawing.Point(3, 230)
         Me.grpDate.Name = "grpDate"
         Me.grpDate.Size = New System.Drawing.Size(402, 200)
@@ -430,38 +429,38 @@ Partial Class DistributorAgreement
         Me.dgvPeriodic.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvPeriodic.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleVertical
         Me.dgvPeriodic.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvPeriodic.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle21.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle21.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle21.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle21.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle21.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle21.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvPeriodic.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle21
         Me.dgvPeriodic.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvPeriodic.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.UNIQUE_ID, Me.AGREEMENT_NO, Me.UP_TO_PCT, Me.PRGSV_DISC_PCT, Me.QSY_DISC_FLAG})
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvPeriodic.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle24.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle24.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle24.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle24.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle24.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle24.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvPeriodic.DefaultCellStyle = DataGridViewCellStyle24
         Me.dgvPeriodic.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvPeriodic.EnableHeadersVisualStyles = False
         Me.dgvPeriodic.GridColor = System.Drawing.SystemColors.InactiveCaption
         Me.dgvPeriodic.Location = New System.Drawing.Point(0, 0)
         Me.dgvPeriodic.Name = "dgvPeriodic"
         Me.dgvPeriodic.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvPeriodic.RowHeadersDefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle25.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle25.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle25.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle25.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle25.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle25.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvPeriodic.RowHeadersDefaultCellStyle = DataGridViewCellStyle25
         Me.dgvPeriodic.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvPeriodic.Size = New System.Drawing.Size(386, 122)
         Me.dgvPeriodic.StandardTab = True
@@ -485,9 +484,9 @@ Partial Class DistributorAgreement
         'UP_TO_PCT
         '
         Me.UP_TO_PCT.DataPropertyName = "UP_TO_PCT"
-        DataGridViewCellStyle2.Format = "N4"
-        DataGridViewCellStyle2.NullValue = Nothing
-        Me.UP_TO_PCT.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle22.Format = "N4"
+        DataGridViewCellStyle22.NullValue = Nothing
+        Me.UP_TO_PCT.DefaultCellStyle = DataGridViewCellStyle22
         Me.UP_TO_PCT.HeaderText = "More Than %"
         Me.UP_TO_PCT.MaxInputLength = 11
         Me.UP_TO_PCT.Name = "UP_TO_PCT"
@@ -496,9 +495,9 @@ Partial Class DistributorAgreement
         'PRGSV_DISC_PCT
         '
         Me.PRGSV_DISC_PCT.DataPropertyName = "PRGSV_DISC_PCT"
-        DataGridViewCellStyle3.Format = "N4"
-        DataGridViewCellStyle3.NullValue = Nothing
-        Me.PRGSV_DISC_PCT.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle23.Format = "N4"
+        DataGridViewCellStyle23.NullValue = Nothing
+        Me.PRGSV_DISC_PCT.DefaultCellStyle = DataGridViewCellStyle23
         Me.PRGSV_DISC_PCT.HeaderText = "Discount"
         Me.PRGSV_DISC_PCT.MaxInputLength = 11
         Me.PRGSV_DISC_PCT.Name = "PRGSV_DISC_PCT"
@@ -525,24 +524,24 @@ Partial Class DistributorAgreement
         Me.dgvYearly.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvYearly.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleVertical
         Me.dgvYearly.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvYearly.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle26.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle26.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle26.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle26.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle26.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle26.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvYearly.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle26
         Me.dgvYearly.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvYearly.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.UNIQUE_ID1, Me.AGREEMEN_NO, Me.UP_TO_PCT_Y, Me.PRGSV_DISC_PCT_Y, Me.QSY_DISC_FLAG_Y})
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvYearly.DefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle29.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle29.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle29.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle29.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle29.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvYearly.DefaultCellStyle = DataGridViewCellStyle29
         Me.dgvYearly.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvYearly.EnableHeadersVisualStyles = False
         Me.dgvYearly.GridColor = System.Drawing.SystemColors.InactiveCaption
@@ -550,14 +549,14 @@ Partial Class DistributorAgreement
         Me.dgvYearly.MultiSelect = False
         Me.dgvYearly.Name = "dgvYearly"
         Me.dgvYearly.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvYearly.RowHeadersDefaultCellStyle = DataGridViewCellStyle10
+        DataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle30.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle30.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle30.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle30.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle30.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle30.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvYearly.RowHeadersDefaultCellStyle = DataGridViewCellStyle30
         Me.dgvYearly.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvYearly.Size = New System.Drawing.Size(386, 198)
         Me.dgvYearly.StandardTab = True
@@ -580,9 +579,9 @@ Partial Class DistributorAgreement
         'UP_TO_PCT_Y
         '
         Me.UP_TO_PCT_Y.DataPropertyName = "UP_TO_PCT"
-        DataGridViewCellStyle7.Format = "N4"
-        DataGridViewCellStyle7.NullValue = Nothing
-        Me.UP_TO_PCT_Y.DefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle27.Format = "N4"
+        DataGridViewCellStyle27.NullValue = Nothing
+        Me.UP_TO_PCT_Y.DefaultCellStyle = DataGridViewCellStyle27
         Me.UP_TO_PCT_Y.HeaderText = "More Than %"
         Me.UP_TO_PCT_Y.MaxInputLength = 11
         Me.UP_TO_PCT_Y.Name = "UP_TO_PCT_Y"
@@ -591,9 +590,9 @@ Partial Class DistributorAgreement
         'PRGSV_DISC_PCT_Y
         '
         Me.PRGSV_DISC_PCT_Y.DataPropertyName = "PRGSV_DISC_PCT"
-        DataGridViewCellStyle8.Format = "N4"
-        DataGridViewCellStyle8.NullValue = Nothing
-        Me.PRGSV_DISC_PCT_Y.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle28.Format = "N4"
+        DataGridViewCellStyle28.NullValue = Nothing
+        Me.PRGSV_DISC_PCT_Y.DefaultCellStyle = DataGridViewCellStyle28
         Me.PRGSV_DISC_PCT_Y.HeaderText = "Discount"
         Me.PRGSV_DISC_PCT_Y.MaxInputLength = 11
         Me.PRGSV_DISC_PCT_Y.Name = "PRGSV_DISC_PCT_Y"
@@ -611,7 +610,7 @@ Partial Class DistributorAgreement
         Me.tbProgByValue.Location = New System.Drawing.Point(4, 22)
         Me.tbProgByValue.Name = "tbProgByValue"
         Me.tbProgByValue.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbProgByValue.Size = New System.Drawing.Size(394, 226)
+        Me.tbProgByValue.Size = New System.Drawing.Size(394, 150)
         Me.tbProgByValue.TabIndex = 1
         Me.tbProgByValue.Text = "Progressive By Value"
         Me.tbProgByValue.UseVisualStyleBackColor = True
@@ -622,7 +621,7 @@ Partial Class DistributorAgreement
         Me.tbPeriodicVal.FlatBorderColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbPeriodicVal.Location = New System.Drawing.Point(3, 3)
         Me.tbPeriodicVal.Name = "tbPeriodicVal"
-        Me.tbPeriodicVal.Size = New System.Drawing.Size(388, 220)
+        Me.tbPeriodicVal.Size = New System.Drawing.Size(388, 144)
         Me.tbPeriodicVal.TabIndex = 14
         Me.tbPeriodicVal.TabPages.AddRange(New Janus.Windows.UI.Tab.UITabPage() {Me.TbPeriodeVal, Me.tbYearlyVal})
         Me.tbPeriodicVal.VisualStyle = Janus.Windows.UI.Tab.TabVisualStyle.Office2003
@@ -632,7 +631,7 @@ Partial Class DistributorAgreement
         Me.TbPeriodeVal.Controls.Add(Me.dgvPeriodicVal)
         Me.TbPeriodeVal.Location = New System.Drawing.Point(1, 21)
         Me.TbPeriodeVal.Name = "TbPeriodeVal"
-        Me.TbPeriodeVal.Size = New System.Drawing.Size(386, 198)
+        Me.TbPeriodeVal.Size = New System.Drawing.Size(386, 122)
         Me.TbPeriodeVal.TabStop = True
         Me.TbPeriodeVal.Text = "Periodic Discount"
         '
@@ -642,40 +641,40 @@ Partial Class DistributorAgreement
         Me.dgvPeriodicVal.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvPeriodicVal.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleVertical
         Me.dgvPeriodicVal.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvPeriodicVal.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle11
+        DataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle31.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle31.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle31.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle31.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle31.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle31.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvPeriodicVal.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle31
         Me.dgvPeriodicVal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvPeriodicVal.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn1, Me.DataGridViewTextBoxColumn2, Me.DataGridViewTextBoxColumn3, Me.DataGridViewTextBoxColumn4, Me.DataGridViewTextBoxColumn5})
-        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle14.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvPeriodicVal.DefaultCellStyle = DataGridViewCellStyle14
+        DataGridViewCellStyle34.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle34.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle34.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle34.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle34.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle34.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle34.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvPeriodicVal.DefaultCellStyle = DataGridViewCellStyle34
         Me.dgvPeriodicVal.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvPeriodicVal.EnableHeadersVisualStyles = False
         Me.dgvPeriodicVal.GridColor = System.Drawing.SystemColors.InactiveCaption
         Me.dgvPeriodicVal.Location = New System.Drawing.Point(0, 0)
         Me.dgvPeriodicVal.Name = "dgvPeriodicVal"
         Me.dgvPeriodicVal.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle15.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle15.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvPeriodicVal.RowHeadersDefaultCellStyle = DataGridViewCellStyle15
+        DataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle35.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle35.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle35.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle35.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle35.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle35.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvPeriodicVal.RowHeadersDefaultCellStyle = DataGridViewCellStyle35
         Me.dgvPeriodicVal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvPeriodicVal.Size = New System.Drawing.Size(386, 198)
+        Me.dgvPeriodicVal.Size = New System.Drawing.Size(386, 122)
         Me.dgvPeriodicVal.StandardTab = True
         Me.dgvPeriodicVal.TabIndex = 10
         Me.dgvPeriodicVal.VirtualMode = True
@@ -697,9 +696,9 @@ Partial Class DistributorAgreement
         'DataGridViewTextBoxColumn3
         '
         Me.DataGridViewTextBoxColumn3.DataPropertyName = "UP_TO_PCT"
-        DataGridViewCellStyle12.Format = "N4"
-        DataGridViewCellStyle12.NullValue = Nothing
-        Me.DataGridViewTextBoxColumn3.DefaultCellStyle = DataGridViewCellStyle12
+        DataGridViewCellStyle32.Format = "N4"
+        DataGridViewCellStyle32.NullValue = Nothing
+        Me.DataGridViewTextBoxColumn3.DefaultCellStyle = DataGridViewCellStyle32
         Me.DataGridViewTextBoxColumn3.HeaderText = "More Than %"
         Me.DataGridViewTextBoxColumn3.MaxInputLength = 11
         Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
@@ -708,9 +707,9 @@ Partial Class DistributorAgreement
         'DataGridViewTextBoxColumn4
         '
         Me.DataGridViewTextBoxColumn4.DataPropertyName = "PRGSV_DISC_PCT"
-        DataGridViewCellStyle13.Format = "N4"
-        DataGridViewCellStyle13.NullValue = Nothing
-        Me.DataGridViewTextBoxColumn4.DefaultCellStyle = DataGridViewCellStyle13
+        DataGridViewCellStyle33.Format = "N4"
+        DataGridViewCellStyle33.NullValue = Nothing
+        Me.DataGridViewTextBoxColumn4.DefaultCellStyle = DataGridViewCellStyle33
         Me.DataGridViewTextBoxColumn4.HeaderText = "Discount"
         Me.DataGridViewTextBoxColumn4.MaxInputLength = 11
         Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
@@ -738,24 +737,24 @@ Partial Class DistributorAgreement
         Me.dgvYearlyVal.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvYearlyVal.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleVertical
         Me.dgvYearlyVal.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle16.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle16.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvYearlyVal.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle16
+        DataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle36.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle36.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle36.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle36.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle36.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle36.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvYearlyVal.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle36
         Me.dgvYearlyVal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvYearlyVal.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn6, Me.DataGridViewTextBoxColumn7, Me.DataGridViewTextBoxColumn8, Me.DataGridViewTextBoxColumn9, Me.DataGridViewTextBoxColumn10})
-        DataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle19.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle19.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvYearlyVal.DefaultCellStyle = DataGridViewCellStyle19
+        DataGridViewCellStyle39.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle39.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle39.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle39.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle39.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle39.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle39.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvYearlyVal.DefaultCellStyle = DataGridViewCellStyle39
         Me.dgvYearlyVal.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvYearlyVal.EnableHeadersVisualStyles = False
         Me.dgvYearlyVal.GridColor = System.Drawing.SystemColors.InactiveCaption
@@ -763,14 +762,14 @@ Partial Class DistributorAgreement
         Me.dgvYearlyVal.MultiSelect = False
         Me.dgvYearlyVal.Name = "dgvYearlyVal"
         Me.dgvYearlyVal.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle20.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        DataGridViewCellStyle20.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle20.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle20.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle20.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle20.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvYearlyVal.RowHeadersDefaultCellStyle = DataGridViewCellStyle20
+        DataGridViewCellStyle40.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle40.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        DataGridViewCellStyle40.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle40.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle40.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle40.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle40.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvYearlyVal.RowHeadersDefaultCellStyle = DataGridViewCellStyle40
         Me.dgvYearlyVal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvYearlyVal.Size = New System.Drawing.Size(386, 198)
         Me.dgvYearlyVal.StandardTab = True
@@ -793,9 +792,9 @@ Partial Class DistributorAgreement
         'DataGridViewTextBoxColumn8
         '
         Me.DataGridViewTextBoxColumn8.DataPropertyName = "UP_TO_PCT"
-        DataGridViewCellStyle17.Format = "N4"
-        DataGridViewCellStyle17.NullValue = Nothing
-        Me.DataGridViewTextBoxColumn8.DefaultCellStyle = DataGridViewCellStyle17
+        DataGridViewCellStyle37.Format = "N4"
+        DataGridViewCellStyle37.NullValue = Nothing
+        Me.DataGridViewTextBoxColumn8.DefaultCellStyle = DataGridViewCellStyle37
         Me.DataGridViewTextBoxColumn8.HeaderText = "More Than %"
         Me.DataGridViewTextBoxColumn8.MaxInputLength = 11
         Me.DataGridViewTextBoxColumn8.Name = "DataGridViewTextBoxColumn8"
@@ -804,9 +803,9 @@ Partial Class DistributorAgreement
         'DataGridViewTextBoxColumn9
         '
         Me.DataGridViewTextBoxColumn9.DataPropertyName = "PRGSV_DISC_PCT"
-        DataGridViewCellStyle18.Format = "N4"
-        DataGridViewCellStyle18.NullValue = Nothing
-        Me.DataGridViewTextBoxColumn9.DefaultCellStyle = DataGridViewCellStyle18
+        DataGridViewCellStyle38.Format = "N4"
+        DataGridViewCellStyle38.NullValue = Nothing
+        Me.DataGridViewTextBoxColumn9.DefaultCellStyle = DataGridViewCellStyle38
         Me.DataGridViewTextBoxColumn9.HeaderText = "Discount"
         Me.DataGridViewTextBoxColumn9.MaxInputLength = 11
         Me.DataGridViewTextBoxColumn9.Name = "DataGridViewTextBoxColumn9"
@@ -830,6 +829,16 @@ Partial Class DistributorAgreement
         Me.grpPeriod.TabIndex = 3
         Me.grpPeriod.TabStop = False
         Me.grpPeriod.Text = "Period Treatment"
+        '
+        'rdbFMP
+        '
+        Me.rdbFMP.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.rdbFMP.Location = New System.Drawing.Point(190, 16)
+        Me.rdbFMP.Name = "rdbFMP"
+        Me.rdbFMP.Size = New System.Drawing.Size(146, 18)
+        Me.rdbFMP.TabIndex = 2
+        Me.rdbFMP.Text = "Four Months Periode"
+        Me.rdbFMP.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
         '
         'rdbSemeterly
         '
@@ -931,6 +940,7 @@ Partial Class DistributorAgreement
         Me.chkAgreementGroup.TabIndex = 17
         Me.chkAgreementGroup.Text = "Agreement Group"
         Me.chkAgreementGroup.UseVisualStyleBackColor = True
+        Me.chkAgreementGroup.Visible = False
         '
         'grpAgDescription
         '
@@ -1369,16 +1379,6 @@ Partial Class DistributorAgreement
         Me.Label1.Size = New System.Drawing.Size(29, 13)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "Start"
-        '
-        'rdbFMP
-        '
-        Me.rdbFMP.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.rdbFMP.Location = New System.Drawing.Point(190, 16)
-        Me.rdbFMP.Name = "rdbFMP"
-        Me.rdbFMP.Size = New System.Drawing.Size(146, 18)
-        Me.rdbFMP.TabIndex = 2
-        Me.rdbFMP.Text = "Four Months Periode"
-        Me.rdbFMP.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
         '
         'DistributorAgreement
         '

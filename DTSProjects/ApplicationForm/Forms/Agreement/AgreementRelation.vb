@@ -109,7 +109,8 @@ Public Class AgreementRelation
                 'transisi
                 s &= CStr(Me.txtFMP1.Value + Me.txtFMP2.Value + Me.txtFMP3.Value)
             Case "F"
-                s = "Yearly = : " & CStr(Me.txtFMP1.Value + Me.txtFMP2.Value + Me.txtFMP3.Value)
+                's = "Yearly = : " & CStr(Me.txtFMP1.Value + Me.txtFMP2.Value + Me.txtFMP3.Value)
+
         End Select
         Return s
     End Function
@@ -324,32 +325,8 @@ Public Class AgreementRelation
     End Sub
     Private Sub BindGrid4MPeriode()
         Me.GridEX2.SetDataBinding(Me.ds4MPeriode.Tables(0).DefaultView(), "")
-        'fill value list
-        Dim tblPsGroup As New DataTable("PS_Category")
-        tblPsGroup.Columns.Add("PSName", Type.GetType("System.String"))
-        tblPsGroup.Columns.Add("PSValue", Type.GetType("System.String"))
-        tblPsGroup.AcceptChanges()
-        Dim row As DataRow = tblPsGroup.NewRow()
-        row.BeginEdit()
-        row("PSName") = "BIG PACK SIZE"
-        row("PSValue") = "B"
-        row.EndEdit()
-        tblPsGroup.Rows.Add(row)
-        row = tblPsGroup.NewRow()
-        row("PSName") = "SMALL PACK SIZE"
-        row("PSValue") = "S"
-        row.EndEdit()
-        tblPsGroup.Rows.Add(row)
-        tblPsGroup.AcceptChanges()
 
-        Dim ColCat As Janus.Windows.GridEX.GridEXColumn = Me.GridEX2.RootTable.Columns("PS_CATEGORY")
-        ColCat.EditType = Janus.Windows.GridEX.EditType.DropDownList
-        ColCat.AutoComplete = True : ColCat.HasValueList = True
-        Dim ValueListCat As Janus.Windows.GridEX.GridEXValueListItemCollection = ColCat.ValueList
-        ValueListCat.PopulateValueList(tblPsGroup, "PSValue", "PSName")
-        ColCat.EditTarget = Janus.Windows.GridEX.EditTarget.Value
-        ColCat.DefaultGroupInterval = Janus.Windows.GridEX.GroupInterval.Text
-
+        'FLAG
         Dim VList() As String = {"F1", "F2", "F3"}
         Dim ColFlag As Janus.Windows.GridEX.GridEXColumn = Me.GridEX2.RootTable.Columns("FLAG")
         ColFlag.EditType = Janus.Windows.GridEX.EditType.DropDownList
@@ -358,6 +335,87 @@ Public Class AgreementRelation
         ValueListFlag.PopulateValueList(VList, "FLAG")
         ColFlag.EditTarget = Janus.Windows.GridEX.EditTarget.Value
         ColFlag.DefaultGroupInterval = Janus.Windows.GridEX.GroupInterval.Text
+
+        'PRODUCT CATEGORY
+        Dim listCat As New List(Of String)
+        'get cat from origina; schema r
+        If ds4MPeriode.Tables(0).Rows.Count > 0 Then
+            'if not listcat.Contains(ds4MPeriode.Tables(0).Rows(
+            For i As Integer = 0 To ds4MPeriode.Tables(0).Rows.Count - 1
+                Dim prodCat As String = ds4MPeriode.Tables(0).Rows(i)("PRODUCT_CATEGORY").ToString()
+                If Not listCat.Contains(prodCat) Then
+                    listCat.Add(prodCat)
+                End If
+            Next
+        End If
+        ''get cat from agree brandiNclude
+        Dim HasBigPS As Boolean = False, HasSmallPS As Boolean = False
+        For i As Integer = 0 To Me.clsAgInclude.ViewBrand().Count - 1
+            Dim ProdCat As String = ""
+            Dim BrandName As String = Me.clsAgInclude.ViewBrand(i)("BRAND_NAME")
+            If BrandName.Contains("POWERMAX") Then
+                ProdCat = "ROUNDUP POWERMAX"
+            ElseIf BrandName.Contains("TRANSORB") Then
+                ProdCat = "ROUNDUP TRANSORB"
+            ElseIf BrandName.Contains("ROUNDUP") Then
+                ProdCat = "ROUNDUP BIOSORB"
+            End If
+            If ProdCat <> "" Then
+                If Not listCat.Contains(ProdCat) Then
+                    listCat.Add(ProdCat)
+                    Select Case BrandName
+                        Case "ROUNDUP POWERMAX 660 SL - 01", "ROUNDUP POWERMAX 660 SL - 04", "ROUNDUP SL-1", "ROUNDUP SL-200", "ROUNDUP SL-4", _
+                            "ROUNDUP TRANSORB 440 SL - 01", "ROUNDUP TRANSORB 440 SL - 04", "ROUNDUP TRANSORB 440 SL - 200"
+                            HasSmallPS = True
+                        Case "ROUNDUP POWERMAX 660 SL - 20", "ROUNDUP SL-20", "ROUNDUP TRANSORB 440 SL - 20"
+                            HasBigPS = True
+                    End Select
+                End If
+            End If
+        Next
+
+        Dim ProList() As String = listCat.ToArray()
+        Dim ColProdCat As Janus.Windows.GridEX.GridEXColumn = Me.GridEX2.RootTable.Columns("PRODUCT_CATEGORY")
+        ColProdCat.EditType = Janus.Windows.GridEX.EditType.DropDownList
+        ColProdCat.AutoComplete = True : ColProdCat.HasValueList = True
+        Dim ValueListProdCat As Janus.Windows.GridEX.GridEXValueListItemCollection = ColProdCat.ValueList
+        ValueListProdCat.PopulateValueList(ProList, "PRODUCT_CATEGORY")
+        ColProdCat.EditTarget = Janus.Windows.GridEX.EditTarget.Value
+        ColProdCat.DefaultGroupInterval = Janus.Windows.GridEX.GroupInterval.Text
+
+        'Pack Size group
+        Dim tblPsGroup As New DataTable("PS_Category")
+        tblPsGroup.Columns.Add("PSName", Type.GetType("System.String"))
+        tblPsGroup.Columns.Add("PSValue", Type.GetType("System.String"))
+        tblPsGroup.AcceptChanges()
+        Dim row As DataRow = Nothing
+        If HasBigPS Then
+            row = tblPsGroup.NewRow()
+            row.BeginEdit()
+            row("PSName") = "BIG PACK SIZE"
+            row("PSValue") = "B"
+            row.EndEdit()
+            tblPsGroup.Rows.Add(row)
+        End If
+        If HasSmallPS Then
+            row = tblPsGroup.NewRow()
+            row("PSName") = "SMALL PACK SIZE"
+            row("PSValue") = "S"
+            row.EndEdit()
+            tblPsGroup.Rows.Add(row)
+        End If
+        tblPsGroup.AcceptChanges()
+
+        Dim ColCat As Janus.Windows.GridEX.GridEXColumn = Me.GridEX2.RootTable.Columns("PS_CATEGORY")
+        ColCat.EditType = Janus.Windows.GridEX.EditType.DropDownList
+        ColCat.AutoComplete = True : ColCat.HasValueList = True
+        Dim ValueListCat As Janus.Windows.GridEX.GridEXValueListItemCollection = ColCat.ValueList
+        ValueListCat.PopulateValueList(tblPsGroup.DefaultView, "PSValue", "PSName")
+        ColCat.EditTarget = Janus.Windows.GridEX.EditTarget.Value
+        ColCat.DefaultGroupInterval = Janus.Windows.GridEX.GroupInterval.Text
+
+
+
     End Sub
 
     Private Sub BindGridEX(ByVal dtView As DataView, ByRef rowFilter As Object)
@@ -1130,7 +1188,7 @@ Public Class AgreementRelation
                 Me.txtGiven.Enabled = False : Me.txtS1QTY.Enabled = False
                 Me.txtS2QTY.Enabled = False : Me.txtGiven.Value = 0
                 Me.txtBrandName.Text = "" : Me.ClearControl(Me.grpSemesterly)
-                Me.ClearControl(Me.grpQuarterly) : Me.grpCombQ.Visible = False
+                Me.ClearControl(Me.grpQuarterly) : Me.ClearControl(Me.tbFMP) : Me.grpCombQ.Visible = False
                 Me.grpComS.Visible = False : Me.grpComboFirstSecond.Visible = False
                 Me.TreeView1.Visible = False : Me.grpTypeDiscount.Visible = False
                 'reject changes
@@ -1230,13 +1288,13 @@ Public Class AgreementRelation
                                     End If
                                 Next
                                 Me.ClearControl(Me.tbFMP)
-                                Me.txtFMP1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FP1"))
-                                Me.txtFMP2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FP2"))
-                                Me.txtFMP3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FP3"))
+                                Me.txtFMP1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP1"))
+                                Me.txtFMP2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP2"))
+                                Me.txtFMP3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP3"))
 
-                                Me.txtFMPFM1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP1"))
-                                Me.txtFMPFM2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP2"))
-                                Me.txtFMPFM3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP3"))
+                                Me.txtFMPFM1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_FM1"))
+                                Me.txtFMPFM2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_FM2"))
+                                Me.txtFMPFM3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_FM3"))
 
                                 Me.txtFMPPL1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_PL1"))
                                 Me.txtFMPPL2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_PL2"))
@@ -1257,6 +1315,7 @@ Public Class AgreementRelation
                                     Me.txtFMPPL3.Enabled = False
                                 End If
                             End If
+
                         Case "S"
                             HasGeneratedDisc = Me.clsAgInclude.HasgeneratedDiscount(Me.AGREE_BRAND_ID, Me.QS_FLAG)
                             Me.txtS1QTY.Enabled = True : Me.txtS2QTY.Enabled = True
@@ -1295,13 +1354,13 @@ Public Class AgreementRelation
                                 End If
                             Next
                             Me.ClearControl(Me.tbFMP)
-                            Me.txtFMP1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FP1"))
-                            Me.txtFMP2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FP2"))
-                            Me.txtFMP3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FP3"))
+                            Me.txtFMP1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP1"))
+                            Me.txtFMP2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP2"))
+                            Me.txtFMP3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP3"))
 
-                            Me.txtFMPFM1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP1"))
-                            Me.txtFMPFM2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP2"))
-                            Me.txtFMPFM3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP3"))
+                            Me.txtFMPFM1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_FM1"))
+                            Me.txtFMPFM2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_FM2"))
+                            Me.txtFMPFM3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_FM3"))
 
                             Me.txtFMPPL1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_PL1"))
                             Me.txtFMPPL2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP_PL2"))
@@ -1698,7 +1757,7 @@ Public Class AgreementRelation
     Private Sub MultiColumnCombo1_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MultiColumnCombo1.ValueChanged
         Try
             Me.Cursor = Cursors.WaitCursor
-            Me.ClearControl(Me.grpQuarterly) : Me.ClearControl(Me.grpSemesterly) : Me.txtGiven.Text = "" : Me.txtBrandName.Text = ""
+            Me.ClearControl(Me.grpQuarterly) : Me.ClearControl(Me.grpSemesterly) : Me.ClearControl(Me.tbFMP) : Me.txtGiven.Text = "" : Me.txtBrandName.Text = ""
             If Me.SFM = StateFillingCombo.Filling Then : Return : End If
             If Me.MultiColumnCombo1.Text = "" Then : Me.ClearData() : Return : End If
             If Me.MultiColumnCombo1.SelectedIndex <= -1 Then : Me.ClearData() : Return : End If
@@ -1732,10 +1791,10 @@ Public Class AgreementRelation
                 End If
                 Me.ds4MPeriode = New DataSet("DS4periode")
                 Me.ds4MPeriode.Tables.Add(tbl)
-                'BindGrid4MPeriode(
+                BindGrid4MPeriode()
+                Me.grpPotensi.Visible = False
             ElseIf Me.QS_FLAG = "Q" Then
                 If Me.isTransitionTime Then
-                    'me.ds4MPeriode = 
                     Dim HasRef As Boolean = False
                     Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, HasRef, True)
                     If HasRef Then
@@ -1747,8 +1806,11 @@ Public Class AgreementRelation
                     Me.ds4MPeriode.Tables.Add(tbl)
                     BindGrid4MPeriode()
                 End If
+                Me.grpPotensi.Visible = True
+            Else
+                Me.grpPotensi.Visible = True
             End If
-            Me.grpTypeDiscount.Visible = False
+            'Me.grpTypeDiscount.Visible = False
         Catch ex As Exception
             Me.ShowMessageError(ex.Message)
             Me.LogMyEvent(ex.Message, Me.Name + "_MultiColumnCombo1_ValueChanged")
@@ -2516,16 +2578,16 @@ Public Class AgreementRelation
 
                     If Me.isTransitionTime Then
                         Me.clsAgInclude.FMP1 = Me.txtFMP1.Value
-                        Me.clsAgInclude.FMP1_FM = Me.txtFMPFM1.Value
-                        Me.clsAgInclude.FMP1_PL = Me.txtFMPPL1.Value
+                        Me.clsAgInclude.FMP_FM1 = Me.txtFMPFM1.Value
+                        Me.clsAgInclude.FMP_PL1 = Me.txtFMPPL1.Value
 
                         Me.clsAgInclude.FMP2 = Me.txtFMP2.Value
-                        Me.clsAgInclude.FMP2_FM = Me.txtFMPFM2.Value
-                        Me.clsAgInclude.FMP2_PL = Me.txtFMPPL2.Value
+                        Me.clsAgInclude.FMP_FM2 = Me.txtFMPFM2.Value
+                        Me.clsAgInclude.FMP_PL2 = Me.txtFMPPL2.Value
 
                         Me.clsAgInclude.FMP3 = Me.txtFMP3.Value
-                        Me.clsAgInclude.FMP3_FM = Me.txtFMPFM3.Value
-                        Me.clsAgInclude.FMP3_PL = Me.txtFMPPL3.Value
+                        Me.clsAgInclude.FMP_FM3 = Me.txtFMPFM3.Value
+                        Me.clsAgInclude.FMP_PL3 = Me.txtFMPPL3.Value
                     End If
                     'me.clsAgInclude.F
                 Case "S"
@@ -2553,16 +2615,16 @@ Public Class AgreementRelation
                     Me.clsAgInclude.Q4 = 0
                 Case "F"
                     Me.clsAgInclude.FMP1 = Me.txtFMP1.Value
-                    Me.clsAgInclude.FMP1_FM = Me.txtFMPFM1.Value
-                    Me.clsAgInclude.FMP1_PL = Me.txtFMPPL1.Value
+                    Me.clsAgInclude.FMP_FM1 = Me.txtFMPFM1.Value
+                    Me.clsAgInclude.FMP_PL1 = Me.txtFMPPL1.Value
 
                     Me.clsAgInclude.FMP2 = Me.txtFMP2.Value
-                    Me.clsAgInclude.FMP2_FM = Me.txtFMPFM2.Value
-                    Me.clsAgInclude.FMP2_PL = Me.txtFMPPL2.Value
+                    Me.clsAgInclude.FMP_FM2 = Me.txtFMPFM2.Value
+                    Me.clsAgInclude.FMP_PL2 = Me.txtFMPPL2.Value
 
                     Me.clsAgInclude.FMP3 = Me.txtFMP3.Value
-                    Me.clsAgInclude.FMP3_FM = Me.txtFMPFM3.Value
-                    Me.clsAgInclude.FMP3_PL = Me.txtFMPPL3.Value
+                    Me.clsAgInclude.FMP_FM3 = Me.txtFMPFM3.Value
+                    Me.clsAgInclude.FMP_PL3 = Me.txtFMPPL3.Value
             End Select
             Me.clsAgInclude.PBQ3 = Me.txtPBQ3.Value
             Me.clsAgInclude.PBQ4 = Me.txtPBQ4.Value
@@ -2593,9 +2655,12 @@ Public Class AgreementRelation
                         End If
                     Next
                     Dim Message As String = ""
-                    If Me.clsAgInclude.IsExistItemBrandInOtherAgreement(Me.Brand_ID, DistriButorIDs, Message) = True Then
-                        Me.baseTooltip.Show(Message, Me.txtBrandName, 2500) : Return
+                    If Not isTransitionTime Then
+                        If Me.clsAgInclude.IsExistItemBrandInOtherAgreement(Me.Brand_ID, DistriButorIDs, Message) = True Then
+                            Me.baseTooltip.Show(Message, Me.txtBrandName, 2500) : Return
+                        End If
                     End If
+
                     Me.clsAgInclude.BrandID = Me.Brand_ID
                     If String.IsNullOrEmpty(Me.NewAgree_Brand_ID) Then
                         Me.clsAgInclude.Agree_Brand_ID = Me.MultiColumnCombo1.Value.ToString().TrimStart().TrimEnd()
@@ -3156,12 +3221,23 @@ Public Class AgreementRelation
 
     Private Sub GridEX2_AddingRecord(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles GridEX2.AddingRecord
         Try
+            If Me.SFG = StateFillingGrid.Filling Then
+                Return
+            End If
+
             'check validity
-            If IsNothing(Me.GridEX2.GetValue("PS_CATEGORY")) Or IsDBNull(Me.GridEX2.GetValue("PS_CATEGORY")) Then
+            If IsNothing(Me.GridEX2.GetValue("PRODUCT_CATEGORY")) Or IsDBNull(Me.GridEX2.GetValue("PRODUCT_CATEGORY")) Then
+                Me.ShowMessageInfo("Please enter product category")
+                e.Cancel = True
+                Me.GridEX2.MoveToNewRecord()
+                Me.GridEX2.Select()
+
+            ElseIf IsNothing(Me.GridEX2.GetValue("PS_CATEGORY")) Or IsDBNull(Me.GridEX2.GetValue("PS_CATEGORY")) Then
                 Me.ShowMessageInfo("Please enter Pack size group")
                 e.Cancel = True
                 Me.GridEX2.MoveToNewRecord()
                 Me.GridEX2.Select()
+
             ElseIf IsNothing(GridEX2.GetValue("UP_TO_PCT")) Or IsDBNull(Me.GridEX2.GetValue("UP_TO_PCT")) Then
                 Me.ShowMessageInfo("Please enter percent achievement")
                 e.Cancel = True
@@ -3212,45 +3288,67 @@ Public Class AgreementRelation
         If Me.SFM = StateFillingCombo.Filling Then
             Return
         End If
-        If e.Row.RowType = Janus.Windows.GridEX.RowType.Record Then
-            If Not e.Column.Key = "PS_GROUP" And Not e.Column.Key = "FLAG" Then
-                Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
-            Else
-                If NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.AgreementRelation Then
-                    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
-                Else
+        Try
+            If e.Row.RowType = Janus.Windows.GridEX.RowType.Record Then
+                If Not e.Column.Key = "PS_CATEGORY" And Not e.Column.Key = "FLAG" And Not e.Column.Key = "PRODUCT_CATEGORY" Then
                     Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
+                Else
+                    If NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.AgreementRelation Then
+                        Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
+                    Else
+                        Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
+                    End If
                 End If
             End If
-        End If
+        Catch ex As Exception
+
+        End Try
+
     End Sub
 
     Private Sub GridEX2_UpdatingCell(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.UpdatingCellEventArgs) Handles GridEX2.UpdatingCell
-        If Me.GridEX2.GetRow.RowType = Janus.Windows.GridEX.RowType.Record Then
-            If e.Column.Key = "PS_CATEGORY" Then
-                Dim ID As String = Me.MultiColumnCombo1.Value + e.Value + Me.GridEX2.GetValue("FLAG")
-                Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
-                Dim rowFilter As String = DV.RowFilter
-                DV.RowFilter = ""
-                Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
-                dummyDV.Sort = "IDRow"
-                If DV.Find(ID) >= 0 Then
-                    Me.ShowMessageInfo(Me.MessageDataCantChanged)
-                    e.Cancel = True
-                End If
-            ElseIf e.Column.Key = "FLAG" Then
-                Dim ID As String = Me.MultiColumnCombo1.Value + Me.GridEX2.GetValue("PS_CATEGORY") + e.Value
-                Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
-                Dim rowFilter As String = DV.RowFilter
-                DV.RowFilter = ""
-                Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
-                dummyDV.Sort = "IDRow"
-                If DV.Find(ID) >= 0 Then
-                    Me.ShowMessageInfo(Me.MessageDataCantChanged)
-                    e.Cancel = True
+        If Me.SFG = StateFillingGrid.Filling Then : Return : End If
+        Try
+            If Me.GridEX2.GetRow.RowType = Janus.Windows.GridEX.RowType.Record Then
+                If e.Column.Key = "PS_CATEGORY" Then
+                    Dim ID As String = Me.MultiColumnCombo1.Value + Me.GridEX2.GetValue("PRODUCT_CATEGORY") + e.Value + Me.GridEX2.GetValue("FLAG")
+                    Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                    Dim rowFilter As String = DV.RowFilter
+                    DV.RowFilter = ""
+                    Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
+                    dummyDV.Sort = "IDRow"
+                    If DV.Find(ID) >= 0 Then
+                        Me.ShowMessageInfo(Me.MessageDataCantChanged)
+                        e.Cancel = True
+                    End If
+                ElseIf e.Column.Key = "FLAG" Then
+                    Dim ID As String = Me.MultiColumnCombo1.Value + Me.GridEX2.GetValue("PRODUCT_CATEGORY") + Me.GridEX2.GetValue("PS_CATEGORY") + e.Value
+                    Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                    Dim rowFilter As String = DV.RowFilter
+                    DV.RowFilter = ""
+                    Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
+                    dummyDV.Sort = "IDRow"
+                    If DV.Find(ID) >= 0 Then
+                        Me.ShowMessageInfo(Me.MessageDataCantChanged)
+                        e.Cancel = True
+                    End If
+                ElseIf e.Column.Key = "PRODUCT_CATEGORY" Then
+                    Dim ID As String = Me.MultiColumnCombo1.Value + e.Value + Me.GridEX2.GetValue("PS_CATEGORY") + Me.GridEX2.GetValue("FLAG")
+                    Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView)
+                    Dim rowFilter As String = DV.RowFilter
+                    DV.RowFilter = ""
+                    Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
+                    dummyDV.Sort = "IDRow"
+                    If DV.Find(ID) >= 0 Then
+                        Me.ShowMessageInfo(Me.MessageDataCantChanged)
+                        e.Cancel = True
+                    End If
                 End If
             End If
-        End If
+        Catch ex As Exception
+
+        End Try
+
     End Sub
 
     Private Sub GridEX2_DeletingRecord(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.RowActionCancelEventArgs) Handles GridEX2.DeletingRecord
@@ -3263,10 +3361,6 @@ Public Class AgreementRelation
         Catch ex As Exception
             e.Cancel = True
         End Try
-    End Sub
-
-    Private Sub GridEX2_CellUpdated(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.ColumnActionEventArgs) Handles GridEX2.CellUpdated
-        Me.GridEX2.UpdateData()
     End Sub
 
     Private Sub GridEX2_RecordAdded(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GridEX2.RecordAdded
