@@ -117,6 +117,37 @@ Namespace DistributorAgreement
                 .Add(New DataColumn("TOTAL_CPQ3", Type.GetType("System.Decimal")))
                 .Item("TOTAL_CPQ3").DefaultValue = 0
 
+                'ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF3_DIST
+
+                .Add(New DataColumn("ACTUAL_DIST", Type.GetType("System.Decimal")))
+                .Item("ACTUAL_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("PO_DIST", Type.GetType("System.Decimal")))
+                .Item("PO_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("PO_VALUE_DIST", Type.GetType("System.Decimal")))
+                .Item("PO_VALUE_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("DISC_DISC", Type.GetType("System.Decimal")))
+                .Item("DISC_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("CPQ1_DIST", Type.GetType("System.Decimal")))
+                .Item("CPQ1_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("CPQ2_DIST", Type.GetType("System.Decimal")))
+                .Item("CPQ2_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("CPQ3_DIST", Type.GetType("System.Decimal")))
+                .Item("CPQ3_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("CPF1_DIST", Type.GetType("System.Decimal")))
+                .Item("CPF1_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("CPF2_DIST", Type.GetType("System.Decimal")))
+                .Item("CPF2_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("PBF3_DIST", Type.GetType("System.Decimal")))
+                .Item("PBF3_DIST").DefaultValue = 0
 
             End With
             ''create primary key
@@ -311,7 +342,7 @@ Namespace DistributorAgreement
                         " ACRH.TOTAL_PO,ACRH.TOTAL_ACTUAL AS ACTUAL,ACRH.BALANCE,ACRH.ACH_BY_CAT/100 AS ACH_BY_CAT,ACRH.ACH_DISPRO/100 AS ACHIEVEMENT_DISPRO,ACRH.DISPRO/100 AS DISPRO,  " & vbCrLf & _
                         " ACRH.DISC_QTY, ACRH.TOTAL_CPQ1,ACRH.TOTAL_CPQ2, " & vbCrLf & _
                         " ACRH.TOTAL_CPQ3, " & vbCrLf & _
-                        " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,TOTAL_PBF3,ACRH.[DESCRIPTIONS]" & vbCrLf & _
+                        " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,TOTAL_PBF3,ACRH.[DESCRIPTIONS],ACRH.ACTUAL_DIST,ACRH.PO_DIST,ACRH.PO_VALUE_DIST,ACRH.DISC_DIST,ACRH.CPQ1_DIST,ACRH.CPQ2_DIST,ACRH.CPQ3_DIST,ACRH.CPF1_DIST,ACRH.CPF2_DIST,ACRH.PBF3_DIST," & vbCrLf & _
                         " FROM ACHIEVEMENT_HEADER ACRH INNER JOIN AGREE_AGREEMENT AA ON ACRH.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN DIST_DISTRIBUTOR DR ON ACRH.DISTRIBUTOR_ID " & vbCrLf & _
                         " = DR.DISTRIBUTOR_ID INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ACRH.BRAND_ID " & vbCrLf & _
                         "  LEFT OUTER JOIN BRND_AVGPRICE AP ON AP.IDApp = ACRH.AvgPriceID " & vbCrLf
@@ -610,7 +641,7 @@ Namespace DistributorAgreement
             Me.SaveToDataBase(AgreementNO, FLAG, tblAchHeader, tblAchDetail)
         End Sub
         Private Sub SaveToDataBase(ByVal AgreementNO As String, ByVal FLAG As String, ByRef tblAchHeader As DataTable, ByRef tblAchDetail As DataTable)
-            Me.BeginTransaction() : Me.SqlCom.Transaction = Me.SqlTrans
+
             'header dulu
             Dim RowsSelect() As DataRow = tblAchHeader.Select("")
             If RowsSelect.Length > 0 Then
@@ -618,6 +649,16 @@ Namespace DistributorAgreement
                     RowsSelect(i).SetAdded()
                 Next
             End If
+            'INSERT DETAIL
+            Dim RowsSelectDetail = tblAchDetail.Select("")
+            If RowsSelectDetail.Length > 0 Then
+                For i As Integer = 0 To RowsSelectDetail.Length - 1
+                    RowsSelectDetail(i).SetAdded()
+                Next
+            End If
+
+            Me.BeginTransaction() : Me.SqlCom.Transaction = Me.SqlTrans
+
             ''delete dulu data by agreement dan flag
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
             "DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG);"
@@ -635,10 +676,10 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " INSERT INTO ACHIEVEMENT_HEADER(ACH_HEADER_ID, AGREEMENT_NO, DISTRIBUTOR_ID, BRAND_ID, AvgPriceID, FLAG, TOTAL_TARGET, TARGET_FM, TARGET_PL, TOTAL_PO, " & vbCrLf & _
                     " TOTAL_PO_VALUE, TOTAL_ACTUAL, BALANCE, ACH_DISPRO, ACH_BY_CAT,DISPRO, DISC_QTY, TOTAL_CPQ1, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3," & vbCrLf & _
-                    " DESCRIPTIONS, CreatedDate, CreatedBy) " & vbCrLf & _
+                    " DESCRIPTIONS, ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF3_DIST,CreatedDate, CreatedBy) " & vbCrLf & _
                     " VALUES(@ACH_HEADER_ID, @AGREEMENT_NO, @DISTRIBUTOR_ID, @BRAND_ID, @AvgPriceID, @FLAG, @TOTAL_TARGET, @TARGET_FM, @TARGET_PL, @TOTAL_PO, " & vbCrLf & _
                     " @TOTAL_PO_VALUE, @TOTAL_ACTUAL, @BALANCE, @ACH_DISPRO, @ACH_BY_CAT,@DISPRO, @DISC_QTY, @TOTAL_CPQ1, @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, " & vbCrLf & _
-                    " @TOTAL_CPF2, @TOTAL_PBF3, DESCRIPTIONS, CreatedDate, CreatedBy);"
+                    " @TOTAL_CPF2, @TOTAL_PBF3,@DESCRIPTIONS,@ACTUAL_DIST,@PO_DIST,@PO_VALUE_DIST,@DISC_DIST,@CPQ1_DIST,@CPQ2_DIST,@CPQ3_DIST,@CPF1_DIST,@CPF2_DIST,@PBF3_DIST,@CreatedDate, @CreatedBy);"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.ResetAdapterCRUD()
             With Me.SqlCom
@@ -665,19 +706,23 @@ Namespace DistributorAgreement
                 .Parameters.Add("@TOTAL_CPF1", SqlDbType.Decimal, 0, "TOTAL_CPF1")
                 .Parameters.Add("@TOTAL_CPF2", SqlDbType.Decimal, 0, "TOTAL_CPF2")
                 .Parameters.Add("@TOTAL_PBF3", SqlDbType.Decimal, 0, "TOTAL_PBF3")
-                .Parameters.Add("@DESCRIPTIONS", SqlDbType.VarChar, 200, "DESCRIPTIONS")
+                .Parameters.Add("@DESCRIPTIONS", SqlDbType.VarChar, 250, "DESCRIPTIONS")
+                .Parameters.Add("@ACTUAL_DIST", SqlDbType.Decimal, 0, "ACTUAL_DIST")
+                .Parameters.Add("@PO_DIST", SqlDbType.Decimal, 0, "PO_DIST")
+                .Parameters.Add("@PO_VALUE_DIST", SqlDbType.Decimal, 0, "PO_VALUE_DIST")
+                .Parameters.Add("@DISC_DIST", SqlDbType.Decimal, 0, "DISC_DIST")
+                .Parameters.Add("@CPQ1_DIST", SqlDbType.Decimal, 0, "CPQ1_DIST")
+                .Parameters.Add("@CPQ2_DIST", SqlDbType.Decimal, 0, "CPQ2_DIST")
+                .Parameters.Add("@CPQ3_DIST", SqlDbType.Decimal, 0, "CPQ3_DIST")
+                .Parameters.Add("@CPF1_DIST", SqlDbType.Decimal, 0, "CPF1_DIST")
+                .Parameters.Add("@CPF2_DIST", SqlDbType.Decimal, 0, "CPF2_DIST")
+                .Parameters.Add("@PBF3_DIST", SqlDbType.Decimal, 0, "PBF3_DIST")
                 .Parameters.Add("@CreatedDate", SqlDbType.SmallDateTime, 0, "CreatedDate")
                 .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100, "CreatedBy")
                 Me.SqlDat.InsertCommand = Me.SqlCom
                 Me.SqlDat.Update(RowsSelect) : Me.ClearCommandParameters()
             End With
-            'INSERT DETAIL
-            RowsSelect = tblAchDetail.Select("")
-            If RowsSelect.Length > 0 Then
-                For i As Integer = 0 To RowsSelect.Length - 1
-                    RowsSelect(i).SetAdded()
-                Next
-            End If
+
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " INSERT INTO ACHIEVEMENT_DETAIL (ACH_DETAIL_ID, ACH_HEADER_ID, BRANDPACK_ID, TOTAL_PO, TOTAL_ACTUAL, DISC_QTY, TOTAL_CPQ1," & vbCrLf & _
                     " TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, DESCRIPTIONS, CreatedDate, CreatedBy)" & vbCrLf & _
@@ -698,10 +743,12 @@ Namespace DistributorAgreement
                 .Parameters.Add("@TOTAL_CPF1", SqlDbType.Decimal, 0, "TOTAL_CPF1")
                 .Parameters.Add("@TOTAL_CPF2", SqlDbType.Decimal, 0, "TOTAL_CPF2")
                 .Parameters.Add("@TOTAL_PBF3", SqlDbType.Decimal, 0, "TOTAL_PBF3")
-                .Parameters.Add("@DESCRIPTIONS", SqlDbType.VarChar, 200, "DESCRIPTIONS")
+                .Parameters.Add("@DESCRIPTIONS", SqlDbType.VarChar, 250, "DESCRIPTIONS")
                 .Parameters.Add("@CreatedDate", SqlDbType.SmallDateTime, 0, "CreatedDate")
                 .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100, "CreatedBy")
-                Me.SqlDat.InsertCommand = Me.SqlCom : Me.ClearCommandParameters()
+                Me.SqlDat.InsertCommand = Me.SqlCom
+                Me.SqlDat.Update(RowsSelectDetail)
+                Me.ClearCommandParameters()
             End With
             Me.CommiteTransaction()
         End Sub
@@ -892,7 +939,61 @@ Namespace DistributorAgreement
             Next
             Return Dispro
         End Function
-
+        Private Sub UpdateTotalAllActualAndPO(ByRef tblAchHeader As DataTable)
+            Dim listAgreeBrandIDs As New List(Of String)
+            For i As Integer = 0 To tblAchHeader.Rows.Count - 1
+                Dim AgreeBrandID As String = tblAchHeader.Rows(i)("AGREE_BRAND_ID").ToString()
+                If Not listAgreeBrandIDs.Contains(AgreeBrandID) Then
+                    listAgreeBrandIDs.Add(AgreeBrandID)
+                End If
+            Next
+            'update all
+            For i As Integer = 0 To listAgreeBrandIDs.Count - 1
+                Dim rows() As DataRow = tblAchHeader.Select("AGREE_BRAND_ID = '" & listAgreeBrandIDs(i) & "'")
+                Dim TotalPO As Decimal = 0, TotalActual As Decimal = 0, TotalPOValue As Decimal = 0, _
+                TotalCPQ1 As Decimal = 0, TotalCPQ2 As Decimal = 0, TotalCPQ3 As Decimal = 0, TotalCPF1 As Decimal = 0, TotalCPF2 As Decimal = 0, _
+                TotalPBF3 As Decimal = 0
+                Dim row As DataRow = Nothing
+                For i1 As Integer = 0 To rows.Length - 1
+                    row = rows(i1)
+                    TotalPO += Convert.ToDecimal(row(i1)("PO_DIST"))
+                    TotalActual += Convert.ToDecimal(row(i1)("ACTUAL_DIST"))
+                    TotalPOValue += Convert.ToDecimal(row(i1)("PO_VALUE_DIST"))
+                    TotalCPQ1 += Convert.ToDecimal(row(i1)("CPQ1_DIST"))
+                    TotalCPQ2 += Convert.ToDecimal(row(i1)("CPQ2_DIST"))
+                    TotalCPQ3 += Convert.ToDecimal(row(i1)("CPQ3_DIST"))
+                    TotalCPF1 += Convert.ToDecimal(row(i1)("CPF1_DIST"))
+                    TotalCPF2 += Convert.ToDecimal(row(i1)("CPF2_DIST"))
+                    TotalPBF3 += Convert.ToDecimal(row(i1)("PBF3_DIST"))
+                Next
+                For i1 As Integer = 0 To rows.Length - 1
+                    row = rows(i1)
+                    row.BeginEdit()
+                    'TOTAL_PO, TOTAL_PO_VALUE, BALANCE, TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_ACTUAL,
+                    row("TOTAL_ACTUAL") = TotalActual
+                    row("TOTAL_PO") = TotalPO
+                    row("TOTAL_PO_VALUE") = TotalPOValue
+                    row("TOTAL_CPQ1") = TotalCPQ1
+                    row("TOTAL_CPQ2") = TotalCPQ2
+                    row("TOTAL_CPQ3") = TotalCPQ3
+                    row("TOTAL_CPF1") = TotalCPF1
+                    row("TOTAL_CPF2") = TotalCPF2
+                    row("TOTAL_PBF3") = TotalPBF3
+                    row.EndEdit()
+                Next
+            Next
+        End Sub
+        Private Sub getTotalForCertainBrands(ByVal RowsSelect() As DataRow, ByRef TotalTarget As Decimal, ByRef TotalPO As Decimal)
+            Dim listAgreeBrandIDs As New List(Of String)
+            For i As Integer = 0 To RowsSelect.Length - 1
+                Dim AgreeBrandID As String = RowsSelect(i)("AGREE_BRAND_ID").ToString()
+                If Not listAgreeBrandIDs.Contains(AgreeBrandID) Then
+                    listAgreeBrandIDs.Add(AgreeBrandID)
+                    TotalTarget += Convert.ToDecimal(RowsSelect(i)("TOTAL_TARGET"))
+                    TotalPO += Convert.ToDecimal(RowsSelect(i)("TOTAL_PO"))
+                End If
+            Next
+        End Sub
         Private Sub CalculateHeader(ByVal AgreementNO As String, ByVal FLAG As String, ByRef tblAchHeader As DataTable)
             Dim RowsSelect() As DataRow = Nothing, _
             TTargetSPSG_RPM As Decimal = 0, TTargetBPSG_RPM As Decimal = 0, Percentage_SPSG_RPM As Decimal = 0, Percentage_BPSG_RPM As Decimal = 0, _
@@ -901,7 +1002,7 @@ Namespace DistributorAgreement
             TPO_SPSG_RPM As Decimal = 0, TPO_BPSG_RPM As Decimal = 0, _
             TPO_SPSG_BIO As Decimal = 0, TPO_BPSG_BIO As Decimal = 0, _
             TPO_SPSG_TR As Decimal = 0, TPO_BPSG_TR As Decimal = 0, _
-            BonusQty As Decimal = 0, Balance As Decimal = 0, Dispro As Decimal = 0, _
+            DiscDist As Decimal = 0, BonusQty As Decimal = 0, Balance As Decimal = 0, Dispro As Decimal = 0, _
             Row As DataRow = Nothing, Description As String = "", Rows As DataRow() = Nothing, retval As Object = Nothing
 
             'AMBIL DATA Progressive Discount
@@ -939,19 +1040,21 @@ Namespace DistributorAgreement
             '--------------------------------------------------------------------------------------------
 
             'totalkan target dan actual berdasarkan psg dan merk
-            'rowselect = tblAchHeader
-            '------biosorb 007801,007804,0078200,006020
+
+            '-========================ROUNDUP BIOSORB 007801,007804,0078200,006020======================
             RowsSelect = tblAchHeader.Select("BRAND_ID IN('00601','0060200','00604')")
             If Not IsNothing(RowsSelect) And Not IsDBNull(RowsSelect) Then
-                TTargetSPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('00601','0060200','00604')")
-                TPO_SPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('00601','0060200','00604')")
+                'TTargetSPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('00601','0060200','00604')")
+                'TPO_SPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('00601','0060200','00604')")
+                getTotalForCertainBrands(RowsSelect, TTargetSPSG_BIO, TPO_SPSG_BIO)
                 Percentage_SPSG_BIO = common.CommonClass.GetPercentage(100, TPO_SPSG_BIO, TTargetSPSG_BIO)
             End If
 
             RowsSelect = tblAchHeader.Select("BRAND_ID IN('006020')")
             If RowsSelect.Length > 0 Then
-                TTargetBPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('006020')")
-                TPO_BPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('006020')")
+                'TTargetBPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('006020')")
+                'TPO_BPSG_BIO = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('006020')")
+                getTotalForCertainBrands(RowsSelect, TTargetBPSG_BIO, TPO_BPSG_BIO)
                 Percentage_BPSG_BIO = common.CommonClass.GetPercentage(100, TPO_BPSG_BIO, TTargetBPSG_BIO)
             End If
             Description = ""
@@ -963,18 +1066,21 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('00601','0060200','00604')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
-                    Dim TotalPO As Decimal = Convert.ToDecimal("TOTAL_PO")
-                    Dim TotalTarget As Decimal = Convert.ToDecimal("TOTAL_TARGET")
+                    Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
+                    Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
                     Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
+                    Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
                     Balance = TotalPO - TotalTarget
                     If Balance >= 0 Then
                         Balance = 0
                     End If
                     Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
-                    BonusQty = TotalActual * Dispro / 100
+                    BonusQty = TotalActual * (Dispro / 100)
+                    DiscDist = ActualDist * (Dispro / 100)
                     'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
-                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty)
+                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty, DiscDist)
                     Row.BeginEdit()
+                    Row("DISC_DIST") = DiscDist
                     Row("DISPRO") = Dispro
                     Row("ACH_BY_CAT") = Percentage_SPSG_BIO
                     Row("ACH_DISPRO") = PerAch
@@ -984,74 +1090,88 @@ Namespace DistributorAgreement
                     Row.EndEdit()
                 Next
             End If
-            Dispro = 0
-            Description = ""
+
             If Percentage_BPSG_BIO > 0 Then
                 'hitung Dispro
+                Dispro = 0
+                DiscDist = 0
+                Description = ""
+                BonusQty = 0
+                Balance = 0
                 Dispro = getDispro(Percentage_BPSG_BIO, "ROUNDUP BIOSORB", "B", FLAG)
-
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('006020')")
-                Row = RowsSelect(0)
-
-                Dim TotalPO As Decimal = Convert.ToDecimal("TOTAL_PO")
-                Dim TotalTarget As Decimal = Convert.ToDecimal("TOTAL_TARGET")
-                Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
-                Balance = TotalPO - TotalTarget
-                If Balance >= 0 Then
-                    Balance = 0
-                End If
-                Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
-                BonusQty = TotalActual * Dispro / 100
-
-                'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
-                CalculateDiscPrevious(FLAG, Row, Description, BonusQty)
-                Row.BeginEdit()
-                Row("DISPRO") = Dispro
-                Row("ACH_DISPRO") = PerAch
-                Row("ACH_BY_CAT") = Percentage_SPSG_BIO
-                Row("DISC_QTY") = BonusQty
-                Row("BALANCE") = Balance
-                Row("DESCRIPTIONS") = Description
-                Row.EndEdit()
-            End If
-
-            '---TRANSORB
-            RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
-            If RowsSelect.Length > 0 Then
-                TTargetSPSG_TR = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('007801','007804','0078200')")
-                TPO_SPSG_TR = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('007801','007804','0078200')")
-                Percentage_SPSG_TR = common.CommonClass.GetPercentage(100, TPO_SPSG_TR, TTargetSPSG_TR)
-            End If
-
-            RowsSelect = tblAchHeader.Select("BRAND_ID IN('007820')")
-            If RowsSelect.Length > 0 Then
-                TTargetBPSG_TR = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('007820')")
-                TPO_BPSG_TR = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('007820')")
-                Percentage_BPSG_TR = common.CommonClass.GetPercentage(100, TPO_BPSG_TR, TTargetBPSG_TR)
-            End If
-            Description = ""
-            Dispro = 0
-            'hitung packsize group kecil
-            If Percentage_SPSG_TR > 0 Then
-                'hitung Dispro
-                Dispro = getDispro(Percentage_SPSG_TR, "ROUNDUP TRANSORB", "S", FLAG)
-                ''only update that has changed
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
-                    Dim TotalPO As Decimal = Convert.ToDecimal("TOTAL_PO")
-                    Dim TotalTarget As Decimal = Convert.ToDecimal("TOTAL_TARGET")
+                    Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
+                    Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
+                    Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
                     Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
                     Balance = TotalPO - TotalTarget
                     If Balance >= 0 Then
                         Balance = 0
                     End If
                     Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
-                    BonusQty = TotalActual * Dispro / 100
-
+                    BonusQty = TotalActual * (Dispro / 100)
+                    DiscDist = ActualDist * (Dispro / 100)
                     'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
-                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty)
+                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty, DiscDist)
                     Row.BeginEdit()
+                    Row("DISC_DIST") = DiscDist
+                    Row("DISPRO") = Dispro
+                    Row("ACH_DISPRO") = PerAch
+                    Row("ACH_BY_CAT") = Percentage_SPSG_BIO
+                    Row("DISC_QTY") = BonusQty
+                    Row("BALANCE") = Balance
+                    Row("DESCRIPTIONS") = Description
+                    Row.EndEdit()
+                Next
+            End If
+            '-========================END ROUNDUP BIOSORB======================================================
+
+            '-========================ROUNDUP TRANSORB===========================================================
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
+            If RowsSelect.Length > 0 Then
+                'TTargetSPSG_TR = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('007801','007804','0078200')")
+                'TPO_SPSG_TR = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('007801','007804','0078200')")
+                getTotalForCertainBrands(RowsSelect, TTargetSPSG_TR, TPO_SPSG_TR)
+                Percentage_SPSG_TR = common.CommonClass.GetPercentage(100, TPO_SPSG_TR, TTargetSPSG_TR)
+            End If
+
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('007820')")
+            If RowsSelect.Length > 0 Then
+                'TTargetBPSG_TR = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('007820')")
+                'TPO_BPSG_TR = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('007820')")
+                getTotalForCertainBrands(RowsSelect, TTargetBPSG_TR, TPO_BPSG_TR)
+                Percentage_BPSG_TR = common.CommonClass.GetPercentage(100, TPO_BPSG_TR, TTargetBPSG_TR)
+            End If
+            'hitung packsize group kecil
+            If Percentage_SPSG_TR > 0 Then
+                Dispro = 0
+                DiscDist = 0
+                Description = ""
+                BonusQty = 0
+                Balance = 0
+                'hitung Dispro
+                Dispro = getDispro(Percentage_SPSG_TR, "ROUNDUP TRANSORB", "S", FLAG)
+                ''only update that has changed
+                RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
+                For i As Integer = 0 To RowsSelect.Length - 1
+                    Row = RowsSelect(i)
+                    Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
+                    Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
+                    Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
+                    Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
+                    Balance = TotalPO - TotalTarget
+                    If Balance >= 0 Then
+                        Balance = 0
+                    End If
+                    Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
+                    BonusQty = TotalActual * (Dispro / 100)
+                    DiscDist = ActualDist * (Dispro / 100)
+                    'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
+                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty, DiscDist)
+                    Row.BeginEdit()
+                    Row("DISC_DIST") = DiscDist
                     Row("DISPRO") = Dispro
                     Row("ACH_DISPRO") = PerAch
                     Row("ACH_BY_CAT") = Percentage_SPSG_TR
@@ -1061,72 +1181,90 @@ Namespace DistributorAgreement
                     Row.EndEdit()
                 Next
             End If
-            Dispro = 0
-            Description = ""
             If Percentage_BPSG_TR > 0 Then
+                Dispro = 0
+                DiscDist = 0
+                Description = ""
+                BonusQty = 0
+                Balance = 0
                 'hitung Dispro
                 Dispro = getDispro(Percentage_BPSG_TR, "ROUNDUP TRANSORB", "B", FLAG)
 
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('007820')")
-                Row = RowsSelect(0)
-                Dim TotalPO As Decimal = Convert.ToDecimal("TOTAL_PO")
-                Dim TotalTarget As Decimal = Convert.ToDecimal("TOTAL_TARGET")
-                Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
-                Balance = TotalPO - TotalTarget
-                If Balance >= 0 Then
-                    Balance = 0
-                End If
-                Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
-                BonusQty = TotalActual * Dispro / 100
-                'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
-                CalculateDiscPrevious(FLAG, Row, Description, BonusQty)
-                Row.BeginEdit()
-                Row("DISPRO") = Dispro
-                Row("ACH_DISPRO") = PerAch
-                Row("ACH_BY_CAT") = Percentage_BPSG_TR
-                Row("DISC_QTY") = BonusQty
-                Row("BALANCE") = Balance
-                Row("DESCRIPTIONS") = Description
-                Row.EndEdit()
-            End If
-
-            '--rpm
-            RowsSelect = tblAchHeader.Select("BRAND_ID IN('00681','00684')")
-            If RowsSelect.Length > 0 Then
-                TTargetSPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('00681','00684')")
-                TPO_SPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('00681','00684')")
-                Percentage_SPSG_RPM = common.CommonClass.GetPercentage(100, TPO_SPSG_RPM, TTargetSPSG_RPM)
-            End If
-
-            RowsSelect = tblAchHeader.Select("BRAND_ID IN('006820')")
-            If RowsSelect.Length > 0 Then
-                TTargetBPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('006820')")
-                TPO_BPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('006820')")
-                Percentage_BPSG_RPM = common.CommonClass.GetPercentage(100, TPO_BPSG_RPM, TTargetBPSG_RPM)
-            End If
-
-            Description = ""
-            Dispro = 0
-            'hitung packsize group kecil
-            If Percentage_SPSG_RPM > 0 Then
-                'hitung Dispro
-                Dispro = getDispro(Percentage_SPSG_RPM, "ROUNDUP POWERMAX", "S", FLAG)
-                ''only update that has changed
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('00681','00684')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
-                    Dim TotalPO As Decimal = Convert.ToDecimal("TOTAL_PO")
-                    Dim TotalTarget As Decimal = Convert.ToDecimal("TOTAL_TARGET")
+                    Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
+                    Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
+                    Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
                     Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
                     Balance = TotalPO - TotalTarget
                     If Balance >= 0 Then
                         Balance = 0
                     End If
                     Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
-                    BonusQty = TotalActual * Dispro / 100
+                    BonusQty = TotalActual * (Dispro / 100)
+                    DiscDist = ActualDist * (Dispro / 100)
                     'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
-                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty)
+                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty, DiscDist)
                     Row.BeginEdit()
+                    Row("DISC_DIST") = DiscDist
+                    Row("DISPRO") = Dispro
+                    Row("ACH_DISPRO") = PerAch
+                    Row("ACH_BY_CAT") = Percentage_BPSG_TR
+                    Row("DISC_QTY") = BonusQty
+                    Row("BALANCE") = Balance
+                    Row("DESCRIPTIONS") = Description
+                    Row.EndEdit()
+                Next
+            End If
+
+            '-====================END ROUNDUP TRANSORB===========================================================
+
+            '-=====================ROUNDUP POWER MAX=============================================================
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('00681','00684')")
+            If RowsSelect.Length > 0 Then
+                'TTargetSPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('00681','00684')")
+                'TPO_SPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('00681','00684')")
+                getTotalForCertainBrands(RowsSelect, TTargetSPSG_RPM, TPO_SPSG_RPM)
+                Percentage_SPSG_RPM = common.CommonClass.GetPercentage(100, TPO_SPSG_RPM, TTargetSPSG_RPM)
+            End If
+
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('006820')")
+            If RowsSelect.Length > 0 Then
+                'TTargetBPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_TARGET)", "BRAND_ID IN('006820')")
+                'TPO_BPSG_RPM = tblAchHeader.Compute("SUM(TOTAL_ACTUAL)", "BRAND_ID IN('006820')")
+                getTotalForCertainBrands(RowsSelect, TTargetBPSG_RPM, TPO_BPSG_RPM)
+                Percentage_BPSG_RPM = common.CommonClass.GetPercentage(100, TPO_BPSG_RPM, TTargetBPSG_RPM)
+            End If
+
+            'hitung packsize group kecil
+            If Percentage_SPSG_RPM > 0 Then
+                Dispro = 0
+                DiscDist = 0
+                Description = ""
+                BonusQty = 0
+                Balance = 0
+                'hitung Dispro
+                Dispro = getDispro(Percentage_SPSG_RPM, "ROUNDUP POWERMAX", "S", FLAG)
+                ''only update that has changed
+                RowsSelect = tblAchHeader.Select("BRAND_ID IN('00681','00684')")
+                For i As Integer = 0 To RowsSelect.Length - 1
+                    Row = RowsSelect(i)
+                    Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
+                    Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
+                    Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
+                    Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
+                    Balance = TotalPO - TotalTarget
+                    If Balance >= 0 Then
+                        Balance = 0
+                    End If
+                    Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
+                    BonusQty = TotalActual * (Dispro / 100)
+                    DiscDist = ActualDist * (Dispro / 100)
+                    'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
+                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty, DiscDist)
+                    Row.BeginEdit()
+                    Row("DISC_DIST") = DiscDist
                     Row("DISPRO") = Dispro
                     Row("ACH_DISPRO") = PerAch
                     Row("ACH_BY_CAT") = Percentage_SPSG_RPM
@@ -1136,33 +1274,42 @@ Namespace DistributorAgreement
                     Row.EndEdit()
                 Next
             End If
-            Dispro = 0
-            Description = ""
             If Percentage_BPSG_RPM > 0 Then
+                Dispro = 0
+                DiscDist = 0
+                Description = ""
+                BonusQty = 0
+                Balance = 0
                 'hitung Dispro
                 Dispro = getDispro(Percentage_BPSG_RPM, "ROUNDUP POWERMAX", "B", FLAG)
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('006820')")
-                Row = RowsSelect(0)
-                Dim TotalPO As Decimal = Convert.ToDecimal("TOTAL_PO")
-                Dim TotalTarget As Decimal = Convert.ToDecimal("TOTAL_TARGET")
-                Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
-                Balance = TotalPO - TotalTarget
-                If Balance >= 0 Then
-                    Balance = 0
-                End If
-                Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
-                BonusQty = TotalActual * Dispro / 100
-                'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
-                CalculateDiscPrevious(FLAG, Row, Description, BonusQty)
-                Row.BeginEdit()
-                Row("DISPRO") = Dispro
-                Row("ACH_DISPRO") = PerAch
-                Row("ACH_BY_CAT") = Percentage_BPSG_RPM
-                Row("DISC_QTY") = BonusQty
-                Row("BALANCE") = Balance
-                Row("DESCRIPTIONS") = Description
-                Row.EndEdit()
+                For i As Integer = 0 To RowsSelect.Length - 1
+                    Row = RowsSelect(i)
+                    Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
+                    Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
+                    Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
+                    Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
+                    Balance = TotalPO - TotalTarget
+                    If Balance >= 0 Then
+                        Balance = 0
+                    End If
+                    Dim TotalActual = Convert.ToDecimal(Row("TOTAL_ACTUAL"))
+                    BonusQty = TotalActual * Dispro / 100
+                    DiscDist = ActualDist * (Dispro / 100)
+                    'hitung bonus previous year(PBFR) dan CPQ1,CPQ2,CPQ3,dan CPF1,CPF2
+                    CalculateDiscPrevious(FLAG, Row, Description, BonusQty, DiscDist)
+                    Row.BeginEdit()
+                    Row("DISC_DIST") = DiscDist
+                    Row("DISPRO") = Dispro
+                    Row("ACH_DISPRO") = PerAch
+                    Row("ACH_BY_CAT") = Percentage_BPSG_RPM
+                    Row("DISC_QTY") = BonusQty
+                    Row("BALANCE") = Balance
+                    Row("DESCRIPTIONS") = Description
+                    Row.EndEdit()
+                Next
             End If
+            '-=====================END ROUNDUP POWER MAX=============================================================
             tblAchHeader.AcceptChanges()
         End Sub
         ''' <summary>
@@ -1172,11 +1319,15 @@ Namespace DistributorAgreement
         ''' <param name="Description">Description of previous discount to get</param>
         ''' <param name="BonusQty">Disc Qty + all previous discount(TOTAL(CPQ2,CPQ3,CPF2,CPF1,PBF3))</param>
         ''' <remarks>Function to get and calculate Previos Actual PO, discount qty and descriptions to get</remarks>
-        Private Sub CalculateDiscPrevious(ByVal Flag As String, ByVal Row As DataRow, ByRef Description As String, ByRef BonusQty As Decimal)
+        Private Sub CalculateDiscPrevious(ByVal Flag As String, ByVal Row As DataRow, ByRef Description As String, ByRef BonusQty As Decimal, ByRef DiscDist As Decimal)
 
             Dim totalInvoiceBeforeF3 As Decimal = 0, totalInvoiceCurrentF1 As Decimal = 0, totalInvoiceCurrentF2 As Decimal = 0, totalInvoiceCurrentQ1 As Decimal = 0, totalInvoiceCurrentQ2 As Decimal = 0, _
-            totalInvoiceCurrentQ3 As Decimal = 0, PrevDisPro As Decimal = 0, DVCurAch As DataView = tblCurAchiement.DefaultView, totalInvoiceCurF1 As Decimal = 0, totalInvoiceCurF2 As Decimal = 0
-            Dim DVPrevAch As DataView = Nothing
+            totalInvoiceCurrentQ3 As Decimal = 0, PrevDisPro As Decimal = 0, DVCurAch As DataView = tblCurAchiement.DefaultView, _
+            DVPrevAch As DataView = Nothing
+
+            Dim PBF3Dist As Decimal = 0, CPF1Dist As Decimal = 0, CPF2Dist As Decimal = 0, CPQ1Dist As Decimal = 0, CPQ2Dist As Decimal = 0, _
+            CPQ3Dist As Decimal = 0
+
             If Not IsNothing(Me.tblPrevAchievement) Then
                 DVPrevAch = tblPrevAchievement.DefaultView()
             End If
@@ -1191,11 +1342,13 @@ Namespace DistributorAgreement
                         AchQ1 = AchQ1 + "Q1"
                         Dim DiscQ1 As Decimal = 0, DiscQ2 As Decimal = 0, DiscQ3 As Decimal = 0
                         totalInvoiceCurrentQ1 = Row("TOTAL_CPQ1")
+                        CPQ1Dist = Row("CPQ1_DIST")
                         If CDec(totalInvoiceCurrentQ1) > 0 Then
                             DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ1 & "'"
                             If DVCurAch.Count > 0 Then
                                 PrevDisPro = DVCurAch(0)("DISPRO")
                                 DiscQ1 = (PrevDisPro / 100) * totalInvoiceCurrentQ1
+                                DiscDist += (PrevDisPro / 100) * CPQ1Dist
                                 BonusQty += DiscQ1
                                 Description &= String.Format("Q1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ1, DiscQ1)
                             End If
@@ -1204,11 +1357,13 @@ Namespace DistributorAgreement
                         Dim AchQ2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
                         AchQ2 = AchQ2 + "Q2"
                         totalInvoiceCurrentQ2 = Row("TOTAL_CPQ2")
+                        CPQ2Dist = Row("CPQ2_DIST")
                         If CDec(totalInvoiceCurrentQ2) > 0 Then
                             DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ2 & "'" '" & RowsSelect(0)("AGREE_BRAND_ID") & "' AND FLAG = 'Q2'"
                             If DVCurAch.Count > 0 Then
                                 PrevDisPro = DVCurAch(0)("DISPRO")
                                 DiscQ2 = (PrevDisPro / 100) * totalInvoiceCurrentQ2
+                                DiscDist += (PrevDisPro / 100) * CPQ2Dist
                                 BonusQty += DiscQ2
                                 If Description <> "" Then
                                     Description &= ", "
@@ -1220,11 +1375,13 @@ Namespace DistributorAgreement
                         Dim AchQ3 = AchID.Remove(AchID.LastIndexOf("|") + 1)
                         AchQ3 = AchQ3 + "Q3"
                         totalInvoiceCurrentQ3 = Row("TOTAL_CPQ3")
+                        CPQ3Dist = Row("CPQ3_DIST")
                         If CDec(totalInvoiceCurrentQ3) > 0 Then
                             DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchID & "'"
                             If DVCurAch.Count > 0 Then
                                 PrevDisPro = DVCurAch(0)("DISPRO")
                                 DiscQ3 = (PrevDisPro / 100) * totalInvoiceCurrentQ3
+                                DiscDist += (PrevDisPro / 100) * CPQ3Dist
                                 BonusQty += DiscQ3
                                 If Description <> "" Then
                                     Description &= ", "
@@ -1234,63 +1391,73 @@ Namespace DistributorAgreement
                         End If
                     End If
                     Dim DiscF1 As Decimal = 0, DiscF2 As Decimal = 0
+
                     Dim AchF2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
                     AchF2 = AchF2 + "F2"
-                    totalInvoiceCurF2 = Row("TOTAL_CPF2")
-                    If totalInvoiceCurF2 > 0 Then
+                    totalInvoiceCurrentF2 = Row("TOTAL_CPF2")
+                    CPF2Dist = Row("CPF2_DIST")
+
+                    If totalInvoiceCurrentF2 > 0 Then
                         DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF2 & "'"
                         If DVCurAch.Count > 0 Then
                             PrevDisPro = DVCurAch(0)("DISPRO")
-                            DiscF2 = (PrevDisPro / 100) * totalInvoiceCurF2
+                            DiscF2 = (PrevDisPro / 100) * totalInvoiceCurrentF2
+                            DiscDist += (PrevDisPro / 100) * CPF2Dist
                             BonusQty += DiscF2
                             If Description <> "" Then
                                 Description &= ", "
                             End If
-                            Description &= String.Format("F2 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurF2, DiscF2)
+                            Description &= String.Format("F2 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF2, DiscF2)
                         End If
                     End If
                     Dim AchF1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
                     AchF1 = AchF1 + "F1"
-                    totalInvoiceCurF1 = Row("TOTAL_CPF1")
-                    If totalInvoiceCurF1 > 0 Then
+                    totalInvoiceCurrentF1 = Row("TOTAL_CPF1")
+                    CPF1Dist = Row("CPF1_DIST")
+
+                    If totalInvoiceCurrentF1 > 0 Then
                         DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
                         If DVCurAch.Count > 0 Then
                             PrevDisPro = DVCurAch(0)("DISPRO")
-                            DiscF1 = (PrevDisPro / 100) * totalInvoiceCurF1
+                            DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
+                            DiscDist += (PrevDisPro / 100) * CPF1Dist
                             BonusQty += DiscF1
                             If Description <> "" Then
                                 Description &= ", "
                             End If
-                            Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurF1, DiscF1)
+                            Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
                         End If
                     End If
                 Case "F2" 'F1, PBF3
                     Dim AchF1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
                     AchF1 = AchF1 + "F1"
-                    totalInvoiceCurF1 = Row("TOTAL_CPF1")
+                    totalInvoiceCurrentF1 = Row("TOTAL_CPF1")
+                    CPF1Dist = Row("CPF1_DIST")
                     Dim DiscF1 As Decimal = 0
-                    If totalInvoiceCurF1 > 0 Then
+                    If totalInvoiceCurrentF1 > 0 Then
                         DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
                         If DVCurAch.Count > 0 Then
                             PrevDisPro = DVCurAch(0)("DISPRO")
-                            DiscF1 = (PrevDisPro / 100) * totalInvoiceCurF1
+                            DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
+                            DiscDist += (PrevDisPro / 100) * CPF1Dist
                             BonusQty += DiscF1
                             If Description <> "" Then
                                 Description &= ", "
                             End If
-                            Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceCurF1, DiscF1)
+                            Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceCurrentF1, DiscF1)
                         End If
                     End If
-
-                    totalInvoiceBeforeF3 = Row("TOTAL_PBF3")
                     Dim AchPBF3 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
                     Dim DiscF3 As Decimal = 0
+                    totalInvoiceBeforeF3 = Row("TOTAL_PBF3")
+                    PBF3Dist = Row("PBF3_DIST")
                     AchPBF3 = AchPBF3 + "F3"
                     If totalInvoiceBeforeF3 > 0 And Not IsNothing(DVPrevAch) Then
                         DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
                         If DVPrevAch.Count > 0 Then
                             PrevDisPro = DVCurAch(0)("DISPRO")
                             DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
+                            DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
                             If Description <> "" Then
                                 Description &= ", "
@@ -1299,15 +1466,17 @@ Namespace DistributorAgreement
                         End If
                     End If
                 Case "F1"
-                    totalInvoiceBeforeF3 = Row("TOTAL_PBF3")
                     Dim AchPBF3 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
                     Dim DiscF3 As Decimal = 0
+                    totalInvoiceBeforeF3 = Row("TOTAL_PBF3")
+                    PBF3Dist = Row("PBF3_DIST")
                     AchPBF3 = AchPBF3 + "F3"
                     If totalInvoiceBeforeF3 > 0 And Not IsNothing(DVPrevAch) Then
                         DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
                         If DVPrevAch.Count > 0 Then
                             PrevDisPro = DVCurAch(0)("DISPRO")
                             DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
+                            DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
                             If Description <> "" Then
                                 Description &= ", "
@@ -1508,9 +1677,9 @@ Namespace DistributorAgreement
                     " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
                     " WHERE DA.AGREEMENT_NO = @AGREEMENT_NO ;"
             'ACH_HEADER_ID, DISTRIBUTOR_ID, AGREEMENT_NO, BRAND_ID,AGREE_BRAND_ID,TARGET, TARGET_FM, TARGET_PL, TARGET_VALUE,FLAG,
-            'TOTAL_TARGET, TOTAL_PO, TOTAL_PO_VALUE, BALANCE, TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_ACTUAL, ACH_DISPRO, DISPRO,
-            'CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsNew, IsChanged, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, GPPBF3, GPCPQ1, 
-            'GPCPQ2, GPCPQ3, GPCPF1, GPCPF2, GPCPF3
+            'TOTAL_TARGET, TOTAL_PO, TOTAL_PO_VALUE, BALANCE, TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_ACTUAL, ACH_DISPRO, DISPRO,DESCRIPTIONS
+            'CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsNew, IsChanged, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, 
+            'ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF3_DIST
             Me.ResetCommandText(CommandType.Text, Query)
             Me.SqlRe = Me.SqlCom.ExecuteReader()
             While Me.SqlRe.Read()
@@ -1550,9 +1719,13 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("ACH_HEADER_ID = '" & ACH_HEADER_ID & "'")
                 If RowsSelect.Length > 0 Then
                     Row = RowsSelect(0) : Row.BeginEdit()
-                    Row("TOTAL_ACTUAL") = SqlRe.GetDecimal(2)
-                    Row("TOTAL_PO_VALUE") = SqlRe.GetDecimal(3)
-                    Row("TOTAL_PO") = SqlRe.GetDecimal(7)
+                    'ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,
+                    'Row("TOTAL_ACTUAL") = SqlRe.GetDecimal(2)
+                    'Row("TOTAL_PO_VALUE") = SqlRe.GetDecimal(3)
+                    ' Row("TOTAL_PO") = SqlRe.GetDecimal(7)
+                    Row("ACTUAL_DIST") = SqlRe.GetDecimal(2)
+                    Row("PO_VALUE_DIST") = SqlRe.GetDecimal(3)
+                    Row("PO_DIST") = SqlRe.GetDecimal(7)
                     Row.EndEdit()
                 End If
             End While : SqlRe.Close()
@@ -1767,7 +1940,7 @@ Namespace DistributorAgreement
                             Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBEF3))
                             setDataAdapter(Me.SqlCom).Fill(tblTemp)
                             If tblTemp.Rows.Count > 0 Then
-                                SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "TOTAL_PBF3")
+                                SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "PBF3_DIST")
                                 Me.ResetCommandText(CommandType.Text, Query2)
                                 tblTemp = New DataTable("T_TEMP")
                                 tblTemp.Clear()
@@ -1784,7 +1957,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF1))
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
-                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "TOTAL_CPF1")
+                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPF1_DIST")
                             Me.ResetCommandText(CommandType.Text, Query2)
                             tblTemp = New DataTable("T_TEMP")
                             tblTemp.Clear()
@@ -1800,7 +1973,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF2))
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
-                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "TOTAL_CPF2")
+                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPF2_DIST")
                             Me.ResetCommandText(CommandType.Text, Query2)
                             tblTemp = New DataTable("T_TEMP")
                             tblTemp.Clear()
@@ -1815,7 +1988,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF1))
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
-                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "TOTAL_CPF1")
+                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPF1_DIST")
                             Me.ResetCommandText(CommandType.Text, Query2)
                             tblTemp = New DataTable("T_TEMP")
                             tblTemp.Clear()
@@ -1830,7 +2003,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ1))
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
-                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "TOTAL_CPQ2")
+                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ2_DIST")
                             Me.ResetCommandText(CommandType.Text, Query2)
                             tblTemp = New DataTable("T_TEMP")
                             tblTemp.Clear()
@@ -1846,7 +2019,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ2))
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
-                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "TOTAL_CPQ2")
+                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ2_DIST")
                             Me.ResetCommandText(CommandType.Text, Query2)
                             tblTemp = New DataTable("T_TEMP")
                             tblTemp.Clear()
@@ -1861,7 +2034,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ3))
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
-                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "TOTAL_CPQ3")
+                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ3_DIST")
                             Me.ResetCommandText(CommandType.Text, Query2)
                             tblTemp = New DataTable("T_TEMP")
                             tblTemp.Clear()

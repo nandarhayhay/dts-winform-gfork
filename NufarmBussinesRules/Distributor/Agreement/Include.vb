@@ -248,7 +248,8 @@ Namespace DistributorAgreement
                         " TARGET_Q1_FM = @TARGET_Q1_FM, TARGET_Q2_FM = @TARGET_Q2_FM, TARGET_Q3_FM = @TARGET_Q3_FM, TARGET_Q4_FM = @TARGET_Q4_FM, " & vbCrLf & _
                         " TARGET_Q1_PL = @TARGET_Q1_PL, TARGET_Q2_PL = @TARGET_Q2_PL, TARGET_Q3_PL = @TARGET_Q3_PL, " & vbCrLf & _
                         " TARGET_Q4_PL = @TARGET_Q4_PL, TARGET_S1_FM = @TARGET_S1_FM, TARGET_S2_FM = @TARGET_S2_FM, TARGET_S1_PL = @TARGET_S1_PL, TARGET_S2_PL = @TARGET_S2_PL, " & vbCrLf & _
-                        " COMB_AGREE_BRAND_ID = @COMB_AGREE_BRAND_ID,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = GETDATE() WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID ; "
+                        " TARGET_FMP1=@TARGET_FMP1,TARGET_FMP2=@TARGET_FMP2,TARGET_FMP3=@TARGET_FMP3,TARGET_FMP_FM1=@TARGET_FMP_FM1,TARGET_FMP_FM2=@TARGET_FMP_FM2," & vbCrLf & _
+                        " TARGET_FMP_FM3=@TARGET_FMP_FM3,TARGET_FMP_PL1=@TARGET_FMP_PL1,TARGET_FMP_PL2=@TARGET_FMP_PL2,TARGET_FMP_PL3=@TARGET_FMP_PL3, COMB_AGREE_BRAND_ID = @COMB_AGREE_BRAND_ID,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = GETDATE() WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID ; "
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If
@@ -274,6 +275,19 @@ Namespace DistributorAgreement
                 Me.AddParameter("@TARGET_S2_FM", SqlDbType.Decimal, Me.S2_FM)
                 Me.AddParameter("@TARGET_S1_PL", SqlDbType.Decimal, Me.S1_PL)
                 Me.AddParameter("@TARGET_S2_PL", SqlDbType.Decimal, Me.S2_PL)
+
+                Me.AddParameter("@TARGET_FMP1", SqlDbType.Decimal, Me.FMP1)
+                Me.AddParameter("@TARGET_FMP2", SqlDbType.Decimal, Me.FMP2)
+                Me.AddParameter("@TARGET_FMP3", SqlDbType.Decimal, Me.FMP3)
+
+                Me.AddParameter("@TARGET_FMP_FM1", SqlDbType.Decimal, Me.FMP_FM1)
+                Me.AddParameter("@TARGET_FMP_FM2", SqlDbType.Decimal, Me.FMP_FM2)
+                Me.AddParameter("@TARGET_FMP_FM3", SqlDbType.Decimal, Me.FMP_FM3)
+
+                Me.AddParameter("@TARGET_FMP_PL1", SqlDbType.Decimal, Me.FMP_PL1)
+                Me.AddParameter("@TARGET_FMP_PL2", SqlDbType.Decimal, Me.FMP_PL2)
+                Me.AddParameter("@TARGET_FMP_PL3", SqlDbType.Decimal, Me.FMP_PL3)
+
                 Me.AddParameter("@COMB_AGREE_BRAND_ID", SqlDbType.VarChar, Me.Comb_Agree_Brand_ID, 32) ' VARCHAR(32),
                 Me.AddParameter("@MODIFY_BY", SqlDbType.VarChar, NufarmBussinesRules.User.UserLogin.UserName, 30) '  VARCHAR(30)
                 Me.OpenConnection() : Me.BeginTransaction() : Me.SqlCom.Transaction = Me.SqlTrans : Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
@@ -296,7 +310,7 @@ Namespace DistributorAgreement
                 End If
                 If Not IsNothing(ds4months) Then
                     If ds4months.HasChanges() Then
-                        SaveDS4Month(ds4months.Tables(0))
+                        SaveDS4Month(ds4months.Tables(0), True)
                     End If
                 End If
                 If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
@@ -441,7 +455,7 @@ Namespace DistributorAgreement
                 'save given progressive
                 If Not IsNothing(DSR) Then
                     If DSR.HasChanges() Then
-                        SaveDS4Month(ds.Tables(0))
+                        SaveDS4Month(DSR.Tables(0), True)
                     End If
                 End If
                 If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
@@ -456,7 +470,10 @@ Namespace DistributorAgreement
                 Throw ex
             End Try
         End Sub
-        Private Sub SaveDS4Month(ByVal dt As DataTable)
+        Public Sub SaveDS4Month(ByRef dt As DataTable, ByVal IsPendingTransc As Boolean)
+            If Not IsPendingTransc Then
+                Me.OpenConnection() : Me.BeginTransaction()
+            End If
             Dim commandInsert As SqlCommand = Me.SqlConn.CreateCommand()
             Dim commandUpdate As SqlCommand = Me.SqlConn.CreateCommand()
             Dim commandDelete As SqlCommand = Me.SqlConn.CreateCommand()
@@ -473,7 +490,7 @@ Namespace DistributorAgreement
                     .CommandText = Query
                     .Transaction = Me.SqlTrans
                     .Parameters.Add("@AGREEMENT_NO", SqlDbType.VarChar, 25, "AGREEMENT_NO")
-                    .Parameters.Add("@PRODUCT_CATEGORY", SqlDbType.Char, 20, "PRODUCT_CATEGORY")
+                    .Parameters.Add("@PRODUCT_CATEGORY", SqlDbType.VarChar, 20, "PRODUCT_CATEGORY")
                     .Parameters.Add("@PS_CATEGORY", SqlDbType.Char, 1, "PS_CATEGORY")
                     .Parameters.Add("@ACH_METHODE", SqlDbType.VarChar, 5, "ACH_METHODE")
                     .Parameters.Add("@UP_TO_PCT", SqlDbType.Decimal, 0, "UP_TO_PCT")
@@ -498,6 +515,7 @@ Namespace DistributorAgreement
                     .Transaction = Me.SqlTrans
                     .Parameters.Add("@AGREEMENT_NO", SqlDbType.VarChar, 25, "AGREEMENT_NO")
                     .Parameters.Add("@PS_CATEGORY", SqlDbType.Char, 1, "PS_CATEGORY")
+                    .Parameters.Add("@PRODUCT_CATEGORY", SqlDbType.VarChar, 20, "PRODUCT_CATEGORY")
                     .Parameters.Add("@ACH_METHODE", SqlDbType.VarChar, 5, "ACH_METHODE")
                     .Parameters.Add("@UP_TO_PCT", SqlDbType.Decimal, 0, "UP_TO_PCT")
                     .Parameters.Add("@DISC_PCT", SqlDbType.Decimal, 0, "DISC_PCT")
@@ -523,6 +541,10 @@ Namespace DistributorAgreement
                     commandDelete.Parameters.Clear()
                 End With
             End If
+            If Not IsPendingTransc Then
+                Me.CommiteTransaction() : Me.CloseConnection()
+            End If
+            dt.AcceptChanges()
         End Sub
 
         Private Sub SaveGivenProgressive()
@@ -1163,10 +1185,13 @@ Namespace DistributorAgreement
                 Throw ex
             End Try
         End Sub
-        Public Function getSchemaR(ByVal AgreementNo As String, ByRef hasRef As Boolean, ByVal mustCloseConnection As Boolean) As DataTable
+        Public Function getSchemaR(ByVal AgreementNo As String, ByVal mustCloseConnection As Boolean) As DataTable
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                "SELECT A.*,IDRow = A.AGREEMENT_NO+A.PRODUCT_CATEGORY + A.PS_CATEGORY+A.FLAG FROM AGREE_PROG_DISC_R A WHERE A.AGREEMENT_NO = @AGREEMENT_NO;"
+                "SELECT A.*,IDRow = A.AGREEMENT_NO+A.PRODUCT_CATEGORY + A.PS_CATEGORY+A.FLAG, " & vbCrLf & _
+                " HasRef = CASE " & vbCrLf & _
+                " WHEN EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = A.FLAG) THEN 1 ELSE 0 END " & vbCrLf & _
+                " FROM AGREE_PROG_DISC_R A WHERE A.AGREEMENT_NO = @AGREEMENT_NO;"
                 If IsNothing(Me.SqlCom) Then
                     Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
@@ -1175,16 +1200,16 @@ Namespace DistributorAgreement
                 Dim tbl As New DataTable("TblProgressive")
                 Me.OpenConnection()
                 setDataAdapter(Me.SqlCom).Fill(tbl)
-                'cek reference
-                Query = "SET NOCOUNT ON; " & vbCrLf & _
-                "SELECT 1 WHERE EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO);"
-                Me.ResetCommandText(CommandType.Text, Query)
-                Dim retval As Object = Me.SqlCom.ExecuteScalar()
-                If Not IsNothing(retval) Then
-                    If CInt(retval) > 0 Then
-                        hasRef = True
-                    End If
-                End If
+                ''cek reference
+                'Query = "SET NOCOUNT ON; " & vbCrLf & _
+                '"SELECT 1 WHERE EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO);"
+                'Me.ResetCommandText(CommandType.Text, Query)
+                'Dim retval As Object = Me.SqlCom.ExecuteScalar()
+                'If Not IsNothing(retval) Then
+                '    If CInt(retval) > 0 Then
+                '        hasRef = True
+                '    End If
+                'End If
                 Me.ClearCommandParameters()
                 If mustCloseConnection Then : Me.CloseConnection() : End If
                 Return tbl

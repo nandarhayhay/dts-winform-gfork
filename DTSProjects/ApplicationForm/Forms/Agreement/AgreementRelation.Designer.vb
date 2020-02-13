@@ -324,7 +324,7 @@ Partial Class AgreementRelation
         tbQuarter.Location = New System.Drawing.Point(4, 22)
         tbQuarter.Name = "tbQuarter"
         tbQuarter.Padding = New System.Windows.Forms.Padding(3)
-        tbQuarter.Size = New System.Drawing.Size(337, 174)
+        tbQuarter.Size = New System.Drawing.Size(303, 184)
         tbQuarter.TabIndex = 1
         tbQuarter.Text = "Quarter"
         tbQuarter.UseVisualStyleBackColor = True
@@ -362,15 +362,17 @@ Partial Class AgreementRelation
         Me.grpQuarterly.Location = New System.Drawing.Point(3, 3)
         Me.grpQuarterly.Name = "grpQuarterly"
         Me.grpQuarterly.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.grpQuarterly.Size = New System.Drawing.Size(331, 168)
+        Me.grpQuarterly.Size = New System.Drawing.Size(297, 178)
         Me.grpQuarterly.TabIndex = 8
         Me.grpQuarterly.TabStop = False
         Me.grpQuarterly.Text = "Q1"
         '
         'txtPlQ4
         '
+        Me.txtPlQ4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtPlQ4.FormatString = "#,##0.000"
-        Me.txtPlQ4.Location = New System.Drawing.Point(245, 91)
+        Me.txtPlQ4.Location = New System.Drawing.Point(205, 91)
         Me.txtPlQ4.Name = "txtPlQ4"
         Me.txtPlQ4.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ4.TabIndex = 32
@@ -379,9 +381,11 @@ Partial Class AgreementRelation
         '
         'Label29
         '
+        Me.Label29.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label29.AutoSize = True
         Me.Label29.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label29.Location = New System.Drawing.Point(225, 92)
+        Me.Label29.Location = New System.Drawing.Point(185, 92)
         Me.Label29.Name = "Label29"
         Me.Label29.Size = New System.Drawing.Size(18, 15)
         Me.Label29.TabIndex = 31
@@ -389,8 +393,10 @@ Partial Class AgreementRelation
         '
         'txtPlQ3
         '
+        Me.txtPlQ3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtPlQ3.FormatString = "#,##0.000"
-        Me.txtPlQ3.Location = New System.Drawing.Point(245, 67)
+        Me.txtPlQ3.Location = New System.Drawing.Point(205, 67)
         Me.txtPlQ3.Name = "txtPlQ3"
         Me.txtPlQ3.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ3.TabIndex = 30
@@ -399,9 +405,11 @@ Partial Class AgreementRelation
         '
         'Label30
         '
+        Me.Label30.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label30.AutoSize = True
         Me.Label30.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label30.Location = New System.Drawing.Point(225, 70)
+        Me.Label30.Location = New System.Drawing.Point(185, 70)
         Me.Label30.Name = "Label30"
         Me.Label30.Size = New System.Drawing.Size(18, 15)
         Me.Label30.TabIndex = 29
@@ -409,8 +417,10 @@ Partial Class AgreementRelation
         '
         'txtPlQ2
         '
+        Me.txtPlQ2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtPlQ2.FormatString = "#,##0.000"
-        Me.txtPlQ2.Location = New System.Drawing.Point(245, 40)
+        Me.txtPlQ2.Location = New System.Drawing.Point(205, 40)
         Me.txtPlQ2.Name = "txtPlQ2"
         Me.txtPlQ2.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ2.TabIndex = 28
@@ -419,9 +429,11 @@ Partial Class AgreementRelation
         '
         'Label31
         '
+        Me.Label31.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label31.AutoSize = True
         Me.Label31.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label31.Location = New System.Drawing.Point(225, 43)
+        Me.Label31.Location = New System.Drawing.Point(185, 43)
         Me.Label31.Name = "Label31"
         Me.Label31.Size = New System.Drawing.Size(18, 15)
         Me.Label31.TabIndex = 27
@@ -429,8 +441,10 @@ Partial Class AgreementRelation
         '
         'txtPlQ1
         '
+        Me.txtPlQ1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtPlQ1.FormatString = "#,##0.000"
-        Me.txtPlQ1.Location = New System.Drawing.Point(245, 13)
+        Me.txtPlQ1.Location = New System.Drawing.Point(205, 13)
         Me.txtPlQ1.Name = "txtPlQ1"
         Me.txtPlQ1.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ1.TabIndex = 26
@@ -439,9 +453,11 @@ Partial Class AgreementRelation
         '
         'Label32
         '
+        Me.Label32.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label32.AutoSize = True
         Me.Label32.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label32.Location = New System.Drawing.Point(225, 15)
+        Me.Label32.Location = New System.Drawing.Point(185, 15)
         Me.Label32.Name = "Label32"
         Me.Label32.Size = New System.Drawing.Size(18, 15)
         Me.Label32.TabIndex = 25
@@ -449,19 +465,23 @@ Partial Class AgreementRelation
         '
         'txtFreeMarketQ4
         '
+        Me.txtFreeMarketQ4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFreeMarketQ4.FormatString = "#,##0.000"
-        Me.txtFreeMarketQ4.Location = New System.Drawing.Point(160, 91)
+        Me.txtFreeMarketQ4.Location = New System.Drawing.Point(119, 91)
         Me.txtFreeMarketQ4.Name = "txtFreeMarketQ4"
-        Me.txtFreeMarketQ4.Size = New System.Drawing.Size(61, 20)
+        Me.txtFreeMarketQ4.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ4.TabIndex = 24
         Me.txtFreeMarketQ4.Text = "0.000"
         Me.txtFreeMarketQ4.Value = New Decimal(New Integer() {0, 0, 0, 196608})
         '
         'Label21
         '
+        Me.Label21.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label21.AutoSize = True
         Me.Label21.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label21.Location = New System.Drawing.Point(133, 96)
+        Me.Label21.Location = New System.Drawing.Point(92, 96)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(23, 15)
         Me.Label21.TabIndex = 23
@@ -469,19 +489,23 @@ Partial Class AgreementRelation
         '
         'txtFreeMarketQ3
         '
+        Me.txtFreeMarketQ3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFreeMarketQ3.FormatString = "#,##0.000"
-        Me.txtFreeMarketQ3.Location = New System.Drawing.Point(161, 67)
+        Me.txtFreeMarketQ3.Location = New System.Drawing.Point(119, 67)
         Me.txtFreeMarketQ3.Name = "txtFreeMarketQ3"
-        Me.txtFreeMarketQ3.Size = New System.Drawing.Size(60, 20)
+        Me.txtFreeMarketQ3.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ3.TabIndex = 22
         Me.txtFreeMarketQ3.Text = "0.000"
         Me.txtFreeMarketQ3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
         '
         'Label22
         '
+        Me.Label22.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label22.AutoSize = True
         Me.Label22.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label22.Location = New System.Drawing.Point(133, 69)
+        Me.Label22.Location = New System.Drawing.Point(92, 69)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(23, 15)
         Me.Label22.TabIndex = 21
@@ -489,19 +513,23 @@ Partial Class AgreementRelation
         '
         'txtFreeMarketQ2
         '
+        Me.txtFreeMarketQ2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFreeMarketQ2.FormatString = "#,##0.000"
-        Me.txtFreeMarketQ2.Location = New System.Drawing.Point(160, 39)
+        Me.txtFreeMarketQ2.Location = New System.Drawing.Point(119, 39)
         Me.txtFreeMarketQ2.Name = "txtFreeMarketQ2"
-        Me.txtFreeMarketQ2.Size = New System.Drawing.Size(61, 20)
+        Me.txtFreeMarketQ2.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ2.TabIndex = 20
         Me.txtFreeMarketQ2.Text = "0.000"
         Me.txtFreeMarketQ2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
         '
         'Label18
         '
+        Me.Label18.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label18.AutoSize = True
         Me.Label18.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label18.Location = New System.Drawing.Point(133, 42)
+        Me.Label18.Location = New System.Drawing.Point(92, 42)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(23, 15)
         Me.Label18.TabIndex = 19
@@ -509,19 +537,23 @@ Partial Class AgreementRelation
         '
         'txtFreeMarketQ1
         '
+        Me.txtFreeMarketQ1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFreeMarketQ1.FormatString = "#,##0.000"
-        Me.txtFreeMarketQ1.Location = New System.Drawing.Point(160, 14)
+        Me.txtFreeMarketQ1.Location = New System.Drawing.Point(119, 14)
         Me.txtFreeMarketQ1.Name = "txtFreeMarketQ1"
-        Me.txtFreeMarketQ1.Size = New System.Drawing.Size(61, 20)
+        Me.txtFreeMarketQ1.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ1.TabIndex = 18
         Me.txtFreeMarketQ1.Text = "0.000"
         Me.txtFreeMarketQ1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
         '
         'Label20
         '
+        Me.Label20.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label20.AutoSize = True
         Me.Label20.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label20.Location = New System.Drawing.Point(133, 16)
+        Me.Label20.Location = New System.Drawing.Point(92, 16)
         Me.Label20.Name = "Label20"
         Me.Label20.Size = New System.Drawing.Size(23, 15)
         Me.Label20.TabIndex = 17
@@ -529,40 +561,48 @@ Partial Class AgreementRelation
         '
         'txtQ4QTY
         '
+        Me.txtQ4QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtQ4QTY.FormatString = "#,##0.000"
-        Me.txtQ4QTY.Location = New System.Drawing.Point(59, 91)
+        Me.txtQ4QTY.Location = New System.Drawing.Point(24, 91)
         Me.txtQ4QTY.Name = "txtQ4QTY"
-        Me.txtQ4QTY.Size = New System.Drawing.Size(68, 20)
+        Me.txtQ4QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ4QTY.TabIndex = 16
         Me.txtQ4QTY.Text = "0.000"
         Me.txtQ4QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
         '
         'txtQ3QTY
         '
+        Me.txtQ3QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtQ3QTY.FormatString = "#,##0.000"
-        Me.txtQ3QTY.Location = New System.Drawing.Point(59, 65)
+        Me.txtQ3QTY.Location = New System.Drawing.Point(24, 65)
         Me.txtQ3QTY.Name = "txtQ3QTY"
-        Me.txtQ3QTY.Size = New System.Drawing.Size(68, 20)
+        Me.txtQ3QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ3QTY.TabIndex = 15
         Me.txtQ3QTY.Text = "0.000"
         Me.txtQ3QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
         '
         'txtQ2QTY
         '
+        Me.txtQ2QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtQ2QTY.FormatString = "#,##0.000"
-        Me.txtQ2QTY.Location = New System.Drawing.Point(59, 39)
+        Me.txtQ2QTY.Location = New System.Drawing.Point(24, 39)
         Me.txtQ2QTY.Name = "txtQ2QTY"
-        Me.txtQ2QTY.Size = New System.Drawing.Size(68, 20)
+        Me.txtQ2QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ2QTY.TabIndex = 14
         Me.txtQ2QTY.Text = "0.000"
         Me.txtQ2QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
         '
         'txtQ1QTY
         '
+        Me.txtQ1QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtQ1QTY.FormatString = "#,##0.000"
-        Me.txtQ1QTY.Location = New System.Drawing.Point(59, 14)
+        Me.txtQ1QTY.Location = New System.Drawing.Point(24, 14)
         Me.txtQ1QTY.Name = "txtQ1QTY"
-        Me.txtQ1QTY.Size = New System.Drawing.Size(68, 20)
+        Me.txtQ1QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ1QTY.TabIndex = 13
         Me.txtQ1QTY.Text = "0.000"
         Me.txtQ1QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -589,7 +629,7 @@ Partial Class AgreementRelation
         '
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(3, 66)
+        Me.Label5.Location = New System.Drawing.Point(3, 67)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(49, 15)
         Me.Label5.TabIndex = 2
@@ -599,7 +639,7 @@ Partial Class AgreementRelation
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(3, 40)
+        Me.Label4.Location = New System.Drawing.Point(3, 41)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(49, 15)
         Me.Label4.TabIndex = 1
@@ -661,7 +701,7 @@ Partial Class AgreementRelation
         Me.GridEX1.Name = "GridEX1"
         Me.GridEX1.RecordNavigator = True
         Me.GridEX1.RowFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.GridEX1.Size = New System.Drawing.Size(436, 608)
+        Me.GridEX1.Size = New System.Drawing.Size(361, 608)
         Me.GridEX1.TabIndex = 0
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.GridEX1.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
@@ -672,10 +712,10 @@ Partial Class AgreementRelation
         Me.grpData.Controls.Add(Me.UiTab1)
         Me.grpData.Controls.Add(Me.PanelEx1)
         Me.grpData.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpData.Location = New System.Drawing.Point(441, 0)
+        Me.grpData.Location = New System.Drawing.Point(366, 0)
         Me.grpData.Name = "grpData"
         Me.grpData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.grpData.Size = New System.Drawing.Size(636, 677)
+        Me.grpData.Size = New System.Drawing.Size(711, 677)
         Me.grpData.TabIndex = 4
         Me.grpData.TabStop = False
         Me.grpData.Text = "                                                       Agrement No"
@@ -686,7 +726,7 @@ Partial Class AgreementRelation
         Me.UiTab1.Location = New System.Drawing.Point(3, 44)
         Me.UiTab1.Name = "UiTab1"
         Me.UiTab1.PanelFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.UiTab1.Size = New System.Drawing.Size(630, 630)
+        Me.UiTab1.Size = New System.Drawing.Size(705, 630)
         Me.UiTab1.TabIndex = 0
         Me.UiTab1.TabPages.AddRange(New Janus.Windows.UI.Tab.UITabPage() {Me.tbBrandInclude, Me.tbCombinedBrand})
         Me.UiTab1.VisualStyle = Janus.Windows.UI.Tab.TabVisualStyle.Office2007
@@ -700,7 +740,7 @@ Partial Class AgreementRelation
         Me.tbBrandInclude.Location = New System.Drawing.Point(1, 21)
         Me.tbBrandInclude.Name = "tbBrandInclude"
         Me.tbBrandInclude.PanelFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.tbBrandInclude.Size = New System.Drawing.Size(628, 608)
+        Me.tbBrandInclude.Size = New System.Drawing.Size(703, 608)
         Me.tbBrandInclude.StateStyles.FormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbBrandInclude.StateStyles.FormatStyle.BackColorGradient = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.tbBrandInclude.TabStop = True
@@ -712,9 +752,9 @@ Partial Class AgreementRelation
         Me.grpMainEntry.Controls.Add(Me.pnlMainEntryBottom)
         Me.grpMainEntry.Controls.Add(Me.pnlMainEntryBrandTop)
         Me.grpMainEntry.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grpMainEntry.Location = New System.Drawing.Point(267, 0)
+        Me.grpMainEntry.Location = New System.Drawing.Point(382, 0)
         Me.grpMainEntry.Name = "grpMainEntry"
-        Me.grpMainEntry.Size = New System.Drawing.Size(361, 574)
+        Me.grpMainEntry.Size = New System.Drawing.Size(321, 574)
         Me.grpMainEntry.TabIndex = 19
         Me.grpMainEntry.TabStop = False
         '
@@ -725,7 +765,7 @@ Partial Class AgreementRelation
         Me.pnlMainEntryFlagMidle.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlMainEntryFlagMidle.Location = New System.Drawing.Point(3, 82)
         Me.pnlMainEntryFlagMidle.Name = "pnlMainEntryFlagMidle"
-        Me.pnlMainEntryFlagMidle.Size = New System.Drawing.Size(355, 214)
+        Me.pnlMainEntryFlagMidle.Size = New System.Drawing.Size(315, 214)
         Me.pnlMainEntryFlagMidle.TabIndex = 19
         '
         'TabControl1
@@ -733,10 +773,11 @@ Partial Class AgreementRelation
         Me.TabControl1.Controls.Add(Me.tbSemester)
         Me.TabControl1.Controls.Add(tbQuarter)
         Me.TabControl1.Controls.Add(Me.tbFMP)
-        Me.TabControl1.Location = New System.Drawing.Point(3, 6)
+        Me.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl1.Location = New System.Drawing.Point(0, 0)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(345, 200)
+        Me.TabControl1.Size = New System.Drawing.Size(311, 210)
         Me.TabControl1.TabIndex = 10
         '
         'tbSemester
@@ -746,7 +787,7 @@ Partial Class AgreementRelation
         Me.tbSemester.Location = New System.Drawing.Point(4, 22)
         Me.tbSemester.Name = "tbSemester"
         Me.tbSemester.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbSemester.Size = New System.Drawing.Size(337, 174)
+        Me.tbSemester.Size = New System.Drawing.Size(303, 184)
         Me.tbSemester.TabIndex = 0
         Me.tbSemester.Text = "Semester"
         Me.tbSemester.UseVisualStyleBackColor = True
@@ -772,7 +813,7 @@ Partial Class AgreementRelation
         Me.grpSemesterly.Location = New System.Drawing.Point(3, 3)
         Me.grpSemesterly.Name = "grpSemesterly"
         Me.grpSemesterly.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.grpSemesterly.Size = New System.Drawing.Size(331, 168)
+        Me.grpSemesterly.Size = New System.Drawing.Size(297, 178)
         Me.grpSemesterly.TabIndex = 9
         Me.grpSemesterly.TabStop = False
         Me.grpSemesterly.Text = "Semesterly"
@@ -788,9 +829,9 @@ Partial Class AgreementRelation
         'txtPlS2
         '
         Me.txtPlS2.FormatString = "#,##0.000"
-        Me.txtPlS2.Location = New System.Drawing.Point(244, 43)
+        Me.txtPlS2.Location = New System.Drawing.Point(224, 43)
         Me.txtPlS2.Name = "txtPlS2"
-        Me.txtPlS2.Size = New System.Drawing.Size(68, 20)
+        Me.txtPlS2.Size = New System.Drawing.Size(69, 20)
         Me.txtPlS2.TabIndex = 20
         Me.txtPlS2.Text = "0.000"
         Me.txtPlS2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -799,7 +840,7 @@ Partial Class AgreementRelation
         '
         Me.Label24.AutoSize = True
         Me.Label24.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label24.Location = New System.Drawing.Point(224, 44)
+        Me.Label24.Location = New System.Drawing.Point(208, 45)
         Me.Label24.Name = "Label24"
         Me.Label24.Size = New System.Drawing.Size(18, 15)
         Me.Label24.TabIndex = 19
@@ -808,9 +849,9 @@ Partial Class AgreementRelation
         'txtPlS1
         '
         Me.txtPlS1.FormatString = "#,##0.000"
-        Me.txtPlS1.Location = New System.Drawing.Point(244, 18)
+        Me.txtPlS1.Location = New System.Drawing.Point(224, 18)
         Me.txtPlS1.Name = "txtPlS1"
-        Me.txtPlS1.Size = New System.Drawing.Size(68, 20)
+        Me.txtPlS1.Size = New System.Drawing.Size(69, 20)
         Me.txtPlS1.TabIndex = 18
         Me.txtPlS1.Text = "0.000"
         Me.txtPlS1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -819,7 +860,7 @@ Partial Class AgreementRelation
         '
         Me.Label28.AutoSize = True
         Me.Label28.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label28.Location = New System.Drawing.Point(224, 20)
+        Me.Label28.Location = New System.Drawing.Point(207, 20)
         Me.Label28.Name = "Label28"
         Me.Label28.Size = New System.Drawing.Size(18, 15)
         Me.Label28.TabIndex = 17
@@ -828,9 +869,9 @@ Partial Class AgreementRelation
         'txtFreeMarketS2
         '
         Me.txtFreeMarketS2.FormatString = "#,##0.000"
-        Me.txtFreeMarketS2.Location = New System.Drawing.Point(155, 44)
+        Me.txtFreeMarketS2.Location = New System.Drawing.Point(136, 44)
         Me.txtFreeMarketS2.Name = "txtFreeMarketS2"
-        Me.txtFreeMarketS2.Size = New System.Drawing.Size(66, 20)
+        Me.txtFreeMarketS2.Size = New System.Drawing.Size(69, 20)
         Me.txtFreeMarketS2.TabIndex = 16
         Me.txtFreeMarketS2.Text = "0.000"
         Me.txtFreeMarketS2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -839,7 +880,7 @@ Partial Class AgreementRelation
         '
         Me.Label16.AutoSize = True
         Me.Label16.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label16.Location = New System.Drawing.Point(130, 47)
+        Me.Label16.Location = New System.Drawing.Point(115, 47)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(23, 15)
         Me.Label16.TabIndex = 15
@@ -848,9 +889,9 @@ Partial Class AgreementRelation
         'txtFreeMarketS1
         '
         Me.txtFreeMarketS1.FormatString = "#,##0.000"
-        Me.txtFreeMarketS1.Location = New System.Drawing.Point(155, 19)
+        Me.txtFreeMarketS1.Location = New System.Drawing.Point(136, 19)
         Me.txtFreeMarketS1.Name = "txtFreeMarketS1"
-        Me.txtFreeMarketS1.Size = New System.Drawing.Size(66, 20)
+        Me.txtFreeMarketS1.Size = New System.Drawing.Size(69, 20)
         Me.txtFreeMarketS1.TabIndex = 14
         Me.txtFreeMarketS1.Text = "0.000"
         Me.txtFreeMarketS1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -859,7 +900,7 @@ Partial Class AgreementRelation
         '
         Me.Label15.AutoSize = True
         Me.Label15.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.Location = New System.Drawing.Point(129, 22)
+        Me.Label15.Location = New System.Drawing.Point(115, 22)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(23, 15)
         Me.Label15.TabIndex = 13
@@ -868,9 +909,9 @@ Partial Class AgreementRelation
         'txtS2QTY
         '
         Me.txtS2QTY.FormatString = "#,##0.000"
-        Me.txtS2QTY.Location = New System.Drawing.Point(58, 45)
+        Me.txtS2QTY.Location = New System.Drawing.Point(49, 45)
         Me.txtS2QTY.Name = "txtS2QTY"
-        Me.txtS2QTY.Size = New System.Drawing.Size(69, 20)
+        Me.txtS2QTY.Size = New System.Drawing.Size(65, 20)
         Me.txtS2QTY.TabIndex = 12
         Me.txtS2QTY.Text = "0.000"
         Me.txtS2QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -878,9 +919,9 @@ Partial Class AgreementRelation
         'txtS1QTY
         '
         Me.txtS1QTY.FormatString = "#,##0.000"
-        Me.txtS1QTY.Location = New System.Drawing.Point(58, 20)
+        Me.txtS1QTY.Location = New System.Drawing.Point(49, 20)
         Me.txtS1QTY.Name = "txtS1QTY"
-        Me.txtS1QTY.Size = New System.Drawing.Size(69, 20)
+        Me.txtS1QTY.Size = New System.Drawing.Size(65, 20)
         Me.txtS1QTY.TabIndex = 11
         Me.txtS1QTY.Text = "0.000"
         Me.txtS1QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -938,14 +979,14 @@ Partial Class AgreementRelation
         Me.tbFMP.Location = New System.Drawing.Point(4, 22)
         Me.tbFMP.Name = "tbFMP"
         Me.tbFMP.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbFMP.Size = New System.Drawing.Size(337, 174)
+        Me.tbFMP.Size = New System.Drawing.Size(303, 184)
         Me.tbFMP.TabIndex = 2
         Me.tbFMP.Text = "4 Months Period"
         '
         'lblTargetFPY
         '
         Me.lblTargetFPY.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTargetFPY.Location = New System.Drawing.Point(6, 95)
+        Me.lblTargetFPY.Location = New System.Drawing.Point(3, 158)
         Me.lblTargetFPY.Name = "lblTargetFPY"
         Me.lblTargetFPY.Size = New System.Drawing.Size(144, 23)
         Me.lblTargetFPY.TabIndex = 49
@@ -954,7 +995,7 @@ Partial Class AgreementRelation
         '
         Me.Label42.AutoSize = True
         Me.Label42.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label42.Location = New System.Drawing.Point(240, 66)
+        Me.Label42.Location = New System.Drawing.Point(213, 66)
         Me.Label42.Name = "Label42"
         Me.Label42.Size = New System.Drawing.Size(18, 15)
         Me.Label42.TabIndex = 48
@@ -964,7 +1005,7 @@ Partial Class AgreementRelation
         '
         Me.Label41.AutoSize = True
         Me.Label41.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label41.Location = New System.Drawing.Point(240, 38)
+        Me.Label41.Location = New System.Drawing.Point(213, 38)
         Me.Label41.Name = "Label41"
         Me.Label41.Size = New System.Drawing.Size(18, 15)
         Me.Label41.TabIndex = 47
@@ -974,7 +1015,7 @@ Partial Class AgreementRelation
         '
         Me.Label40.AutoSize = True
         Me.Label40.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label40.Location = New System.Drawing.Point(240, 13)
+        Me.Label40.Location = New System.Drawing.Point(213, 13)
         Me.Label40.Name = "Label40"
         Me.Label40.Size = New System.Drawing.Size(18, 15)
         Me.Label40.TabIndex = 46
@@ -983,7 +1024,7 @@ Partial Class AgreementRelation
         'txtFMPPL3
         '
         Me.txtFMPPL3.FormatString = "#,##0.000"
-        Me.txtFMPPL3.Location = New System.Drawing.Point(261, 64)
+        Me.txtFMPPL3.Location = New System.Drawing.Point(234, 64)
         Me.txtFMPPL3.Name = "txtFMPPL3"
         Me.txtFMPPL3.Size = New System.Drawing.Size(67, 20)
         Me.txtFMPPL3.TabIndex = 45
@@ -993,7 +1034,7 @@ Partial Class AgreementRelation
         'txtFMPPL2
         '
         Me.txtFMPPL2.FormatString = "#,##0.000"
-        Me.txtFMPPL2.Location = New System.Drawing.Point(262, 37)
+        Me.txtFMPPL2.Location = New System.Drawing.Point(235, 37)
         Me.txtFMPPL2.Name = "txtFMPPL2"
         Me.txtFMPPL2.Size = New System.Drawing.Size(67, 20)
         Me.txtFMPPL2.TabIndex = 44
@@ -1003,7 +1044,7 @@ Partial Class AgreementRelation
         'txtFMPPL1
         '
         Me.txtFMPPL1.FormatString = "#,##0.000"
-        Me.txtFMPPL1.Location = New System.Drawing.Point(262, 10)
+        Me.txtFMPPL1.Location = New System.Drawing.Point(235, 10)
         Me.txtFMPPL1.Name = "txtFMPPL1"
         Me.txtFMPPL1.Size = New System.Drawing.Size(67, 20)
         Me.txtFMPPL1.TabIndex = 43
@@ -1013,7 +1054,7 @@ Partial Class AgreementRelation
         'txtFMPFM3
         '
         Me.txtFMPFM3.FormatString = "#,##0.000"
-        Me.txtFMPFM3.Location = New System.Drawing.Point(174, 64)
+        Me.txtFMPFM3.Location = New System.Drawing.Point(147, 64)
         Me.txtFMPFM3.Name = "txtFMPFM3"
         Me.txtFMPFM3.Size = New System.Drawing.Size(60, 20)
         Me.txtFMPFM3.TabIndex = 42
@@ -1024,7 +1065,7 @@ Partial Class AgreementRelation
         '
         Me.Label34.AutoSize = True
         Me.Label34.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label34.Location = New System.Drawing.Point(147, 66)
+        Me.Label34.Location = New System.Drawing.Point(120, 66)
         Me.Label34.Name = "Label34"
         Me.Label34.Size = New System.Drawing.Size(23, 15)
         Me.Label34.TabIndex = 41
@@ -1033,7 +1074,7 @@ Partial Class AgreementRelation
         'txtFMPFM2
         '
         Me.txtFMPFM2.FormatString = "#,##0.000"
-        Me.txtFMPFM2.Location = New System.Drawing.Point(173, 36)
+        Me.txtFMPFM2.Location = New System.Drawing.Point(146, 36)
         Me.txtFMPFM2.Name = "txtFMPFM2"
         Me.txtFMPFM2.Size = New System.Drawing.Size(61, 20)
         Me.txtFMPFM2.TabIndex = 40
@@ -1044,7 +1085,7 @@ Partial Class AgreementRelation
         '
         Me.Label35.AutoSize = True
         Me.Label35.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label35.Location = New System.Drawing.Point(147, 39)
+        Me.Label35.Location = New System.Drawing.Point(120, 39)
         Me.Label35.Name = "Label35"
         Me.Label35.Size = New System.Drawing.Size(23, 15)
         Me.Label35.TabIndex = 39
@@ -1053,9 +1094,9 @@ Partial Class AgreementRelation
         'txtFMPFM1
         '
         Me.txtFMPFM1.FormatString = "#,##0.000"
-        Me.txtFMPFM1.Location = New System.Drawing.Point(174, 11)
+        Me.txtFMPFM1.Location = New System.Drawing.Point(147, 11)
         Me.txtFMPFM1.Name = "txtFMPFM1"
-        Me.txtFMPFM1.Size = New System.Drawing.Size(61, 20)
+        Me.txtFMPFM1.Size = New System.Drawing.Size(60, 20)
         Me.txtFMPFM1.TabIndex = 38
         Me.txtFMPFM1.Text = "0.000"
         Me.txtFMPFM1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
@@ -1064,7 +1105,7 @@ Partial Class AgreementRelation
         '
         Me.Label36.AutoSize = True
         Me.Label36.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label36.Location = New System.Drawing.Point(147, 13)
+        Me.Label36.Location = New System.Drawing.Point(120, 13)
         Me.Label36.Name = "Label36"
         Me.Label36.Size = New System.Drawing.Size(23, 15)
         Me.Label36.TabIndex = 37
@@ -1073,7 +1114,7 @@ Partial Class AgreementRelation
         'txtFMP3
         '
         Me.txtFMP3.FormatString = "#,##0.000"
-        Me.txtFMP3.Location = New System.Drawing.Point(73, 62)
+        Me.txtFMP3.Location = New System.Drawing.Point(46, 62)
         Me.txtFMP3.Name = "txtFMP3"
         Me.txtFMP3.Size = New System.Drawing.Size(69, 20)
         Me.txtFMP3.TabIndex = 36
@@ -1083,7 +1124,7 @@ Partial Class AgreementRelation
         'txtFMP2
         '
         Me.txtFMP2.FormatString = "#,##0.000"
-        Me.txtFMP2.Location = New System.Drawing.Point(73, 36)
+        Me.txtFMP2.Location = New System.Drawing.Point(46, 36)
         Me.txtFMP2.Name = "txtFMP2"
         Me.txtFMP2.Size = New System.Drawing.Size(70, 20)
         Me.txtFMP2.TabIndex = 35
@@ -1093,7 +1134,7 @@ Partial Class AgreementRelation
         'txtFMP1
         '
         Me.txtFMP1.FormatString = "#,##0.000"
-        Me.txtFMP1.Location = New System.Drawing.Point(73, 10)
+        Me.txtFMP1.Location = New System.Drawing.Point(46, 10)
         Me.txtFMP1.Name = "txtFMP1"
         Me.txtFMP1.Size = New System.Drawing.Size(70, 20)
         Me.txtFMP1.TabIndex = 34
@@ -1106,9 +1147,9 @@ Partial Class AgreementRelation
         Me.Label37.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label37.Location = New System.Drawing.Point(7, 63)
         Me.Label37.Name = "Label37"
-        Me.Label37.Size = New System.Drawing.Size(64, 15)
+        Me.Label37.Size = New System.Drawing.Size(41, 15)
         Me.Label37.TabIndex = 33
-        Me.Label37.Text = "FMP3 QTY"
+        Me.Label37.Text = "FMP 3"
         '
         'Label38
         '
@@ -1116,9 +1157,9 @@ Partial Class AgreementRelation
         Me.Label38.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label38.Location = New System.Drawing.Point(6, 37)
         Me.Label38.Name = "Label38"
-        Me.Label38.Size = New System.Drawing.Size(67, 15)
+        Me.Label38.Size = New System.Drawing.Size(41, 15)
         Me.Label38.TabIndex = 32
-        Me.Label38.Text = "FMP 2 QTY"
+        Me.Label38.Text = "FMP 2"
         '
         'Label39
         '
@@ -1126,9 +1167,9 @@ Partial Class AgreementRelation
         Me.Label39.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label39.Location = New System.Drawing.Point(6, 13)
         Me.Label39.Name = "Label39"
-        Me.Label39.Size = New System.Drawing.Size(67, 15)
+        Me.Label39.Size = New System.Drawing.Size(41, 15)
         Me.Label39.TabIndex = 31
-        Me.Label39.Text = "FMP 1 QTY"
+        Me.Label39.Text = "FMP 1"
         '
         'pnlMainEntryBottom
         '
@@ -1138,7 +1179,7 @@ Partial Class AgreementRelation
         Me.pnlMainEntryBottom.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.pnlMainEntryBottom.Location = New System.Drawing.Point(3, 296)
         Me.pnlMainEntryBottom.Name = "pnlMainEntryBottom"
-        Me.pnlMainEntryBottom.Size = New System.Drawing.Size(355, 275)
+        Me.pnlMainEntryBottom.Size = New System.Drawing.Size(315, 275)
         Me.pnlMainEntryBottom.TabIndex = 20
         '
         'grdunAddedBrandPack
@@ -1151,7 +1192,7 @@ Partial Class AgreementRelation
         Me.grdunAddedBrandPack.GroupByBoxVisible = False
         Me.grdunAddedBrandPack.Location = New System.Drawing.Point(0, 0)
         Me.grdunAddedBrandPack.Name = "grdunAddedBrandPack"
-        Me.grdunAddedBrandPack.Size = New System.Drawing.Size(351, 148)
+        Me.grdunAddedBrandPack.Size = New System.Drawing.Size(311, 148)
         Me.grdunAddedBrandPack.TabIndex = 0
         Me.grdunAddedBrandPack.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
         '
@@ -1197,7 +1238,7 @@ Partial Class AgreementRelation
         Me.grdAddedBrandPack.GroupByBoxVisible = False
         Me.grdAddedBrandPack.Location = New System.Drawing.Point(0, 148)
         Me.grdAddedBrandPack.Name = "grdAddedBrandPack"
-        Me.grdAddedBrandPack.Size = New System.Drawing.Size(351, 123)
+        Me.grdAddedBrandPack.Size = New System.Drawing.Size(311, 123)
         Me.grdAddedBrandPack.TabIndex = 1
         Me.grdAddedBrandPack.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
         '
@@ -1210,7 +1251,7 @@ Partial Class AgreementRelation
         Me.pnlMainEntryBrandTop.Dock = System.Windows.Forms.DockStyle.Top
         Me.pnlMainEntryBrandTop.Location = New System.Drawing.Point(3, 16)
         Me.pnlMainEntryBrandTop.Name = "pnlMainEntryBrandTop"
-        Me.pnlMainEntryBrandTop.Size = New System.Drawing.Size(355, 66)
+        Me.pnlMainEntryBrandTop.Size = New System.Drawing.Size(315, 66)
         Me.pnlMainEntryBrandTop.TabIndex = 18
         '
         'txtGiven
@@ -1254,7 +1295,7 @@ Partial Class AgreementRelation
         Me.MainGrpBrandProgressive.Location = New System.Drawing.Point(0, 0)
         Me.MainGrpBrandProgressive.Name = "MainGrpBrandProgressive"
         Me.MainGrpBrandProgressive.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.MainGrpBrandProgressive.Size = New System.Drawing.Size(267, 574)
+        Me.MainGrpBrandProgressive.Size = New System.Drawing.Size(382, 574)
         Me.MainGrpBrandProgressive.TabIndex = 4
         Me.MainGrpBrandProgressive.TabStop = False
         Me.MainGrpBrandProgressive.Text = "BrandName"
@@ -1267,7 +1308,7 @@ Partial Class AgreementRelation
         Me.pnlMainBrandProgressiveTop.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlMainBrandProgressiveTop.Location = New System.Drawing.Point(3, 16)
         Me.pnlMainBrandProgressiveTop.Name = "pnlMainBrandProgressiveTop"
-        Me.pnlMainBrandProgressiveTop.Size = New System.Drawing.Size(261, 194)
+        Me.pnlMainBrandProgressiveTop.Size = New System.Drawing.Size(376, 194)
         Me.pnlMainBrandProgressiveTop.TabIndex = 17
         '
         'DataGrid1
@@ -1294,7 +1335,7 @@ Partial Class AgreementRelation
         Me.DataGrid1.ParentRowsForeColor = System.Drawing.Color.Black
         Me.DataGrid1.SelectionBackColor = System.Drawing.Color.Wheat
         Me.DataGrid1.SelectionForeColor = System.Drawing.Color.DarkSlateBlue
-        Me.DataGrid1.Size = New System.Drawing.Size(257, 170)
+        Me.DataGrid1.Size = New System.Drawing.Size(372, 170)
         Me.DataGrid1.TabIndex = 1
         '
         'txtFilterBrandName
@@ -1302,7 +1343,7 @@ Partial Class AgreementRelation
         Me.txtFilterBrandName.Dock = System.Windows.Forms.DockStyle.Top
         Me.txtFilterBrandName.Location = New System.Drawing.Point(0, 0)
         Me.txtFilterBrandName.Name = "txtFilterBrandName"
-        Me.txtFilterBrandName.Size = New System.Drawing.Size(257, 20)
+        Me.txtFilterBrandName.Size = New System.Drawing.Size(372, 20)
         Me.txtFilterBrandName.TabIndex = 0
         '
         'grpTypeDiscount
@@ -1314,7 +1355,7 @@ Partial Class AgreementRelation
         Me.grpTypeDiscount.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.grpTypeDiscount.Location = New System.Drawing.Point(3, 210)
         Me.grpTypeDiscount.Name = "grpTypeDiscount"
-        Me.grpTypeDiscount.Size = New System.Drawing.Size(261, 361)
+        Me.grpTypeDiscount.Size = New System.Drawing.Size(376, 361)
         Me.grpTypeDiscount.TabIndex = 16
         Me.grpTypeDiscount.TabStop = False
         '
@@ -1328,7 +1369,7 @@ Partial Class AgreementRelation
         Me.MainTbBrandProgressive.Location = New System.Drawing.Point(3, 33)
         Me.MainTbBrandProgressive.Name = "MainTbBrandProgressive"
         Me.MainTbBrandProgressive.SelectedIndex = 0
-        Me.MainTbBrandProgressive.Size = New System.Drawing.Size(255, 203)
+        Me.MainTbBrandProgressive.Size = New System.Drawing.Size(370, 203)
         Me.MainTbBrandProgressive.TabIndex = 17
         '
         'ContextMenuStrip2
@@ -1363,7 +1404,7 @@ Partial Class AgreementRelation
         Me.tbProgByVolume.Location = New System.Drawing.Point(4, 22)
         Me.tbProgByVolume.Name = "tbProgByVolume"
         Me.tbProgByVolume.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbProgByVolume.Size = New System.Drawing.Size(247, 177)
+        Me.tbProgByVolume.Size = New System.Drawing.Size(362, 177)
         Me.tbProgByVolume.TabIndex = 0
         Me.tbProgByVolume.Text = "Q/S Dispro"
         Me.tbProgByVolume.UseVisualStyleBackColor = True
@@ -1374,7 +1415,7 @@ Partial Class AgreementRelation
         Me.tbPeriodic.FlatBorderColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.tbPeriodic.Location = New System.Drawing.Point(3, 3)
         Me.tbPeriodic.Name = "tbPeriodic"
-        Me.tbPeriodic.Size = New System.Drawing.Size(241, 171)
+        Me.tbPeriodic.Size = New System.Drawing.Size(356, 171)
         Me.tbPeriodic.TabIndex = 14
         Me.tbPeriodic.TabPages.AddRange(New Janus.Windows.UI.Tab.UITabPage() {Me.tbPeriode, Me.tbYearly})
         Me.tbPeriodic.VisualStyle = Janus.Windows.UI.Tab.TabVisualStyle.Office2007
@@ -1384,7 +1425,7 @@ Partial Class AgreementRelation
         Me.tbPeriode.Controls.Add(Me.dgvPeriodic)
         Me.tbPeriode.Location = New System.Drawing.Point(1, 21)
         Me.tbPeriode.Name = "tbPeriode"
-        Me.tbPeriode.Size = New System.Drawing.Size(239, 149)
+        Me.tbPeriode.Size = New System.Drawing.Size(354, 149)
         Me.tbPeriode.TabStop = True
         Me.tbPeriode.Text = "Periodic Discount"
         '
@@ -1427,7 +1468,7 @@ Partial Class AgreementRelation
         DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgvPeriodic.RowHeadersDefaultCellStyle = DataGridViewCellStyle5
         Me.dgvPeriodic.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvPeriodic.Size = New System.Drawing.Size(239, 149)
+        Me.dgvPeriodic.Size = New System.Drawing.Size(354, 149)
         Me.dgvPeriodic.StandardTab = True
         Me.dgvPeriodic.TabIndex = 10
         Me.dgvPeriodic.VirtualMode = True
@@ -1580,7 +1621,7 @@ Partial Class AgreementRelation
         Me.tbProgF.Location = New System.Drawing.Point(4, 22)
         Me.tbProgF.Name = "tbProgF"
         Me.tbProgF.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbProgF.Size = New System.Drawing.Size(247, 177)
+        Me.tbProgF.Size = New System.Drawing.Size(362, 177)
         Me.tbProgF.TabIndex = 2
         Me.tbProgF.Text = "4 Months periode"
         Me.tbProgF.UseVisualStyleBackColor = True
@@ -1607,7 +1648,8 @@ Partial Class AgreementRelation
         Me.GridEX2.Name = "GridEX2"
         Me.GridEX2.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX2.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
-        Me.GridEX2.Size = New System.Drawing.Size(241, 171)
+        Me.GridEX2.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
+        Me.GridEX2.Size = New System.Drawing.Size(356, 171)
         Me.GridEX2.TabIndex = 1
         Me.GridEX2.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
         Me.GridEX2.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
@@ -1619,7 +1661,7 @@ Partial Class AgreementRelation
         Me.tbProgByValue.Location = New System.Drawing.Point(4, 22)
         Me.tbProgByValue.Name = "tbProgByValue"
         Me.tbProgByValue.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbProgByValue.Size = New System.Drawing.Size(247, 177)
+        Me.tbProgByValue.Size = New System.Drawing.Size(362, 177)
         Me.tbProgByValue.TabIndex = 1
         Me.tbProgByValue.UseVisualStyleBackColor = True
         '
@@ -1629,7 +1671,7 @@ Partial Class AgreementRelation
         Me.tbPeriodicVal.FlatBorderColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.tbPeriodicVal.Location = New System.Drawing.Point(3, 3)
         Me.tbPeriodicVal.Name = "tbPeriodicVal"
-        Me.tbPeriodicVal.Size = New System.Drawing.Size(241, 171)
+        Me.tbPeriodicVal.Size = New System.Drawing.Size(356, 171)
         Me.tbPeriodicVal.TabIndex = 15
         Me.tbPeriodicVal.TabPages.AddRange(New Janus.Windows.UI.Tab.UITabPage() {Me.UiTabPage1, Me.UiTabPage3})
         Me.tbPeriodicVal.VisualStyle = Janus.Windows.UI.Tab.TabVisualStyle.Office2007
@@ -1639,7 +1681,7 @@ Partial Class AgreementRelation
         Me.UiTabPage1.Controls.Add(Me.dgvPeriodicVal)
         Me.UiTabPage1.Location = New System.Drawing.Point(1, 21)
         Me.UiTabPage1.Name = "UiTabPage1"
-        Me.UiTabPage1.Size = New System.Drawing.Size(239, 149)
+        Me.UiTabPage1.Size = New System.Drawing.Size(354, 149)
         Me.UiTabPage1.TabStop = True
         Me.UiTabPage1.Text = "Periodic Discount"
         '
@@ -1682,7 +1724,7 @@ Partial Class AgreementRelation
         DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgvPeriodicVal.RowHeadersDefaultCellStyle = DataGridViewCellStyle14
         Me.dgvPeriodicVal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvPeriodicVal.Size = New System.Drawing.Size(239, 149)
+        Me.dgvPeriodicVal.Size = New System.Drawing.Size(354, 149)
         Me.dgvPeriodicVal.StandardTab = True
         Me.dgvPeriodicVal.TabIndex = 10
         Me.dgvPeriodicVal.VirtualMode = True
@@ -1812,7 +1854,7 @@ Partial Class AgreementRelation
         Me.grpPotensi.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.grpPotensi.Location = New System.Drawing.Point(3, 236)
         Me.grpPotensi.Name = "grpPotensi"
-        Me.grpPotensi.Size = New System.Drawing.Size(255, 122)
+        Me.grpPotensi.Size = New System.Drawing.Size(370, 122)
         Me.grpPotensi.TabIndex = 16
         Me.grpPotensi.TabStop = False
         Me.grpPotensi.Text = "Given Progressive"
@@ -1823,7 +1865,7 @@ Partial Class AgreementRelation
         Me.tbPotensi.Location = New System.Drawing.Point(3, 16)
         Me.tbPotensi.Name = "tbPotensi"
         Me.tbPotensi.PanelFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.tbPotensi.Size = New System.Drawing.Size(249, 103)
+        Me.tbPotensi.Size = New System.Drawing.Size(364, 103)
         Me.tbPotensi.TabIndex = 0
         Me.tbPotensi.TabPages.AddRange(New Janus.Windows.UI.Tab.UITabPage() {Me.tbPotensiPeriodBefore, Me.UiTabPage2})
         Me.tbPotensi.TabsStateStyles.FormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
@@ -1843,7 +1885,7 @@ Partial Class AgreementRelation
         Me.tbPotensiPeriodBefore.Location = New System.Drawing.Point(1, 21)
         Me.tbPotensiPeriodBefore.Name = "tbPotensiPeriodBefore"
         Me.tbPotensiPeriodBefore.PanelFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.tbPotensiPeriodBefore.Size = New System.Drawing.Size(247, 81)
+        Me.tbPotensiPeriodBefore.Size = New System.Drawing.Size(362, 81)
         Me.tbPotensiPeriodBefore.StateStyles.FormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbPotensiPeriodBefore.TabStop = True
         Me.tbPotensiPeriodBefore.Text = "Periode Before"
@@ -2038,7 +2080,7 @@ Partial Class AgreementRelation
         Me.chkTypical.Dock = System.Windows.Forms.DockStyle.Top
         Me.chkTypical.Location = New System.Drawing.Point(3, 16)
         Me.chkTypical.Name = "chkTypical"
-        Me.chkTypical.Size = New System.Drawing.Size(255, 17)
+        Me.chkTypical.Size = New System.Drawing.Size(370, 17)
         Me.chkTypical.TabIndex = 15
         Me.chkTypical.Text = "Custom Progressive Discount"
         Me.chkTypical.UseVisualStyleBackColor = False
@@ -2047,7 +2089,7 @@ Partial Class AgreementRelation
         '
         Me.btnRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnRefresh.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.btnRefresh.Location = New System.Drawing.Point(523, 578)
+        Me.btnRefresh.Location = New System.Drawing.Point(598, 578)
         Me.btnRefresh.Name = "btnRefresh"
         Me.btnRefresh.Size = New System.Drawing.Size(99, 27)
         Me.btnRefresh.TabIndex = 16
@@ -2058,7 +2100,7 @@ Partial Class AgreementRelation
         Me.SavingChanges1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.SavingChanges1.Location = New System.Drawing.Point(0, 574)
         Me.SavingChanges1.Name = "SavingChanges1"
-        Me.SavingChanges1.Size = New System.Drawing.Size(628, 34)
+        Me.SavingChanges1.Size = New System.Drawing.Size(703, 34)
         Me.SavingChanges1.TabIndex = 0
         '
         'tbCombinedBrand
@@ -2070,7 +2112,7 @@ Partial Class AgreementRelation
         Me.tbCombinedBrand.Controls.Add(Me.grpComboFirstSecond)
         Me.tbCombinedBrand.Location = New System.Drawing.Point(1, 21)
         Me.tbCombinedBrand.Name = "tbCombinedBrand"
-        Me.tbCombinedBrand.Size = New System.Drawing.Size(628, 608)
+        Me.tbCombinedBrand.Size = New System.Drawing.Size(703, 608)
         Me.tbCombinedBrand.TabStop = True
         Me.tbCombinedBrand.Text = "Combined Brand"
         '
@@ -2082,7 +2124,7 @@ Partial Class AgreementRelation
         Me.PanelEx2.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.PanelEx2.Location = New System.Drawing.Point(0, 570)
         Me.PanelEx2.Name = "PanelEx2"
-        Me.PanelEx2.Size = New System.Drawing.Size(628, 38)
+        Me.PanelEx2.Size = New System.Drawing.Size(703, 38)
         Me.PanelEx2.Style.Alignment = System.Drawing.StringAlignment.Center
         Me.PanelEx2.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground
         Me.PanelEx2.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2
@@ -2106,7 +2148,7 @@ Partial Class AgreementRelation
         Me.TreeView1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TreeView1.Location = New System.Drawing.Point(0, 280)
         Me.TreeView1.Name = "TreeView1"
-        Me.TreeView1.Size = New System.Drawing.Size(628, 328)
+        Me.TreeView1.Size = New System.Drawing.Size(703, 328)
         Me.TreeView1.TabIndex = 18
         '
         'grpComS
@@ -2124,7 +2166,7 @@ Partial Class AgreementRelation
         Me.grpComS.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpComS.Location = New System.Drawing.Point(0, 189)
         Me.grpComS.Name = "grpComS"
-        Me.grpComS.Size = New System.Drawing.Size(628, 91)
+        Me.grpComS.Size = New System.Drawing.Size(703, 91)
         Me.grpComS.TabIndex = 2
         Me.grpComS.TabStop = False
         Me.grpComS.Visible = False
@@ -2247,7 +2289,7 @@ Partial Class AgreementRelation
         Me.grpCombQ.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpCombQ.Location = New System.Drawing.Point(0, 56)
         Me.grpCombQ.Name = "grpCombQ"
-        Me.grpCombQ.Size = New System.Drawing.Size(628, 133)
+        Me.grpCombQ.Size = New System.Drawing.Size(703, 133)
         Me.grpCombQ.TabIndex = 1
         Me.grpCombQ.TabStop = False
         Me.grpCombQ.Visible = False
@@ -2438,7 +2480,7 @@ Partial Class AgreementRelation
         Me.grpComboFirstSecond.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpComboFirstSecond.Location = New System.Drawing.Point(0, 0)
         Me.grpComboFirstSecond.Name = "grpComboFirstSecond"
-        Me.grpComboFirstSecond.Size = New System.Drawing.Size(628, 56)
+        Me.grpComboFirstSecond.Size = New System.Drawing.Size(703, 56)
         Me.grpComboFirstSecond.TabIndex = 3
         Me.grpComboFirstSecond.TabStop = False
         Me.grpComboFirstSecond.Visible = False
@@ -2494,7 +2536,7 @@ Partial Class AgreementRelation
         Me.PanelEx1.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelEx1.Location = New System.Drawing.Point(3, 16)
         Me.PanelEx1.Name = "PanelEx1"
-        Me.PanelEx1.Size = New System.Drawing.Size(630, 28)
+        Me.PanelEx1.Size = New System.Drawing.Size(705, 28)
         Me.PanelEx1.Style.Alignment = System.Drawing.StringAlignment.Center
         Me.PanelEx1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground
         Me.PanelEx1.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2
@@ -2566,7 +2608,7 @@ Partial Class AgreementRelation
         Me.ExpandableSplitter1.HotGripDarkColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.ExpandableSplitter1.HotGripLightColor = System.Drawing.Color.FromArgb(CType(CType(227, Byte), Integer), CType(CType(239, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.ExpandableSplitter1.HotGripLightColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.ExpandableSplitter1.Location = New System.Drawing.Point(436, 0)
+        Me.ExpandableSplitter1.Location = New System.Drawing.Point(361, 0)
         Me.ExpandableSplitter1.Name = "ExpandableSplitter1"
         Me.ExpandableSplitter1.Size = New System.Drawing.Size(5, 677)
         Me.ExpandableSplitter1.Style = DevComponents.DotNetBar.eSplitterStyle.Office2007
@@ -2585,7 +2627,7 @@ Partial Class AgreementRelation
         Me.Bar2.Location = New System.Drawing.Point(0, 0)
         Me.Bar2.MenuBar = True
         Me.Bar2.Name = "Bar2"
-        Me.Bar2.Size = New System.Drawing.Size(436, 24)
+        Me.Bar2.Size = New System.Drawing.Size(361, 24)
         Me.Bar2.Stretch = True
         Me.Bar2.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
         Me.Bar2.TabIndex = 20
@@ -2680,7 +2722,7 @@ Partial Class AgreementRelation
         Me.FilterEditor1.Office2007ColorScheme = Janus.Windows.Common.Office2007ColorScheme.[Default]
         Me.FilterEditor1.ScrollMode = Janus.Windows.UI.Dock.ScrollMode.Both
         Me.FilterEditor1.ScrollStep = 15
-        Me.FilterEditor1.Size = New System.Drawing.Size(436, 45)
+        Me.FilterEditor1.Size = New System.Drawing.Size(361, 45)
         Me.FilterEditor1.SortFieldList = False
         Me.FilterEditor1.SourceControl = Me.GridEX1
         Me.FilterEditor1.Visible = False

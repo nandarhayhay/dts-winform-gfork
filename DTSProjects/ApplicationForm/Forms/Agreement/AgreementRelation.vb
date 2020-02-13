@@ -352,7 +352,7 @@ Public Class AgreementRelation
         Dim HasBigPS As Boolean = False, HasSmallPS As Boolean = False
         For i As Integer = 0 To Me.clsAgInclude.ViewBrand().Count - 1
             Dim ProdCat As String = ""
-            Dim BrandName As String = Me.clsAgInclude.ViewBrand(i)("BRAND_NAME")
+            Dim BrandName As String = Me.clsAgInclude.ViewBrand(i)("BRAND_NAME").ToString()
             If BrandName.Contains("POWERMAX") Then
                 ProdCat = "ROUNDUP POWERMAX"
             ElseIf BrandName.Contains("TRANSORB") Then
@@ -363,15 +363,15 @@ Public Class AgreementRelation
             If ProdCat <> "" Then
                 If Not listCat.Contains(ProdCat) Then
                     listCat.Add(ProdCat)
-                    Select Case BrandName
-                        Case "ROUNDUP POWERMAX 660 SL - 01", "ROUNDUP POWERMAX 660 SL - 04", "ROUNDUP SL-1", "ROUNDUP SL-200", "ROUNDUP SL-4", _
-                            "ROUNDUP TRANSORB 440 SL - 01", "ROUNDUP TRANSORB 440 SL - 04", "ROUNDUP TRANSORB 440 SL - 200"
-                            HasSmallPS = True
-                        Case "ROUNDUP POWERMAX 660 SL - 20", "ROUNDUP SL-20", "ROUNDUP TRANSORB 440 SL - 20"
-                            HasBigPS = True
-                    End Select
                 End If
             End If
+            Select Case BrandName
+                Case "ROUNDUP POWERMAX 660 SL - 01", "ROUNDUP POWERMAX 660 SL - 04", "ROUNDUP SL-1", "ROUNDUP SL-200", "ROUNDUP SL-4", _
+                    "ROUNDUP TRANSORB 440 SL - 01", "ROUNDUP TRANSORB 440 SL - 04", "ROUNDUP TRANSORB 440 SL - 200"
+                    HasSmallPS = True
+                Case "ROUNDUP POWERMAX 660 SL - 20", "ROUNDUP SL-20", "ROUNDUP TRANSORB 440 SL - 20"
+                    HasBigPS = True
+            End Select
         Next
 
         Dim ProList() As String = listCat.ToArray()
@@ -455,7 +455,7 @@ Public Class AgreementRelation
                 If Item.DataMember.Contains("ID") Then
                     Item.Visible = False
                 End If
-                If Item.DataMember.Contains("AGREEMENT_NO") Or Item.DataMember.Contains("QS_TREATMENT") Or Item.DataMember.Contains("COMBINED_BRAND") Then
+                If Item.DataMember.Contains("AGREEMENT_NO") Or Item.DataMember.Contains("AGREEMENT_DESC") Or Item.DataMember.Contains("QS_TREATMENT") Or Item.DataMember.Contains("COMBINED_BRAND") Then
                     Item.Visible = False
                 End If
             Next
@@ -476,55 +476,49 @@ Public Class AgreementRelation
                     Select Case Me.QS_FLAG
                         Case "Q"
                             For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                                If Item.DataMember = "TARGET_S1" Then
+                                If Item.Key.Contains("TARGET_S") Or Item.Key.Contains("TARGET_FMP") Or Item.Key.Contains("TARGET_YEAR") Then
                                     Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_S2" Then
-                                    Item.Visible = False
+                                    'ElseIf Item.DataMember = "TARGET_S2" Then
+                                    '    Item.Visible = False
                                 ElseIf Item.DataMember = "BRAND_ID" Then
                                     Item.Visible = False
                                 End If
-                                If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
-                                    Item.Visible = False
-                                End If
+                                'If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
+                                '    Item.Visible = False
+                                'End If
                             Next
                         Case "S"
                             For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                                If Item.DataMember = "TARGET_Q1" Then
+                                If Item.Key.Contains("TARGET_Q") Or Item.Key.Contains("TARGET_FMP") Then
                                     Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_Q2" Then
-                                    Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_Q3" Then
-                                    Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_Q4" Then
-                                    Item.Visible = False
+                                    'ElseIf Item.DataMember = "TARGET_Q2" Then
+                                    '    Item.Visible = False
+                                    'ElseIf Item.DataMember = "TARGET_Q3" Then
+                                    '    Item.Visible = False
+                                    'ElseIf Item.DataMember = "TARGET_Q4" Then
+                                    'Item.Visible = False
                                 ElseIf Item.DataMember = "BRAND_ID" Then
                                     Item.Visible = False
                                 End If
-                                If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
-                                    Item.Visible = False
-                                End If
+                                'If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
+                                '    Item.Visible = False
+                                'End If
                             Next
                         Case "F"
                             For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                                If Item.DataMember = "TARGET_Q1" Then
-                                    Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_Q2" Then
-                                    Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_Q3" Then
-                                    Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_Q4" Then
+                                If Item.Key.Contains("TARGET_Q") Or Item.Key.Contains("TARGET_S") Or Item.Key.Contains("TARGET_YEAR") Then
                                     Item.Visible = False
                                 ElseIf Item.DataMember = "BRAND_ID" Then
                                     Item.Visible = False
                                 End If
-                                If Item.DataMember = "TARGET_S1" Then
-                                    Item.Visible = False
-                                ElseIf Item.DataMember = "TARGET_S2" Then
-                                    Item.Visible = False
-                                    If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
-                                        Item.Visible = False
-                                    End If
-                                End If
+                                'If Item.DataMember = "TARGET_S1" Then
+                                '    Item.Visible = False
+                                'ElseIf Item.DataMember = "TARGET_S2" Then
+                                '    Item.Visible = False
+                                '    If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
+                                '        Item.Visible = False
+                                '    End If
+                                'End If
                             Next
                     End Select
                 Case ActiveTab.CombinedBrand
@@ -655,7 +649,7 @@ Public Class AgreementRelation
             .MappingName = "BRAND_NAME"
             .HeaderText = "BRAND_NAME"
             .Alignment = HorizontalAlignment.Left
-            .Width = 170
+            .Width = 230
         End With
         grdTablestyle.GridColumnStyles.AddRange(New DataGridColumnStyle() {grdColStyle1, grdColStyle2})
         Me.DataGrid1.TableStyles.Add(grdTablestyle)
@@ -750,7 +744,7 @@ Public Class AgreementRelation
 
         End Try
     End Sub
-    Private Function IsValid(ByVal tbActive As ActiveTab) As Boolean
+    Private Function IsValid(ByVal tbActive As ActiveTab, ByVal ShowMessage As Boolean) As Boolean
         Dim Valid As Boolean = True
         If Me.MultiColumnCombo1.SelectedIndex = -1 Then
             'me.baseTooltip.Show(
@@ -763,15 +757,19 @@ Public Class AgreementRelation
             'nanti lagi
             Case ActiveTab.BrandInclude
                 If Me.txtGiven.Text = "" Then
-                    Me.baseTooltip.SetToolTip(Me.txtGiven, "Given Persen is null." & vbCrLf & _
-                    "in order to Evaluate discount BrandPack for distributor." & vbCrLf & "Please Defined Given %.")
-                    Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.txtGiven), Me.txtGiven, 2000)
-                    Me.txtGiven.Focus()
+                    If ShowMessage Then
+                        Me.baseTooltip.SetToolTip(Me.txtGiven, "Given Persen is null." & vbCrLf & _
+                        "in order to Evaluate discount BrandPack for distributor." & vbCrLf & "Please Defined Given %.")
+                        Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.txtGiven), Me.txtGiven, 2000)
+                        Me.txtGiven.Focus()
+                    End If
                     Return False
                 ElseIf Me.txtBrandName.Text = "" Then
-                    Me.baseTooltip.SetToolTip(Me.txtBrandName, "Brand Name is null." & vbCrLf & "Please Defined Brand Name.")
-                    Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.txtBrandName), Me.txtBrandName, 2000)
-                    Me.txtBrandName.Focus()
+                    If ShowMessage Then
+                        Me.baseTooltip.SetToolTip(Me.txtBrandName, "Brand Name is null." & vbCrLf & "Please Defined Brand Name.")
+                        Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.txtBrandName), Me.txtBrandName, 2000)
+                        Me.txtBrandName.Focus()
+                    End If
                     Return False
                 End If
                 Select Case Me.QS_FLAG
@@ -779,9 +777,11 @@ Public Class AgreementRelation
                         For Each Item As Control In Me.grpQuarterly.Controls
                             If TypeOf (Item) Is TextBox Or TypeOf (Item) Is Janus.Windows.GridEX.EditControls.NumericEditBox Then
                                 If Item.Text = "" Then
-                                    Me.baseTooltip.SetToolTip(Item, "Target quarterly is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target quarterly must be defined.")
-                                    Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
-                                    Item.Focus()
+                                    If ShowMessage Then
+                                        Me.baseTooltip.SetToolTip(Item, "Target quarterly is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target quarterly must be defined.")
+                                        Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
+                                        Item.Focus()
+                                    End If
                                     Return False
                                 End If
                             End If
@@ -791,9 +791,11 @@ Public Class AgreementRelation
                             For Each Item As Control In Me.tbFMP.Controls
                                 If TypeOf (Item) Is TextBox Or TypeOf (Item) Is Janus.Windows.GridEX.EditControls.NumericEditBox Then
                                     If Item.Text = "" Then
-                                        Me.baseTooltip.SetToolTip(Item, "Target four months periode is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target quarterly must be defined.")
-                                        Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
-                                        Item.Focus()
+                                        If ShowMessage Then
+                                            Me.baseTooltip.SetToolTip(Item, "Target four months periode is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target quarterly must be defined.")
+                                            Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
+                                            Item.Focus()
+                                        End If
                                         Return False
                                     End If
                                 End If
@@ -829,9 +831,11 @@ Public Class AgreementRelation
                         For Each Item As Control In Me.grpSemesterly.Controls
                             If TypeOf (Item) Is TextBox Or TypeOf (Item) Is Janus.Windows.GridEX.EditControls.NumericEditBox Then
                                 If Item.Text = "" Then
-                                    Me.baseTooltip.SetToolTip(Item, "Target semesterly is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target semesterly must be defined.")
-                                    Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
-                                    Item.Focus()
+                                    If ShowMessage Then
+                                        Me.baseTooltip.SetToolTip(Item, "Target semesterly is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target semesterly must be defined.")
+                                        Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
+                                        Item.Focus()
+                                    End If
                                     Return False
                                 End If
                             End If
@@ -853,9 +857,11 @@ Public Class AgreementRelation
                         For Each Item As Control In Me.tbFMP.Controls
                             If TypeOf (Item) Is TextBox Or TypeOf (Item) Is Janus.Windows.GridEX.EditControls.NumericEditBox Then
                                 If Item.Text = "" Then
-                                    Me.baseTooltip.SetToolTip(Item, "Target four months periode is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target quarterly must be defined.")
-                                    Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
-                                    Item.Focus()
+                                    If ShowMessage Then
+                                        Me.baseTooltip.SetToolTip(Item, "Target four months periode is Null." & vbCrLf & "In order to evaluate discount." & vbCrLf & "Target quarterly must be defined.")
+                                        Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Item), Item, 2000)
+                                        Item.Focus()
+                                    End If
                                     Return False
                                 End If
                             End If
@@ -912,6 +918,14 @@ Public Class AgreementRelation
             Me.Cursor = Cursors.WaitCursor
             Me.SFG = StateFillingGrid.Filling
             If Not IsNothing(Me.clsAgInclude) Then
+                If Not IsNothing(Me.ds4MPeriode) Then
+                    If ds4MPeriode.HasChanges Then
+                        If Me.ShowConfirmedMessage(Me.MessageDataHasChanged) = Windows.Forms.DialogResult.Yes Then
+                            Me.SavingChanges1_btnSaveClick(Me.SavingChanges1.btnSave, New EventArgs())
+                        End If
+                    End If
+                    Me.ds4MPeriode.Dispose()
+                End If
                 Me.clsAgInclude.Dispose(True)
             End If
         Catch ex As Exception
@@ -1020,7 +1034,7 @@ Public Class AgreementRelation
 
     Private Sub dgvYearly_MouseClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles dgvYearly.MouseClick
         Try
-            If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) Then
+            If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) And (Me.QS_FLAG = "S" Or Me.QS_FLAG = "Q") Then
                 Me.dgvYearly.Enabled = True
             Else
                 Me.dgvYearly.Enabled = False
@@ -1096,7 +1110,7 @@ Public Class AgreementRelation
     'End Sub
 
     Private Sub dgvPeriodic_MouseClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles dgvPeriodic.MouseClick
-        If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) Then
+        If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) And (Me.QS_FLAG = "S" Or Me.QS_FLAG = "Q") Then
             Me.dgvPeriodic.Enabled = True
         Else
             Me.dgvPeriodic.Enabled = False
@@ -1782,32 +1796,36 @@ Public Class AgreementRelation
             'Me.grpIBPfromBrand.Text = ""
             If Me.QS_FLAG = "F" Then
                 'bind dataset
-                Dim HasRef As Boolean = False
-                Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, HasRef, True)
-                If HasRef Then
-                    Me.GridEX2.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
-                    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
-                    Me.GridEX2.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.False
-                End If
+                'Dim HasRef As Boolean = False
+                Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, True)
+                'If HasRef Then
+                '    Me.GridEX2.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
+                '    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
+                '    Me.GridEX2.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.False
+                'End If
                 Me.ds4MPeriode = New DataSet("DS4periode")
                 Me.ds4MPeriode.Tables.Add(tbl)
                 BindGrid4MPeriode()
+                Me.MainTbBrandProgressive.SelectedIndex = 1
+                Me.TabControl1.SelectedIndex = 2
                 Me.grpPotensi.Visible = False
             ElseIf Me.QS_FLAG = "Q" Then
                 If Me.isTransitionTime Then
                     Dim HasRef As Boolean = False
-                    Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, HasRef, True)
-                    If HasRef Then
-                        Me.GridEX2.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
-                        Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
-                        Me.GridEX2.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.False
-                    End If
+                    Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, True)
                     Me.ds4MPeriode = New DataSet("DS4periode")
                     Me.ds4MPeriode.Tables.Add(tbl)
                     BindGrid4MPeriode()
+                    Me.MainTbBrandProgressive.SelectedIndex = 1
+                    Me.TabControl1.SelectedIndex = 2
+                Else
+                    Me.MainTbBrandProgressive.SelectedIndex = 0
+                    Me.TabControl1.SelectedIndex = 1
                 End If
                 Me.grpPotensi.Visible = True
             Else
+                Me.MainTbBrandProgressive.SelectedIndex = 0
+                Me.TabControl1.SelectedIndex = 0
                 Me.grpPotensi.Visible = True
             End If
             'Me.grpTypeDiscount.Visible = False
@@ -1847,6 +1865,14 @@ Public Class AgreementRelation
                     'Me.lstAddedBrand.Items.Clear()
                     Me.UnabledTextBox(Me.grpSemesterly)
                     Me.UnabledTextBox(Me.grpQuarterly)
+                    For Each Item As Control In Me.tbFMP.Controls
+                        If TypeOf (Item) Is TextBox Then
+                            Item.Enabled = False
+                            Item.BackColor = Color.White
+                        ElseIf TypeOf (Item) Is Janus.Windows.GridEX.EditControls.NumericEditBox Then
+                            Item.Enabled = False
+                        End If
+                    Next
                     Me.txtGiven.Text = ""
                     Me.txtBrandName.Text = ""
                     Me.ClearControl(Me.grpQuarterly)
@@ -1947,7 +1973,7 @@ Public Class AgreementRelation
 
     Private Sub tbPeriodic_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tbPeriodic.Enter
         If Me.SFG = StateFillingGrid.Filling Then : Return : End If
-        If Me.IsValid(ActiveTab.BrandInclude) = False Then
+        If Me.IsValid(ActiveTab.BrandInclude, True) = False Then
             Return
         End If
         If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) Then
@@ -2002,13 +2028,15 @@ Public Class AgreementRelation
                 'Me.clsAgInclude.GetTableSemesterly().Clear()
                 Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableSemesterly()
                 Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableSemesterlyV()
-            Else
+
+            ElseIf Me.QS_FLAG = "Q" Then
                 'Me.clsAgInclude.GetTableQuarterly().Clear()
                 Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
                 Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
+
             End If
             Me.chkTypical.Enabled = True
-            'Me.clsAgInclude.GetTableYearly.Clear()
+
             Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
             Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
 
@@ -2016,6 +2044,11 @@ Public Class AgreementRelation
             Else
                 Me.SavingChanges1.btnSave.Enabled = True
             End If
+            Me.ClearControl(Me.grpQuarterly)
+            Me.ClearControl(Me.grpSemesterly)
+            Me.ClearControl(Me.tbFMP)
+            Me.txtGiven.Enabled = True
+            Me.txtGiven.Text = ""
             Select Case Me.QS_FLAG
                 Case "Q"
                     Me.txtQ1QTY.Enabled = True
@@ -2031,6 +2064,19 @@ Public Class AgreementRelation
                     Me.txtPlQ2.Enabled = True
                     Me.txtPlQ3.Enabled = True
                     Me.txtPlQ4.Enabled = True
+                    If Me.isTransitionTime Then
+                        Me.txtFMP1.Enabled = True
+                        Me.txtFMP2.Enabled = True
+                        Me.txtFMP3.Enabled = True
+
+                        Me.txtFMPFM1.Enabled = True
+                        Me.txtFMPFM2.Enabled = True
+                        Me.txtFMPFM3.Enabled = True
+
+                        Me.txtFMPPL1.Enabled = True
+                        Me.txtFMPPL2.Enabled = True
+                        Me.txtFMPPL3.Enabled = True
+                    End If
 
                     Me.txtFreeMarketS1.Enabled = False
                     Me.txtFreeMarketS2.Enabled = False
@@ -2038,9 +2084,6 @@ Public Class AgreementRelation
                     Me.txtPlS2.Enabled = False
                     Me.txtS1QTY.Enabled = False
                     Me.txtS2QTY.Enabled = False
-                    Me.txtGiven.Enabled = True
-                    Me.txtGiven.Text = ""
-                    Me.ClearControl(Me.grpQuarterly)
                 Case "S"
                     Me.txtS1QTY.Enabled = True
                     Me.txtS2QTY.Enabled = True
@@ -2065,10 +2108,53 @@ Public Class AgreementRelation
                     Me.txtQ2QTY.Enabled = False
                     Me.txtQ3QTY.Enabled = False
                     Me.txtQ4QTY.Enabled = False
-                    Me.txtGiven.Text = ""
-                    Me.ClearControl(Me.grpSemesterly)
+
+                    Me.txtFMP1.Enabled = False
+                    Me.txtFMP2.Enabled = False
+                    Me.txtFMP3.Enabled = False
+
+                    Me.txtFMPFM1.Enabled = False
+                    Me.txtFMPFM2.Enabled = False
+                    Me.txtFMPFM3.Enabled = False
+
+                    Me.txtFMPPL1.Enabled = False
+                    Me.txtFMPPL2.Enabled = False
+                    Me.txtFMPPL3.Enabled = False
+                Case "F"
+                    Me.txtFMP1.Enabled = True
+                    Me.txtFMP2.Enabled = True
+                    Me.txtFMP3.Enabled = True
+
+                    Me.txtFMPFM1.Enabled = True
+                    Me.txtFMPFM2.Enabled = True
+                    Me.txtFMPFM3.Enabled = True
+
+                    Me.txtFMPPL1.Enabled = True
+                    Me.txtFMPPL2.Enabled = True
+                    Me.txtFMPPL3.Enabled = True
+
+                    Me.txtQ1QTY.Enabled = False
+                    Me.txtQ2QTY.Enabled = False
+                    Me.txtQ3QTY.Enabled = False
+                    Me.txtQ4QTY.Enabled = False
+                    'PL/FM
+                    Me.txtFreeMarketQ1.Enabled = False
+                    Me.txtFreeMarketQ2.Enabled = False
+                    Me.txtFreeMarketQ3.Enabled = False
+                    Me.txtFreeMarketQ4.Enabled = False
+                    Me.txtPlQ1.Enabled = False
+                    Me.txtPlQ2.Enabled = False
+                    Me.txtPlQ3.Enabled = False
+                    Me.txtPlQ4.Enabled = False
+
+                    Me.txtFreeMarketS1.Enabled = False
+                    Me.txtFreeMarketS2.Enabled = False
+                    Me.txtPlS1.Enabled = False
+                    Me.txtPlS2.Enabled = False
+                    Me.txtS1QTY.Enabled = False
+                    Me.txtS2QTY.Enabled = False
+
             End Select
-            Me.txtGiven.Enabled = True
             Me.BindGrid_1(Me.grdAddedBrandPack, Nothing)
             Me.chkTypical.Checked = False
             Me.txtGiven.Focus()
@@ -2539,16 +2625,38 @@ Public Class AgreementRelation
 
     Private Sub SavingChanges1_btnSaveClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SavingChanges1.btnSaveClick
         Try
-            If Me.IsValid(ActiveTab.BrandInclude) = False Then
-                Return
-            End If
             Me.Cursor = Cursors.WaitCursor
+
             Dim IndexRow As Integer = 0
             If Me.Mode = SaveMode.Update Then
                 If Me.GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.Record Then
                     IndexRow = Me.GridEX1.Row
                 End If
             End If
+
+            Dim saveOnlySchemaR As Boolean = False
+            If Me.ds4MPeriode.HasChanges() Then
+                ''save
+                saveOnlySchemaR = True
+            End If
+
+            Dim val As Boolean = Me.IsValid(ActiveTab.BrandInclude, (Not saveOnlySchemaR))
+            If Not val Then
+                If saveOnlySchemaR Then
+                    Me.clsAgInclude.SaveDS4Month(Me.ds4MPeriode.Tables(0), False)
+                    Me.MultiColumnCombo1_ValueChanged(Me.MultiColumnCombo1, New EventArgs())
+                    Me.SFG = StateFillingGrid.Filling
+                    Me.GridEX1.Row = IndexRow
+                    Me.GridEX1.SelectCurrentCellText()
+                    Me.SFG = StateFillingGrid.HasFilled
+                    Me.GridEX1_CurrentCellChanged(Me.GridEX1, New EventArgs())
+                    Return
+                Else
+                    Me.Cursor = Cursors.Default
+                    Return
+                End If
+            End If
+
             'Me.clsAgInclude = New NufarmBussinesRules.DistributorAgreement.Include()
             Me.clsAgInclude.Agreement_no = Me.MultiColumnCombo1.Text
             Dim GivenPersen As Decimal = Me.txtGiven.Value
@@ -2856,9 +2964,10 @@ Public Class AgreementRelation
     End Sub
 
     Private Sub mnuSaveGridDiscount_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuSaveGridDiscount.Click
-
         'check apakah data ada perubahan di dataset'
         'bila ada simpan perubahan tersebut'
+        'check focus
+
         If Not (Me.GridEX1.GetRow.RowType = Janus.Windows.GridEX.RowType.Record) Then
             Me.ShowMessageInfo("Please select Brand !" & vbCrLf & "System can not find the brand.") : Return
         End If
@@ -2888,7 +2997,7 @@ Public Class AgreementRelation
         Try
             Me.Cursor = Cursors.WaitCursor
             If (Me.chkTypical.Checked = True) Then
-                If Me.IsValid(ActiveTab.BrandInclude) = False Then
+                If Me.IsValid(ActiveTab.BrandInclude, True) = False Then
                     Me.chkTypical.Checked = False
                     Return
                 End If
@@ -2992,7 +3101,7 @@ Public Class AgreementRelation
 
     Private Sub tbPeriodicVal_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tbPeriodicVal.Enter
         If Me.SFG = StateFillingGrid.Filling Then : Return : End If
-        If Me.IsValid(ActiveTab.BrandInclude) = False Then
+        If Me.IsValid(ActiveTab.BrandInclude, True) = False Then
             Return
         End If
         If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) Then
@@ -3010,7 +3119,7 @@ Public Class AgreementRelation
             If Not Me.Hload = HasLoad.Yes Then
                 Return
             End If
-            If Me.IsValid(ActiveTab.BrandInclude) = False Then
+            If Me.IsValid(ActiveTab.BrandInclude, True) = False Then
                 Return
             End If
             ''FLAG COLUMN
@@ -3072,7 +3181,7 @@ Public Class AgreementRelation
         If Not Me.Hload = HasLoad.Yes Then
             Return
         End If
-        If Me.IsValid(ActiveTab.BrandInclude) = False Then
+        If Me.IsValid(ActiveTab.BrandInclude, True) = False Then
             Return
         End If
         Me.SFG = StateFillingGrid.Filling
@@ -3115,7 +3224,7 @@ Public Class AgreementRelation
 
     Private Sub dgvYearlyVal_MouseClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles dgvYearlyVal.MouseClick
         If Me.SFG = StateFillingGrid.Filling Then : Return : End If
-        If Me.IsValid(ActiveTab.BrandInclude) = False Then
+        If Me.IsValid(ActiveTab.BrandInclude, True) = False Then
             Return
         End If
         If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) Then
@@ -3278,33 +3387,33 @@ Public Class AgreementRelation
         Cursor = Cursors.Default
     End Sub
 
-    Private Sub GridEX2_CurrentCellChanging(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.CurrentCellChangingEventArgs) Handles GridEX2.CurrentCellChanging
-        If Me.SFG = StateFillingGrid.Filling Then
-            Return
-        End If
-        If Me.Hload = HasLoad.NotYet Then
-            Return
-        End If
-        If Me.SFM = StateFillingCombo.Filling Then
-            Return
-        End If
-        Try
-            If e.Row.RowType = Janus.Windows.GridEX.RowType.Record Then
-                If Not e.Column.Key = "PS_CATEGORY" And Not e.Column.Key = "FLAG" And Not e.Column.Key = "PRODUCT_CATEGORY" Then
-                    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
-                Else
-                    If NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.AgreementRelation Then
-                        Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
-                    Else
-                        Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
-                    End If
-                End If
-            End If
-        Catch ex As Exception
+    'Private Sub GridEX2_CurrentCellChanging(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.CurrentCellChangingEventArgs) Handles GridEX2.CurrentCellChanging
+    '    If Me.SFG = StateFillingGrid.Filling Then
+    '        Return
+    '    End If
+    '    If Me.Hload = HasLoad.NotYet Then
+    '        Return
+    '    End If
+    '    If Me.SFM = StateFillingCombo.Filling Then
+    '        Return
+    '    End If
+    '    Try
+    '        If e.Row.RowType = Janus.Windows.GridEX.RowType.Record Then
+    '            If Not e.Column.Key = "PS_CATEGORY" And Not e.Column.Key = "FLAG" And Not e.Column.Key = "PRODUCT_CATEGORY" Then
+    '                Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
+    '            Else
+    '                If NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.AgreementRelation Then
+    '                    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
+    '                Else
+    '                    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
+    '                End If
+    '            End If
+    '        End If
+    '    Catch ex As Exception
 
-        End Try
+    '    End Try
 
-    End Sub
+    'End Sub
 
     Private Sub GridEX2_UpdatingCell(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.UpdatingCellEventArgs) Handles GridEX2.UpdatingCell
         If Me.SFG = StateFillingGrid.Filling Then : Return : End If
@@ -3317,7 +3426,7 @@ Public Class AgreementRelation
                     DV.RowFilter = ""
                     Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
                     dummyDV.Sort = "IDRow"
-                    If DV.Find(ID) >= 0 Then
+                    If dummyDV.Find(ID) >= 0 Then
                         Me.ShowMessageInfo(Me.MessageDataCantChanged)
                         e.Cancel = True
                     End If
@@ -3328,7 +3437,7 @@ Public Class AgreementRelation
                     DV.RowFilter = ""
                     Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
                     dummyDV.Sort = "IDRow"
-                    If DV.Find(ID) >= 0 Then
+                    If dummyDV.Find(ID) >= 0 Then
                         Me.ShowMessageInfo(Me.MessageDataCantChanged)
                         e.Cancel = True
                     End If
@@ -3339,20 +3448,29 @@ Public Class AgreementRelation
                     DV.RowFilter = ""
                     Dim dummyDV As DataView = DV.ToTable().Copy().DefaultView()
                     dummyDV.Sort = "IDRow"
-                    If DV.Find(ID) >= 0 Then
+                    If dummyDV.Find(ID) >= 0 Then
                         Me.ShowMessageInfo(Me.MessageDataCantChanged)
                         e.Cancel = True
                     End If
                 End If
+                If CInt(Me.GridEX2.GetValue("HasRef")) > 0 Then
+                    Me.ShowMessageInfo(Me.MessageDataCantChanged & vbCrLf & "Data already used in achievement")
+                    e.Cancel = True
+                End If
             End If
         Catch ex As Exception
-
+            Me.ShowMessageError(ex.Message)
         End Try
 
     End Sub
 
     Private Sub GridEX2_DeletingRecord(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.RowActionCancelEventArgs) Handles GridEX2.DeletingRecord
+        If Me.SFG = StateFillingGrid.Filling Then : Return : End If
         Try
+            If CInt(GridEX2.GetValue("HasRef")) > 0 Then
+                Me.ShowMessageInfo(Me.MessageCantDeleteData)
+                e.Cancel = True
+            End If
             If Me.ShowConfirmedMessage(Me.ConfirmDeleteMessage) Then
                 e.Cancel = False
             Else
@@ -3370,4 +3488,5 @@ Public Class AgreementRelation
     Private Sub GridEX2_RecordsDeleted(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GridEX2.RecordsDeleted
         Me.GridEX2.UpdateData()
     End Sub
+
 End Class
