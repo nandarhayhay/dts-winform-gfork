@@ -1,5 +1,5 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class AchievementFMP
+Partial Class AchievementDPD
     Inherits DTSProjects.BaseBigForm
 
     'Form overrides dispose to clean up the component list.
@@ -20,7 +20,7 @@ Partial Class AchievementFMP
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AchievementFMP))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AchievementDPD))
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim GridEX3_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbDistributor_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
@@ -794,7 +794,7 @@ Partial Class AchievementFMP
         Me.Panel2.Size = New System.Drawing.Size(915, 200)
         Me.Panel2.TabIndex = 34
         '
-        'AchievementFMP
+        'AchievementDPD
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -808,7 +808,7 @@ Partial Class AchievementFMP
         Me.Controls.Add(Me.FilterEditor1)
         Me.Controls.Add(Me.Bar2)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Name = "AchievementFMP"
+        Me.Name = "AchievementDPD"
         Me.Text = "Achivement Dispro"
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridEX1, System.ComponentModel.ISupportInitialize).EndInit()

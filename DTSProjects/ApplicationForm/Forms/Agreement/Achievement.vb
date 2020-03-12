@@ -1,6 +1,6 @@
 Imports System.Threading
 Imports NufarmBussinesRules.SettingDTS.RegUser
-Public Class AchievementFMP
+Public Class AchievementDPD
     Private clsTA As New NufarmBussinesRules.DistributorAgreement.Target_Agreement()
     Private isLoadingCombo As Boolean = True
     Private SelectGrid As SelectedGrid = SelectedGrid.Header

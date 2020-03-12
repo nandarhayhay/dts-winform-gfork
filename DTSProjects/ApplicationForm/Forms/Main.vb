@@ -20,7 +20,7 @@ Public Class Main
     Private frmPricePlantation As PlantationPrice
     Private frmPriceHistory As PriceHistory
     Private TickCount As Integer = 0, frmInvoice As Invoice
-    Private frmAchievement As AchievementFMP
+    Private frmAchievement As AchievementDPD
     Private frmOptions As Settings
     Private frmCompareProduct As CompareBrandPackAccpack
     Private frmPlantation As PlantationManager
@@ -35,6 +35,7 @@ Public Class Main
     Private frmCPDAuto As CPDAuto
     Private frmAdjustmentPKD As AjdustmentPKD
     Private frmDiscDDorDR As DiscountDDOrDR
+    Private frmAchievementR As AchievementF
 #End Region
 
     Private ThreadProgress As Thread = Nothing
@@ -146,11 +147,9 @@ Public Class Main
                 Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.Project
                 'btnGONArea
                 'btnTransporter
-
             Case "AreaGON" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.AreaGON
             Case "Transporter" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.Transporter
             Case "SPPBEntryGON" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.SPPBEntryGON
-
             Case "Classification" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.Classification
             Case "ProductClassified" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.ProductClassified
             Case "DKNational" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.DKNational
@@ -200,6 +199,7 @@ Public Class Main
         Me.btnCPDAuto.Visible = Me.IsHasPrivilege("CPDAuto")
         Me.btnAjdustmentPKD.Visible = Me.IsHasPrivilege("AjdustmentPKD")
         Me.btnDiscDDAndDR.Visible = Me.IsHasPrivilege("DiscountDDorDR")
+        Me.btnAchievementDPDR.Visible = Me.IsHasPrivilege("Achievement")
         Me.btnCompareBrandPack.Visible = False
         Me.btnManageUser.Visible = False
     End Sub
@@ -237,6 +237,7 @@ Public Class Main
             Me.btnAjdustmentPKD.Visible = True
             Me.btnManageUser.Visible = False
             Me.btnDiscDDAndDR.Visible = True
+            Me.btnAchievementDPDR.Visible = True
         ElseIf NufarmBussinesRules.User.UserLogin.IsAdmin Then ' ITSupport
             Me.getCommonPriviledge()
             Me.btnSetting.Visible = True
@@ -388,6 +389,26 @@ Public Class Main
                 frmCPDAuto = New CPDAuto()
                 FrmActive = frmCPDAuto : frmCPDAuto.ShowInTaskbar = False
                 frmCPDAuto.MdiParent = Me : Me.Timer1.Enabled = True
+                Me.Timer1.Start()
+            End If
+        End If
+    End Sub
+    Private Sub ShowAchievementRoundup()
+        If NufarmBussinesRules.User.UserLogin.HasLogin = True Then
+            If (IsNothing(Me.frmAchievementR)) OrElse (Me.frmAchievementR.IsDisposed()) Then
+                Me.frmAchievementR = New AchievementF()
+                frmAchievementR.CMain = Me
+                FrmActive = frmAchievementR
+                frmAchievementR.ShowInTaskbar = False
+                frmAchievementR.MdiParent = Me
+                frmAchievementR.Show() : Me.ReadAcces()
+            End If
+        Else
+            Me.DOLogin()
+            If NufarmBussinesRules.User.UserLogin.HasLogin Then
+                frmAchievementR = New AchievementF()
+                FrmActive = frmAchievementR : frmAchievementR.ShowInTaskbar = False
+                frmAchievementR.MdiParent = Me : Me.Timer1.Enabled = True
                 Me.Timer1.Start()
             End If
         End If
@@ -1192,7 +1213,7 @@ Public Class Main
             'Me.ShowThread()
             If IsNothing(Me.frmAchievement) OrElse Me.frmAchievement.IsDisposed Then
                 Me.FormLoading = StatusForm.Loading ' Me.tmrHoldShowForm.Enabled = True
-                Me.frmAchievement = New AchievementFMP() : frmAchievement.CMain = Me
+                Me.frmAchievement = New AchievementDPD() : frmAchievement.CMain = Me
             End If
             With Me.frmAchievement
                 .ShowInTaskbar = False : .MdiParent = Me
@@ -1201,7 +1222,7 @@ Public Class Main
             Me.FrmActive = Me.frmAchievement
         Else : Me.DOLogin()
             If NufarmBussinesRules.User.UserLogin.HasLogin Then
-                Me.frmAchievement = New AchievementFMP()
+                Me.frmAchievement = New AchievementDPD()
                 With Me.frmAchievement : .ShowInTaskbar = False : .LoadData() : .MdiParent = Me : End With
                 Me.Timer1.Enabled = True : Me.Timer1.Start()
                 Me.FrmActive = Me.frmAchievement
@@ -1414,6 +1435,7 @@ Public Class Main
                 Case "btnCPDAuto" : Me.ShowCPDAuto()
                 Case "btnAjdustmentPKD" : Me.ShowAddjustment()
                 Case "btnDiscDDAndDR" : Me.ShowDDorDR()
+                Case "btnAchievementDPDR" : Me.ShowAchievementRoundup()
             End Select
         Catch ex As Exception
             Me.StatProg = StatusProgress.None : MessageBox.Show(ex.Message)
@@ -1487,6 +1509,7 @@ Public Class Main
                     Case "frmCPDAuto" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmCPDAuto.Show()
                     Case "btnAjdustmentPKD" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmAdjustmentPKD.Show()
                     Case "btnDiscDDAndDR" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmDiscDDorDR.Show()
+                    Case "btnAchievementDPDR" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmAchievementR.Show()
                 End Select
             End If
             Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.HoldLoadForm = 0 : Me.ReadAcces()

@@ -1,6 +1,6 @@
 Imports System.Threading
 Public Class AchievementF
-    Private clsDPD As NufarmBussinesRules.DistributorAgreement.DPDAchievement
+
     Friend CMain As Main = Nothing
 
     Private isLoadingCombo As Boolean = True
@@ -10,15 +10,19 @@ Public Class AchievementF
     Private isLoadingRow As Boolean = True
     Private IsHasLoadedForm As Boolean = False
     Private IsGeneratingOA As Boolean = False : Private Flag As String = ""
-    Private CounterTimer2 As Integer = 0
     Private LD As Loading = Nothing
-    Private IsProcessingDiscount As Boolean = False
     Private SP As StatusProgress
     Private ThreadProcess As Thread
-    Private AgreeAchBy As String = ""
-    Dim Rg As New NufarmBussinesRules.SettingDTS.RegUser()
-    Dim tblSetting As New DataTable("Settingan")
     Dim ListAgreementNo As New List(Of String)
+    Private m_clsDPD As NufarmBussinesRules.DistributorAgreement.DPDAchievement
+    Private ReadOnly Property clsDPD() As NufarmBussinesRules.DistributorAgreement.DPDAchievement
+        Get
+            If IsNothing(Me.m_clsDPD) Then
+                Me.m_clsDPD = New NufarmBussinesRules.DistributorAgreement.DPDAchievement()
+            End If
+            Return Me.m_clsDPD
+        End Get
+    End Property
     Private Sub ReadAcces()
         If Not CMain.IsSystemAdministrator Then
             btnFlag.Enabled = NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Achievement
@@ -136,24 +140,28 @@ Public Class AchievementF
             Me.Cursor = Cursors.WaitCursor
             Dim AchHeaderID As String = Me.GridEX1.GetValue("ACH_HEADER_ID").ToString()
             'delete data beserta anaknya
-            Me.clsDPD.DeleteAchievementHeader(Me.GridEX1.GetValue("ACH_HEADER_ID").ToString())
-            Dim DV As DataView = Me.DS.Tables(1).DefaultView()
-            DV.Sort = "ACH_HEADER_ID"
-            Dim Dr() As DataRowView = DV.FindRows(AchHeaderID)
-            If Dr.Length > 0 Then
-                For i As Integer = 0 To DV.Count - 1
-                    Dim Index As Integer = DV.Find(AchHeaderID)
-                    If Index <> -1 Then
-                        DV(i).Delete()
-                        i -= 1
-                    Else
-                        Exit For
-                    End If
-                Next
+            If Me.ShowConfirmedMessage(Me.ConfirmDeleteMessage) = Windows.Forms.DialogResult.Yes Then
+                Me.clsDPD.DeleteAchievementHeader(Me.GridEX1.GetValue("ACH_HEADER_ID").ToString())
+                Dim DV As DataView = Me.DS.Tables(1).DefaultView()
+                DV.Sort = "ACH_HEADER_ID"
+                Dim Dr() As DataRowView = DV.FindRows(AchHeaderID)
+                If Dr.Length > 0 Then
+                    For i As Integer = 0 To DV.Count - 1
+                        Dim Index As Integer = DV.Find(AchHeaderID)
+                        If Index <> -1 Then
+                            DV(i).Delete()
+                            i -= 1
+                        Else
+                            Exit For
+                        End If
+                    Next
+                End If
+                e.Cancel = False
+                CheckedFilter()
+                Me.GridEX1.UpdateData()
+            Else
+                e.Cancel = True
             End If
-            e.Cancel = False
-            CheckedFilter()
-            Me.GridEX1.UpdateData()
         Catch ex As Exception
             e.Cancel = True
             Me.ShowMessageInfo(ex.Message)
@@ -422,49 +430,33 @@ Public Class AchievementF
                         MessageBox.Show("Data Exported to " & Me.SaveFileDialog1.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
                 Case "btnRecomputeF1"
-                    Me.Flag = "Q1"
+                    Me.Flag = "F1"
                     Btn = btnRecomputeF1
                     Me.btnRecomputeF1.Checked = True
-                    '===================COMMENT THIS AFTER DEBUGGING=================
-                    'Me.SP = StatusProgress.ProcessingAcrrue
-                    '================================================================
-
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
 
                     Me.SP = StatusProgress.ProcessingDisc
-                    ThreadProcess = New Thread(AddressOf ShowLoading)
-                    ThreadProcess.Start()
+                    'ThreadProcess = New Thread(AddressOf ShowLoading)
+                    'ThreadProcess.Start()
                     '=================================================================
                     getDS(Me.SP)
-                    BindGrid()
-
-                Case "btnRecomputeF2" : Me.Flag = "F2" : Me.btnRecomputeF2.Checked = True
-                    '===================COMMENT THIS AFTER DEBUGGING=================
-                    'Me.SP = StatusProgress.ProcessingAcrrue
-                    '================================================================
-
-                    '================UNCOMMENT THIS AFTER DEBUGGING===================
+                Case "btnRecomputeF2"
                     Me.Flag = "F2"
-                    Btn = btnRecomputeF2
-
+                    Btn = btnRecomputeF2 : Me.btnRecomputeF2.Checked = True
+                    '================UNCOMMENT THIS AFTER DEBUGGING===================
                     Me.SP = StatusProgress.ProcessingDisc
-                    ThreadProcess = New Thread(AddressOf ShowLoading)
-                    ThreadProcess.Start()
+                    'ThreadProcess = New Thread(AddressOf ShowLoading)
+                    'ThreadProcess.Start()
                     '=================================================================
                     getDS(Me.SP)
-                    BindGrid()
-                Case "btnRecomputeF2" : Me.Flag = "F3" : Me.btnRecomputeF2.Checked = True
-
-                    ''===================COMMENT THIS AFTER DEBUGGING=================
-                    'Me.SP = StatusProgress.ProcessingAcrrue
-                    '================================================================
+                Case "btnRecomputeF3" : Me.Flag = "F3" : Me.btnRecomputeF3.Checked = True
 
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
                     Me.SP = StatusProgress.ProcessingDisc
-                    ThreadProcess = New Thread(AddressOf ShowLoading)
-                    ThreadProcess.Start()
+                    'ThreadProcess = New Thread(AddressOf ShowLoading)
+                    'ThreadProcess.Start()
+                    '================================================================
                     getDS(Me.SP)
-                    BindGrid()
                 Case "btnRefresh"
                     Me.btnAplyRange_Click(Me.btnAplyRange, New EventArgs())
             End Select
@@ -592,5 +584,39 @@ Public Class AchievementF
             Me.SP = StatusProgress.None : Me.ShowMessageInfo(ex.Message)
             Me.Cursor = Cursors.Default
         End Try
+    End Sub
+
+    Private Sub mcbDistributor_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mcbDistributor.ValueChanged
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            If Me.isLoadingCombo Then : Return : End If
+            If Me.cmbFlag.Text = "" Then
+                Me.baseTooltip.Show("Please define Flag", Me.cmbFlag, 2500) : Me.cmbFlag.Focus() : Return
+            End If
+            If Me.mcbDistributor.Value Is Nothing Or Me.mcbDistributor.SelectedIndex <= -1 Then
+                Return
+            End If
+            Me.isLoadingCombo = True
+            Dim DV As DataView = Me.clsDPD.GetAgreementNo(Me.Flag, Me.mcbDistributor.Value.ToString())
+            Me.BindCheckedCombo(DV, "AGREEMENT_NO", "AGREEMENT_NO", False)
+            Me.baseTooltip.Show("Please checklist Agreement no", Me.chkDistributors, 2500)
+            Me.baseTooltip.UseAnimation = True
+            Me.baseTooltip.ToolTipTitle = "Attention"
+            Me.baseTooltip.ToolTipIcon = ToolTipIcon.Info
+            Me.checkEnabledFlagValue()
+        Catch ex As Exception
+            Me.LogMyEvent(ex.Message, Me.Name + "_mcbDistributor_ValueChanged")
+            Me.ShowMessageInfo(ex.Message)
+        Finally
+            Me.isLoadingCombo = False : Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub chkDistributors_CheckedValuesChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkDistributors.CheckedValuesChanged
+        If Me.isLoadingCombo Then : Return : End If
+        If IsNothing(Me.chkDistributors.CheckedValues) Then : Return : End If
+        If Me.chkDistributors.CheckedValues.Length <= 0 Then : Return : End If
+        Me.checkEnabledFlagValue()
+
     End Sub
 End Class

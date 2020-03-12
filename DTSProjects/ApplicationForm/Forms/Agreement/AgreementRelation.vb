@@ -247,6 +247,7 @@ Public Class AgreementRelation
         Me.clsAgInclude = New NufarmBussinesRules.DistributorAgreement.Include
         Me.clsAgInclude.GetData()
         Me.BindMulticolumnCombo("")
+        'edit after dubugging
         Me.isTransitionTime = NufarmBussinesRules.SharedClass.ServerDate <= New DateTime(2020, 7, 31) And NufarmBussinesRules.SharedClass.ServerDate >= New DateTime(2019, 8, 1)
     End Sub
     Private Sub EnabledTextBoxFMP()
@@ -1782,6 +1783,10 @@ Public Class AgreementRelation
             Dim Index As Integer = Me.clsAgInclude.ViewAgreement.Find(Me.MultiColumnCombo1.Text)
             If Index <> -1 Then
                 Me.QS_FLAG = Me.clsAgInclude.ViewAgreement(Index)("QS_TREATMENT_FLAG").ToString()
+                Dim StarteDate As DateTime = Me.clsAgInclude.ViewAgreement(Index)("START_DATE")
+                Dim EndDate As DateTime = Me.clsAgInclude.ViewAgreement(Index)("END_DATE")
+                'UNCOMENT THIS AFTER DEBUGGING
+                'Me.isTransitionTime = NufarmBussinesRules.SharedClass.ServerDate <= EndDate And NufarmBussinesRules.SharedClass.ServerDate >= StarteDate
             End If
             Select Case Me.UiTab1.SelectedTab.Name
                 Case "tbBrandInclude"
@@ -1793,16 +1798,8 @@ Public Class AgreementRelation
                 Case "tbOAHistory"
                     Me.UiTab1_SelectedTabChanged(Me.UiTab1, New Janus.Windows.UI.Tab.TabEventArgs(Me.UiTab1.TabPages(2)))
             End Select
-            'Me.grpIBPfromBrand.Text = ""
             If Me.QS_FLAG = "F" Then
-                'bind dataset
-                'Dim HasRef As Boolean = False
                 Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, True)
-                'If HasRef Then
-                '    Me.GridEX2.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
-                '    Me.GridEX2.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
-                '    Me.GridEX2.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.False
-                'End If
                 Me.ds4MPeriode = New DataSet("DS4periode")
                 Me.ds4MPeriode.Tables.Add(tbl)
                 BindGrid4MPeriode()
@@ -1828,7 +1825,6 @@ Public Class AgreementRelation
                 Me.TabControl1.SelectedIndex = 0
                 Me.grpPotensi.Visible = True
             End If
-            'Me.grpTypeDiscount.Visible = False
         Catch ex As Exception
             Me.ShowMessageError(ex.Message)
             Me.LogMyEvent(ex.Message, Me.Name + "_MultiColumnCombo1_ValueChanged")
@@ -3373,11 +3369,22 @@ Public Class AgreementRelation
                 Me.GridEX2.MoveToNewRecord()
                 Me.GridEX2.Select()
             End If
+            'check IDrow
+            Dim DV As DataView = CType(Me.GridEX2.DataSource, DataView).ToTable().Copy().DefaultView()
+            DV.Sort = "IDRow"
+            Dim IDRow As String = Me.MultiColumnCombo1.Value + Me.GridEX2.GetValue("PRODUCT_CATEGORY") + Me.GridEX2.GetValue("PS_CATEGORY") + Me.GridEX2.GetValue("FLAG")
+            If DV.Find(IDRow) > 0 Then
+                Me.ShowMessageInfo(Me.MessageDataHasExisted)
+                e.Cancel = True
+                Me.GridEX2.MoveToNewRecord()
+                Me.GridEX2.Select()
+            End If
             Cursor = Cursors.WaitCursor
             'set agreement_no,ach_methode,IDrow,createdby,CreatedDate
+            Me.GridEX2.SetValue("HasRef", 0)
             Me.GridEX2.SetValue("AGREEMENT_NO", Me.MultiColumnCombo1.Value)
             Me.GridEX2.SetValue("ACH_METHODE", "PSG")
-            Me.GridEX2.SetValue("IDRow", Me.MultiColumnCombo1.Value + Me.GridEX2.GetValue("PS_CATEGORY") + Me.GridEX2.GetValue("FLAG"))
+            Me.GridEX2.SetValue("IDRow", IDRow)
             Me.GridEX2.SetValue("CreatedBy", NufarmBussinesRules.User.UserLogin.UserName)
             Me.GridEX2.SetValue("CreatedDate", NufarmBussinesRules.SharedClass.ServerDate)
         Catch ex As Exception
@@ -3466,7 +3473,9 @@ Public Class AgreementRelation
 
     Private Sub GridEX2_DeletingRecord(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.RowActionCancelEventArgs) Handles GridEX2.DeletingRecord
         If Me.SFG = StateFillingGrid.Filling Then : Return : End If
+
         Try
+
             If CInt(GridEX2.GetValue("HasRef")) > 0 Then
                 Me.ShowMessageInfo(Me.MessageCantDeleteData)
                 e.Cancel = True

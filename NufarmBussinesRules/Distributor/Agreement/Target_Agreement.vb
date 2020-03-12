@@ -3309,7 +3309,7 @@ Namespace DistributorAgreement
                     If RowsSelect.Length > 0 Then
                         Row = RowsSelect(0) : Row.BeginEdit()
                         Row("ACTUAL_DISTRIBUTOR") = SqlRe.GetDecimal(2)
-                        Row("PO_AMOUNT_DISTRIBUTOR") = SqlRe.GetDecimal(3)
+                        'Row("PO_AMOUNT_DISTRIBUTOR") = SqlRe.GetDecimal(3)
                         Row("ACTUAL_AMOUNT_DISTRIBUTOR") = SqlRe.GetDecimal(4)
                         Row.EndEdit()
                     End If
@@ -6081,24 +6081,24 @@ Namespace DistributorAgreement
             End Try
         End Function
         Protected Sub DisposeTempDB()
-            Query = "SET NOCOUNT ON ;" & vbCrLf & _
-                      "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                      " BEGIN  DROP TABLE  tempdb..##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
-                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_MASTER_PO_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
-                      " BEGIN DROP TABLE tempdb..##T_MASTER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
-                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_Brand_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
-                      " BEGIN DROP TABLE tempdb..##T_Agreement_Brand_" & Me.ComputerName & " ; END " & vbCrLf & _
-                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_PO_Original_By_Distributor_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
-                      " BEGIN DROP TABLE tempdb..##T_PO_Original_By_Distributor_" & Me.ComputerName & " ; END " & vbCrLf & _
-                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_BrandPack_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                      " BEGIN DROP TABLE tempdb..##T_Agreement_BrandPacK_" & Me.ComputerName & " ; END " & vbCrLf & _
-                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                      " BEGIN DROP TABLE Tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
-                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_AGREEMENT_NO_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                      " BEGIN DROP TABLE Tempdb..##T_AGREEMENT_NO_" & Me.ComputerName & " ; END "
-            Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-            Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-            Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+            'Query = "SET NOCOUNT ON ;" & vbCrLf & _
+            '          "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+            '          " BEGIN  DROP TABLE  tempdb..##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
+            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_MASTER_PO_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+            '          " BEGIN DROP TABLE tempdb..##T_MASTER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
+            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_Brand_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+            '          " BEGIN DROP TABLE tempdb..##T_Agreement_Brand_" & Me.ComputerName & " ; END " & vbCrLf & _
+            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_PO_Original_By_Distributor_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+            '          " BEGIN DROP TABLE tempdb..##T_PO_Original_By_Distributor_" & Me.ComputerName & " ; END " & vbCrLf & _
+            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_BrandPack_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+            '          " BEGIN DROP TABLE tempdb..##T_Agreement_BrandPacK_" & Me.ComputerName & " ; END " & vbCrLf & _
+            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+            '          " BEGIN DROP TABLE Tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
+            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_AGREEMENT_NO_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+            '          " BEGIN DROP TABLE Tempdb..##T_AGREEMENT_NO_" & Me.ComputerName & " ; END "
+            'Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+            'Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+            'Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
         End Sub
         Public Sub DeleteAccruedHeader(ByVal AchievementID As String)
             Try

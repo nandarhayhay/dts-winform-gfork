@@ -300,7 +300,7 @@ Partial Class AchievementF
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.Location = New System.Drawing.Point(0, 70)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1001, 210)
+        Me.Panel1.Size = New System.Drawing.Size(1001, 212)
         Me.Panel1.TabIndex = 24
         '
         'GridEX1
@@ -329,7 +329,7 @@ Partial Class AchievementF
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
         Me.GridEX1.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.GridEX1.Size = New System.Drawing.Size(1001, 171)
+        Me.GridEX1.Size = New System.Drawing.Size(1001, 173)
         Me.GridEX1.TabIndex = 38
         Me.GridEX1.TableHeaderFormatStyle.FontBold = Janus.Windows.GridEX.TriState.[True]
         Me.GridEX1.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
@@ -391,7 +391,7 @@ Partial Class AchievementF
         Me.cmbFlag.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3})
         Me.cmbFlag.Location = New System.Drawing.Point(43, 17)
         Me.cmbFlag.Name = "cmbFlag"
-        Me.cmbFlag.Size = New System.Drawing.Size(129, 20)
+        Me.cmbFlag.Size = New System.Drawing.Size(146, 20)
         Me.cmbFlag.TabIndex = 10
         Me.cmbFlag.Text = "<< Choose Flag >>"
         Me.cmbFlag.VisualStyle = Janus.Windows.UI.VisualStyle.Office2007
@@ -443,7 +443,7 @@ Partial Class AchievementF
         mcbDistributor_DesignTimeLayout.LayoutString = resources.GetString("mcbDistributor_DesignTimeLayout.LayoutString")
         Me.mcbDistributor.DesignTimeLayout = mcbDistributor_DesignTimeLayout
         Me.mcbDistributor.HoverMode = Janus.Windows.GridEX.HoverMode.Highlight
-        Me.mcbDistributor.Location = New System.Drawing.Point(274, 17)
+        Me.mcbDistributor.Location = New System.Drawing.Point(280, 17)
         Me.mcbDistributor.Name = "mcbDistributor"
         Me.mcbDistributor.SelectedIndex = -1
         Me.mcbDistributor.SelectedItem = Nothing
@@ -453,7 +453,7 @@ Partial Class AchievementF
         '
         'btnSearchDistributor
         '
-        Me.btnSearchDistributor.Location = New System.Drawing.Point(456, 18)
+        Me.btnSearchDistributor.Location = New System.Drawing.Point(462, 18)
         Me.btnSearchDistributor.Name = "btnSearchDistributor"
         Me.btnSearchDistributor.Size = New System.Drawing.Size(17, 18)
         Me.btnSearchDistributor.TabIndex = 4
@@ -461,7 +461,7 @@ Partial Class AchievementF
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(187, 21)
+        Me.Label1.Location = New System.Drawing.Point(195, 20)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(81, 13)
         Me.Label1.TabIndex = 0
@@ -544,6 +544,7 @@ Partial Class AchievementF
         Me.ExpandableSplitter2.BackColor2SchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.ExpandableSplitter2.BackColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground
         Me.ExpandableSplitter2.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.ExpandableSplitter2.ExpandableControl = Me.Panel2
         Me.ExpandableSplitter2.ExpandFillColor = System.Drawing.Color.FromArgb(CType(CType(101, Byte), Integer), CType(CType(147, Byte), Integer), CType(CType(207, Byte), Integer))
         Me.ExpandableSplitter2.ExpandFillColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.ExpandableSplitter2.ExpandLineColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
@@ -564,9 +565,9 @@ Partial Class AchievementF
         Me.ExpandableSplitter2.HotGripDarkColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.ExpandableSplitter2.HotGripLightColor = System.Drawing.Color.FromArgb(CType(CType(227, Byte), Integer), CType(CType(239, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.ExpandableSplitter2.HotGripLightColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.ExpandableSplitter2.Location = New System.Drawing.Point(0, 280)
+        Me.ExpandableSplitter2.Location = New System.Drawing.Point(0, 282)
         Me.ExpandableSplitter2.Name = "ExpandableSplitter2"
-        Me.ExpandableSplitter2.Size = New System.Drawing.Size(1001, 6)
+        Me.ExpandableSplitter2.Size = New System.Drawing.Size(1001, 4)
         Me.ExpandableSplitter2.Style = DevComponents.DotNetBar.eSplitterStyle.Office2007
         Me.ExpandableSplitter2.TabIndex = 28
         Me.ExpandableSplitter2.TabStop = False
@@ -581,6 +582,7 @@ Partial Class AchievementF
         Me.Controls.Add(Me.FilterEditor1)
         Me.Controls.Add(Me.Bar2)
         Me.Name = "AchievementF"
+        Me.Text = "Roundup Achievement"
         Me.ContextMenuStrip1.ResumeLayout(False)
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
@@ -635,8 +637,8 @@ Partial Class AchievementF
     Private WithEvents Label1 As System.Windows.Forms.Label
     Private WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
-    Friend WithEvents ExpandableSplitter2 As DevComponents.DotNetBar.ExpandableSplitter
     Private WithEvents GridEX1 As Janus.Windows.GridEX.GridEX
     Private WithEvents GridEX2 As Janus.Windows.GridEX.GridEX
+    Private WithEvents ExpandableSplitter2 As DevComponents.DotNetBar.ExpandableSplitter
 
 End Class

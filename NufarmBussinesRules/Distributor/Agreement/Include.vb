@@ -168,7 +168,7 @@ Namespace DistributorAgreement
             Try
                 'YANG ASLI SELECT DISTRIBUTOR_NAME,DISTRIBUTOR_ID,AGREEMENT_NO,AGREEMENT_DESC,QS_TREATMENT_FLAG FROM VIEW_AGREEMENT WHERE END_DATE > getdate()
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                        "SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME,AGREEMENT_NO,AGREEMENT_DESC,QS_TREATMENT_FLAG FROM VIEW_AGREEMENT " & vbCrLf & _
+                        "SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME,AGREEMENT_NO,AGREEMENT_DESC,QS_TREATMENT_FLAG,START_DATE,END_DATE FROM VIEW_AGREEMENT " & vbCrLf & _
                         " WHERE END_DATE >= " & NufarmBussinesRules.SharedClass.ShortGetDate()
                 If IsNothing(Me.SqlCom) Then
                     Me.CreateCommandSql("sp_executesql", "")

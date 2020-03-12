@@ -10,7 +10,7 @@ Namespace DistributorAgreement
         Private tblDiscProgressive As DataTable = Nothing
         Private tblPrevAchievement As DataTable = Nothing
         Private tblCurAchiement As DataTable = Nothing
-        Private IsTransitionTime As Boolean = False
+        Public IsTransitionTime As Boolean = False
         Private curAgreeStartDate As Object = Nothing
         Private curAgreeEndDate As Object = Nothing
         Private PrevAgreementNo As String = ""
@@ -85,13 +85,6 @@ Namespace DistributorAgreement
                 .Item("ModifiedBy").DefaultValue = NufarmBussinesRules.User.UserLogin.UserName
                 .Add(New DataColumn("ModifiedDate", Type.GetType("System.DateTime")))
                 .Item("ModifiedDate").DefaultValue = NufarmBussinesRules.SharedClass.ServerDate
-
-                ''untuk perhitungan saja bukan untuk ke database
-                .Add(New DataColumn("IsNew", Type.GetType("System.Boolean")))
-                .Item("IsNew").DefaultValue = DBNull.Value
-
-                .Add(New DataColumn("IsChanged", Type.GetType("System.Boolean")))
-                .Item("IsChanged").DefaultValue = DBNull.Value
                 ' TOTAL_CPF1, TOTAL_CPF2, 
                 .Add(New DataColumn("TOTAL_CPF1", Type.GetType("System.Decimal")))
                 .Item("TOTAL_CPF1").DefaultValue = 0
@@ -128,7 +121,7 @@ Namespace DistributorAgreement
                 .Add(New DataColumn("PO_VALUE_DIST", Type.GetType("System.Decimal")))
                 .Item("PO_VALUE_DIST").DefaultValue = 0
 
-                .Add(New DataColumn("DISC_DISC", Type.GetType("System.Decimal")))
+                .Add(New DataColumn("DISC_DIST", Type.GetType("System.Decimal")))
                 .Item("DISC_DIST").DefaultValue = 0
 
                 .Add(New DataColumn("CPQ1_DIST", Type.GetType("System.Decimal")))
@@ -218,45 +211,45 @@ Namespace DistributorAgreement
                 strFlag = strFlag.Remove(1, 1)
                 If AGREEMENT_NO <> "" And DistributorID <> "" Then
                     Query &= vbCrLf
-                    If Me.IsTransitionTime Then
-                        Query &= "SELECT TOP 100 AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
-                                  " WHERE (DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND AGREEMENT_NO LIKE '%" & AGREEMENT_NO & "%'))DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
-                                  " AND AA.QS_TREATMENT_FLAG IN('Q','F') ;"
-                    Else
-                        Query &= "SELECT TOP 100 AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
+                    'If Me.IsTransitionTime Then
+                    Query &= "SELECT TOP 100 AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
                               " WHERE (DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND AGREEMENT_NO LIKE '%" & AGREEMENT_NO & "%'))DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
-                              " AND AA.QS_TREATMENT_FLAG = @FLAG ;"
-                    End If
+                              " AND AA.QS_TREATMENT_FLAG IN('Q','F') ;"
+                    'Else
+                    '    Query &= "SELECT TOP 100 AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
+                    '          " WHERE (DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND AGREEMENT_NO LIKE '%" & AGREEMENT_NO & "%'))DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
+                    '          " AND AA.QS_TREATMENT_FLAG = @FLAG ;"
+                    'End If
           
                 ElseIf DistributorID <> "" Then
-                    If IsTransitionTime Then
-                        Query &= "SELECT AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
-                                  " WHERE (DISTRIBUTOR_ID = @DISTRIBUTOR_ID ))DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
-                                  " AND AA.QS_TREATMENT_FLAG IN('Q','F')  AND YEAR(AA.END_DATE) >= YEAR(@GETDATE) - @DefMaxyear ;"
-                    Else
-                        Query &= "SELECT AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
+                    'If IsTransitionTime Then
+                    Query &= "SELECT AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
                               " WHERE (DISTRIBUTOR_ID = @DISTRIBUTOR_ID ))DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
-                              " AND AA.QS_TREATMENT_FLAG = @FLAG  AND YEAR(AA.END_DATE) >= YEAR(@GETDATE) - @DefMaxyear ;"
-                    End If
+                              " AND AA.QS_TREATMENT_FLAG IN('Q','F')  AND YEAR(AA.END_DATE) >= YEAR(@GETDATE) - @DefMaxyear ;"
+                    'Else
+                    '    Query &= "SELECT AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN(SELECT AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT " & vbCrLf & _
+                    '          " WHERE (DISTRIBUTOR_ID = @DISTRIBUTOR_ID ))DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
+                    '          " AND AA.QS_TREATMENT_FLAG = @FLAG  AND YEAR(AA.END_DATE) >= YEAR(@GETDATE) - @DefMaxyear ;"
+                    'End If
                 ElseIf AGREEMENT_NO <> "" Then
                     Query &= vbCrLf
-                    If IsTransitionTime Then
-                        Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO LIKE '%" & AGREEMENT_NO & "%' " & vbCrLf & _
-                                " AND QS_TREATMENT_FLAG IN('Q','F') ;"
-                    Else
-                        Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO LIKE '%" & AGREEMENT_NO & "%' " & vbCrLf & _
-                                " AND QS_TREATMENT_FLAG = @FLAG ;"
-                    End If
+                    'If IsTransitionTime Then
+                    Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO LIKE '%" & AGREEMENT_NO & "%' " & vbCrLf & _
+                            " AND QS_TREATMENT_FLAG IN('Q','F') ;"
+                    'Else
+                    '    Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO LIKE '%" & AGREEMENT_NO & "%' " & vbCrLf & _
+                    '            " AND QS_TREATMENT_FLAG = @FLAG ;"
+                    'End If
 
                 Else
                     Query &= vbCrLf
-                    If IsTransitionTime Then
-                        Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE YEAR(END_DATE) >= YEAR(@GETDATE) - @DefMaxyear " & vbCrLf & _
-                                 " AND QS_TREATMENT_FLAG IN('Q','F') ;"
-                    Else
-                        Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE YEAR(END_DATE) >= YEAR(@GETDATE) - @DefMaxyear " & vbCrLf & _
-                                 " AND QS_TREATMENT_FLAG = @FLAG ;"
-                    End If
+                    'If IsTransitionTime Then
+                    Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE YEAR(END_DATE) >= YEAR(@GETDATE) - @DefMaxyear " & vbCrLf & _
+                             " AND QS_TREATMENT_FLAG IN('Q','F') ;"
+                    'Else
+                    '    Query &= "SELECT AGREEMENT_NO,START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE YEAR(END_DATE) >= YEAR(@GETDATE) - @DefMaxyear " & vbCrLf & _
+                    '             " AND QS_TREATMENT_FLAG = @FLAG ;"
+                    'End If
 
                 End If
                 Me.CreateCommandSql("", Query)
@@ -280,29 +273,29 @@ Namespace DistributorAgreement
                 Flag = Flag.Remove(1, 1)
                 If Flag = "Q" Or Flag = "F" Then
                     If Searchstring = "" Then
-                        If IsTransitionTime Then
-                            Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
-                                    "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
-                                    " WHERE YEAR(AA.END_DATE) >=  YEAR(@GETDATE) - 1 AND AA.QS_TREATMENT_FLAG IN('Q','F') AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) "
-                        Else
-                            Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
-                                    "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
-                                    " WHERE YEAR(AA.END_DATE) >=  YEAR(@GETDATE) - 1 AND AA.QS_TREATMENT_FLAG = @FLAG AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) "
-                        End If
+                        'If IsTransitionTime Then
+                        Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
+                                "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
+                                " WHERE YEAR(AA.END_DATE) >=  YEAR(@GETDATE) - 1 AND AA.QS_TREATMENT_FLAG IN('Q','F') AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) "
+                        'Else
+                        '    Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
+                        '            "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
+                        '            " WHERE YEAR(AA.END_DATE) >=  YEAR(@GETDATE) - 1 AND AA.QS_TREATMENT_FLAG = @FLAG AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) "
+                        'End If
 
                     Else
                         'hilangkan end_date karene custom search
-                        If IsTransitionTime Then
-                            Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
-                                     "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
-                                     " WHERE AA.QS_TREATMENT_FLAG = IN('Q','F') AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) " & vbCrLf & _
-                                     " AND DR.DISTRIBUTOR_NAME LIKE '%" & Searchstring & "%';"
-                        Else
-                            Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
-                                     "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
-                                     " WHERE AA.QS_TREATMENT_FLAG = @FLAG AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) " & vbCrLf & _
-                                     " AND DR.DISTRIBUTOR_NAME LIKE '%" & Searchstring & "%';"
-                        End If
+                        'If IsTransitionTime Then
+                        Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
+                                 "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
+                                 " WHERE AA.QS_TREATMENT_FLAG = IN('Q','F') AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) " & vbCrLf & _
+                                 " AND DR.DISTRIBUTOR_NAME LIKE '%" & Searchstring & "%';"
+                        'Else
+                        '    Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR DR WHERE EXISTS(" & vbCrLf & _
+                        '             "SELECT DA.DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
+                        '             " WHERE AA.QS_TREATMENT_FLAG = @FLAG AND DA.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID) " & vbCrLf & _
+                        '             " AND DR.DISTRIBUTOR_NAME LIKE '%" & Searchstring & "%';"
+                        'End If
                     End If
                 End If
                 Me.CreateCommandSql("", Query)
@@ -338,11 +331,11 @@ Namespace DistributorAgreement
                 '-----------------------------------Header Query -->achievement header--------------------------
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
                         "SELECT ACRH.ACH_HEADER_ID,ACRH.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ACRH.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,ACRH.FLAG,ACRH.BRAND_ID,BB.BRAND_NAME," & vbCrLf & _
-                        "ISNULL(AP.AVGPRICE,0) AS AVG_PRICE_FM,ISNULL(AP.AVGPRICE_PL,0) AS AVG_PRICE_PL,ACRH.TARGET_FM,ACRH.TARGET_PL,ACRH.TARGET_VALUE,ACRH.TOTAL_PO_VALUE,ACRH.TOTAL_TARGET," & vbCrLf & _
-                        " ACRH.TOTAL_PO,ACRH.TOTAL_ACTUAL AS ACTUAL,ACRH.BALANCE,ACRH.ACH_BY_CAT/100 AS ACH_BY_CAT,ACRH.ACH_DISPRO/100 AS ACHIEVEMENT_DISPRO,ACRH.DISPRO/100 AS DISPRO,  " & vbCrLf & _
+                        "ISNULL(AP.AVGPRICE,0) AS AVG_PRICE_FM,ISNULL(AP.AVGPRICE_PL,0) AS AVG_PRICE_PL,ACRH.TARGET_FM,ACRH.TARGET_PL,ISNULL(AP.AVGPRICE,0) * ACRH.TOTAL_TARGET AS TARGET_VALUE,ACRH.TOTAL_PO_VALUE,ACRH.TOTAL_TARGET," & vbCrLf & _
+                        " ACRH.TOTAL_PO,ACRH.TOTAL_ACTUAL,ACRH.BALANCE,ACRH.ACH_BY_CAT/100 AS ACH_BY_CAT,ACRH.ACH_DISPRO/100 AS ACHIEVEMENT_DISPRO,ACRH.DISPRO/100 AS DISPRO,  " & vbCrLf & _
                         " ACRH.DISC_QTY, ACRH.TOTAL_CPQ1,ACRH.TOTAL_CPQ2, " & vbCrLf & _
                         " ACRH.TOTAL_CPQ3, " & vbCrLf & _
-                        " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,TOTAL_PBF3,ACRH.[DESCRIPTIONS],ACRH.ACTUAL_DIST,ACRH.PO_DIST,ACRH.PO_VALUE_DIST,ACRH.DISC_DIST,ACRH.CPQ1_DIST,ACRH.CPQ2_DIST,ACRH.CPQ3_DIST,ACRH.CPF1_DIST,ACRH.CPF2_DIST,ACRH.PBF3_DIST," & vbCrLf & _
+                        " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,TOTAL_PBF3,ACRH.[DESCRIPTIONS],ACRH.ACTUAL_DIST,ACRH.PO_DIST,ACRH.PO_VALUE_DIST,ACRH.DISC_DIST,ACRH.CPQ1_DIST,ACRH.CPQ2_DIST,ACRH.CPQ3_DIST,ACRH.CPF1_DIST,ACRH.CPF2_DIST,ACRH.PBF3_DIST " & vbCrLf & _
                         " FROM ACHIEVEMENT_HEADER ACRH INNER JOIN AGREE_AGREEMENT AA ON ACRH.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN DIST_DISTRIBUTOR DR ON ACRH.DISTRIBUTOR_ID " & vbCrLf & _
                         " = DR.DISTRIBUTOR_ID INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ACRH.BRAND_ID " & vbCrLf & _
                         "  LEFT OUTER JOIN BRND_AVGPRICE AP ON AP.IDApp = ACRH.AvgPriceID " & vbCrLf
@@ -379,12 +372,13 @@ Namespace DistributorAgreement
                 'ACH_DETAIL_ID, ACH_HEADER_ID, AGREEMENT_NO,BRANDPACK_ID, BRANDPACK_NAME,  TOTAL_PO, TOTAL_ACTUAL, DISC_QTY, CREATE_BY, TOTAL_CPQ1,
                 'TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, DESCRIPTIONS
                 '--------------------------Detail Query -->Achievement detail---------------------------------------
-                Query = " SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SELECT ACD.ACH_DETAIL_ID,ACD.ACH_HEADER_ID,ACRH.AGREEMENT_NO,ACD.BRANDPACK_ID,BP.BRANDPACK_NAME," & vbCrLf & _
+                Query = " SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SELECT ACD.ACH_DETAIL_ID,ACD.ACH_HEADER_ID,ACRH.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ACRH.AGREEMENT_NO,ACD.BRANDPACK_ID,BP.BRANDPACK_NAME," & vbCrLf & _
                           "ACD.TOTAL_PO,ACD.TOTAL_ACTUAL, ACD.DISC_QTY," & vbCrLf & _
                           " ACD.TOTAL_CPQ1,ACD.TOTAL_CPQ2,ACD.TOTAL_CPQ3,ACD.TOTAL_CPF1,ACD.TOTAL_CPF2,ACD.TOTAL_PBF3,ACD.[DESCRIPTIONS]" & vbCrLf & _
                           " FROM ACHIEVEMENT_DETAIL ACD INNER JOIN ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
                           " ON ACD.ACH_HEADER_ID = ACRH.ACH_HEADER_ID INNER JOIN BRND_BRANDPACK BP " & vbCrLf & _
-                          "  ON ACD.BRANDPACK_ID = BP.BRANDPACK_ID " & vbCrLf
+                          "  ON ACD.BRANDPACK_ID = BP.BRANDPACK_ID " & vbCrLf & _
+                          " INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = ACRH.DISTRIBUTOR_ID " & vbCrLf
                 If ((DISTRIBUTOR_ID <> "") And (Not IsNothing(ListAGREEMENT_NO))) Then
                     If ListAGREEMENT_NO.Count > 0 Then
                         Query &= " WHERE ACRH.AGREEMENT_NO  " & strAgreementNos & " AND ACRH.DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND ACRH.FLAG = '" & Flag & "' OPTION(KEEP PLAN);"
@@ -437,16 +431,8 @@ Namespace DistributorAgreement
                         Me.SqlRe.Close()
                     End If
                 End If
-                Try
-                    Me.ClearCommandParameters()
-                    Me.DisposeTempDB()
-                Catch ex1 As Exception
-                    'Me.strStartDateFlag = "" : Me.strEndDateFlag = ""
-                    Me.RollbackTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
-                    Throw ex1
-                End Try
-                'Me.strStartDateFlag = "" : Me.strEndDateFlag = ""
-                Me.RollbackTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
+                Me.DisposeTempDB()
+                Me.CloseConnection() : Me.ClearCommandParameters()
                 Throw ex
             End Try
             Return Me.baseDataSet
@@ -471,6 +457,7 @@ Namespace DistributorAgreement
         End Sub
         Public Function CalculateAchievement(ByVal Flag As String, Optional ByVal tblAgreement As DataTable = Nothing, Optional ByVal DISTRIBUTOR_ID As String = "") As DataSet
             Try
+
                 Me.MessageError = ""
                 'Dim StartDate As DateTime = Nothing, EndDate As DateTime = Nothing, StartDateQ1 As DateTime = Nothing, EndDateQ1 As DateTime = Nothing, _
                 'StartDateQ2 As DateTime = Nothing, EndDateQ2 As DateTime = Nothing, StartDateQ3 As DateTime = Nothing, EndDateQ3 As DateTime = Nothing, _
@@ -512,6 +499,8 @@ Namespace DistributorAgreement
                     Me.ClearCommandParameters() : HasTarget = True
                     StartDate = Convert.ToDateTime(tblDistAgreement.Rows(i)("START_DATE"))
                     EndDate = Convert.ToDateTime(tblDistAgreement.Rows(i)("END_DATE"))
+                    'edit after debugging
+                    IsTransitionTime = StartDate >= New DateTime(2018, 8, 1) And EndDate <= New DateTime(2019, 7, 31)
                     PrevAgreementNo = ""
                     curAgreeStartDate = StartDate
                     curAgreeEndDate = EndDate
@@ -519,7 +508,7 @@ Namespace DistributorAgreement
                     EndDateF1 = StartDateF1.AddMonths(4).AddDays(-1)
                     StartDateF2 = EndDateF1.AddDays(1)
                     EndDateF2 = StartDateF2.AddMonths(4).AddDays(-1)
-                    StartDateF3 = EndDateF2.AddDays(-1)
+                    StartDateF3 = EndDateF2.AddDays(1)
                     EndDateF3 = EndDate
                     'start calculating
                     Select Case Flag
@@ -561,28 +550,21 @@ Namespace DistributorAgreement
                         Me.SqlRe.Close()
                     End If
                 End If
-                Try
-                    Me.ClearCommandParameters()
-                    Me.DisposeTempDB()
-                Catch ex1 As Exception
-                    Me.RollbackTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
-                    Throw ex1
-                End Try
-                Me.RollbackTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
-                mustRecomputeYear = False
+                Me.RollbackTransaction()
+                Me.DisposeTempDB() : Me.CloseConnection()
                 Throw ex
             End Try
 
         End Function
         Private Sub getTblCurProgAndPrevAchievement()
             Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    " SELECT PRODUCT_CATEGORY,PS_CATEGORY,UP_TO_PCT * 100 AS UP_TO_PCT,DISC_PCT * 100 AS DISC_PCT,FLAG FROM AGREE_PROG_DISC_R " & vbCrLf & _
+                    " SELECT PRODUCT_CATEGORY,PS_CATEGORY,UP_TO_PCT,DISC_PCT, FLAG FROM AGREE_PROG_DISC_R " & vbCrLf & _
                     " WHERE AGREEMENT_NO = @AGREEMENT_NO;"
             tblDiscProgressive = New DataTable("tblProgressive")
             Me.ResetCommandText(CommandType.Text, Query)
             setDataAdapter(Me.SqlCom).Fill(tblDiscProgressive)
-            Me.SqlCom.Parameters.RemoveAt("@START_DATE")
-            Me.SqlCom.Parameters.RemoveAt("@END_DATE")
+            'Me.SqlCom.Parameters.RemoveAt("@START_DATE")
+            'Me.SqlCom.Parameters.RemoveAt("@END_DATE")
 
             'GET achievement data from current agreement previous flag 
             Query = "SET NOCOUNT ON;" & vbCrLf
@@ -600,7 +582,7 @@ Namespace DistributorAgreement
             Query = "SET NOCOUNT ON;" & vbCrLf & _
             " DECLARE @V_PREV_AG_NO VARCHAR(25); " & vbCrLf & _
             " SET @V_PREV_AG_NO = (SELECT TOP 1 AA.AGREEMENT_NO FROM AGREE_AGREEMENT AA INNER JOIN DISTRIBUTOR_AGREEMENT DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
-            "                       WHERE AA.AGREEMENT_NO != @AGREEMENT_NO AND AA.START_DATE < @CUR_START_DATE ORDER BY AA.START_DATE DESC);  " & vbCrLf & _
+            "                       WHERE AA.AGREEMENT_NO != @AGREEMENT_NO AND AA.START_DATE < @START_DATE ORDER BY AA.START_DATE DESC);  " & vbCrLf & _
             " SELECT ACH_HEADER_ID AS ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @V_PREV_AG_NO AND FLAG = 'F3' ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.tblPrevAchievement = New DataTable("tblPreviousAchievement")
@@ -610,7 +592,7 @@ Namespace DistributorAgreement
             ByRef tblAchHeader As DataTable, ByRef tblAchDetail As DataTable, ByRef Message As String, ByRef HasTarget As Boolean, ByVal EndDateAgreement As DateTime)
 
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
-                    "SELECT  1 WHERE EXISTS(SELECT AGREEMENT_NO FROM AGREE_AGREEMENT AA INNER JOIN AGREE_PROG_DISC_R APD " & vbCrLf & _
+                    "SELECT  1 WHERE EXISTS(SELECT APD.AGREEMENT_NO FROM AGREE_AGREEMENT AA INNER JOIN AGREE_PROG_DISC_R APD " & vbCrLf & _
                     "                       ON AA.AGREEMENT_NO = APD.AGREEMENT_NO WHERE AA.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
                     "                       AND APD.FLAG = @FLAG)"
 
@@ -630,7 +612,7 @@ Namespace DistributorAgreement
 
             'get tbl progresive, and curent achievement dan previous achievement
             getTblCurProgAndPrevAchievement()
-
+            UpdateTotalAllActualAndPO(tblAchHeader)
             'HITUNG DISCOUNT tblAchHeader (sudah include hitung previous discount)
             Me.CalculateHeader(AgreementNO, FLAG, tblAchHeader)
             Me.ClearCommandParameters()
@@ -760,19 +742,20 @@ Namespace DistributorAgreement
             Dim DVCurAch As DataView = tblCurAchiement.DefaultView
             For i As Integer = 0 To tblAchHeader.Rows.Count - 1
                 Dim RowHeader As DataRow = tblAchHeader.Rows(i), RowDetail As DataRow = Nothing
-                Dim Dispro As Decimal = Convert.ToDecimal(RowHeader(i)("DISPRO"))
+                Dim Dispro As Decimal = Convert.ToDecimal(RowHeader("DISPRO"))
                 '===========COMMENT THIS AFTER DEBUGGING=========================
                 'If BrandID = "77230" Or BrandID = "77240" Then
                 '    Stop
                 'End If
                 '===============END COMMENT THIS AFTER DEBUGGING ==============================
-                For i1 As Integer = 0 To tblAchDetail.Rows.Count - 1
-                    RowDetail = tblAchDetail.Rows(i1)
+                Dim AchHeaderID As String = RowHeader("ACH_HEADER_ID").ToString()
+                Dim RowsDetail() As DataRow = tblAchDetail.Select("ACH_HEADER_ID = '" & AchHeaderID & "'")
+                For i1 As Integer = 0 To RowsDetail.Length - 1
+                    RowDetail = RowsDetail(i1)
                     Dim PrevDisPro As Decimal = 0, BonusQTy As Decimal = 0
                     Dim totalInvoiceBeforeF3 As Decimal = 0, totalInvoiceCurrentF1 As Decimal = 0, totalInvoiceCurrentF2 As Decimal = 0, _
                     totalInvoiceCurrentQ1 As Decimal = 0, totalInvoiceCurrentQ2 As Decimal = 0, totalInvoiceCurrentQ3 As Decimal = 0
                     Dim AchDetailID As String = RowDetail("ACH_DETAIL_ID")
-                    Dim AchHeaderID As String = RowHeader("ACH_HEADER_ID").ToString()
                     Dim DiscQtyBefore As Decimal = 0
                     Descriptions = ""
                     Select Case Flag
@@ -956,15 +939,15 @@ Namespace DistributorAgreement
                 Dim row As DataRow = Nothing
                 For i1 As Integer = 0 To rows.Length - 1
                     row = rows(i1)
-                    TotalPO += Convert.ToDecimal(row(i1)("PO_DIST"))
-                    TotalActual += Convert.ToDecimal(row(i1)("ACTUAL_DIST"))
-                    TotalPOValue += Convert.ToDecimal(row(i1)("PO_VALUE_DIST"))
-                    TotalCPQ1 += Convert.ToDecimal(row(i1)("CPQ1_DIST"))
-                    TotalCPQ2 += Convert.ToDecimal(row(i1)("CPQ2_DIST"))
-                    TotalCPQ3 += Convert.ToDecimal(row(i1)("CPQ3_DIST"))
-                    TotalCPF1 += Convert.ToDecimal(row(i1)("CPF1_DIST"))
-                    TotalCPF2 += Convert.ToDecimal(row(i1)("CPF2_DIST"))
-                    TotalPBF3 += Convert.ToDecimal(row(i1)("PBF3_DIST"))
+                    TotalPO += Convert.ToDecimal(row("PO_DIST"))
+                    TotalActual += Convert.ToDecimal(row("ACTUAL_DIST"))
+                    TotalPOValue += Convert.ToDecimal(row("PO_VALUE_DIST"))
+                    TotalCPQ1 += Convert.ToDecimal(row("CPQ1_DIST"))
+                    TotalCPQ2 += Convert.ToDecimal(row("CPQ2_DIST"))
+                    TotalCPQ3 += Convert.ToDecimal(row("CPQ3_DIST"))
+                    TotalCPF1 += Convert.ToDecimal(row("CPF1_DIST"))
+                    TotalCPF2 += Convert.ToDecimal(row("CPF2_DIST"))
+                    TotalPBF3 += Convert.ToDecimal(row("PBF3_DIST"))
                 Next
                 For i1 As Integer = 0 To rows.Length - 1
                     row = rows(i1)
@@ -1455,7 +1438,7 @@ Namespace DistributorAgreement
                     If totalInvoiceBeforeF3 > 0 And Not IsNothing(DVPrevAch) Then
                         DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
                         If DVPrevAch.Count > 0 Then
-                            PrevDisPro = DVCurAch(0)("DISPRO")
+                            PrevDisPro = DVPrevAch(0)("DISPRO")
                             DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
                             DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
@@ -1474,7 +1457,7 @@ Namespace DistributorAgreement
                     If totalInvoiceBeforeF3 > 0 And Not IsNothing(DVPrevAch) Then
                         DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
                         If DVPrevAch.Count > 0 Then
-                            PrevDisPro = DVCurAch(0)("DISPRO")
+                            PrevDisPro = DVPrevAch(0)("DISPRO")
                             DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
                             DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
@@ -1496,6 +1479,7 @@ Namespace DistributorAgreement
             While Me.SqlRe.Read()
                 StartDatePKD = Me.SqlRe.GetDateTime(0) : EndDatePKD = Me.SqlRe.GetDateTime(1)
             End While : Me.SqlRe.Close()
+            'nanti harus di reset
             IsTransitionTime = StartDatePKD >= New DateTime(2019, 8, 1) And EndDatePKD <= New DateTime(2020, 7, 31)
             '-----------------------------DECLARASI TABLE------------------------------------------------------------
             Dim Row As DataRow = Nothing, RowsSelect() As DataRow = Nothing, _
@@ -1567,7 +1551,7 @@ Namespace DistributorAgreement
                      "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_MASTER_PO_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                      " BEGIN DROP TABLE tempdb..##T_MASTER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
                      " SELECT PO_REF_NO,PO_REF_DATE,DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,SPPB_QTY,PO_ORIGINAL_QTY,PO_AMOUNT = PO_ORIGINAL_QTY * PO_PRICE_PERQTY,RUN_NUMBER,IncludeDPD INTO tempdb..##T_MASTER_PO_" & Me.ComputerName & " FROM ( " & vbCrLf & _
-                     "  SELECT PO.PO_REF_NO,PO.PO_REF_DATE,PO.DISTRIBUTOR_ID,ABI.BRAND_ID,ABP.BRANDPACK_ID,OPB.PO_ORIGINAL_QTY,OPB.PO_PRICE_PERQTY,OOAB.QTY_EVEN + ISNULL(SB.TOTAL_DISC_QTY) AS SPPB_QTY,OOA.RUN_NUMBER ," & vbCrLf & _
+                     "  SELECT PO.PO_REF_NO,PO.PO_REF_DATE,PO.DISTRIBUTOR_ID,ABI.BRAND_ID,ABP.BRANDPACK_ID,OPB.PO_ORIGINAL_QTY,OPB.PO_PRICE_PERQTY,OOAB.QTY_EVEN + ISNULL(SB.TOTAL_DISC_QTY,0) AS SPPB_QTY,OOA.RUN_NUMBER ," & vbCrLf & _
                      "  IncludeDPD = CASE WHEN (OPB.ExcludeDPD = 0) THEN 'YESS' " & vbCrLf & _
                      "  WHEN EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND IncludeDPD = 1) THEN 'YESS' " & vbCrLf & _
                      "  WHEN EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND IncludeDPD = 0) THEN 'NO' " & vbCrLf & _
@@ -1582,8 +1566,8 @@ Namespace DistributorAgreement
                      "  INNER JOIN ORDR_OA_BRANDPACK OOAB ON OOA.OA_ID = OOAB.OA_ID AND OOAB.PO_BRANDPACK_ID = OPB.PO_BRANDPACK_ID " & vbCrLf & _
                      "  LEFT OUTER JOIN (SELECT OOBD.OA_BRANDPACK_ID,ISNULL(SUM(OOBD.DISC_QTY),0) AS TOTAL_DISC_QTY FROM ORDR_OA_BRANDPACK_DISC OOBD " & vbCrLf & _
                      "      WHERE OOBD.OA_BRANDPACK_ID = ANY(  " & vbCrLf & _
-                     "      SELECT OA_BRANDPACK_ID FROM ORDR_OA_BRANDPACK " & vbCrLf & _
-                     "      WHERE PO_BRANDPACK_ID = ANY(SELECT PO_BRANDPACK_ID FROM ORDR_PO_BRANDPACK WHERE PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE)" & vbCrLf & _
+                     "      SELECT OA_BRANDPACK_ID FROM ORDR_OA_BRANDPACK OOB INNER JOIN ORDR_PO_BRANDPACK PB ON OOB.PO_BRANDPACK_ID = PB.PO_BRANDPACK_ID " & vbCrLf & _
+                     "              INNER JOIN ORDR_PURCHASE_ORDER PO1 ON PO1.PO_REF_NO = PB.PO_REF_NO WHERE PO1.PO_REF_DATE >= @START_DATE AND PO1.PO_REF_DATE <= @END_DATE " & vbCrLf & _
                      "      ) " & vbCrLf & _
                      "      GROUP BY OOBD.OA_BRANDPACK_ID " & vbCrLf & _
                      "  )SB ON SB.OA_BRANDPACK_ID = OOAB.OA_BRANDPACK_ID" & vbCrLf & _
@@ -1635,7 +1619,7 @@ Namespace DistributorAgreement
             Me.ResetCommandText(CommandType.Text, Query)
             Dim totalRowsAgree As Integer = CInt(Me.SqlCom.ExecuteScalar())
             Query = " SET NOCOUNT ON" & vbCrLf & _
-            " SELECT COUNT(*) FROM ACH_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO; AND FLAG = @FLAG"
+            " SELECT COUNT(*) FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim totalRowsAch As Integer = CInt(Me.SqlCom.ExecuteScalar())
             If totalRowsAch <> totalRowsAgree Then
@@ -1685,15 +1669,16 @@ Namespace DistributorAgreement
             While Me.SqlRe.Read()
                 Row = tblAchHeader.NewRow()
                 Dim BrandID As String = SqlRe.GetString(2)
-                Dim Target As Decimal = SqlRe.GetDecimal(4)
-                Dim TargetFM As Decimal = SqlRe.GetDecimal(5)
-                Dim TargetPL As Decimal = SqlRe.GetDecimal(6)
+                Dim Target As Decimal = SqlRe.GetDecimal(3)
+                Dim TargetFM As Decimal = SqlRe.GetDecimal(4)
+                Dim TargetPL As Decimal = SqlRe.GetDecimal(5)
                 Dim AgreeBrandID As String = SqlRe.GetString(1)
                 Dim AchievementID As String = SqlRe.GetString(0) + "|" + AgreementNo + BrandID + "|" + Flag
                 Row("ACH_HEADER_ID") = AchievementID
                 Row("AGREEMENT_NO") = AgreementNo
                 Row("DISTRIBUTOR_ID") = SqlRe.GetString(0)
                 Row("AGREE_BRAND_ID") = SqlRe.GetString(1)
+                Row("BALANCE") = 0 - Target
                 Dim index As Integer = DVAPrice.Find(AgreeBrandID)
                 If index <> -1 Then
                     Row("AVGPriceID") = DVAPrice(index)("AvgPriceID")
@@ -1708,8 +1693,12 @@ Namespace DistributorAgreement
                     ListAchievementID.Add(AchievementID)
                 End If
             End While : Me.SqlRe.Close()
+            Me.ClearCommandParameters()
 
+            ''hanya mengambil actual saja, karena actual tidak mengacu pad PKD
             Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_Total_Qty_Brand_By_Invoice")
+            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
+            Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDate)
             Me.AddParameter("@AGREEMENT_NO", SqlDbType.VarChar, AgreementNo, 25)
             Me.AddParameter("@COMPUTERNAME", SqlDbType.VarChar, Me.ComputerName, 100)
             Me.SqlRe = Me.SqlCom.ExecuteReader()
@@ -1719,29 +1708,50 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("ACH_HEADER_ID = '" & ACH_HEADER_ID & "'")
                 If RowsSelect.Length > 0 Then
                     Row = RowsSelect(0) : Row.BeginEdit()
-                    'ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,
-                    'Row("TOTAL_ACTUAL") = SqlRe.GetDecimal(2)
-                    'Row("TOTAL_PO_VALUE") = SqlRe.GetDecimal(3)
-                    ' Row("TOTAL_PO") = SqlRe.GetDecimal(7)
                     Row("ACTUAL_DIST") = SqlRe.GetDecimal(2)
-                    Row("PO_VALUE_DIST") = SqlRe.GetDecimal(3)
-                    Row("PO_DIST") = SqlRe.GetDecimal(7)
                     Row.EndEdit()
                 End If
             End While : SqlRe.Close()
 
-            Dim tblPO As New DataTable("T_PO")
+            Dim tblPOByBrandPack As New DataTable("T_POBrandPack"), TblPOByBrand As New DataTable("T_POBrand")
+
+            ''total PO BY BRAND
+            'hanya mengambil total_PO karena TotalPO mengacu ke PKD
+            Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; SELECT ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID," & vbCrLf & _
+                    " ISNULL(SUM(PO.PO_ORIGINAL_QTY),0)AS PO_DIST,ISNULL(SUM(PO.PO_AMOUNT),0) AS PO_VALUE_DIST FROM Nufarm.DBO.VIEW_AGREE_BRANDPACK_INCLUDE ABI " & vbCrLf & _
+                    " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.DISTRIBUTOR_ID = ABI.DISTRIBUTOR_ID AND PO.BRANDPACK_ID = ABI.BRANDPACK_ID " & vbCrLf & _
+                    " WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS'" & vbCrLf & _
+                    " GROUP BY ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID OPTION(KEEP PLAN);"
+            Me.ResetCommandText(CommandType.Text, Query)
+            tblPOByBrandPack.Clear()
+            setDataAdapter(Me.SqlCom).Fill(TblPOByBrand)
+            If TblPOByBrand.Rows.Count > 0 Then
+                For i1 As Integer = 0 To TblPOByBrand.Rows.Count - 1
+                    ACH_HEADER_ID = TblPOByBrand.Rows(i1)("DISTRIBUTOR_ID").ToString() & "|" & TblPOByBrand.Rows(i1)("AGREE_BRAND_ID").ToString() & "|" & Flag
+                    RowsSelect = tblAchHeader.Select("ACH_HEADER_ID = '" & ACH_HEADER_ID & "'")
+                    If RowsSelect.Length > 0 Then
+                        Row = RowsSelect(0)
+                        Row.BeginEdit()
+                        Row("PO_DIST") = TblPOByBrand.Rows(i1)("PO_DIST")
+                        Row("PO_VALUE_DIST") = TblPOByBrand.Rows(i1)("PO_VALUE_DIST")
+                        Row.EndEdit()
+                    End If
+                Next
+            End If
+            Me.ClearCommandParameters()
+
             '--------------------------------------------------------------------------------------------------
-            ''haduh looping truss...
             Dim strListAch As String = "IN('"
             For i As Integer = 0 To ListAchievementID.Count - 1
                 strListAch &= ListAchievementID(i).ToString() & "'"
                 If i < ListAchievementID.Count - 1 Then
-                    strListAch &= ","
+                    strListAch &= ",'"
                 End If
             Next
-            strListAch = ")"
-            'Dim ACH_HEADER_ID As String = ListAchievementID(i)
+            strListAch &= ")"
+
+            ''fill table detail
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " SELECT ABI.BRANDPACK_ID,ABI.ACH_HEADER_ID,ABI.ACH_DETAIL_ID " & vbCrLf & _
                     " FROM ( " & vbCrLf & _
@@ -1749,7 +1759,8 @@ Namespace DistributorAgreement
                     "       ABI.BRANDPACK_ID,ABI.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|" & Flag & "|' + ABI.BRANDPACK_ID AS ACH_DETAIL_ID " & vbCrLf & _
                     "       FROM VIEW_AGREE_BRANDPACK_INCLUDE ABI WHERE DISTRIBUTOR_ID + '|' + AGREE_BRAND_ID + '|" & Flag & "'" & strListAch & vbCrLf & _
                     "      )ABI "
-            Me.ResetCommandText(CommandType.Text, Query)
+            Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+            Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
             Me.SqlRe = Me.SqlCom.ExecuteReader()
             'ACH_HEADER_ID,BRANDPACK_ID,ACH_DETAIL_ID,TOTAL_PO,TOTAL_ACTUAL,DISC_QTY,TOTAL_CPQ1,TOTAL_CPQ2,TOTAL_CPQ2,
             'TOTAL_CPQ3,TOTAL_CPF1,TOTAL_CPF2,TOTAL_PBF3,DESCRIPTIONS,CreatedBy,CreatedDate,CreatedDate,ModifiedBy,ModifiedDate,IsNew,IsChanged
@@ -1761,30 +1772,47 @@ Namespace DistributorAgreement
                 Row("BRANDPACK_ID") = BRANDPACK_ID
                 Row("ACH_DETAIL_ID") = SqlRe.GetString(2)
                 Row.EndEdit() : tblAchDetail.Rows.Add(Row)
-            End While : SqlRe.Close()
-            ''ambil total actual nya\
-            'If AgreementNo = "013/NI/I/2000.09" Then
-            '    Stop
-            'End If
-            'create temporary table ##T_PO_Original_By_Distributor isinya 
-            'DISTRIBUTOR_ID,BRANDPACK_ID,QTY(actual)
-            Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; " & vbCrLf & _
-                    " SELECT PO.DISTRIBUTOR_ID,tmbp.BRAND_ID_DTS AS BRAND_ID,tmbp.BRANDPACK_ID_DTS AS BRANDPACK_ID,(INV.QTY/ISNULL(PO.SPPB_QTY,0)) * ISNULL(PO.PO_ORIGINAL_QTY,0) AS QTY " & vbCrLf & _
-                    " FROM COMPARE_ITEM tmbp " & vbCrLf & _
-                    " INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
-                    " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.BRANDPACK_ID = tmbp.BRANDPACK_ID_DTS " & vbCrLf & _
-                    " AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER) ) " & vbCrLf & _
-                    " WHERE PO.DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' AND INV.QTY > 0 ; "
-            Dim DistributorID As String = ListAchievementID(0).Remove(ListAchievementID(0).IndexOf("|"))
-            Me.ResetCommandText(CommandType.Text, Query)
-            Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DistributorID, 10)
-            Me.SqlCom.ExecuteScalar()
+            End While : SqlRe.Close() : Me.ClearCommandParameters()
+
+            'Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; " & vbCrLf & _
+            '        " SELECT PO.DISTRIBUTOR_ID,tmbp.BRAND_ID_DTS AS BRAND_ID,tmbp.BRANDPACK_ID_DTS AS BRANDPACK_ID,(INV.QTY/ISNULL(PO.SPPB_QTY,0)) * ISNULL(PO.PO_ORIGINAL_QTY,0) AS QTY " & vbCrLf & _
+            '        " FROM COMPARE_ITEM tmbp " & vbCrLf & _
+            '        " INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
+            '        " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.BRANDPACK_ID = tmbp.BRANDPACK_ID_DTS " & vbCrLf & _
+            '        " AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER) ) " & vbCrLf & _
+            '        " WHERE PO.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO ) AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' AND INV.QTY > 0 ; "
+            ''Dim DistributorID As String = ListAchievementID(0).Remove(ListAchievementID(0).IndexOf("|"))
+            'Me.ResetCommandText(CommandType.Text, Query)
+            'Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
+            'Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDate)
+            ''Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DistributorID, 10)
+            'Me.SqlCom.ExecuteScalar()
 
             Dim AchDetailID As String = ""
 
             'hanya untuk mengambil total actual karena actual tidak mengacu pada PKD
-            Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_Total_Qty_BrandPack_By_Invoice")
+            'Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_Total_Qty_BrandPack_By_Invoice")
+            Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; " & vbCrLf & _
+                    " SELECT DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,ISNULL(SUM(QTY),0) AS TOTAL_INVOICE " & vbCrLf & _
+                    " FROM(" & vbCrLf & _
+                    " SELECT PO.DISTRIBUTOR_ID,PO.BRAND_ID,PO.BRANDPACK_ID,(ISNULL(INVOICE.QTY,0)/ISNULL(PO.SPPB_QTY,0)) * PO.PO_ORIGINAL_QTY AS QTY" & vbCrLf & _
+                    " FROM tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO " & vbCrLf & _
+                    " INNER JOIN (SELECT INV.PONUMBER,INV.REFERENCE,Tmbp.BRANDPACK_ID_DTS AS BRANDPACK_ID,INV.QTY,INV.INV_AMOUNT " & vbCrLf & _
+                    "	          FROM ##T_SELECT_INVOICE_" & Me.ComputerName & " INV INNER JOIN COMPARE_ITEM Tmbp " & vbCrLf & _
+                    "	          ON INV.BRANDPACK_ID =  Tmbp.BRANDPACK_ID_ACCPAC AND INV.QTY > 0 " & vbCrLf & _
+                    "   	)INVOICE" & vbCrLf & _
+                    " ON PO.BRANDPACK_ID = INVOICE.BRANDPACK_ID " & vbCrLf & _
+                    " AND ((PO.PO_REF_NO = INVOICE.PONUMBER) Or (PO.RUN_NUMBER = INVOICE.REFERENCE)) " & vbCrLf & _
+                    " WHERE PO.DISTRIBUTOR_ID = SOME( SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO )" & vbCrLf & _
+                    " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
+                    ")INV " & vbCrLf & _
+                    " GROUP BY DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID"
+            Me.ResetCommandText(CommandType.Text, Query)
+            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
+            Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDate)
             Me.AddParameter("@COMPUTERNAME", SqlDbType.VarChar, Me.ComputerName, 100)
+            Me.AddParameter("@FLAG", SqlDbType.VarChar, Flag, 2)
+            Me.AddParameter("@AGREEMENT_NO", SqlDbType.VarChar, AgreementNo, 25)
             Me.SqlRe = Me.SqlCom.ExecuteReader()
             While Me.SqlRe.Read()
                 'ACH_HEADER_ID = SqlRe.GetString(0) & "|" & AgreementNo & SqlRe.GetString(1) & "|" & Flag
@@ -1795,53 +1823,53 @@ Namespace DistributorAgreement
                     Row = RowsSelect(0)
                     Row.BeginEdit()
                     Row("TOTAL_ACTUAL") = SqlRe.GetDecimal(3)
-                    'Row("TOTAL_ACTUAL_AMOUNT") = SqlRe.GetDecimal(3)
-                    'Row("TOTAL_PO") = SqlRe.GetDecimal(4)
                     Row.EndEdit()
                 End If
             End While : SqlRe.Close()
 
+            ''total PO BY BRANDPACK_ID
             'hanya mengambil total_PO karena TotalPO mengacu ke PKD
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; SELECT ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRANDPACK_ID," & vbCrLf & _
                     " ISNULL(SUM(PO.PO_ORIGINAL_QTY),0)AS TOTAL_PO_ORIGINAL FROM Nufarm.DBO.VIEW_AGREE_BRANDPACK_INCLUDE ABI " & vbCrLf & _
-                    " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & "  PO ON PO.DISTRIBUTOR_ID = ABI.DISTRIBUTOR_ID AND PO.BRANDPACK_ID = ABI.BRANDPACK_ID " & vbCrLf & _
-                    "  WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO AND PO.DISTRIBUTOR_ID = @DISTRIBUTOR_ID " & vbCrLf & _
-                    "  AND ABI.DISTRIBUTOR_ID = @DISTRIBUTOR_ID GROUP BY ABI.DISTRIBUTOR_ID,ABI.BRANDPACK_ID OPTION(KEEP PLAN);"
+                    " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.DISTRIBUTOR_ID = ABI.DISTRIBUTOR_ID AND PO.BRANDPACK_ID = ABI.BRANDPACK_ID " & vbCrLf & _
+                    " WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS'" & vbCrLf & _
+                    " GROUP BY ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRANDPACK_ID OPTION(KEEP PLAN);"
             Me.ResetCommandText(CommandType.Text, Query)
-            tblPO.Clear()
-            setDataAdapter(Me.SqlCom).Fill(tblPO)
-            If tblPO.Rows.Count > 0 Then
-                For i1 As Integer = 0 To tblPO.Rows.Count - 1
-                    ACH_HEADER_ID = tblPO.Rows(i1)("DISTRIBUTOR_ID").ToString() & "|" & tblPO.Rows(i1)("AGREE_BRAND_ID").ToString() & "|" & Flag
-                    Dim BrandPackID As String = tblPO.Rows(i1)("BRANDPACK_ID").ToString()
+            tblPOByBrandPack.Clear()
+            setDataAdapter(Me.SqlCom).Fill(tblPOByBrandPack)
+            If tblPOByBrandPack.Rows.Count > 0 Then
+                For i1 As Integer = 0 To tblPOByBrandPack.Rows.Count - 1
+                    ACH_HEADER_ID = tblPOByBrandPack.Rows(i1)("DISTRIBUTOR_ID").ToString() & "|" & tblPOByBrandPack.Rows(i1)("AGREE_BRAND_ID").ToString() & "|" & Flag
+                    Dim BrandPackID As String = tblPOByBrandPack.Rows(i1)("BRANDPACK_ID").ToString()
                     AchDetailID = ACH_HEADER_ID & "|" & BrandPackID
                     RowsSelect = tblAchDetail.Select("ACH_DETAIL_ID = '" & AchDetailID & "'")
                     If RowsSelect.Length > 0 Then
                         Row = RowsSelect(0)
                         Row.BeginEdit()
-                        Row("TOTAL_PO") = tblPO.Rows(i1)("TOTAL_PO_ORIGINAL")
+                        Row("TOTAL_PO") = tblPOByBrandPack.Rows(i1)("TOTAL_PO_ORIGINAL")
                         ' Row("TOTAL_PO_AMOUNT") = tblPO.Rows(i1)("TOTAL_PO_AMOUNT")
                         Row.EndEdit()
                     End If
                 Next
             End If
-
             Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
                        "DECLARE @V_START_DATE SMALLDATETIME ;" & vbCrLf & _
                        "SET @V_START_DATE = (SELECT START_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO); " & vbCrLf & _
                        "SELECT TOP 1 AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,AA.QS_TREATMENT_FLAG FROM AGREE_AGREEMENT AA INNER JOIN DISTRIBUTOR_AGREEMENT DA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
-                       " WHERE AA.END_DATE < @V_START_DATE AND EXISTS(SELECT AGREEMENT_NO FROM AGREE_BRAND_INCLUDE WHERE AGREEMENT_NO = AA.AGREEMENT_NO AND TARGET_" & strFlag & " > 0 ) " & vbCrLf & _
+                       " WHERE AA.END_DATE < @V_START_DATE " & vbCrLf & _
                        " AND DA.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO) ORDER BY AA.START_DATE DESC ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim tblStartDate As New DataTable("T_StartDate1")
-            ''SET privouse Agreement
+            ''SET privouse Agreement   
+            tblStartDate.Clear() : Me.setDataAdapter(Me.SqlCom).Fill(tblStartDate)
             PrevAgreementNo = tblStartDate.Rows(0)("AGREEMENT_NO")
             'TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_ACTUAL, ACH_DISPRO, DISPRO,
             'CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsNew, IsChanged, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, GPPBF3, GPCPQ1
 
             'TOTAL_CPQ1,TOTAL_CPQ2,TOTAL_CPQ2,
             'TOTAL_CPQ3,TOTAL_CPF1,TOTAL_CPF2,TOTAL_PBF3
-            tblStartDate.Clear() : Me.setDataAdapter(Me.SqlCom).Fill(tblStartDate)
+
             'Dim PBQ1 As Object = Nothing, PBEQ1 As Object = Nothing, PBQ2 As Object = Nothing, PBEQ2 As Object = Nothing, _
             '                   PBQ3 As Object = Nothing, PBEQ3 As Object = Nothing, PBQ4 As Object = Nothing, PBEQ4 As Object = Nothing, _
             '                   PBS1 As Object = Nothing, PBES1 As Object = Nothing, PBS2 As Object = Nothing, PBES2 As Object = Nothing, _
@@ -1857,12 +1885,26 @@ Namespace DistributorAgreement
                     'strFlag
                 Case "F3"
                     If IsTransitionTime Then
-                        CPEQ3 = StartDate.AddDays(-1)
-                        CPQ3 = Convert.ToDateTime(CPEQ3).AddMonths(-2).AddDays(1)
-                        CPEQ2 = Convert.ToDateTime(CPQ3).AddDays(-1)
-                        CPQ2 = Convert.ToDateTime(CPEQ2).AddMonths(-3).AddDays(1)
-                        CPEQ1 = Convert.ToDateTime(CPQ2).AddDays(-1)
-                        CPQ1 = Convert.ToDateTime(CPEQ1).AddMonths(-3).AddDays(1)
+
+                        'EndDateQ1 = StartDate.AddMonths(3).AddDays(-1)
+                        'StartDateQ2 = EndDateQ1.AddDays(1)
+                        'EndDateQ2 = StartDateQ2.AddMonths(3).AddDays(-1)
+                        'StartDateQ3 = EndDateQ2.AddDays(1)
+                        'EndDateQ3 = StartDateQ3.AddMonths(3).AddDays(-1)
+                        'StartDateQ4 = EndDateQ3.AddDays(1)
+                        CPQ1 = StartDatePKD
+                        CPEQ1 = StartDatePKD.AddMonths(3).AddDays(-1)
+                        CPQ2 = Convert.ToDateTime(CPEQ1).AddDays(1)
+                        CPEQ2 = Convert.ToDateTime(CPQ2).AddMonths(3).AddDays(-1)
+                        CPQ3 = Convert.ToDateTime(CPEQ2).AddDays(1)
+                        CPEQ3 = Convert.ToDateTime(CPQ3).AddMonths(3).AddDays(-1)
+
+                        'CPEQ3 = StartDate.AddDays(-1)
+                        'CPQ3 = Convert.ToDateTime(CPEQ3).AddMonths(-3).AddDays(1)
+                        'CPEQ2 = Convert.ToDateTime(CPQ3).AddDays(-1)
+                        'CPQ2 = Convert.ToDateTime(CPEQ2).AddMonths(-3).AddDays(1)
+                        'CPEQ1 = Convert.ToDateTime(CPQ2).AddDays(-1)
+                        'CPQ1 = Convert.ToDateTime(CPEQ1).AddMonths(-3).AddDays(1)
                     Else
                         CPEF2 = StartDate.AddDays(-1)
                         CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
@@ -1890,7 +1932,7 @@ Namespace DistributorAgreement
 
             '---------------------QUERY UNTUK MENTOTAL KAN TOTAL_invoice BRANDPACK DIANTARA START_DATE AND END_DATE PO grouped by BRANDPACK---------------------------
             Dim Query2 As String = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
-                                   " SELECT DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,ISNULL(SUM(QTY),0) AS TOTAL_INVOICE,ISNULL(SUM(INV_AMOUNT),0)AS CP_AMOUNT  " & vbCrLf & _
+                                   " SELECT DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,ISNULL(SUM(QTY),0) AS TOTAL_INVOICE  " & vbCrLf & _
                                    "  FROM( " & vbCrLf & _
                                    "       SELECT PO.DISTRIBUTOR_ID,PO.BRAND_ID,PO.BRANDPACK_ID,(ISNULL(INV.QTY,0)/PO.SPPB_QTY)* PO.PO_ORIGINAL_QTY AS QTY " & vbCrLf & _
                                    "       FROM tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO " & vbCrLf & _
@@ -2013,7 +2055,6 @@ Namespace DistributorAgreement
                             End If
                         End If
                     End If
-
                     If Not IsNothing(CPQ2) Then
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPQ2)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ2))

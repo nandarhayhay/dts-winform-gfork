@@ -98,6 +98,7 @@ Partial Class Main
         Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         Me.tmrHoldShowForm = New System.Timers.Timer
         Me.tmrReminder = New System.Windows.Forms.Timer(Me.components)
+        Me.btnAchievementDPDR = New DevComponents.DotNetBar.ButtonItem
         Me.DockSite7.SuspendLayout()
         CType(Me.Bar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.UiPanelManager1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -500,7 +501,7 @@ Partial Class Main
         'btnGenerate
         '
         Me.btnGenerate.Name = "btnGenerate"
-        Me.btnGenerate.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDiscMarketing, Me.btnDiscAgreement, Me.btnDiscProject, Me.btnAchievement, Me.btnAjdustmentPKD, Me.btnDiscDDAndDR})
+        Me.btnGenerate.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDiscMarketing, Me.btnDiscAgreement, Me.btnDiscProject, Me.btnAchievement, Me.btnAchievementDPDR, Me.btnAjdustmentPKD, Me.btnDiscDDAndDR})
         Me.btnGenerate.Text = "Discount"
         '
         'btnDiscMarketing
@@ -532,7 +533,7 @@ Partial Class Main
         Me.btnAchievement.ImageIndex = 14
         Me.btnAchievement.Name = "btnAchievement"
         Me.btnAchievement.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.ShiftAltF4)
-        Me.btnAchievement.Text = "Achivement Dispro"
+        Me.btnAchievement.Text = "Achivement DPD"
         '
         'btnAjdustmentPKD
         '
@@ -699,6 +700,13 @@ Partial Class Main
         'tmrReminder
         '
         '
+        'btnAchievementDPDR
+        '
+        Me.btnAchievementDPDR.ImageIndex = 14
+        Me.btnAchievementDPDR.Name = "btnAchievementDPDR"
+        Me.btnAchievementDPDR.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.ShiftAltR)
+        Me.btnAchievementDPDR.Text = "Achievement DPD R"
+        '
         'Main
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
@@ -715,7 +723,7 @@ Partial Class Main
         Me.IsMdiContainer = True
         Me.Name = "Main"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "NUFARM DISCOUNT TRACKING SYSTEM"
+        Me.Text = "Achievement DPD R"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.DockSite7.ResumeLayout(False)
         CType(Me.Bar1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -801,4 +809,5 @@ Partial Class Main
     Private WithEvents btnCPDAuto As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnAjdustmentPKD As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnDiscDDAndDR As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnAchievementDPDR As DevComponents.DotNetBar.ButtonItem
 End Class
