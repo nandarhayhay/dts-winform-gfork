@@ -5,7 +5,7 @@ Namespace DistributorAgreement
     Public Class Target_Agreement
         Inherits NufarmBussinesRules.DistributorAgreement.Agreement
         Protected Query As String = ""
-
+        'Dim isTransitionTime = NufarmBussinesRules.SharedClass.ServerDate <= New DateTime(2020, 7, 31) And NufarmBussinesRules.SharedClass.ServerDate >= New DateTime(2019, 8, 1)
         Public Sub New()
             MyBase.New()
         End Sub
@@ -3729,7 +3729,13 @@ Namespace DistributorAgreement
                             PBQ2 = Convert.ToDateTime(PBEQ1).AddDays(1)
                             PBEQ2 = Convert.ToDateTime(PBQ2).AddMonths(3).AddDays(-1)
                             PBQ3 = Convert.ToDateTime(PBEQ2).AddDays(1)
-                            PBEQ3 = Convert.ToDateTime(PBQ3).AddMonths(3).AddDays(-1)
+                            ''transisi
+                            If PBStartDate >= New Date(2019, 8, 1) And PBEndDate <= New Date(2020, 7, 31) Then
+                                PBEQ3 = Convert.ToDateTime(PBQ3).AddMonths(2).AddDays(-1)
+                            Else
+                                PBEQ3 = Convert.ToDateTime(PBQ3).AddMonths(3).AddDays(-1)
+                            End If
+
                             PBQ4 = Convert.ToDateTime(PBEQ3).AddDays(1)
                             PBEQ4 = PBEndDate
                     End Select
@@ -4132,9 +4138,13 @@ Namespace DistributorAgreement
             StartDateQ1 = StartDate : StartDateS1 = StartDate : EndDateQ4 = EndDate : EndDateS2 = EndDate
             EndDateQ1 = StartDate.AddMonths(3).AddDays(-1)
             StartDateQ2 = EndDateQ1.AddDays(1) : EndDateQ2 = StartDateQ2.AddMonths(3).AddDays(-1)
-            StartDateQ3 = EndDateQ2.AddDays(1) : EndDateQ3 = StartDateQ3.AddMonths(3).AddDays(-1)
+            If StartDate >= New Date(2019, 8, 1) And EndDate <= New Date(2020, 7, 31) Then
+                ''transition time
+                StartDateQ3 = EndDateQ2.AddDays(1) : EndDateQ3 = StartDateQ3.AddMonths(2).AddDays(-1)
+            Else
+                StartDateQ3 = EndDateQ2.AddDays(1) : EndDateQ3 = StartDateQ3.AddMonths(3).AddDays(-1)
+            End If
             StartDateQ4 = EndDateQ3.AddDays(1)
-
             EndDateS1 = StartDateS1.AddMonths(6).AddDays(-1)
             StartDateS2 = EndDateS1.AddDays(1)
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
@@ -5990,7 +6000,11 @@ Namespace DistributorAgreement
                             StartDateQ2 = EndDateQ1.AddDays(1)
                             EndDateQ2 = StartDateQ2.AddMonths(3).AddDays(-1)
                             StartDateQ3 = EndDateQ2.AddDays(1)
-                            EndDateQ3 = StartDateQ3.AddMonths(3).AddDays(-1)
+                            If StartDate >= New Date(2019, 8, 1) And EndDate <= New Date(2020, 7, 31) Then
+                                EndDateQ3 = StartDateQ3.AddMonths(2).AddDays(-1)
+                            Else
+                                EndDateQ3 = StartDateQ3.AddMonths(3).AddDays(-1)
+                            End If
                             StartDateQ4 = EndDateQ3.AddDays(1)
                         ElseIf Left(Flag, 1) = "S" Then
                             EndDateS1 = StartDateS1.AddMonths(6).AddDays(-1)

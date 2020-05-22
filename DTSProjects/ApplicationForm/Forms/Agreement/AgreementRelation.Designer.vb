@@ -701,7 +701,7 @@ Partial Class AgreementRelation
         Me.GridEX1.Name = "GridEX1"
         Me.GridEX1.RecordNavigator = True
         Me.GridEX1.RowFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.GridEX1.Size = New System.Drawing.Size(361, 608)
+        Me.GridEX1.Size = New System.Drawing.Size(312, 608)
         Me.GridEX1.TabIndex = 0
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.GridEX1.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
@@ -712,7 +712,7 @@ Partial Class AgreementRelation
         Me.grpData.Controls.Add(Me.UiTab1)
         Me.grpData.Controls.Add(Me.PanelEx1)
         Me.grpData.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpData.Location = New System.Drawing.Point(366, 0)
+        Me.grpData.Location = New System.Drawing.Point(317, 0)
         Me.grpData.Name = "grpData"
         Me.grpData.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.grpData.Size = New System.Drawing.Size(711, 677)
@@ -2608,7 +2608,7 @@ Partial Class AgreementRelation
         Me.ExpandableSplitter1.HotGripDarkColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.ExpandableSplitter1.HotGripLightColor = System.Drawing.Color.FromArgb(CType(CType(227, Byte), Integer), CType(CType(239, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.ExpandableSplitter1.HotGripLightColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.ExpandableSplitter1.Location = New System.Drawing.Point(361, 0)
+        Me.ExpandableSplitter1.Location = New System.Drawing.Point(312, 0)
         Me.ExpandableSplitter1.Name = "ExpandableSplitter1"
         Me.ExpandableSplitter1.Size = New System.Drawing.Size(5, 677)
         Me.ExpandableSplitter1.Style = DevComponents.DotNetBar.eSplitterStyle.Office2007
@@ -2627,7 +2627,7 @@ Partial Class AgreementRelation
         Me.Bar2.Location = New System.Drawing.Point(0, 0)
         Me.Bar2.MenuBar = True
         Me.Bar2.Name = "Bar2"
-        Me.Bar2.Size = New System.Drawing.Size(361, 24)
+        Me.Bar2.Size = New System.Drawing.Size(312, 24)
         Me.Bar2.Stretch = True
         Me.Bar2.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
         Me.Bar2.TabIndex = 20
@@ -2722,7 +2722,7 @@ Partial Class AgreementRelation
         Me.FilterEditor1.Office2007ColorScheme = Janus.Windows.Common.Office2007ColorScheme.[Default]
         Me.FilterEditor1.ScrollMode = Janus.Windows.UI.Dock.ScrollMode.Both
         Me.FilterEditor1.ScrollStep = 15
-        Me.FilterEditor1.Size = New System.Drawing.Size(361, 45)
+        Me.FilterEditor1.Size = New System.Drawing.Size(312, 45)
         Me.FilterEditor1.SortFieldList = False
         Me.FilterEditor1.SourceControl = Me.GridEX1
         Me.FilterEditor1.Visible = False
@@ -2759,7 +2759,7 @@ Partial Class AgreementRelation
         'AgreementRelation
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.ClientSize = New System.Drawing.Size(1077, 677)
+        Me.ClientSize = New System.Drawing.Size(1028, 677)
         Me.Controls.Add(Me.GridEX1)
         Me.Controls.Add(Me.FilterEditor1)
         Me.Controls.Add(Me.Bar2)

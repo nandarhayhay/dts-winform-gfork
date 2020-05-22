@@ -129,7 +129,7 @@ Partial Class DiscountDDOrDR
         Me.Bar2.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnGrid, Me.btnFilter, Me.btnExport, Me.btnRefresh, Me.btnAddNew, Me.btnEditRow, Me.btnSave})
         Me.Bar2.Location = New System.Drawing.Point(0, 0)
         Me.Bar2.Name = "Bar2"
-        Me.Bar2.Size = New System.Drawing.Size(1263, 25)
+        Me.Bar2.Size = New System.Drawing.Size(1028, 25)
         Me.Bar2.Stretch = True
         Me.Bar2.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
         Me.Bar2.TabIndex = 26
@@ -236,7 +236,7 @@ Partial Class DiscountDDOrDR
         Me.pnlEntry.Dock = System.Windows.Forms.DockStyle.Top
         Me.pnlEntry.Location = New System.Drawing.Point(0, 0)
         Me.pnlEntry.Name = "pnlEntry"
-        Me.pnlEntry.Size = New System.Drawing.Size(1263, 193)
+        Me.pnlEntry.Size = New System.Drawing.Size(1028, 193)
         Me.pnlEntry.TabIndex = 5
         '
         'txtProgramID
@@ -344,9 +344,9 @@ Partial Class DiscountDDOrDR
         Me.grpApplyTo.Controls.Add(Me.chlCertainDisc)
         Me.grpApplyTo.Controls.Add(Me.rdbCertainDisc)
         Me.grpApplyTo.Controls.Add(Me.rdbAllDist)
-        Me.grpApplyTo.Location = New System.Drawing.Point(784, 7)
+        Me.grpApplyTo.Location = New System.Drawing.Point(721, 7)
         Me.grpApplyTo.Name = "grpApplyTo"
-        Me.grpApplyTo.Size = New System.Drawing.Size(469, 176)
+        Me.grpApplyTo.Size = New System.Drawing.Size(297, 176)
         Me.grpApplyTo.TabIndex = 4
         Me.grpApplyTo.Text = "Apply to"
         Me.grpApplyTo.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
@@ -368,7 +368,7 @@ Partial Class DiscountDDOrDR
         Me.gridGroupDist.Name = "gridGroupDist"
         Me.gridGroupDist.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.gridGroupDist.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.gridGroupDist.Size = New System.Drawing.Size(171, 158)
+        Me.gridGroupDist.Size = New System.Drawing.Size(63, 158)
         Me.gridGroupDist.TabIndex = 13
         Me.gridGroupDist.UpdateOnLeave = False
         Me.gridGroupDist.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
@@ -389,7 +389,7 @@ Partial Class DiscountDDOrDR
         Me.chkGroupDist.Location = New System.Drawing.Point(114, 72)
         Me.chkGroupDist.Name = "chkGroupDist"
         Me.chkGroupDist.SaveSettings = False
-        Me.chkGroupDist.Size = New System.Drawing.Size(161, 20)
+        Me.chkGroupDist.Size = New System.Drawing.Size(63, 20)
         Me.chkGroupDist.TabIndex = 12
         Me.chkGroupDist.ValuesDataMember = Nothing
         Me.chkGroupDist.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
@@ -418,7 +418,7 @@ Partial Class DiscountDDOrDR
         Me.chlCertainDisc.Location = New System.Drawing.Point(114, 40)
         Me.chlCertainDisc.Name = "chlCertainDisc"
         Me.chlCertainDisc.SaveSettings = False
-        Me.chlCertainDisc.Size = New System.Drawing.Size(349, 20)
+        Me.chlCertainDisc.Size = New System.Drawing.Size(172, 20)
         Me.chlCertainDisc.TabIndex = 10
         Me.chlCertainDisc.ValuesDataMember = Nothing
         Me.chlCertainDisc.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
@@ -510,7 +510,7 @@ Partial Class DiscountDDOrDR
         Me.grpProgDisc.Controls.Add(Me.Panel1)
         Me.grpProgDisc.Location = New System.Drawing.Point(410, 11)
         Me.grpProgDisc.Name = "grpProgDisc"
-        Me.grpProgDisc.Size = New System.Drawing.Size(372, 172)
+        Me.grpProgDisc.Size = New System.Drawing.Size(309, 172)
         Me.grpProgDisc.TabIndex = 2
         Me.grpProgDisc.Text = "DISCOUNT(%)"
         Me.grpProgDisc.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
@@ -530,7 +530,7 @@ Partial Class DiscountDDOrDR
         Me.grdProgDisc.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.grdProgDisc.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.grdProgDisc.SelectionMode = Janus.Windows.GridEX.SelectionMode.MultipleSelection
-        Me.grdProgDisc.Size = New System.Drawing.Size(366, 125)
+        Me.grdProgDisc.Size = New System.Drawing.Size(303, 125)
         Me.grdProgDisc.TabIndex = 6
         Me.grdProgDisc.UpdateOnLeave = False
         Me.grdProgDisc.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
@@ -544,7 +544,7 @@ Partial Class DiscountDDOrDR
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel1.Location = New System.Drawing.Point(3, 16)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(366, 28)
+        Me.Panel1.Size = New System.Drawing.Size(303, 28)
         Me.Panel1.TabIndex = 9
         '
         'chkTargetPOPerBrand
@@ -581,7 +581,7 @@ Partial Class DiscountDDOrDR
         Me.FilterEditor1.Office2007ColorScheme = Janus.Windows.Common.Office2007ColorScheme.[Default]
         Me.FilterEditor1.ScrollMode = Janus.Windows.UI.Dock.ScrollMode.Both
         Me.FilterEditor1.ScrollStep = 15
-        Me.FilterEditor1.Size = New System.Drawing.Size(1263, 45)
+        Me.FilterEditor1.Size = New System.Drawing.Size(1028, 45)
         Me.FilterEditor1.SortFieldList = False
         Me.FilterEditor1.Visible = False
         '
@@ -590,7 +590,7 @@ Partial Class DiscountDDOrDR
         Me.TManager1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TManager1.Location = New System.Drawing.Point(0, 193)
         Me.TManager1.Name = "TManager1"
-        Me.TManager1.Size = New System.Drawing.Size(1263, 190)
+        Me.TManager1.Size = New System.Drawing.Size(1028, 190)
         Me.TManager1.TabIndex = 32
         '
         'GridEXPrintDocument1
@@ -608,13 +608,13 @@ Partial Class DiscountDDOrDR
         Me.pnlMaster.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlMaster.Location = New System.Drawing.Point(0, 70)
         Me.pnlMaster.Name = "pnlMaster"
-        Me.pnlMaster.Size = New System.Drawing.Size(1263, 383)
+        Me.pnlMaster.Size = New System.Drawing.Size(1028, 383)
         Me.pnlMaster.TabIndex = 33
         '
         'DiscountDDOrDR
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.ClientSize = New System.Drawing.Size(1263, 453)
+        Me.ClientSize = New System.Drawing.Size(1028, 453)
         Me.Controls.Add(Me.pnlMaster)
         Me.Controls.Add(Me.FilterEditor1)
         Me.Controls.Add(Me.Bar2)

@@ -24,6 +24,7 @@ Public Class AchievementDPD
     Dim Rg As New NufarmBussinesRules.SettingDTS.RegUser()
     Dim tblSetting As New DataTable("Settingan")
     Dim ListAgreementNo As New List(Of String)
+    Dim isTransitionTime = NufarmBussinesRules.SharedClass.ServerDate <= New DateTime(2020, 7, 31) And NufarmBussinesRules.SharedClass.ServerDate >= New DateTime(2019, 8, 1)
     Private Sub ReadAcces()
         If Not CMain.IsSystemAdministrator Then
             Me.btnGenerateOA.Enabled = NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Agreement
@@ -1340,6 +1341,10 @@ Public Class AchievementDPD
         Next
         Me.ctmnComputeByValue.Enabled = False
         Me.cxmnComputeByVolume.Enabled = False
+        If Me.isTransitionTime Then
+            Me.btnQuarter4.Visible = False
+            Me.btnQuarter4V.Visible = False
+        End If
     End Sub
 
     Private Sub btnGenerateOA_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGenerateOA.Click
@@ -1760,6 +1765,12 @@ Public Class AchievementDPD
                 End If
             End If
             Me.checkEnabledFlagValue(True)
+            Dim StartDate As Date = chkDistributors.DropDownList.GetValue("StarDate")
+            Dim EndDate As Date = chkDistributors.DropDownList.GetValue("EndDate")
+            If StartDate >= New Date(2019, 8, 1) And EndDate <= New Date(2020, 7, 31) Then
+                Me.btnQuarter4.Visible = False
+                Me.btnQuarter4V.Visible = False
+            End If
             'reset AgreeAchivedBy
             Me.AgreeAchBy = ""
             Me.LAF = LoadAchievementFrom.None

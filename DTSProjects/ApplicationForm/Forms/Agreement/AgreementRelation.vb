@@ -109,8 +109,7 @@ Public Class AgreementRelation
                 'transisi
                 s &= CStr(Me.txtFMP1.Value + Me.txtFMP2.Value + Me.txtFMP3.Value)
             Case "F"
-                's = "Yearly = : " & CStr(Me.txtFMP1.Value + Me.txtFMP2.Value + Me.txtFMP3.Value)
-
+                s = "Yearly = : " & CStr(Me.txtFMP1.Value + Me.txtFMP2.Value + Me.txtFMP3.Value)
         End Select
         Return s
     End Function
@@ -205,7 +204,7 @@ Public Class AgreementRelation
             If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.AgreementRelation = True Then
                 If Not IsNothing(Me.grdAddedBrandPack.DataSource) Then
                     If Me.grdAddedBrandPack.RecordCount > 0 Then
-                        Me.SavingChanges1.btnSave.Enabled = False
+                        GetAccesChangeAgreement()
                     Else
                         Me.SavingChanges1.btnSave.Visible = True
                     End If
@@ -218,7 +217,7 @@ Public Class AgreementRelation
             ElseIf NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.AgreementRelation = True Then
                 If Not IsNothing(Me.grdAddedBrandPack.DataSource) Then
                     If Me.grdAddedBrandPack.RecordCount > 0 Then
-                        Me.SavingChanges1.btnSave.Enabled = False
+                        GetAccesChangeAgreement()
                     Else
                         Me.SavingChanges1.btnSave.Visible = True
                     End If
@@ -1783,10 +1782,11 @@ Public Class AgreementRelation
             Dim Index As Integer = Me.clsAgInclude.ViewAgreement.Find(Me.MultiColumnCombo1.Text)
             If Index <> -1 Then
                 Me.QS_FLAG = Me.clsAgInclude.ViewAgreement(Index)("QS_TREATMENT_FLAG").ToString()
-                Dim StarteDate As DateTime = Me.clsAgInclude.ViewAgreement(Index)("START_DATE")
+                Dim StartDate As DateTime = Me.clsAgInclude.ViewAgreement(Index)("START_DATE")
                 Dim EndDate As DateTime = Me.clsAgInclude.ViewAgreement(Index)("END_DATE")
-                'UNCOMENT THIS AFTER DEBUGGING
-                'Me.isTransitionTime = NufarmBussinesRules.SharedClass.ServerDate <= EndDate And NufarmBussinesRules.SharedClass.ServerDate >= StarteDate
+                If StartDate >= New Date(2019, 8, 1) And EndDate <= New Date(2020, 7, 31) And Me.QS_FLAG = "Q" Then
+                    Me.isTransitionTime = True
+                End If
             End If
             Select Case Me.UiTab1.SelectedTab.Name
                 Case "tbBrandInclude"
@@ -2631,11 +2631,12 @@ Public Class AgreementRelation
             End If
 
             Dim saveOnlySchemaR As Boolean = False
-            If Me.ds4MPeriode.HasChanges() Then
-                ''save
-                saveOnlySchemaR = True
+            If Not IsNothing(Me.ds4MPeriode) Then
+                If Me.ds4MPeriode.HasChanges() Then
+                    ''save
+                    saveOnlySchemaR = True
+                End If
             End If
-
             Dim val As Boolean = Me.IsValid(ActiveTab.BrandInclude, (Not saveOnlySchemaR))
             If Not val Then
                 If saveOnlySchemaR Then

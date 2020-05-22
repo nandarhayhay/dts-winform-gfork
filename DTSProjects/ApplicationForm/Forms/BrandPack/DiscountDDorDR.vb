@@ -1576,7 +1576,7 @@ Public Class DiscountDDOrDR
                 Dim BrandID As String = Me.grdProgDisc.GetValue("BRAND_ID").ToString()
                 Dim Flag As String = Me.grdProgDisc.GetValue("TypeApp").ToString()
                 ''check di dataview
-                Dim checkedRows() As DataRow = dtDummy.Select("BRAND = '" & BrandID & "' AND TypeApp = '" & Flag & "'  AND MoreThanQty = " & MoreThanQty)
+                Dim checkedRows() As DataRow = dtDummy.Select("BRAND_ID = '" & BrandID & "' AND TypeApp = '" & Flag & "'  AND MoreThanQty = " & MoreThanQty)
                 If checkedRows.Length > 0 Then
                     Me.ShowMessageInfo(Me.MessageDataHasExisted & vbCrLf & "Or double input data")
                     Return True
@@ -2178,7 +2178,7 @@ Public Class DiscountDDOrDR
                     'CType(Me.grdProgDisc.DataSource, DataView).Table.AcceptChanges()
                 End If
             End If
-            If Me.rdbAllDist.Checked Then : Return : End If
+            If Me.rdbAllDist.Checked Then : If Me.isLoadingCombo Then : Me.isLoadingCombo = False : End If : Return : End If
             If Me.rdbCertainDisc.Checked Then
                 rdbCertainDisc_CheckedChanged(Me.rdbCertainDisc, New EventArgs())
             End If
@@ -2200,81 +2200,87 @@ Public Class DiscountDDOrDR
     Private Sub chkTargetPOPerPackSize_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkTargetPOPerPackSize.CheckedChanged
         If Me.isLoadingCombo Then : Return : End If
         If Me.Isloadingrow Then : Return : End If
-        If Me.chkTargetPOPerPackSize.Checked Then
-            'check chk target by brandpack
-            If Me.chkTargetPOPerBrand.Checked Then
-                Me.ShowMessageInfo("can not set target po per brandpack " & vbCrLf & _
-                "while target po has been set per brand previously")
-                If Me.isLoadingCombo Then : Return : End If
-                If Me.Isloadingrow Then : Return : End If
-                Me.chkTargetPOPerPackSize.Checked = False : Return
-            End If
-            Dim tblProgBrandPack As New DataTable("DISC_PROGRESSIVE_BRANDPACK")
-            If IsNothing(Me.DVProgBrandPack) Then
-                With tblProgBrandPack
-                    .Columns.Add("BRANDPACK_ID", Type.GetType("System.String"))
-                    .Columns.Add("BRANDPACK_NAME", Type.GetType("System.String"))
-                End With
+        Try
+            If Me.chkTargetPOPerPackSize.Checked Then
+                'check chk target by brandpack
+                If Me.chkTargetPOPerBrand.Checked Then
+                    Me.ShowMessageInfo("can not set target po per brandpack " & vbCrLf & _
+                    "while target po has been set per brand previously")
+                    If Me.isLoadingCombo Then : Return : End If
+                    If Me.Isloadingrow Then : Return : End If
+                    Me.chkTargetPOPerPackSize.Checked = False : Return
+                End If
+                Dim tblProgBrandPack As New DataTable("DISC_PROGRESSIVE_BRANDPACK")
+                If IsNothing(Me.DVProgBrandPack) Then
+                    With tblProgBrandPack
+                        .Columns.Add("BRANDPACK_ID", Type.GetType("System.String"))
+                        .Columns.Add("BRANDPACK_NAME", Type.GetType("System.String"))
+                    End With
+                    tblProgBrandPack.AcceptChanges()
+                ElseIf Me.DVProgBrandPack.Table.Columns.Count <= 0 Then
+                    With tblProgBrandPack
+                        .Columns.Add("BRANDPACK_ID", Type.GetType("System.String"))
+                        .Columns.Add("BRANDPACK_NAME", Type.GetType("System.String"))
+                    End With
+                    tblProgBrandPack.AcceptChanges()
+                Else
+                    tblProgBrandPack = Me.DVProgBrandPack.Table
+                End If
+                tblProgBrandPack.Rows.Clear()
                 tblProgBrandPack.AcceptChanges()
-            ElseIf Me.DVProgBrandPack.Table.Columns.Count <= 0 Then
-                With tblProgBrandPack
-                    .Columns.Add("BRANDPACK_ID", Type.GetType("System.String"))
-                    .Columns.Add("BRANDPACK_NAME", Type.GetType("System.String"))
-                End With
-                tblProgBrandPack.AcceptChanges()
-            Else
-                tblProgBrandPack = Me.DVProgBrandPack.Table
-            End If
-            tblProgBrandPack.Rows.Clear()
-            tblProgBrandPack.AcceptChanges()
-            Dim isReadOnly = Me.chkBrandPacks.ReadOnly
-            Me.chkBrandPacks.ReadOnly = False
-            Me.chkBrandPacks.Focus()
-            Me.chkBrandPacks.DroppedDown = True
-            For Each Jrow As Janus.Windows.GridEX.GridEXRow In chkBrandPacks.DropDownList().GetCheckedRows()
-                Dim row As DataRow = tblProgBrandPack.NewRow()
-                row.BeginEdit()
-                row("BRANDPACK_ID") = Jrow.Cells("BRANDPACK_ID").Value
-                row("BRANDPACK_NAME") = Jrow.Cells("BRANDPACK_NAME").Value
-                row.EndEdit()
-                tblProgBrandPack.Rows.Add(row)
-            Next
-            Me.chkBrandPacks.DroppedDown = False
-            Me.grdProgDisc.Focus()
-            Me.chkBrandPacks.ReadOnly = isReadOnly
-            Me.DVProgBrandPack = tblProgBrandPack.DefaultView()
-            Me.grdProgDisc.DropDowns(0).SetDataBinding(Me.DVProgBrandPack, "")
-            'munculkan brandpackid
-            Me.grdProgDisc.RootTable.Columns("BRANDPACK_ID").Visible = True
-        ElseIf Me.chkTargetPOPerPackSize.Checked = False Then
-            'chek availability
-            If Me.CheckAvailability() Then
-                Me.isLoadingCombo = True
-                Me.Isloadingrow = True
-                Me.chkTargetPOPerPackSize.Checked = True
-                Me.isLoadingCombo = False
-                Me.Isloadingrow = False
-                Me.Cursor = Cursors.Default
-                Return
-            End If
-            ''check data apakah sudah ada data discount by packsize
-            Dim dv As DataView = CType(Me.grdProgDisc.DataSource, DataView).ToTable().Copy().DefaultView()
-            dv.RowFilter = "BRANDPACK_ID IS NOT NULL AND BRANDPACK_ID <> ''"
-            If dv.Count > 0 Then
-                For i As Integer = 0 To dv.Count - 1
-                    'chek reference
-                    If Not IsNothing(dv(i)("HasRef")) And Not IsDBNull(dv(i)("HasRef")) Then
-                        If CInt(dv(i)("HasRef")) > 0 Then
-                            Me.ShowMessageError(Me.MessageCantDeleteData)
-                            Me.isLoadingCombo = False : Me.Cursor = Cursors.Default
-                            Exit Sub
-                        End If
-                    End If
+                Dim isReadOnly = Me.chkBrandPacks.ReadOnly
+                Me.chkBrandPacks.ReadOnly = False
+                Me.chkBrandPacks.Focus()
+                Me.chkBrandPacks.DroppedDown = True
+                For Each Jrow As Janus.Windows.GridEX.GridEXRow In chkBrandPacks.DropDownList().GetCheckedRows()
+                    Dim row As DataRow = tblProgBrandPack.NewRow()
+                    row.BeginEdit()
+                    row("BRANDPACK_ID") = Jrow.Cells("BRANDPACK_ID").Value
+                    row("BRANDPACK_NAME") = Jrow.Cells("BRANDPACK_NAME").Value
+                    row.EndEdit()
+                    tblProgBrandPack.Rows.Add(row)
                 Next
-                Me.grdProgDisc.UpdateData()
+                Me.chkBrandPacks.DroppedDown = False
+                Me.grdProgDisc.Focus()
+                Me.chkBrandPacks.ReadOnly = isReadOnly
+                Me.DVProgBrandPack = tblProgBrandPack.DefaultView()
+                Me.grdProgDisc.DropDowns(0).SetDataBinding(Me.DVProgBrandPack, "")
+                'munculkan brandpackid
+                Me.grdProgDisc.RootTable.Columns("BRANDPACK_ID").Visible = True
+            ElseIf Me.chkTargetPOPerPackSize.Checked = False Then
+                'chek availability
+                If Me.CheckAvailability() Then
+                    Me.isLoadingCombo = True
+                    Me.Isloadingrow = True
+                    Me.chkTargetPOPerPackSize.Checked = True
+                    Me.isLoadingCombo = False
+                    Me.Isloadingrow = False
+                    Me.Cursor = Cursors.Default
+                    Return
+                End If
+                ''check data apakah sudah ada data discount by packsize
+                Dim dv As DataView = CType(Me.grdProgDisc.DataSource, DataView).ToTable().Copy().DefaultView()
+                dv.RowFilter = "BRANDPACK_ID IS NOT NULL AND BRANDPACK_ID <> ''"
+                If dv.Count > 0 Then
+                    For i As Integer = 0 To dv.Count - 1
+                        'chek reference
+                        If Not IsNothing(dv(i)("HasRef")) And Not IsDBNull(dv(i)("HasRef")) Then
+                            If CInt(dv(i)("HasRef")) > 0 Then
+                                Me.ShowMessageError(Me.MessageCantDeleteData)
+                                Me.isLoadingCombo = False : Me.Cursor = Cursors.Default
+                                Exit Sub
+                            End If
+                        End If
+                    Next
+                    Me.grdProgDisc.UpdateData()
+                End If
+                Me.grdProgDisc.RootTable.Columns("BRANDPACK_ID").Visible = False
             End If
-            Me.grdProgDisc.RootTable.Columns("BRANDPACK_ID").Visible = False
-        End If
+            If Me.isLoadingCombo Then : Me.isLoadingCombo = False : End If
+        Catch ex As Exception
+            Me.Cursor = Cursors.Default
+            If Me.isLoadingCombo Then : Me.isLoadingCombo = False : End If
+        End Try
     End Sub
 
     Private Sub chkTargetPOPerBrand_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkTargetPOPerBrand.CheckedChanged
@@ -2379,6 +2385,8 @@ Public Class DiscountDDOrDR
                 End If
                 Me.grdProgDisc.RootTable.Columns("BRAND_ID").Visible = False
             End If
+            If Me.isLoadingCombo Then : Me.isLoadingCombo = False : End If
+
         Catch ex As Exception
             Me.isLoadingCombo = False
             Cursor = Cursors.Default

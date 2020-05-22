@@ -24,7 +24,7 @@ Namespace DataAccesLayer
         Protected SqlDatChek As SqlDataAdapter
         Protected MessageDBConcurency As String = "DBConcurency changes 0 record" & vbCrLf & "Perhaps some user has changed the same data."
         Protected MessageCantDeleteData As String = "Data cannot be deleted !" & vbCrLf & "Because has child referenced data with it."
-        Protected ComputerName As String = System.Environment.UserName.Trim()
+        Protected ComputerName As String = System.Environment.MachineName().Replace("-", "").Trim().Replace(" ", "")
 #End Region
 
 #Region " Constructor "
