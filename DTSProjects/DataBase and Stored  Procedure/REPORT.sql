@@ -632,6 +632,9 @@ CREATE NONCLUSTERED INDEX IX_T_TargetAgreementReport ON Tempdb..##T_TargetAgreem
 SELECT * FROM Tempdb..##T_TargetAgreementReport ;
 GO
 --------------------------------------------------------------------------------------
+
+---------------Report untuk menampilkan data PKD 4 months Periode-------------
+
 ----------PROCEDURE UNTUK MENAMPILKAN REPORT TOTAL PO & DISPRO PERDISTRIBUTOR PER PERIODE TERTENTU
 IF EXISTS(SELECT NAME FROM DBO.SYSOBJECTS WHERE NAME = 'Usp_Get_Detail_Qty_Dispro' AND TYPE = 'P')
 DROP PROCEDURE Usp_Get_Detail_Qty_Dispro                             

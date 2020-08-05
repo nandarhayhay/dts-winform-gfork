@@ -4,6 +4,7 @@ Namespace DistributorReport
         Inherits NufarmBussinesRules.DistributorRegistering.DistributorRegistering
         Private m_ViewDistReport As DataView
         Private m_View_Target As DataView
+        Private m_View_Target_4MPeriode As DataView
         Private m_ViewPODispro As DataView
         Private Query As String = ""
         Public Function Create_View_ReportPODispro(ByVal START_DATE As Object, ByVal END_DATE As Object, Optional ByVal _
@@ -111,6 +112,27 @@ Namespace DistributorReport
             End Try
         End Function
 
+        Public Function Create_View_TA_4MPeriode(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal HasChangedPeriode As Boolean) As DataView
+            Try
+                If HasChangedPeriode Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    " IF EXISTS(SELECT * FROM tempdb.sys.objects WHERE [NAME] = '##T_TargetAgreementReport_4MPeriode_" & Me.ComputerName & "') " & vbCrLf & _
+                    " BEGIN DROP TABLE TEMPDB..##T_TargetAgreementReport_4MPeriode_" & Me.ComputerName & "; END "
+
+                    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                    Else
+                        Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                    End If
+                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+
+                    Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+
+                End If
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters()
+                Throw ex
+            End Try
+        End Function
         Public Function Create_View_TA(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal HasChangedPeriode As Boolean) As DataView
             Try
                 Me.OpenConnection()

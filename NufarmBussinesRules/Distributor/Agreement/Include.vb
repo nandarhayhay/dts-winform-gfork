@@ -313,6 +313,7 @@ Namespace DistributorAgreement
                         SaveDS4Month(ds4months.Tables(0), True)
                     End If
                 End If
+
                 If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
                 Else
                     Me.SaveGivenProgressive()

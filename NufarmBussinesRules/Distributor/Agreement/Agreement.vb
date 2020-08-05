@@ -76,6 +76,17 @@ Namespace DistributorAgreement
                 Me.m_ViewAgrement = Nothing
             End If
         End Sub
+        Public Function getTargetDPD(ByVal hasChangedState As Boolean, ByVal StartDate As Date, ByVal endDate As Date, ByVal DPDType As String) As DataView
+            Try
+                If hasChangedState Then
+
+                End If
+            Catch ex As Exception
+                Me.ClearCommandParameters()
+                Me.CloseConnection()
+                Throw ex
+            End Try
+        End Function
         Public ReadOnly Property ViewBrandPack() As DataView
             Get
                 Return Me.m_ViewBrandPack
