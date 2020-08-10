@@ -58,6 +58,7 @@ Partial Class ReportGrid
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
         Me.ExpandablePanel1 = New DevComponents.DotNetBar.ExpandablePanel
+        Me.btnTarget4MPeriode = New DevComponents.DotNetBar.ButtonItem
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -188,7 +189,7 @@ Partial Class ReportGrid
         'ButtonItem1
         '
         Me.ButtonItem1.Name = "ButtonItem1"
-        Me.ButtonItem1.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDistributorReport, Me.btnOAReport, Me.btnSPPBReport, Me.btnThirdParty, Me.btnTargetAgreement, Me.btnPODispro, Me.btnPODisproByBrand, Me.btnDPRD, Me.btnAccrue, Me.RecapNasionalDPRD, Me.btnSummaryPlantation, Me.btnReportSales, Me.btnReportDDDR})
+        Me.ButtonItem1.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDistributorReport, Me.btnOAReport, Me.btnSPPBReport, Me.btnThirdParty, Me.btnTargetAgreement, Me.btnPODispro, Me.btnPODisproByBrand, Me.btnDPRD, Me.btnAccrue, Me.RecapNasionalDPRD, Me.btnSummaryPlantation, Me.btnReportSales, Me.btnReportDDDR, Me.btnTarget4MPeriode})
         Me.ButtonItem1.Text = "Show Data"
         '
         'btnDistributorReport
@@ -360,6 +361,11 @@ Partial Class ReportGrid
         Me.ExpandablePanel1.TitleStyle.GradientAngle = 90
         Me.ExpandablePanel1.TitleText = "Type of Report"
         '
+        'btnTarget4MPeriode
+        '
+        Me.btnTarget4MPeriode.Name = "btnTarget4MPeriode"
+        Me.btnTarget4MPeriode.Text = "Target 4M Periode"
+        '
         'ReportGrid
         '
         Me.AccessibleRole = System.Windows.Forms.AccessibleRole.None
@@ -411,5 +417,6 @@ Partial Class ReportGrid
     Private WithEvents btnSummaryPlantation As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnReportSales As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnReportDDDR As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnTarget4MPeriode As DevComponents.DotNetBar.ButtonItem
 
 End Class

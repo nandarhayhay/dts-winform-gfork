@@ -113,6 +113,9 @@ Public Class ReportGrid
                         DirectCast(Me.ActiveDoc, DDDR).grpRangeDate.Enabled = False
                         DirectCast(Me.ActiveDoc, DDDR).dtPicfrom.Text = ""
                         DirectCast(Me.ActiveDoc, DDDR).dtPicUntil.Text = ""
+                    Case "TargetAgreement4FM"
+                        DirectCast(Me.ActiveDoc, TargetAgreement4FM).dtPicModFromDate.Text = ""
+                        DirectCast(Me.ActiveDoc, TargetAgreement4FM).dtPicModUntilDate.Text = ""
                 End Select
                 If Me.FilterEditor1.Visible Then
                     Me.FilterEditor1.Dock = DockStyle.Top
@@ -340,6 +343,8 @@ Public Class ReportGrid
                     DirectCast(Me.ActiveDoc, SalesProgramReport).RefreshData()
                 Case "DDDRReport"
                     DirectCast(Me.ActiveDoc, DDDR).RefreshData()
+                Case "TargetAgreement4FM"
+                    DirectCast(Me.ActiveDoc, TargetAgreement4FM).ReloadData()
                 Case "SPPBManager"
                     RaiseEvent ShowSPPBData()
             End Select
@@ -555,7 +560,6 @@ Public Class ReportGrid
             Else
                 Me.ActiveDoc.Dispose()
                 Dim AT As New Agreement_Target()
-                AT.initializeData()
                 AT.Parent = Me.ExpandablePanel1
                 AT.Dock = DockStyle.Fill
                 AT.Show()
@@ -566,7 +570,6 @@ Public Class ReportGrid
         Else
             'Me.ActiveDoc.Dispose()
             Dim AT As New Agreement_Target()
-            AT.initializeData()
             AT.Parent = Me.ExpandablePanel1
             AT.Dock = DockStyle.Fill
             AT.Show()
@@ -640,6 +643,7 @@ Public Class ReportGrid
             End With
             Me.ActiveDoc = ctrlSumPlantation
         End If
+        Me.GetStateChecked(CType(sender, DevComponents.DotNetBar.ButtonItem))
     End Sub
     Private Sub ShowSalesReport(ByVal sender As Object, ByVal e As EventArgs)
         If Not IsNothing(Me.ActiveDoc) Then
@@ -659,6 +663,7 @@ Public Class ReportGrid
             End With
             Me.ActiveDoc = ctrlSalesProgramReport
         End If
+        Me.GetStateChecked(CType(sender, DevComponents.DotNetBar.ButtonItem))
     End Sub
 
     Private Sub ShowDDDRReport(ByVal sender As Object, ByVal e As EventArgs)
@@ -671,7 +676,7 @@ Public Class ReportGrid
                     .frmParent = Me : .Parent = Me.ExpandablePanel1 : .Dock = DockStyle.Fill : .Show() : Me.AcceptButton = .btnApplyRange : .BringToFront()
                 End With
                 Me.ActiveDoc = ctrlDDDR
-                Me.m_Grid = DirectCast(Me.ActiveDoc, DDDR).grpCategoryDiscount
+                Me.m_Grid = DirectCast(Me.ActiveDoc, DDDR).grdDDDR
             End If
         Else
             Dim ctrlDDDR As New DDDR()
@@ -679,11 +684,34 @@ Public Class ReportGrid
                 .frmParent = Me : .Parent = Me.ExpandablePanel1 : .Dock = DockStyle.Fill : .Show() : Me.AcceptButton = .btnApplyRange : .BringToFront()
             End With
             Me.ActiveDoc = ctrlDDDR
-            Me.m_Grid = DirectCast(Me.ActiveDoc, DDDR).grpCategoryDiscount
+            Me.m_Grid = DirectCast(Me.ActiveDoc, DDDR).grdDDDR
         End If
         DirectCast(Me.ActiveDoc, DDDR).dtPicfrom.Value = NufarmBussinesRules.SharedClass.ServerDate.AddMonths(-1)
         DirectCast(Me.ActiveDoc, DDDR).dtPicUntil.Value = NufarmBussinesRules.SharedClass.ServerDate.AddMonths(1)
         DirectCast(Me.ActiveDoc, DDDR).cmbApplyDiscount.SelectedIndex = 0
+        Me.GetStateChecked(CType(sender, DevComponents.DotNetBar.ButtonItem))
+    End Sub
+    Private Sub ShowAgree4MPeriode(ByVal sender As Object, ByVal e As EventArgs)
+        If Not IsNothing(Me.ActiveDoc) Then
+            If Me.ActiveDoc.Name = "TargetAgreement4FM" Then
+            Else
+                Me.ActiveDoc.Dispose()
+                Dim ctrlTargetAgreement4FM As New TargetAgreement4FM()
+                With ctrlTargetAgreement4FM
+                    .Parent = Me.ExpandablePanel1 : .Dock = DockStyle.Fill : .Show() : .BringToFront()
+                End With
+                Me.ActiveDoc = ctrlTargetAgreement4FM
+                Me.m_Grid = DirectCast(Me.ActiveDoc, TargetAgreement4FM).GridEX1
+            End If
+        Else
+            Dim ctrlTargetAgreement4FM As New TargetAgreement4FM()
+            With ctrlTargetAgreement4FM
+                .Parent = Me.ExpandablePanel1 : .Dock = DockStyle.Fill : .Show() : .BringToFront()
+            End With
+            Me.ActiveDoc = ctrlTargetAgreement4FM
+            Me.m_Grid = DirectCast(Me.ActiveDoc, TargetAgreement4FM).GridEX1
+        End If
+        Me.GetStateChecked(CType(sender, DevComponents.DotNetBar.ButtonItem))
     End Sub
     Private Sub ShowCardView()
         If Not IsNothing(Me.ActiveDoc) Then
@@ -756,6 +784,7 @@ Public Class ReportGrid
                 Case "btnTableView" : Me.ShowTableView()
                 Case "btnReportSales" : Me.ShowSalesReport(sender, e)
                 Case "btnReportDDDR" : Me.ShowDDDRReport(sender, e)
+                Case "btnTarget4MPeriode" : Me.ShowAgree4MPeriode(sender, e)
             End Select
             If Not IsNothing(Me.ActiveDoc) Then
                 If Not IsNothing(Me.m_Grid) Then
@@ -839,6 +868,8 @@ Public Class ReportGrid
                 Me.ExpandablePanel1.TitleText = "SPPB & GON REPORT"
             Case "DDDR"
                 Me.ExpandablePanel1.TitleText = "DETAIL REPORT OF DD DR CBD"
+            Case "TargetAgreement4FM"
+                Me.ExpandablePanel1.TitleText = "TARGET DPD 4 MONTHS PERIODE"
         End Select
         'Me.ExpandablePanel1.TitleText = e.Control.Text
     End Sub

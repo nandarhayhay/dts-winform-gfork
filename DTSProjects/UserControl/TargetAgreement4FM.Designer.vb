@@ -186,6 +186,7 @@ Partial Class TargetAgreement4FM
         'cmbDPDType
         '
         Me.cmbDPDType.FormattingEnabled = True
+        Me.cmbDPDType.Items.AddRange(New Object() {"Roundup 4 Months Periode", "Nufarm 4 Months Periode"})
         Me.cmbDPDType.Location = New System.Drawing.Point(64, 5)
         Me.cmbDPDType.Name = "cmbDPDType"
         Me.cmbDPDType.Size = New System.Drawing.Size(121, 21)
@@ -219,8 +220,6 @@ Partial Class TargetAgreement4FM
     End Sub
     Friend WithEvents GridEX1 As Janus.Windows.GridEX.GridEX
     Private WithEvents Label3 As System.Windows.Forms.Label
-    Private WithEvents dtPicModUntilDate As Janus.Windows.CalendarCombo.CalendarCombo
-    Private WithEvents dtPicModFromDate As Janus.Windows.CalendarCombo.CalendarCombo
     Friend WithEvents ControlContainerItem1 As DevComponents.DotNetBar.ControlContainerItem
     Friend WithEvents ControlContainerItem2 As DevComponents.DotNetBar.ControlContainerItem
     Private WithEvents cmbDPDtypeItemNufarm As DevComponents.Editors.ComboItem
@@ -231,5 +230,7 @@ Partial Class TargetAgreement4FM
     Friend WithEvents UiGroupBox1 As Janus.Windows.EditControls.UIGroupBox
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Private WithEvents btnAplyRange As Janus.Windows.EditControls.UIButton
+    Friend WithEvents dtPicModUntilDate As Janus.Windows.CalendarCombo.CalendarCombo
+    Friend WithEvents dtPicModFromDate As Janus.Windows.CalendarCombo.CalendarCombo
 
 End Class

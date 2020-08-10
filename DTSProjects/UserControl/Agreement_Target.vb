@@ -136,9 +136,6 @@ Public Class Agreement_Target
         fc.FormatStyle.ForeColor = SystemColors.GrayText
         GridEX1.RootTable.FormatConditions.Add(fc)
     End Sub
-    Friend Sub initializeData()
-
-    End Sub
     Private Sub Agreement_Target_Disposed(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Disposed
         Try
             Me.Cursor = Cursors.WaitCursor

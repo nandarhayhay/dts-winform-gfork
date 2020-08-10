@@ -18,7 +18,7 @@ Namespace DistributorAgreement
                 Dim Query = "SET NOCOUNT ON; " & vbCrLf & _
                         " SELECT TOP 1 START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101); "
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
-                Else : Me.ResetCommandText(CommandType.StoredProcedure, "stmt")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Me.ExecuteReader() : Me.ClearCommandParameters()
@@ -76,16 +76,25 @@ Namespace DistributorAgreement
                 Me.m_ViewAgrement = Nothing
             End If
         End Sub
-        Public Function getTargetDPD(ByVal hasChangedState As Boolean, ByVal StartDate As Date, ByVal endDate As Date, ByVal DPDType As String) As DataView
+        Public Function getTargetDPD(ByVal StartDate As Date, ByVal endDate As Date, ByVal DPDType As String) As DataView
             Try
-                If hasChangedState Then
-
+                Me.OpenConnection()
+                If DPDType.ToUpper().Contains("ROUNDUP") Then
+                    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("Usp_Get_Target_DPD_FMP_Roundup", "")
+                    Else : Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_Target_DPD_FMP_Roundup")
+                    End If
+                    Me.AddParameter("@START_DATE", SqlDbType.Date, StartDate)
+                    Me.AddParameter("@END_DATE", SqlDbType.Date, endDate)
+                    Dim dtTable As New DataTable("DPD_ROUNDUP_4_MONTHS_PERIODE")
+                    setDataAdapter(Me.SqlCom).Fill(dtTable)
+                    Return dtTable.DefaultView
                 End If
             Catch ex As Exception
                 Me.ClearCommandParameters()
                 Me.CloseConnection()
                 Throw ex
             End Try
+            Return Nothing
         End Function
         Public ReadOnly Property ViewBrandPack() As DataView
             Get

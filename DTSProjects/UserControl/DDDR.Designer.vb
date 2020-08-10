@@ -20,9 +20,9 @@ Partial Class DDDR
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
-        Dim grpCategoryDiscount_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
+        Dim grdDDDR_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DDDR))
-        Me.grpCategoryDiscount = New Janus.Windows.GridEX.GridEX
+        Me.grdDDDR = New Janus.Windows.GridEX.GridEX
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.XpGradientPanel1 = New SteepValley.Windows.Forms.XPGradientPanel
         Me.UiGroupBox2 = New Janus.Windows.EditControls.UIGroupBox
@@ -35,7 +35,7 @@ Partial Class DDDR
         Me.dtPicUntil = New Janus.Windows.CalendarCombo.CalendarCombo
         Me.dtPicfrom = New Janus.Windows.CalendarCombo.CalendarCombo
         Me.Label1 = New System.Windows.Forms.Label
-        CType(Me.grpCategoryDiscount, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grdDDDR, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.XpGradientPanel1.SuspendLayout()
         CType(Me.UiGroupBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.UiGroupBox2.SuspendLayout()
@@ -45,36 +45,36 @@ Partial Class DDDR
         Me.grpRangeDate.SuspendLayout()
         Me.SuspendLayout()
         '
-        'grpCategoryDiscount
+        'grdDDDR
         '
-        Me.grpCategoryDiscount.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
-        Me.grpCategoryDiscount.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.grpCategoryDiscount.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
-        grpCategoryDiscount_DesignTimeLayout.LayoutString = resources.GetString("grpCategoryDiscount_DesignTimeLayout.LayoutString")
-        Me.grpCategoryDiscount.DesignTimeLayout = grpCategoryDiscount_DesignTimeLayout
-        Me.grpCategoryDiscount.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grpCategoryDiscount.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
-        Me.grpCategoryDiscount.FilterRowButtonStyle = Janus.Windows.GridEX.FilterRowButtonStyle.ConditionOperatorDropDown
-        Me.grpCategoryDiscount.FilterRowFormatStyle.BackColor = System.Drawing.SystemColors.Window
-        Me.grpCategoryDiscount.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
-        Me.grpCategoryDiscount.GroupMode = Janus.Windows.GridEX.GroupMode.Collapsed
-        Me.grpCategoryDiscount.GroupRowVisualStyle = Janus.Windows.GridEX.GroupRowVisualStyle.Outlook2003
-        Me.grpCategoryDiscount.GroupTotals = Janus.Windows.GridEX.GroupTotals.ExpandedGroup
-        Me.grpCategoryDiscount.ImageList = Me.ImageList1
-        Me.grpCategoryDiscount.Location = New System.Drawing.Point(0, 59)
-        Me.grpCategoryDiscount.Name = "grpCategoryDiscount"
-        Me.grpCategoryDiscount.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
-        Me.grpCategoryDiscount.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
-        Me.grpCategoryDiscount.RecordNavigator = True
-        Me.grpCategoryDiscount.Size = New System.Drawing.Size(1263, 401)
-        Me.grpCategoryDiscount.TabIndex = 3
-        Me.grpCategoryDiscount.TableHeaderFormatStyle.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold)
-        Me.grpCategoryDiscount.TableHeaderFormatStyle.ForeColor = System.Drawing.Color.Maroon
-        Me.grpCategoryDiscount.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
-        Me.grpCategoryDiscount.TableHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.grpCategoryDiscount.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
-        Me.grpCategoryDiscount.WatermarkImage.Image = CType(resources.GetObject("grpCategoryDiscount.WatermarkImage.Image"), System.Drawing.Image)
-        Me.grpCategoryDiscount.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
+        Me.grdDDDR.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
+        Me.grdDDDR.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
+        Me.grdDDDR.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
+        grdDDDR_DesignTimeLayout.LayoutString = resources.GetString("grdDDDR_DesignTimeLayout.LayoutString")
+        Me.grdDDDR.DesignTimeLayout = grdDDDR_DesignTimeLayout
+        Me.grdDDDR.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grdDDDR.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
+        Me.grdDDDR.FilterRowButtonStyle = Janus.Windows.GridEX.FilterRowButtonStyle.ConditionOperatorDropDown
+        Me.grdDDDR.FilterRowFormatStyle.BackColor = System.Drawing.SystemColors.Window
+        Me.grdDDDR.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
+        Me.grdDDDR.GroupMode = Janus.Windows.GridEX.GroupMode.Collapsed
+        Me.grdDDDR.GroupRowVisualStyle = Janus.Windows.GridEX.GroupRowVisualStyle.Outlook2003
+        Me.grdDDDR.GroupTotals = Janus.Windows.GridEX.GroupTotals.ExpandedGroup
+        Me.grdDDDR.ImageList = Me.ImageList1
+        Me.grdDDDR.Location = New System.Drawing.Point(0, 59)
+        Me.grdDDDR.Name = "grdDDDR"
+        Me.grdDDDR.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
+        Me.grdDDDR.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
+        Me.grdDDDR.RecordNavigator = True
+        Me.grdDDDR.Size = New System.Drawing.Size(1263, 401)
+        Me.grdDDDR.TabIndex = 3
+        Me.grdDDDR.TableHeaderFormatStyle.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.grdDDDR.TableHeaderFormatStyle.ForeColor = System.Drawing.Color.Maroon
+        Me.grdDDDR.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
+        Me.grdDDDR.TableHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
+        Me.grdDDDR.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
+        Me.grdDDDR.WatermarkImage.Image = CType(resources.GetObject("grpCategoryDiscount.WatermarkImage.Image"), System.Drawing.Image)
+        Me.grdDDDR.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
         '
         'ImageList1
         '
@@ -241,11 +241,11 @@ Partial Class DDDR
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.Controls.Add(Me.grpCategoryDiscount)
+        Me.Controls.Add(Me.grdDDDR)
         Me.Controls.Add(Me.XpGradientPanel1)
         Me.Name = "DDDR"
         Me.Size = New System.Drawing.Size(1263, 460)
-        CType(Me.grpCategoryDiscount, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grdDDDR, System.ComponentModel.ISupportInitialize).EndInit()
         Me.XpGradientPanel1.ResumeLayout(False)
         CType(Me.UiGroupBox2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.UiGroupBox2.ResumeLayout(False)
@@ -257,7 +257,7 @@ Partial Class DDDR
         Me.ResumeLayout(False)
 
     End Sub
-    Friend WithEvents grpCategoryDiscount As Janus.Windows.GridEX.GridEX
+    Friend WithEvents grdDDDR As Janus.Windows.GridEX.GridEX
     Friend WithEvents ImageList1 As System.Windows.Forms.ImageList
     Private WithEvents XpGradientPanel1 As SteepValley.Windows.Forms.XPGradientPanel
     Friend WithEvents grpRangeDate As Janus.Windows.EditControls.UIGroupBox

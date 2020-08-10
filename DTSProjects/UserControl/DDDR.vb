@@ -38,7 +38,7 @@ Public Class DDDR
             Me.ThreadProgress = New Thread(AddressOf ShowProceed)
             Me.ThreadProgress.Start()
             Dim DV As DataView = Me.clsDDDR.getReport(Me.cmbApplyDiscount.Text, Me.cmbParams.Text, Convert.ToDateTime(Me.dtPicfrom.Value.ToShortDateString()), Convert.ToDateTime(Me.dtPicUntil.Value.ToShortDateString()))
-            Me.grpCategoryDiscount.SetDataBinding(DV, "")
+            Me.grdDDDR.SetDataBinding(DV, "")
             Me.StatProg = StatusProgress.None
             Me.Cursor = Cursors.Default
         Catch ex As Exception
