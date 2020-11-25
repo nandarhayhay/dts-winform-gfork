@@ -13,7 +13,9 @@ Namespace DataAccesLayer
         Protected sqlPar As SqlParameter
         Public Delegate Sub onSaving()
         Private Const nTambah As Integer = 57
-        Private NuFarmConstring As String
+        Private NuFarmConstring As String = "NuFarmConstring"
+        Private NI87Constring As String = "NI109Constring"
+        Private NI109Constring As String = "NI109Constring"
         Private ConnectTo As ConnectionTo = ConnectionTo.Nufarm
 #End Region
 
@@ -21,6 +23,7 @@ Namespace DataAccesLayer
         Protected Enum ConnectionTo
             Nufarm
             NI87
+            NI109
         End Enum
         Public Sub New()
             Me.SqlCom = Nothing
@@ -76,14 +79,22 @@ Namespace DataAccesLayer
             If Me.SqlConn Is Nothing Then '"Data Source=PRISONBREAK;Initial Catalog=Nufarm;User ID=sa;Password=nufDB2007" 
                 Me.SqlConn = New SqlConnection()
             End If
-            If Me.SqlConn.ConnectionString <> "" Then
-                If Me.ConnectTo = ConnectionTo.NI87 Then ''balikan connection to DTS
-                    Me.NuFarmConstring = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
-                    Me.SqlConn.ConnectionString = Me.NuFarmConstring
-                End If
-            Else
-                Me.NuFarmConstring = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
-                Me.SqlConn.ConnectionString = Me.NuFarmConstring
+            'jangan merubah connection pooling
+            If Me.SqlConn.State = ConnectionState.Broken Or Me.SqlConn.State = ConnectionState.Closed Then
+                Select Case Me.ConnectTo
+                    Case ConnectionTo.NI109
+                        If Me.SqlConn.ConnectionString <> ConfigurationManager.ConnectionStrings("NI109Constring").ConnectionString Then
+                            Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NI109Constring").ConnectionString
+                        End If
+                    Case ConnectionTo.NI87
+                        If Me.SqlConn.ConnectionString <> ConfigurationManager.ConnectionStrings("NI87Constring").ConnectionString Then
+                            Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NI87Constring").ConnectionString
+                        End If
+                    Case Else
+                        If Me.SqlConn.ConnectionString <> ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString Then
+                            Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
+                        End If
+                End Select
             End If
             Return Me.SqlConn
         End Function
@@ -96,37 +107,31 @@ Namespace DataAccesLayer
             Return Me.SqlCom
         End Function
         Protected Function ResetConnection(ByVal ConnecSql As ConnectionTo) As SqlConnection
-            If Me.SqlConn Is Nothing Then
+            If Me.SqlConn Is Nothing Then '"Data Source=PRISONBREAK;Initial Catalog=Nufarm;User ID=sa;Password=nufDB2007" 
                 Me.SqlConn = New SqlConnection()
             End If
-            If ConnecSql = ConnectionTo.NI87 Then
-                If Not IsNothing(Me.SqlConn) Then
-                    If Me.SqlConn.State = ConnectionState.Broken Or Me.SqlConn.State = ConnectionState.Closed Then
-                        Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NI87Constring").ConnectionString
-                    End If
-                End If
-            Else
-                If Not IsNothing(Me.SqlConn) Then
-                    If Me.SqlConn.State = ConnectionState.Broken Or Me.SqlConn.State = ConnectionState.Closed Then
-                        Me.NuFarmConstring = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
-                        Me.SqlConn.ConnectionString = Me.NuFarmConstring
-                    End If
-                End If
+            If Me.SqlConn.State = ConnectionState.Broken Or Me.SqlConn.State = ConnectionState.Closed Then
+                Select Case ConnecSql
+                    Case ConnectionTo.NI109
+                        If Me.SqlConn.ConnectionString <> ConfigurationManager.ConnectionStrings("NI109Constring").ConnectionString Then
+                            Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NI109Constring").ConnectionString
+                        End If
+                    Case ConnectionTo.NI87
+                        If Me.SqlConn.ConnectionString <> ConfigurationManager.ConnectionStrings("NI87Constring").ConnectionString Then
+                            Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NI87Constring").ConnectionString
+                        End If
+                    Case Else
+                        If Me.SqlConn.ConnectionString <> ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString Then
+                            Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
+                        End If
+                End Select
             End If
             'NI78Constring
             Return Me.SqlConn
         End Function
         Protected Function ResetConnectiontiontoDefault() As SqlConnection
             If Not IsNothing(Me.SqlConn) Then
-                If Me.SqlConn.ConnectionString <> "" Then
-                    If Me.ConnectTo = ConnectionTo.NI87 Then ''balikan connection to DTS
-                        Me.NuFarmConstring = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
-                        Me.SqlConn.ConnectionString = Me.NuFarmConstring
-                    End If
-                Else
-                    Me.NuFarmConstring = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
-                    Me.SqlConn.ConnectionString = Me.NuFarmConstring
-                End If
+                Me.SqlConn.ConnectionString = ConfigurationManager.ConnectionStrings("NuFarmConstring").ConnectionString
             End If
             Return Me.SqlConn
         End Function

@@ -177,7 +177,8 @@ Namespace OrderAcceptance
                         row = .NewRow()
                         row("LEFT_QTY") = 0
                         row("RELEASE_QTY") = dtview(I)("LEFT_QTY")
-                        row("OA_RM_ID") = dtview(I)("OA_RM_ID").ToString()
+                        row("OA_RM_ID") = dtview(I)("OA_RM_ID")
+
                         .Rows.Add(row)
                         'INSERT KE TABLE insOBDisc
                         With tblInsOBDisc
@@ -191,7 +192,8 @@ Namespace OrderAcceptance
                             rowDisc("AGREE_DISC_HIST_ID") = DBNull.Value
                             rowDisc("MRKT_DISC_HIST_ID") = DBNull.Value
                             rowDisc("PROJ_DISC_HIST_ID") = DBNull.Value
-                            rowDisc("OA_RM_ID") = dtview(I)("OA_RM_ID").ToString()
+                            rowDisc("OA_RM_ID") = dtview(I)("OA_RM_ID")
+                            rowDisc("FK_BRND_DISC_PROG") = dtview(I)("FK_BRND_DISC_PROG")
                             rowDisc("ACHIEVEMENT_BRANDPACK_ID") = DBNull.Value
                             .Rows.Add(rowDisc)
                         End With
@@ -202,7 +204,7 @@ Namespace OrderAcceptance
                         row = .NewRow()
                         row("LEFT_QTY") = LEFT_QTY - ResultQty
                         row("RELEASE_QTY") = Convert.ToDecimal(dtview(I)("LEFT_QTY")) - Convert.ToDecimal(row("LEFT_QTY"))
-                        row("OA_RM_ID") = dtview(I)("OA_RM_ID").ToString()
+                        row("OA_RM_ID") = dtview(I)("OA_RM_ID")
                         .Rows.Add(row)
                         With tblInsOBDisc
                             rowDisc = .NewRow()
@@ -215,7 +217,8 @@ Namespace OrderAcceptance
                             rowDisc("AGREE_DISC_HIST_ID") = DBNull.Value
                             rowDisc("MRKT_DISC_HIST_ID") = DBNull.Value
                             rowDisc("PROJ_DISC_HIST_ID") = DBNull.Value
-                            rowDisc("OA_RM_ID") = dtview(I)("OA_RM_ID").ToString()
+                            rowDisc("OA_RM_ID") = dtview(I)("OA_RM_ID")
+                            rowDisc("FK_BRND_DISC_PROG") = dtview(I)("FK_BRND_DISC_PROG")
                             rowDisc("ACHIEVEMENT_BRANDPACK_ID") = DBNull.Value
                             .Rows.Add(rowDisc)
                         End With
@@ -226,7 +229,7 @@ Namespace OrderAcceptance
                         row = .NewRow()
                         row("LEFT_QTY") = 0
                         row("RELEASE_QTY") = dtview(I)("LEFT_QTY")
-                        row("OA_RM_ID") = dtview(I)("OA_RM_ID").ToString()
+                        row("OA_RM_ID") = dtview(I)("OA_RM_ID")
                         .Rows.Add(row)
                     End If
                     With tblInsOBDisc
@@ -240,14 +243,11 @@ Namespace OrderAcceptance
                         rowDisc("AGREE_DISC_HIST_ID") = DBNull.Value
                         rowDisc("MRKT_DISC_HIST_ID") = DBNull.Value
                         rowDisc("PROJ_DISC_HIST_ID") = DBNull.Value
-                        rowDisc("OA_RM_ID") = dtview(I)("OA_RM_ID").ToString()
+                        rowDisc("OA_RM_ID") = dtview(I)("OA_RM_ID")
+                        rowDisc("FK_BRND_DISC_PROG") = dtview(I)("FK_BRND_DISC_PROG")
                         rowDisc("ACHIEVEMENT_BRANDPACK_ID") = DBNull.Value
                         .Rows.Add(rowDisc)
                     End With
-                    'If I <= dtview.Count - 1 Then
-                    '    Me.UpdateRemainding(OA_BRANDPACK_ID, tblUpRemainding, tblInsOBDisc)
-                    '    Return True
-                    'End If
                 Next
                 Return False
             End With
@@ -599,6 +599,51 @@ Namespace OrderAcceptance
             End Try
 
         End Sub
+        Private Function UpdateDDDRCBD(ByVal OA_BRANDPACK_ID As String, ByVal tblUpRemainding As DataTable, ByVal dtview As DataView, ByVal row As DataRow, ByVal rowDisc As DataRow, _
+        ByVal tblInsOBDisc As DataTable, ByVal PRICE As Decimal, ByVal ResultQty As Decimal, ByRef LEFT_QTY As Decimal) As Boolean
+            Dim mustReturn As Boolean = False
+            'Dim LEFT_QTY As Decimal = 0
+            '========================OCBD==============================
+            dtview.RowFilter = "FLAG = 'OCBD' AND OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "'"
+            If dtview.Count > 0 Then
+                mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "OCBD")
+            End If
+            If mustReturn Then : Return True : End If
+
+            dtview.RowFilter = "FLAG = 'OCBD' AND OA_BRANDPACK_ID <> '" & OA_BRANDPACK_ID & "'"
+            If dtview.Count > 0 Then
+                mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "OCBD")
+            End If
+            If mustReturn Then : Return True : End If
+
+
+            '=========================== O DD ==============================
+            dtview.RowFilter = "FLAG = 'ODD' AND OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "'"
+            If dtview.Count > 0 Then
+                mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "ODD")
+            End If
+            If mustReturn Then : Return True : End If
+
+            dtview.RowFilter = "FLAG = 'ODD' AND OA_BRANDPACK_ID <> '" & OA_BRANDPACK_ID & "'"
+            If dtview.Count > 0 Then
+                mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "ODD")
+            End If
+            If mustReturn Then : Return True : End If
+
+
+            '======================== O DR =================================================
+            dtview.RowFilter = "FLAG = 'ODR' AND OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "'"
+            If dtview.Count > 0 Then
+                mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "ODR")
+            End If
+            If mustReturn Then : Return True : End If
+
+            dtview.RowFilter = "FLAG = 'ODR' AND OA_BRANDPACK_ID <> '" & OA_BRANDPACK_ID & "'"
+            If dtview.Count > 0 Then
+                mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "ODR")
+            End If
+            If mustReturn Then : Return True : End If
+        End Function
 
         Public Sub RecalCulateQTY(ByVal dtview As DataView, ByVal OA_BRANDPACK_ID As String, ByVal ResultQty As Decimal, ByVal PRICE As Decimal)
             Try
@@ -608,17 +653,20 @@ Namespace OrderAcceptance
                 Dim tblUpRemainding As New DataTable("tblUpdateRemainding")
                 Dim colLeftQtyRemainding As New DataColumn("LEFT_QTY", Type.GetType("System.Decimal"))
                 Dim ColReleaseQty As New DataColumn("RELEASE_QTY", Type.GetType("System.Decimal"))
+                Dim colRefOthers As New DataColumn("FK_BRND_DISC_PROG", Type.GetType("System.Int32"))
                 Dim ColOARMID As New DataColumn("OA_RM_ID", Type.GetType("System.String"))
+
                 tblUpRemainding.Columns.Add(colLeftQtyRemainding)
                 tblUpRemainding.Columns.Add(ColReleaseQty)
                 tblUpRemainding.Columns.Add(ColOARMID)
-                tblUpRemainding.Clear()
+                tblUpRemainding.Columns.Add(colRefOthers)
+                tblUpRemainding.Columns("OA_RM_ID").DefaultValue = DBNull.Value
 
                 Dim tblInsOBDisc As New DataTable("OA_BRANDPACK_DISC")
                 Dim colOA_BRANDPACK_ID As New DataColumn("OA_BRANDPACK_ID", Type.GetType("System.String"))
                 Dim colGQSY_SGT_P_FLAG As New DataColumn("GQSY_SGT_P_FLAG", Type.GetType("System.String"))
-                Dim colDISC_QTY As New DataColumn("DISC_QTY", Type.GetType("System.String"))
-                Dim colPRICE_PRQTY As New DataColumn("PRICE_PRQTY", Type.GetType("System.String"))
+                Dim colDISC_QTY As New DataColumn("DISC_QTY", Type.GetType("System.Decimal"))
+                Dim colPRICE_PRQTY As New DataColumn("PRICE_PRQTY", Type.GetType("System.Decimal"))
                 Dim colBRND_B_S_ID As New DataColumn("BRND_B_S_ID", Type.GetType("System.String"))
                 colBRND_B_S_ID.DefaultValue = DBNull.Value
 
@@ -634,6 +682,8 @@ Namespace OrderAcceptance
                 colAchBrandPackID.DefaultValue = DBNull.Value
                 Dim colOA_RM_ID As New DataColumn("OA_RM_ID", Type.GetType("System.String"))
                 colOA_RM_ID.DefaultValue = DBNull.Value
+                Dim colRefOthers1 As New DataColumn("FK_BRND_DISC_PROG", Type.GetType("System.Int32"))
+                colRefOthers1.DefaultValue = DBNull.Value
                 With tblInsOBDisc.Columns
                     .Add(colOA_BRANDPACK_ID)
                     .Add(colGQSY_SGT_P_FLAG)
@@ -646,14 +696,18 @@ Namespace OrderAcceptance
                     .Add(colPROJ_DISC_HIST_ID)
                     .Add(colOA_RM_ID)
                     .Add(colAchBrandPackID)
+                    .Add(colRefOthers1)
                 End With
-                tblInsOBDisc.Clear()
+
                 Dim mustReturn As Boolean = False
                 Dim LEFT_QTY As Decimal = 0
                 'AMBIL YANG SISA DARI OA DULU
                 'CARI SISA OA
                 Dim row As DataRow = Nothing
                 Dim rowDisc As DataRow = Nothing
+                'If OnlyDDDRCBD Then
+
+                'End If
                 dtview.Sort = "CREATE_DATE ASC"
                 'FILTER BERDASARKAN OA_BRANDPACK YANG DIPILIH DI DATAGRID1
                 dtview.RowFilter = "OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "' AND FLAG = 'RMOA'"
@@ -699,47 +753,8 @@ Namespace OrderAcceptance
                 End If
                 If mustReturn Then : Return : End If
 
-
-                '========================OCBD==============================
-                dtview.RowFilter = "FLAG = 'OCBD' AND OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "'"
-                If dtview.Count > 0 Then
-                    mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "O")
-                End If
-                If mustReturn Then : Return : End If
-
-                dtview.RowFilter = "FLAG = 'OCBD' AND OA_BRANDPACK_ID <> '" & OA_BRANDPACK_ID & "'"
-                If dtview.Count > 0 Then
-                    mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "O")
-                End If
-                If mustReturn Then : Return : End If
-
-
-                '=========================== O DD ==============================
-                dtview.RowFilter = "FLAG = 'ODD' AND OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "'"
-                If dtview.Count > 0 Then
-                    mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "O")
-                End If
-                If mustReturn Then : Return : End If
-
-                dtview.RowFilter = "FLAG = 'ODD' AND OA_BRANDPACK_ID <> '" & OA_BRANDPACK_ID & "'"
-                If dtview.Count > 0 Then
-                    mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "O")
-                End If
-                If mustReturn Then : Return : End If
-
-
-                '======================== O DR =================================================
-                dtview.RowFilter = "FLAG = 'ODR' AND OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "'"
-                If dtview.Count > 0 Then
-                    mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "O")
-                End If
-                If mustReturn Then : Return : End If
-
-                dtview.RowFilter = "FLAG = 'ODR' AND OA_BRANDPACK_ID <> '" & OA_BRANDPACK_ID & "'"
-                If dtview.Count > 0 Then
-                    mustReturn = Me.UpdateRemain(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY, "O")
-                End If
-                If mustReturn Then : Return : End If
+                '==============DD DR CBD O==================================
+                UpdateDDDRCBD(OA_BRANDPACK_ID, tblUpRemainding, dtview, row, rowDisc, tblInsOBDisc, PRICE, ResultQty, LEFT_QTY)
 
                 '==================  DPD =================================================
                 dtview.RowFilter = "FLAG = 'Q1' AND OA_BRANDPACK_ID = '" & OA_BRANDPACK_ID & "'"
@@ -995,8 +1010,87 @@ Namespace OrderAcceptance
                 Throw ex
             End Try
         End Sub
+        Public Sub InserDDDRCBD(ByVal DtEven As DataTable, Optional ByVal dtRemain As DataTable = Nothing)
+            Try
+                Me.OpenConnection()
+                BeginTransaction()
+                Dim insertedRows() As DataRow = Nothing
+                If Not IsNothing(dtRemain) Then
+                    'INSERT OA_REMAINDING
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "INSERT INTO ORDR_OA_REMAINDING(OA_BRANDPACK_ID,AGREE_DISC_HIST_ID,BRND_B_S_ID,ACHIEVEMENT_BRANDPACK_ID,MRKT_DISC_HIST_ID," & vbCrLf & _
+                            "MRKT_M_S_ID,PROJ_DISC_HIST_ID,FLAG,QTY,RELEASE_QTY,LEFT_QTY,CREATE_BY,CREATE_DATE,FK_BRND_DISC_PROG) " & vbCrLf & _
+                            "VALUES(@OA_BRANDPACK_ID,@AGREE_DISC_HIST_ID,@BRND_B_S_ID,@ACHIEVEMENT_BRANDPACK_ID,@MRKT_DISC_HIST_ID,@MRKT_M_S_ID," & vbCrLf & _
+                            "@PROJ_DISC_HIST_ID,@FLAG,@QTY,@RELEASE_QTY,@LEFT_QTY,@CREATE_BY,GETDATE(),@FK_BRND_DISC_PROG)"
+                    Me.ResetCommandText(CommandType.Text, Query)
+                    If Not IsNothing(Me.SqlCom) Then : Me.ResetCommandText(CommandType.Text, Query)
+                    Else : Me.CreateCommandSql("", Query)
+                    End If
+                    insertedRows = dtRemain.Select()
+                    With Me.SqlCom
+                        .Parameters.Add("@AGREE_DISC_HIST_ID", SqlDbType.VarChar, 115).Value = DBNull.Value
+                        .Parameters.Add("@BRND_B_S_ID", SqlDbType.VarChar, 60).Value = DBNull.Value
+                        .Parameters.Add("@MRKT_DISC_HIST_ID", SqlDbType.VarChar, 115).Value = DBNull.Value
+                        .Parameters.Add("@MRKT_M_S_ID", SqlDbType.VarChar, 60).Value = DBNull.Value
+                        .Parameters.Add("@PROJ_DISC_HIST_ID", SqlDbType.VarChar, 66).Value = DBNull.Value
+                        .Parameters.Add("@FLAG", SqlDbType.VarChar, 5, "FLAG")
+                        .Parameters.Add("@OA_BRANDPACK_ID", SqlDbType.VarChar, 75, "OA_BRANDPACK_ID")
+                        .Parameters.Add("@ACHIEVEMENT_BRANDPACK_ID", SqlDbType.VarChar, 70).Value = DBNull.Value
+                        .Parameters.Add("@QTY", SqlDbType.Decimal, 0, "INC_DISC")
+                        .Parameters.Add("@RELEASE_QTY", SqlDbType.Decimal, 0).Value = 0 ' CObj("0"), 13)
+                        .Parameters.Add("@LEFT_QTY", SqlDbType.Decimal, 0, "INC_DISC")
+                        .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
+                        .Parameters.Add("@FK_BRND_DISC_PROG", SqlDbType.Int, 0, "FK_BRND_DISC_PROG")
+                        .Transaction = Me.SqlTrans
+                    End With
+                    If IsNothing(Me.SqlDat) Then : Me.SqlDat = New SqlDataAdapter() : End If
+                    SqlDat.InsertCommand = SqlCom
+                    SqlDat.Update(insertedRows) : Me.SqlCom.Parameters.Clear()
+                    SqlDat.InsertCommand = Nothing
+                End If
+                If Not IsNothing(DtEven) Then
+                    insertedRows = DtEven.Select()
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                          " INSERT INTO ORDR_OA_BRANDPACK_DISC(OA_BRANDPACK_ID,GQSY_SGT_P_FLAG,DISC_QTY," & vbCrLf & _
+                          " PRICE_PRQTY,AGREE_DISC_HIST_ID,MRKT_DISC_HIST_ID,PROJ_DISC_HIST_ID,BRND_B_S_ID,ACHIEVEMENT_BRANDPACK_ID,MRKT_M_S_ID,OA_RM_ID,FK_BRND_DISC_PROG, " & vbCrLf & _
+                          " CREATE_BY,CREATE_DATE) " & vbCrLf & _
+                          " VALUES(@OA_BRANDPACK_ID,@GQSY_SGT_P_FLAG,@DISC_QTY,@PRICE_PRQTY,@AGREE_DISC_HIST_ID," & vbCrLf & _
+                          " @MRKT_DISC_HIST_ID,@PROJ_DISC_HIST_ID,@BRND_B_S_ID,@ACHIEVEMENT_BRANDPACK_ID,@MRKT_M_S_ID,@OA_RM_ID,@FK_BRND_DISC_PROG,@CREATE_BY,GETDATE()) ;"
+                    If Not IsNothing(Me.SqlCom) Then : Me.ResetCommandText(CommandType.Text, Query)
+                    Else : Me.CreateCommandSql("", Query)
+                    End If
+                    With Me.SqlCom
+                        .Parameters.Add("@OA_BRANDPACK_ID", SqlDbType.VarChar, 75, "OA_BRANDPACK_ID")
+                        .Parameters.Add("@GQSY_SGT_P_FLAG", SqlDbType.VarChar, 5, "FLAG") ' VARCHAR(5),
+                        .Parameters.Add("@DISC_QTY", SqlDbType.Decimal, 0, "INC_DISC")
+                        .Parameters.Add("@PRICE_PRQTY", SqlDbType.Decimal, 0, "PRICE_PRQTY")
+                        .Parameters.Add("@AGREE_DISC_HIST_ID", SqlDbType.VarChar, 115).Value = DBNull.Value
+                        .Parameters.Add("@MRKT_DISC_HIST_ID", SqlDbType.VarChar, 115).Value = DBNull.Value
+                        .Parameters.Add("@PROJ_DISC_HIST_ID", SqlDbType.VarChar, 66).Value = DBNull.Value
+                        .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 100).Value = NufarmBussinesRules.User.UserLogin.UserName
+                        .Parameters.Add("@BRND_B_S_ID", SqlDbType.VarChar, 60).Value = DBNull.Value
+                        .Parameters.Add("@MRKT_M_S_ID", SqlDbType.VarChar, 60).Value = DBNull.Value
+                        .Parameters.Add("@ACHIEVEMENT_BRANDPACK_ID", SqlDbType.VarChar, 70).Value = DBNull.Value
+                        .Parameters.Add("@OA_RM_ID", SqlDbType.VarChar, 100).Value = DBNull.Value
+                        .Parameters.Add("@FK_BRND_DISC_PROG", SqlDbType.Int, 0, "FK_BRND_DISC_PROG")
+                        If IsNothing(.Transaction) Then
+                            .Transaction = Me.SqlTrans
+                        End If
+                        If IsNothing(Me.SqlDat) Then : Me.SqlDat = New SqlDataAdapter() : End If
+                        SqlDat.InsertCommand = SqlCom
+                        SqlDat.Update(insertedRows) : Me.SqlCom.Parameters.Clear()
+                        SqlDat.InsertCommand = Nothing
+                    End With
+                End If
+            Catch ex As Exception
+                Me.RollbackTransaction()
+                Me.CloseConnection() : Me.ClearCommandParameters()
+                Throw ex
+            End Try
+            Me.CommiteTransaction()
+        End Sub
         'HANYA UNTUK MENGINSERT ALL DATA REMAINDING KE OA_BRANDPACK_DISCOUNT
-        Private Sub UpdateRemainding(ByVal OA_BRANDPACK_ID As String, ByVal dtTableRemainding As DataTable, ByVal tblOABPDisc As DataTable)
+        Private Sub UpdateRemainding(ByVal OA_BRANDPACK_ID As String, ByRef dtTableRemainding As DataTable, ByRef tblOABPDisc As DataTable)
             Try
                 'insert oa_brandpack_disc dulu
                 Dim dtViewRemainding As DataView = dtTableRemainding.DefaultView()
@@ -1004,34 +1098,51 @@ Namespace OrderAcceptance
 
                 Dim dtViewDisc As DataView = tblOABPDisc.DefaultView()
                 dtViewDisc.Sort = "OA_RM_ID"
-                Me.GetConnection()
+                tblOABPDisc.AcceptChanges()
+                dtTableRemainding.AcceptChanges()
+                For i As Integer = 0 To tblOABPDisc.Rows.Count - 1
+                    tblOABPDisc.Rows(i).SetAdded()
+                Next
+                For i As Integer = 0 To dtTableRemainding.Rows.Count - 1
+                    dtTableRemainding.Rows(i).SetModified()
+                Next
+                Dim insertedRows() As DataRow = tblOABPDisc.Select()
+                Dim updatedRows() As DataRow = dtTableRemainding.Select()
                 Me.OpenConnection()
                 Me.BeginTransaction()
-                Me.SqlCom = New SqlCommand()
-                Me.SqlCom.CommandText = "Usp_Insert_ORDR_OA_BRANDPACK_DISCOUNT"
-                Me.SqlCom.CommandType = CommandType.StoredProcedure
-                Me.SqlCom.Connection = Me.SqlConn
-                Me.SqlCom.Transaction = Me.SqlTrans
-                For i As Integer = 0 To dtViewDisc.Count - 1
-                    Dim GQSY_SGT_P_FLAG As String = dtViewDisc(i)("GQSY_SGT_P_FLAG").ToString()
-                    Dim DISC_QTY As Decimal = Convert.ToDecimal(dtViewDisc(i)("DISC_QTY"))
-                    Dim PRICE_PRQTY As Decimal = Convert.ToDecimal(dtViewDisc(i)("PRICE_PRQTY"))
-                    Dim OA_RM_ID As String = dtViewDisc(i)("OA_RM_ID").ToString()
-                    Me.AddParameter("@OA_BRANDPACK_ID", SqlDbType.VarChar, OA_BRANDPACK_ID, 75) '(44),
-                    Me.AddParameter("@GQSY_SGT_P_FLAG", SqlDbType.VarChar, GQSY_SGT_P_FLAG, 5) ' VARCHAR(5),
-                    Me.AddParameter("@DISC_QTY", SqlDbType.Decimal, DISC_QTY) ' INT,
-                    Me.AddParameter("@PRICE_PRQTY", SqlDbType.Decimal, PRICE_PRQTY, 10) '  VARCHAR(10),
-                    Me.AddParameter("@AGREE_DISC_HIST_ID", SqlDbType.VarChar, DBNull.Value, 115) ' VARCHAR(71),
-                    Me.AddParameter("@MRKT_DISC_HIST_ID", SqlDbType.VarChar, DBNull.Value, 115) ' VARCHAR(66),
-                    Me.AddParameter("@PROJ_DISC_HIST_ID", SqlDbType.VarChar, DBNull.Value, 66) ' VARCHAR(66),
-                    Me.AddParameter("@CREATE_BY", SqlDbType.VarChar, NufarmBussinesRules.User.UserLogin.UserName) ' VARCHAR(30)
-                    Me.AddParameter("@BRND_B_S_ID", SqlDbType.VarChar, DBNull.Value, 60)
-                    Me.AddParameter("@MRKT_M_S_ID", SqlDbType.VarChar, DBNull.Value, 60) ' VARCHAR(60),
-                    Me.AddParameter("@ACHIEVEMENT_BRANDPACK_ID", SqlDbType.VarChar, DBNull.Value, 70)
-                    Me.AddParameter("@OA_RM_ID", SqlDbType.VarChar, OA_RM_ID, 200)
-                    Me.SqlCom.ExecuteNonQuery()
-                    Me.ClearCommandParameters()
-                Next
+
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                          " INSERT INTO ORDR_OA_BRANDPACK_DISC(OA_BRANDPACK_ID,GQSY_SGT_P_FLAG,DISC_QTY," & vbCrLf & _
+                          " PRICE_PRQTY,AGREE_DISC_HIST_ID,MRKT_DISC_HIST_ID,PROJ_DISC_HIST_ID,BRND_B_S_ID,ACHIEVEMENT_BRANDPACK_ID,MRKT_M_S_ID,OA_RM_ID,FK_BRND_DISC_PROG, " & vbCrLf & _
+                          " CREATE_BY,CREATE_DATE) " & vbCrLf & _
+                          " VALUES(@OA_BRANDPACK_ID,@GQSY_SGT_P_FLAG,@DISC_QTY,@PRICE_PRQTY,@AGREE_DISC_HIST_ID," & vbCrLf & _
+                          " @MRKT_DISC_HIST_ID,@PROJ_DISC_HIST_ID,@BRND_B_S_ID,@ACHIEVEMENT_BRANDPACK_ID,@MRKT_M_S_ID,@OA_RM_ID,@FK_BRND_DISC_PROG,@CREATE_BY,GETDATE()) ;"
+                If Not IsNothing(Me.SqlCom) Then : Me.ResetCommandText(CommandType.Text, Query)
+                Else : Me.CreateCommandSql("", Query)
+                End If
+                With Me.SqlCom
+                    .Parameters.Add("@OA_BRANDPACK_ID", SqlDbType.VarChar, 75, "OA_BRANDPACK_ID")
+                    .Parameters.Add("@GQSY_SGT_P_FLAG", SqlDbType.VarChar, 5, "GQSY_SGT_P_FLAG") ' VARCHAR(5),
+                    .Parameters.Add("@DISC_QTY", SqlDbType.Decimal, 0, "DISC_QTY")
+                    .Parameters.Add("@PRICE_PRQTY", SqlDbType.Decimal, 0, "PRICE_PRQTY")
+                    .Parameters.Add("@AGREE_DISC_HIST_ID", SqlDbType.VarChar, 115).Value = DBNull.Value
+                    .Parameters.Add("@MRKT_DISC_HIST_ID", SqlDbType.VarChar, 115).Value = DBNull.Value
+                    .Parameters.Add("@PROJ_DISC_HIST_ID", SqlDbType.VarChar, 66).Value = DBNull.Value
+                    .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 100).Value = NufarmBussinesRules.User.UserLogin.UserName
+                    .Parameters.Add("@BRND_B_S_ID", SqlDbType.VarChar, 60).Value = DBNull.Value
+                    .Parameters.Add("@MRKT_M_S_ID", SqlDbType.VarChar, 60).Value = DBNull.Value
+                    .Parameters.Add("@ACHIEVEMENT_BRANDPACK_ID", SqlDbType.VarChar, 70).Value = DBNull.Value
+                    .Parameters.Add("@FK_BRND_DISC_PROG", SqlDbType.Int, 0, "FK_BRND_DISC_PROG")
+                    .Parameters.Add("@OA_RM_ID", SqlDbType.VarChar, 200, "OA_RM_ID")
+                    If IsNothing(.Transaction) Then
+                        .Transaction = Me.SqlTrans
+                    End If
+                    If IsNothing(Me.SqlDat) Then : Me.SqlDat = New SqlDataAdapter() : End If
+                    SqlDat.InsertCommand = SqlCom
+                    SqlDat.Update(insertedRows)
+                    SqlDat.InsertCommand = Nothing
+                    .Parameters.Clear()
+                End With
                 Me.SqlCom.CommandText = "Usp_Check_Sum_Mathching_Disc_Qty"
                 Me.SqlCom.CommandType = CommandType.StoredProcedure
 
@@ -1055,18 +1166,21 @@ Namespace OrderAcceptance
                 Me.SqlCom.ExecuteNonQuery()
                 Me.ClearCommandParameters()
 
-
-                Me.SqlCom.CommandText = "Usp_Check_Sum_Mathing_Qty_ORDDR_OA_REMAINDING"
-                Me.SqlCom.CommandType = CommandType.StoredProcedure
-                For i As Integer = 0 To dtViewRemainding.Count - 1
-                    Dim OA_RM_ID As String = dtViewRemainding(i)("OA_RM_ID").ToString()
-                    Me.AddParameter("@OA_RM_ID", SqlDbType.VarChar, OA_RM_ID, 200)
-                    Me.SqlCom.ExecuteNonQuery()
-                    Me.ClearCommandParameters()
-                Next
-                Me.ClearCommandParameters()
+                With SqlCom
+                    .CommandType = CommandType.StoredProcedure
+                    .CommandText = "Usp_Check_Sum_Mathing_Qty_ORDDR_OA_REMAINDING"
+                    .Parameters.Add("@OA_RM_ID", SqlDbType.VarChar, 200, "OA_RM_ID")
+                    '.Parameters("@OA_RM_ID").SourceVersion = DataRowVersion.Original
+                    If IsNothing(.Transaction) Then
+                        .Transaction = Me.SqlTrans
+                    End If
+                    If IsNothing(Me.SqlDat) Then : Me.SqlDat = New SqlDataAdapter() : End If
+                    SqlDat.UpdateCommand = SqlCom
+                    SqlDat.Update(updatedRows)
+                    SqlDat.UpdateCommand = Nothing
+                    .Parameters.Clear()
+                End With
                 Me.CommiteTransaction()
-                Me.CloseConnection()
             Catch ex As Exception
                 Me.RollbackTransaction()
                 Me.CloseConnection()

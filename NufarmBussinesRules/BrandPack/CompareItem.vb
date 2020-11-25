@@ -1,9 +1,15 @@
 Imports System.Data
 Imports System.Data.SqlClient
+Imports NufarmBussinesRules.SharedClass
 Namespace Brandpack
     Public Class CompareItem
         Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
         Private Query As String = ""
+        Public Sub New()
+            MyBase.New()
+            '--==============UNCOMMENT THIS AFTER NEEDED ================
+            'DBInvoiceTo = CurrentInvToUse.NI109
+        End Sub
         Public Overloads Sub dispose(ByVal disposing As Boolean)
             Try
                 Query = "SET NOCOUNT ON ; " & vbCrLf & _
@@ -25,11 +31,20 @@ Namespace Brandpack
             Try
                 Query = "SET NOCOUNT ON; " & vbCrLf
                 Dim DtTable As New DataTable() : DtTable.Clear()
+
+                Dim StoredProcNI87 As String = "Usp_Create_Temp_Table_BrandPack", StoredProcNI109 = "Usp_Create_Temp_Table_BrandPack_NI109"
+                Dim StoredProcToUse As String = StoredProcNI87
+                If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                    StoredProcToUse = StoredProcNI109
+                End If
+
                 Me.OpenConnection()
                 If Renew Then
                     Query &= " IF OBJECT_ID('tempdb..##T_BRANDPACK') IS NULL " & vbCrLf & _
-                             " BEGIN EXEC Usp_Create_Temp_Table_BrandPack ; END "
-                    Me.CreateCommandSql("sp_executesql", "")
+                             " BEGIN EXEC " & StoredProcToUse & " ; END "
+                    If Not IsNothing(Me.SqlCom) Then
+                        Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                    Else : Me.CreateCommandSql("sp_executesql", "") : End If
                     Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                     Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
                     Query = "SET NOCOUNT ON; " & vbCrLf & _

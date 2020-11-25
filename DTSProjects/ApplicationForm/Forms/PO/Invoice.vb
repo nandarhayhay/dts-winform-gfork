@@ -478,7 +478,7 @@ Public Class Invoice
             Me.Cursor = Cursors.WaitCursor
             Me.pnlHeigt = Me.PanelEx2.Height
             Me.PanelEx2.Height = 0 : Application.DoEvents()
-            System.Threading.Thread.Sleep(100)
+            'System.Threading.Thread.Sleep(100)
             'AddHandler Timer1.Tick, AddressOf ChekTimer
             'AddHandler Timer2.Tick, AddressOf ChekTimer2
             'LD = New Loading
@@ -494,7 +494,7 @@ Public Class Invoice
             Me.originalStartDate = NufarmBussinesRules.common.CommonClass.getNumericFromDate(NufarmBussinesRules.SharedClass.ServerDate)
             Me.originalEndDate = NufarmBussinesRules.common.CommonClass.getNumericFromDate(NufarmBussinesRules.SharedClass.ServerDate)
 
-            Me.btnApplyRange_Click(Me.btnApplyRange, New EventArgs())
+            'Me.btnApplyRange_Click(Me.btnApplyRange, New EventArgs())
             If Me.btnCatPO.Checked Then
                 Me.grpRangedate.Text = "Range Date By PO"
             ElseIf Me.btnCatInvoice.Checked Then

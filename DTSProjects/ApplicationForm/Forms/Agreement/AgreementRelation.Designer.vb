@@ -179,6 +179,10 @@ Partial Class AgreementRelation
         Me.grpPotensi = New System.Windows.Forms.GroupBox
         Me.tbPotensi = New Janus.Windows.UI.Tab.UITab
         Me.tbPotensiPeriodBefore = New Janus.Windows.UI.Tab.UITabPage
+        Me.txtPBF3 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.Label43 = New System.Windows.Forms.Label
+        Me.txtPBF2 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.lblPBF3 = New System.Windows.Forms.Label
         Me.Label1 = New System.Windows.Forms.Label
         Me.txtPBYear = New Janus.Windows.GridEX.EditControls.NumericEditBox
         Me.txtPBQ3 = New Janus.Windows.GridEX.EditControls.NumericEditBox
@@ -188,6 +192,10 @@ Partial Class AgreementRelation
         Me.Label19 = New System.Windows.Forms.Label
         Me.Label17 = New System.Windows.Forms.Label
         Me.UiTabPage2 = New Janus.Windows.UI.Tab.UITabPage
+        Me.txtCPF2 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.Label48 = New System.Windows.Forms.Label
+        Me.txtCPF1 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.Label47 = New System.Windows.Forms.Label
         Me.txtCPS1 = New Janus.Windows.GridEX.EditControls.NumericEditBox
         Me.txtCPQ3 = New Janus.Windows.GridEX.EditControls.NumericEditBox
         Me.txtCPQ2 = New Janus.Windows.GridEX.EditControls.NumericEditBox
@@ -200,6 +208,20 @@ Partial Class AgreementRelation
         Me.btnRefresh = New DTSProjects.RefreshData
         Me.SavingChanges1 = New DTSProjects.SavingChanges
         Me.tbCombinedBrand = New Janus.Windows.UI.Tab.UITabPage
+        Me.grpCombF = New System.Windows.Forms.GroupBox
+        Me.txtTotalComb3F3 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtTotalComb2F2 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtTotalComb1F1 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtComb2F3 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtComb2F2 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtComb2F1 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtComb1F3 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtComb1F2 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.txtComb1F1 = New Janus.Windows.GridEX.EditControls.NumericEditBox
+        Me.btnDeleteF = New System.Windows.Forms.Button
+        Me.Label44 = New System.Windows.Forms.Label
+        Me.Label45 = New System.Windows.Forms.Label
+        Me.Label46 = New System.Windows.Forms.Label
         Me.PanelEx2 = New DevComponents.DotNetBar.PanelEx
         Me.btnRefReshCombined = New DTSProjects.RefreshData
         Me.TreeView1 = New System.Windows.Forms.TreeView
@@ -306,6 +328,7 @@ Partial Class AgreementRelation
         Me.tbPotensiPeriodBefore.SuspendLayout()
         Me.UiTabPage2.SuspendLayout()
         Me.tbCombinedBrand.SuspendLayout()
+        Me.grpCombF.SuspendLayout()
         Me.PanelEx2.SuspendLayout()
         Me.grpComS.SuspendLayout()
         Me.grpCombQ.SuspendLayout()
@@ -371,13 +394,13 @@ Partial Class AgreementRelation
         '
         Me.txtPlQ4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtPlQ4.FormatString = "#,##0.000"
+        Me.txtPlQ4.FormatString = "#,##0"
         Me.txtPlQ4.Location = New System.Drawing.Point(205, 91)
         Me.txtPlQ4.Name = "txtPlQ4"
         Me.txtPlQ4.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ4.TabIndex = 32
-        Me.txtPlQ4.Text = "0.000"
-        Me.txtPlQ4.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtPlQ4.Text = "0"
+        Me.txtPlQ4.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label29
         '
@@ -395,13 +418,13 @@ Partial Class AgreementRelation
         '
         Me.txtPlQ3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtPlQ3.FormatString = "#,##0.000"
+        Me.txtPlQ3.FormatString = "#,##0"
         Me.txtPlQ3.Location = New System.Drawing.Point(205, 67)
         Me.txtPlQ3.Name = "txtPlQ3"
         Me.txtPlQ3.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ3.TabIndex = 30
-        Me.txtPlQ3.Text = "0.000"
-        Me.txtPlQ3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtPlQ3.Text = "0"
+        Me.txtPlQ3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label30
         '
@@ -419,13 +442,13 @@ Partial Class AgreementRelation
         '
         Me.txtPlQ2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtPlQ2.FormatString = "#,##0.000"
+        Me.txtPlQ2.FormatString = "#,##0"
         Me.txtPlQ2.Location = New System.Drawing.Point(205, 40)
         Me.txtPlQ2.Name = "txtPlQ2"
         Me.txtPlQ2.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ2.TabIndex = 28
-        Me.txtPlQ2.Text = "0.000"
-        Me.txtPlQ2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtPlQ2.Text = "0"
+        Me.txtPlQ2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label31
         '
@@ -443,13 +466,13 @@ Partial Class AgreementRelation
         '
         Me.txtPlQ1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtPlQ1.FormatString = "#,##0.000"
+        Me.txtPlQ1.FormatString = "#,##0"
         Me.txtPlQ1.Location = New System.Drawing.Point(205, 13)
         Me.txtPlQ1.Name = "txtPlQ1"
         Me.txtPlQ1.Size = New System.Drawing.Size(67, 20)
         Me.txtPlQ1.TabIndex = 26
-        Me.txtPlQ1.Text = "0.000"
-        Me.txtPlQ1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtPlQ1.Text = "0"
+        Me.txtPlQ1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label32
         '
@@ -467,13 +490,13 @@ Partial Class AgreementRelation
         '
         Me.txtFreeMarketQ4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtFreeMarketQ4.FormatString = "#,##0.000"
+        Me.txtFreeMarketQ4.FormatString = "#,##0"
         Me.txtFreeMarketQ4.Location = New System.Drawing.Point(119, 91)
         Me.txtFreeMarketQ4.Name = "txtFreeMarketQ4"
         Me.txtFreeMarketQ4.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ4.TabIndex = 24
-        Me.txtFreeMarketQ4.Text = "0.000"
-        Me.txtFreeMarketQ4.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFreeMarketQ4.Text = "0"
+        Me.txtFreeMarketQ4.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label21
         '
@@ -491,13 +514,13 @@ Partial Class AgreementRelation
         '
         Me.txtFreeMarketQ3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtFreeMarketQ3.FormatString = "#,##0.000"
+        Me.txtFreeMarketQ3.FormatString = "#,##0"
         Me.txtFreeMarketQ3.Location = New System.Drawing.Point(119, 67)
         Me.txtFreeMarketQ3.Name = "txtFreeMarketQ3"
         Me.txtFreeMarketQ3.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ3.TabIndex = 22
-        Me.txtFreeMarketQ3.Text = "0.000"
-        Me.txtFreeMarketQ3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFreeMarketQ3.Text = "0"
+        Me.txtFreeMarketQ3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label22
         '
@@ -515,13 +538,13 @@ Partial Class AgreementRelation
         '
         Me.txtFreeMarketQ2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtFreeMarketQ2.FormatString = "#,##0.000"
+        Me.txtFreeMarketQ2.FormatString = "#,##0"
         Me.txtFreeMarketQ2.Location = New System.Drawing.Point(119, 39)
         Me.txtFreeMarketQ2.Name = "txtFreeMarketQ2"
         Me.txtFreeMarketQ2.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ2.TabIndex = 20
-        Me.txtFreeMarketQ2.Text = "0.000"
-        Me.txtFreeMarketQ2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFreeMarketQ2.Text = "0"
+        Me.txtFreeMarketQ2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label18
         '
@@ -539,13 +562,13 @@ Partial Class AgreementRelation
         '
         Me.txtFreeMarketQ1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtFreeMarketQ1.FormatString = "#,##0.000"
+        Me.txtFreeMarketQ1.FormatString = "#,##0"
         Me.txtFreeMarketQ1.Location = New System.Drawing.Point(119, 14)
         Me.txtFreeMarketQ1.Name = "txtFreeMarketQ1"
         Me.txtFreeMarketQ1.Size = New System.Drawing.Size(65, 20)
         Me.txtFreeMarketQ1.TabIndex = 18
-        Me.txtFreeMarketQ1.Text = "0.000"
-        Me.txtFreeMarketQ1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFreeMarketQ1.Text = "0"
+        Me.txtFreeMarketQ1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label20
         '
@@ -563,49 +586,49 @@ Partial Class AgreementRelation
         '
         Me.txtQ4QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtQ4QTY.FormatString = "#,##0.000"
+        Me.txtQ4QTY.FormatString = "#,##0"
         Me.txtQ4QTY.Location = New System.Drawing.Point(24, 91)
         Me.txtQ4QTY.Name = "txtQ4QTY"
         Me.txtQ4QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ4QTY.TabIndex = 16
-        Me.txtQ4QTY.Text = "0.000"
-        Me.txtQ4QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtQ4QTY.Text = "0"
+        Me.txtQ4QTY.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtQ3QTY
         '
         Me.txtQ3QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtQ3QTY.FormatString = "#,##0.000"
+        Me.txtQ3QTY.FormatString = "#,##0"
         Me.txtQ3QTY.Location = New System.Drawing.Point(24, 65)
         Me.txtQ3QTY.Name = "txtQ3QTY"
         Me.txtQ3QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ3QTY.TabIndex = 15
-        Me.txtQ3QTY.Text = "0.000"
-        Me.txtQ3QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtQ3QTY.Text = "0"
+        Me.txtQ3QTY.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtQ2QTY
         '
         Me.txtQ2QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtQ2QTY.FormatString = "#,##0.000"
+        Me.txtQ2QTY.FormatString = "#,##0"
         Me.txtQ2QTY.Location = New System.Drawing.Point(24, 39)
         Me.txtQ2QTY.Name = "txtQ2QTY"
         Me.txtQ2QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ2QTY.TabIndex = 14
-        Me.txtQ2QTY.Text = "0.000"
-        Me.txtQ2QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtQ2QTY.Text = "0"
+        Me.txtQ2QTY.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtQ1QTY
         '
         Me.txtQ1QTY.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtQ1QTY.FormatString = "#,##0.000"
+        Me.txtQ1QTY.FormatString = "#,##0"
         Me.txtQ1QTY.Location = New System.Drawing.Point(24, 14)
         Me.txtQ1QTY.Name = "txtQ1QTY"
         Me.txtQ1QTY.Size = New System.Drawing.Size(66, 20)
         Me.txtQ1QTY.TabIndex = 13
-        Me.txtQ1QTY.Text = "0.000"
-        Me.txtQ1QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtQ1QTY.Text = "0"
+        Me.txtQ1QTY.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'lblTargetQuarterly
         '
@@ -701,7 +724,7 @@ Partial Class AgreementRelation
         Me.GridEX1.Name = "GridEX1"
         Me.GridEX1.RecordNavigator = True
         Me.GridEX1.RowFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.GridEX1.Size = New System.Drawing.Size(312, 608)
+        Me.GridEX1.Size = New System.Drawing.Size(468, 608)
         Me.GridEX1.TabIndex = 0
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.GridEX1.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
@@ -712,7 +735,7 @@ Partial Class AgreementRelation
         Me.grpData.Controls.Add(Me.UiTab1)
         Me.grpData.Controls.Add(Me.PanelEx1)
         Me.grpData.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpData.Location = New System.Drawing.Point(317, 0)
+        Me.grpData.Location = New System.Drawing.Point(473, 0)
         Me.grpData.Name = "grpData"
         Me.grpData.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.grpData.Size = New System.Drawing.Size(711, 677)
@@ -828,13 +851,13 @@ Partial Class AgreementRelation
         '
         'txtPlS2
         '
-        Me.txtPlS2.FormatString = "#,##0.000"
+        Me.txtPlS2.FormatString = "#,##0"
         Me.txtPlS2.Location = New System.Drawing.Point(224, 43)
         Me.txtPlS2.Name = "txtPlS2"
         Me.txtPlS2.Size = New System.Drawing.Size(69, 20)
         Me.txtPlS2.TabIndex = 20
-        Me.txtPlS2.Text = "0.000"
-        Me.txtPlS2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtPlS2.Text = "0"
+        Me.txtPlS2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label24
         '
@@ -848,13 +871,13 @@ Partial Class AgreementRelation
         '
         'txtPlS1
         '
-        Me.txtPlS1.FormatString = "#,##0.000"
+        Me.txtPlS1.FormatString = "#,##0"
         Me.txtPlS1.Location = New System.Drawing.Point(224, 18)
         Me.txtPlS1.Name = "txtPlS1"
         Me.txtPlS1.Size = New System.Drawing.Size(69, 20)
         Me.txtPlS1.TabIndex = 18
-        Me.txtPlS1.Text = "0.000"
-        Me.txtPlS1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtPlS1.Text = "0"
+        Me.txtPlS1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label28
         '
@@ -868,13 +891,13 @@ Partial Class AgreementRelation
         '
         'txtFreeMarketS2
         '
-        Me.txtFreeMarketS2.FormatString = "#,##0.000"
+        Me.txtFreeMarketS2.FormatString = "#,##0"
         Me.txtFreeMarketS2.Location = New System.Drawing.Point(136, 44)
         Me.txtFreeMarketS2.Name = "txtFreeMarketS2"
         Me.txtFreeMarketS2.Size = New System.Drawing.Size(69, 20)
         Me.txtFreeMarketS2.TabIndex = 16
-        Me.txtFreeMarketS2.Text = "0.000"
-        Me.txtFreeMarketS2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFreeMarketS2.Text = "0"
+        Me.txtFreeMarketS2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label16
         '
@@ -888,13 +911,13 @@ Partial Class AgreementRelation
         '
         'txtFreeMarketS1
         '
-        Me.txtFreeMarketS1.FormatString = "#,##0.000"
+        Me.txtFreeMarketS1.FormatString = "#,##0"
         Me.txtFreeMarketS1.Location = New System.Drawing.Point(136, 19)
         Me.txtFreeMarketS1.Name = "txtFreeMarketS1"
         Me.txtFreeMarketS1.Size = New System.Drawing.Size(69, 20)
         Me.txtFreeMarketS1.TabIndex = 14
-        Me.txtFreeMarketS1.Text = "0.000"
-        Me.txtFreeMarketS1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFreeMarketS1.Text = "0"
+        Me.txtFreeMarketS1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label15
         '
@@ -908,23 +931,23 @@ Partial Class AgreementRelation
         '
         'txtS2QTY
         '
-        Me.txtS2QTY.FormatString = "#,##0.000"
+        Me.txtS2QTY.FormatString = "#,##0"
         Me.txtS2QTY.Location = New System.Drawing.Point(49, 45)
         Me.txtS2QTY.Name = "txtS2QTY"
         Me.txtS2QTY.Size = New System.Drawing.Size(65, 20)
         Me.txtS2QTY.TabIndex = 12
-        Me.txtS2QTY.Text = "0.000"
-        Me.txtS2QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtS2QTY.Text = "0"
+        Me.txtS2QTY.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtS1QTY
         '
-        Me.txtS1QTY.FormatString = "#,##0.000"
+        Me.txtS1QTY.FormatString = "#,##0"
         Me.txtS1QTY.Location = New System.Drawing.Point(49, 20)
         Me.txtS1QTY.Name = "txtS1QTY"
         Me.txtS1QTY.Size = New System.Drawing.Size(65, 20)
         Me.txtS1QTY.TabIndex = 11
-        Me.txtS1QTY.Text = "0.000"
-        Me.txtS1QTY.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtS1QTY.Text = "0"
+        Me.txtS1QTY.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'lblTargetSemesterly
         '
@@ -1023,43 +1046,43 @@ Partial Class AgreementRelation
         '
         'txtFMPPL3
         '
-        Me.txtFMPPL3.FormatString = "#,##0.000"
+        Me.txtFMPPL3.FormatString = "#,##0"
         Me.txtFMPPL3.Location = New System.Drawing.Point(234, 64)
         Me.txtFMPPL3.Name = "txtFMPPL3"
         Me.txtFMPPL3.Size = New System.Drawing.Size(67, 20)
         Me.txtFMPPL3.TabIndex = 45
-        Me.txtFMPPL3.Text = "0.000"
-        Me.txtFMPPL3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMPPL3.Text = "0"
+        Me.txtFMPPL3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtFMPPL2
         '
-        Me.txtFMPPL2.FormatString = "#,##0.000"
+        Me.txtFMPPL2.FormatString = "#,##0"
         Me.txtFMPPL2.Location = New System.Drawing.Point(235, 37)
         Me.txtFMPPL2.Name = "txtFMPPL2"
         Me.txtFMPPL2.Size = New System.Drawing.Size(67, 20)
         Me.txtFMPPL2.TabIndex = 44
-        Me.txtFMPPL2.Text = "0.000"
-        Me.txtFMPPL2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMPPL2.Text = "0"
+        Me.txtFMPPL2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtFMPPL1
         '
-        Me.txtFMPPL1.FormatString = "#,##0.000"
+        Me.txtFMPPL1.FormatString = "#,##0"
         Me.txtFMPPL1.Location = New System.Drawing.Point(235, 10)
         Me.txtFMPPL1.Name = "txtFMPPL1"
         Me.txtFMPPL1.Size = New System.Drawing.Size(67, 20)
         Me.txtFMPPL1.TabIndex = 43
-        Me.txtFMPPL1.Text = "0.000"
-        Me.txtFMPPL1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMPPL1.Text = "0"
+        Me.txtFMPPL1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtFMPFM3
         '
-        Me.txtFMPFM3.FormatString = "#,##0.000"
+        Me.txtFMPFM3.FormatString = "#,##0"
         Me.txtFMPFM3.Location = New System.Drawing.Point(147, 64)
         Me.txtFMPFM3.Name = "txtFMPFM3"
         Me.txtFMPFM3.Size = New System.Drawing.Size(60, 20)
         Me.txtFMPFM3.TabIndex = 42
-        Me.txtFMPFM3.Text = "0.000"
-        Me.txtFMPFM3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMPFM3.Text = "0"
+        Me.txtFMPFM3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label34
         '
@@ -1073,13 +1096,13 @@ Partial Class AgreementRelation
         '
         'txtFMPFM2
         '
-        Me.txtFMPFM2.FormatString = "#,##0.000"
+        Me.txtFMPFM2.FormatString = "#,##0"
         Me.txtFMPFM2.Location = New System.Drawing.Point(146, 36)
         Me.txtFMPFM2.Name = "txtFMPFM2"
         Me.txtFMPFM2.Size = New System.Drawing.Size(61, 20)
         Me.txtFMPFM2.TabIndex = 40
-        Me.txtFMPFM2.Text = "0.000"
-        Me.txtFMPFM2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMPFM2.Text = "0"
+        Me.txtFMPFM2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label35
         '
@@ -1093,13 +1116,13 @@ Partial Class AgreementRelation
         '
         'txtFMPFM1
         '
-        Me.txtFMPFM1.FormatString = "#,##0.000"
+        Me.txtFMPFM1.FormatString = "#,##0"
         Me.txtFMPFM1.Location = New System.Drawing.Point(147, 11)
         Me.txtFMPFM1.Name = "txtFMPFM1"
         Me.txtFMPFM1.Size = New System.Drawing.Size(60, 20)
         Me.txtFMPFM1.TabIndex = 38
-        Me.txtFMPFM1.Text = "0.000"
-        Me.txtFMPFM1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMPFM1.Text = "0"
+        Me.txtFMPFM1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label36
         '
@@ -1113,33 +1136,33 @@ Partial Class AgreementRelation
         '
         'txtFMP3
         '
-        Me.txtFMP3.FormatString = "#,##0.000"
+        Me.txtFMP3.FormatString = "#,##0"
         Me.txtFMP3.Location = New System.Drawing.Point(46, 62)
         Me.txtFMP3.Name = "txtFMP3"
         Me.txtFMP3.Size = New System.Drawing.Size(69, 20)
         Me.txtFMP3.TabIndex = 36
-        Me.txtFMP3.Text = "0.000"
-        Me.txtFMP3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMP3.Text = "0"
+        Me.txtFMP3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtFMP2
         '
-        Me.txtFMP2.FormatString = "#,##0.000"
+        Me.txtFMP2.FormatString = "#,##0"
         Me.txtFMP2.Location = New System.Drawing.Point(46, 36)
         Me.txtFMP2.Name = "txtFMP2"
         Me.txtFMP2.Size = New System.Drawing.Size(70, 20)
         Me.txtFMP2.TabIndex = 35
-        Me.txtFMP2.Text = "0.000"
-        Me.txtFMP2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMP2.Text = "0"
+        Me.txtFMP2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtFMP1
         '
-        Me.txtFMP1.FormatString = "#,##0.000"
+        Me.txtFMP1.FormatString = "#,##0"
         Me.txtFMP1.Location = New System.Drawing.Point(46, 10)
         Me.txtFMP1.Name = "txtFMP1"
         Me.txtFMP1.Size = New System.Drawing.Size(70, 20)
         Me.txtFMP1.TabIndex = 34
-        Me.txtFMP1.Text = "0.000"
-        Me.txtFMP1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtFMP1.Text = "0"
+        Me.txtFMP1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'Label37
         '
@@ -1874,6 +1897,10 @@ Partial Class AgreementRelation
         '
         'tbPotensiPeriodBefore
         '
+        Me.tbPotensiPeriodBefore.Controls.Add(Me.txtPBF3)
+        Me.tbPotensiPeriodBefore.Controls.Add(Me.Label43)
+        Me.tbPotensiPeriodBefore.Controls.Add(Me.txtPBF2)
+        Me.tbPotensiPeriodBefore.Controls.Add(Me.lblPBF3)
         Me.tbPotensiPeriodBefore.Controls.Add(Me.Label1)
         Me.tbPotensiPeriodBefore.Controls.Add(Me.txtPBYear)
         Me.tbPotensiPeriodBefore.Controls.Add(Me.txtPBQ3)
@@ -1888,7 +1915,49 @@ Partial Class AgreementRelation
         Me.tbPotensiPeriodBefore.Size = New System.Drawing.Size(362, 81)
         Me.tbPotensiPeriodBefore.StateStyles.FormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbPotensiPeriodBefore.TabStop = True
-        Me.tbPotensiPeriodBefore.Text = "Periode Before"
+        Me.tbPotensiPeriodBefore.Text = "Previous Before"
+        '
+        'txtPBF3
+        '
+        Me.txtPBF3.FormatString = "#,##0.0000"
+        Me.txtPBF3.Location = New System.Drawing.Point(147, 55)
+        Me.txtPBF3.Name = "txtPBF3"
+        Me.txtPBF3.Size = New System.Drawing.Size(55, 20)
+        Me.txtPBF3.TabIndex = 20
+        Me.txtPBF3.Text = "0.0000"
+        Me.txtPBF3.Value = New Decimal(New Integer() {0, 0, 0, 262144})
+        Me.txtPBF3.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
+        '
+        'Label43
+        '
+        Me.Label43.AutoSize = True
+        Me.Label43.BackColor = System.Drawing.Color.Transparent
+        Me.Label43.Location = New System.Drawing.Point(177, 41)
+        Me.Label43.Name = "Label43"
+        Me.Label43.Size = New System.Drawing.Size(19, 13)
+        Me.Label43.TabIndex = 19
+        Me.Label43.Text = "F3"
+        '
+        'txtPBF2
+        '
+        Me.txtPBF2.FormatString = "#,##0.0000"
+        Me.txtPBF2.Location = New System.Drawing.Point(147, 18)
+        Me.txtPBF2.Name = "txtPBF2"
+        Me.txtPBF2.Size = New System.Drawing.Size(55, 20)
+        Me.txtPBF2.TabIndex = 18
+        Me.txtPBF2.Text = "0.0000"
+        Me.txtPBF2.Value = New Decimal(New Integer() {0, 0, 0, 262144})
+        Me.txtPBF2.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
+        '
+        'lblPBF3
+        '
+        Me.lblPBF3.AutoSize = True
+        Me.lblPBF3.BackColor = System.Drawing.Color.Transparent
+        Me.lblPBF3.Location = New System.Drawing.Point(177, 4)
+        Me.lblPBF3.Name = "lblPBF3"
+        Me.lblPBF3.Size = New System.Drawing.Size(19, 13)
+        Me.lblPBF3.TabIndex = 17
+        Me.lblPBF3.Text = "F2"
         '
         'Label1
         '
@@ -1975,6 +2044,10 @@ Partial Class AgreementRelation
         '
         'UiTabPage2
         '
+        Me.UiTabPage2.Controls.Add(Me.txtCPF2)
+        Me.UiTabPage2.Controls.Add(Me.Label48)
+        Me.UiTabPage2.Controls.Add(Me.txtCPF1)
+        Me.UiTabPage2.Controls.Add(Me.Label47)
         Me.UiTabPage2.Controls.Add(Me.txtCPS1)
         Me.UiTabPage2.Controls.Add(Me.txtCPQ3)
         Me.UiTabPage2.Controls.Add(Me.txtCPQ2)
@@ -1985,9 +2058,51 @@ Partial Class AgreementRelation
         Me.UiTabPage2.Controls.Add(Me.Label27)
         Me.UiTabPage2.Location = New System.Drawing.Point(1, 21)
         Me.UiTabPage2.Name = "UiTabPage2"
-        Me.UiTabPage2.Size = New System.Drawing.Size(247, 81)
+        Me.UiTabPage2.Size = New System.Drawing.Size(362, 81)
         Me.UiTabPage2.TabStop = True
-        Me.UiTabPage2.Text = "Current Periode"
+        Me.UiTabPage2.Text = "Current Periode Prev Flag"
+        '
+        'txtCPF2
+        '
+        Me.txtCPF2.FormatString = "#,##0.0000"
+        Me.txtCPF2.Location = New System.Drawing.Point(139, 57)
+        Me.txtCPF2.Name = "txtCPF2"
+        Me.txtCPF2.Size = New System.Drawing.Size(55, 20)
+        Me.txtCPF2.TabIndex = 29
+        Me.txtCPF2.Text = "0.0000"
+        Me.txtCPF2.Value = New Decimal(New Integer() {0, 0, 0, 262144})
+        Me.txtCPF2.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
+        '
+        'Label48
+        '
+        Me.Label48.AutoSize = True
+        Me.Label48.BackColor = System.Drawing.Color.Transparent
+        Me.Label48.Location = New System.Drawing.Point(173, 42)
+        Me.Label48.Name = "Label48"
+        Me.Label48.Size = New System.Drawing.Size(19, 13)
+        Me.Label48.TabIndex = 28
+        Me.Label48.Text = "F2"
+        '
+        'txtCPF1
+        '
+        Me.txtCPF1.FormatString = "#,##0.0000"
+        Me.txtCPF1.Location = New System.Drawing.Point(139, 20)
+        Me.txtCPF1.Name = "txtCPF1"
+        Me.txtCPF1.Size = New System.Drawing.Size(55, 20)
+        Me.txtCPF1.TabIndex = 27
+        Me.txtCPF1.Text = "0.0000"
+        Me.txtCPF1.Value = New Decimal(New Integer() {0, 0, 0, 262144})
+        Me.txtCPF1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
+        '
+        'Label47
+        '
+        Me.Label47.AutoSize = True
+        Me.Label47.BackColor = System.Drawing.Color.Transparent
+        Me.Label47.Location = New System.Drawing.Point(175, 6)
+        Me.Label47.Name = "Label47"
+        Me.Label47.Size = New System.Drawing.Size(19, 13)
+        Me.Label47.TabIndex = 26
+        Me.Label47.Text = "F2"
         '
         'txtCPS1
         '
@@ -2105,6 +2220,7 @@ Partial Class AgreementRelation
         '
         'tbCombinedBrand
         '
+        Me.tbCombinedBrand.Controls.Add(Me.grpCombF)
         Me.tbCombinedBrand.Controls.Add(Me.PanelEx2)
         Me.tbCombinedBrand.Controls.Add(Me.TreeView1)
         Me.tbCombinedBrand.Controls.Add(Me.grpComS)
@@ -2115,6 +2231,166 @@ Partial Class AgreementRelation
         Me.tbCombinedBrand.Size = New System.Drawing.Size(703, 608)
         Me.tbCombinedBrand.TabStop = True
         Me.tbCombinedBrand.Text = "Combined Brand"
+        '
+        'grpCombF
+        '
+        Me.grpCombF.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.grpCombF.Controls.Add(Me.txtTotalComb3F3)
+        Me.grpCombF.Controls.Add(Me.txtTotalComb2F2)
+        Me.grpCombF.Controls.Add(Me.txtTotalComb1F1)
+        Me.grpCombF.Controls.Add(Me.txtComb2F3)
+        Me.grpCombF.Controls.Add(Me.txtComb2F2)
+        Me.grpCombF.Controls.Add(Me.txtComb2F1)
+        Me.grpCombF.Controls.Add(Me.txtComb1F3)
+        Me.grpCombF.Controls.Add(Me.txtComb1F2)
+        Me.grpCombF.Controls.Add(Me.txtComb1F1)
+        Me.grpCombF.Controls.Add(Me.btnDeleteF)
+        Me.grpCombF.Controls.Add(Me.Label44)
+        Me.grpCombF.Controls.Add(Me.Label45)
+        Me.grpCombF.Controls.Add(Me.Label46)
+        Me.grpCombF.Dock = System.Windows.Forms.DockStyle.Top
+        Me.grpCombF.Location = New System.Drawing.Point(0, 286)
+        Me.grpCombF.Name = "grpCombF"
+        Me.grpCombF.Size = New System.Drawing.Size(703, 116)
+        Me.grpCombF.TabIndex = 20
+        Me.grpCombF.TabStop = False
+        Me.grpCombF.Visible = False
+        '
+        'txtTotalComb3F3
+        '
+        Me.txtTotalComb3F3.FormatString = "#,##0"
+        Me.txtTotalComb3F3.Location = New System.Drawing.Point(262, 60)
+        Me.txtTotalComb3F3.Name = "txtTotalComb3F3"
+        Me.txtTotalComb3F3.ReadOnly = True
+        Me.txtTotalComb3F3.Size = New System.Drawing.Size(124, 20)
+        Me.txtTotalComb3F3.TabIndex = 27
+        Me.txtTotalComb3F3.Text = "0"
+        Me.txtTotalComb3F3.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtTotalComb2F2
+        '
+        Me.txtTotalComb2F2.FormatString = "#,##0"
+        Me.txtTotalComb2F2.Location = New System.Drawing.Point(262, 35)
+        Me.txtTotalComb2F2.Name = "txtTotalComb2F2"
+        Me.txtTotalComb2F2.ReadOnly = True
+        Me.txtTotalComb2F2.Size = New System.Drawing.Size(124, 20)
+        Me.txtTotalComb2F2.TabIndex = 26
+        Me.txtTotalComb2F2.Text = "0"
+        Me.txtTotalComb2F2.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtTotalComb1F1
+        '
+        Me.txtTotalComb1F1.FormatString = "#,##0"
+        Me.txtTotalComb1F1.Location = New System.Drawing.Point(262, 11)
+        Me.txtTotalComb1F1.Name = "txtTotalComb1F1"
+        Me.txtTotalComb1F1.ReadOnly = True
+        Me.txtTotalComb1F1.Size = New System.Drawing.Size(124, 20)
+        Me.txtTotalComb1F1.TabIndex = 25
+        Me.txtTotalComb1F1.Text = "0"
+        Me.txtTotalComb1F1.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtComb2F3
+        '
+        Me.txtComb2F3.FormatString = "#,##0"
+        Me.txtComb2F3.Location = New System.Drawing.Point(152, 60)
+        Me.txtComb2F3.Name = "txtComb2F3"
+        Me.txtComb2F3.Size = New System.Drawing.Size(90, 20)
+        Me.txtComb2F3.TabIndex = 23
+        Me.txtComb2F3.Text = "0"
+        Me.txtComb2F3.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtComb2F2
+        '
+        Me.txtComb2F2.FormatString = "#,##0"
+        Me.txtComb2F2.Location = New System.Drawing.Point(152, 35)
+        Me.txtComb2F2.Name = "txtComb2F2"
+        Me.txtComb2F2.ReadOnly = True
+        Me.txtComb2F2.Size = New System.Drawing.Size(90, 20)
+        Me.txtComb2F2.TabIndex = 22
+        Me.txtComb2F2.Text = "0"
+        Me.txtComb2F2.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtComb2F1
+        '
+        Me.txtComb2F1.FormatString = "#,##0"
+        Me.txtComb2F1.Location = New System.Drawing.Point(152, 11)
+        Me.txtComb2F1.Name = "txtComb2F1"
+        Me.txtComb2F1.ReadOnly = True
+        Me.txtComb2F1.Size = New System.Drawing.Size(90, 20)
+        Me.txtComb2F1.TabIndex = 21
+        Me.txtComb2F1.Text = "0"
+        Me.txtComb2F1.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtComb1F3
+        '
+        Me.txtComb1F3.FormatString = "#,##0"
+        Me.txtComb1F3.Location = New System.Drawing.Point(56, 59)
+        Me.txtComb1F3.Name = "txtComb1F3"
+        Me.txtComb1F3.ReadOnly = True
+        Me.txtComb1F3.Size = New System.Drawing.Size(90, 20)
+        Me.txtComb1F3.TabIndex = 19
+        Me.txtComb1F3.Text = "0"
+        Me.txtComb1F3.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtComb1F2
+        '
+        Me.txtComb1F2.FormatString = "#,##0"
+        Me.txtComb1F2.Location = New System.Drawing.Point(56, 35)
+        Me.txtComb1F2.Name = "txtComb1F2"
+        Me.txtComb1F2.ReadOnly = True
+        Me.txtComb1F2.Size = New System.Drawing.Size(90, 20)
+        Me.txtComb1F2.TabIndex = 18
+        Me.txtComb1F2.Text = "0"
+        Me.txtComb1F2.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'txtComb1F1
+        '
+        Me.txtComb1F1.FormatString = "#,##0"
+        Me.txtComb1F1.Location = New System.Drawing.Point(56, 11)
+        Me.txtComb1F1.Name = "txtComb1F1"
+        Me.txtComb1F1.ReadOnly = True
+        Me.txtComb1F1.Size = New System.Drawing.Size(90, 20)
+        Me.txtComb1F1.TabIndex = 17
+        Me.txtComb1F1.Text = "0"
+        Me.txtComb1F1.Value = New Decimal(New Integer() {0, 0, 0, 0})
+        '
+        'btnDeleteF
+        '
+        Me.btnDeleteF.BackColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
+        Me.btnDeleteF.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDeleteF.Location = New System.Drawing.Point(282, 86)
+        Me.btnDeleteF.Name = "btnDeleteF"
+        Me.btnDeleteF.Size = New System.Drawing.Size(104, 23)
+        Me.btnDeleteF.TabIndex = 16
+        Me.btnDeleteF.Text = "Delete Combined"
+        Me.btnDeleteF.UseVisualStyleBackColor = False
+        '
+        'Label44
+        '
+        Me.Label44.AutoSize = True
+        Me.Label44.Location = New System.Drawing.Point(11, 63)
+        Me.Label44.Name = "Label44"
+        Me.Label44.Size = New System.Drawing.Size(19, 13)
+        Me.Label44.TabIndex = 14
+        Me.Label44.Text = "F3"
+        '
+        'Label45
+        '
+        Me.Label45.AutoSize = True
+        Me.Label45.Location = New System.Drawing.Point(10, 37)
+        Me.Label45.Name = "Label45"
+        Me.Label45.Size = New System.Drawing.Size(19, 13)
+        Me.Label45.TabIndex = 13
+        Me.Label45.Text = "F2"
+        '
+        'Label46
+        '
+        Me.Label46.AutoSize = True
+        Me.Label46.Location = New System.Drawing.Point(10, 11)
+        Me.Label46.Name = "Label46"
+        Me.Label46.Size = New System.Drawing.Size(19, 13)
+        Me.Label46.TabIndex = 12
+        Me.Label46.Text = "F1"
         '
         'PanelEx2
         '
@@ -2146,9 +2422,9 @@ Partial Class AgreementRelation
         '
         Me.TreeView1.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.TreeView1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TreeView1.Location = New System.Drawing.Point(0, 280)
+        Me.TreeView1.Location = New System.Drawing.Point(0, 286)
         Me.TreeView1.Name = "TreeView1"
-        Me.TreeView1.Size = New System.Drawing.Size(703, 328)
+        Me.TreeView1.Size = New System.Drawing.Size(703, 322)
         Me.TreeView1.TabIndex = 18
         '
         'grpComS
@@ -2166,76 +2442,76 @@ Partial Class AgreementRelation
         Me.grpComS.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpComS.Location = New System.Drawing.Point(0, 189)
         Me.grpComS.Name = "grpComS"
-        Me.grpComS.Size = New System.Drawing.Size(703, 91)
+        Me.grpComS.Size = New System.Drawing.Size(703, 97)
         Me.grpComS.TabIndex = 2
         Me.grpComS.TabStop = False
         Me.grpComS.Visible = False
         '
         'txtTotalComb2S2
         '
-        Me.txtTotalComb2S2.FormatString = "#,##0.000"
+        Me.txtTotalComb2S2.FormatString = "#,##0"
         Me.txtTotalComb2S2.Location = New System.Drawing.Point(262, 41)
         Me.txtTotalComb2S2.Name = "txtTotalComb2S2"
         Me.txtTotalComb2S2.ReadOnly = True
         Me.txtTotalComb2S2.Size = New System.Drawing.Size(123, 20)
         Me.txtTotalComb2S2.TabIndex = 33
-        Me.txtTotalComb2S2.Text = "0.000"
-        Me.txtTotalComb2S2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtTotalComb2S2.Text = "0"
+        Me.txtTotalComb2S2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtTotalComb1S1
         '
-        Me.txtTotalComb1S1.FormatString = "#,##0.000"
+        Me.txtTotalComb1S1.FormatString = "#,##0"
         Me.txtTotalComb1S1.Location = New System.Drawing.Point(262, 16)
         Me.txtTotalComb1S1.Name = "txtTotalComb1S1"
         Me.txtTotalComb1S1.ReadOnly = True
         Me.txtTotalComb1S1.Size = New System.Drawing.Size(123, 20)
         Me.txtTotalComb1S1.TabIndex = 32
-        Me.txtTotalComb1S1.Text = "0.000"
-        Me.txtTotalComb1S1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtTotalComb1S1.Text = "0"
+        Me.txtTotalComb1S1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb2S2
         '
-        Me.txtComb2S2.FormatString = "#,##0.000"
+        Me.txtComb2S2.FormatString = "#,##0"
         Me.txtComb2S2.Location = New System.Drawing.Point(153, 40)
         Me.txtComb2S2.Name = "txtComb2S2"
         Me.txtComb2S2.ReadOnly = True
         Me.txtComb2S2.Size = New System.Drawing.Size(90, 20)
         Me.txtComb2S2.TabIndex = 31
-        Me.txtComb2S2.Text = "0.000"
-        Me.txtComb2S2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb2S2.Text = "0"
+        Me.txtComb2S2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb2S1
         '
-        Me.txtComb2S1.FormatString = "#,##0.000"
+        Me.txtComb2S1.FormatString = "#,##0"
         Me.txtComb2S1.Location = New System.Drawing.Point(153, 15)
         Me.txtComb2S1.Name = "txtComb2S1"
         Me.txtComb2S1.ReadOnly = True
         Me.txtComb2S1.Size = New System.Drawing.Size(90, 20)
         Me.txtComb2S1.TabIndex = 30
-        Me.txtComb2S1.Text = "0.000"
-        Me.txtComb2S1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb2S1.Text = "0"
+        Me.txtComb2S1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb1S2
         '
-        Me.txtComb1S2.FormatString = "#,##0.000"
+        Me.txtComb1S2.FormatString = "#,##0"
         Me.txtComb1S2.Location = New System.Drawing.Point(56, 38)
         Me.txtComb1S2.Name = "txtComb1S2"
         Me.txtComb1S2.ReadOnly = True
         Me.txtComb1S2.Size = New System.Drawing.Size(90, 20)
         Me.txtComb1S2.TabIndex = 29
-        Me.txtComb1S2.Text = "0.000"
-        Me.txtComb1S2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb1S2.Text = "0"
+        Me.txtComb1S2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb1S1
         '
-        Me.txtComb1S1.FormatString = "#,##0.000"
+        Me.txtComb1S1.FormatString = "#,##0"
         Me.txtComb1S1.Location = New System.Drawing.Point(56, 13)
         Me.txtComb1S1.Name = "txtComb1S1"
         Me.txtComb1S1.ReadOnly = True
         Me.txtComb1S1.Size = New System.Drawing.Size(90, 20)
         Me.txtComb1S1.TabIndex = 29
-        Me.txtComb1S1.Text = "0.000"
-        Me.txtComb1S1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb1S1.Text = "0"
+        Me.txtComb1S1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'btnDeleteS
         '
@@ -2296,134 +2572,134 @@ Partial Class AgreementRelation
         '
         'txtTotalComb4Q4
         '
-        Me.txtTotalComb4Q4.FormatString = "#,##0.000"
+        Me.txtTotalComb4Q4.FormatString = "#,##0"
         Me.txtTotalComb4Q4.Location = New System.Drawing.Point(262, 84)
         Me.txtTotalComb4Q4.Name = "txtTotalComb4Q4"
         Me.txtTotalComb4Q4.ReadOnly = True
         Me.txtTotalComb4Q4.Size = New System.Drawing.Size(124, 20)
         Me.txtTotalComb4Q4.TabIndex = 28
-        Me.txtTotalComb4Q4.Text = "0.000"
-        Me.txtTotalComb4Q4.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtTotalComb4Q4.Text = "0"
+        Me.txtTotalComb4Q4.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtTotalComb3Q3
         '
-        Me.txtTotalComb3Q3.FormatString = "#,##0.000"
+        Me.txtTotalComb3Q3.FormatString = "#,##0"
         Me.txtTotalComb3Q3.Location = New System.Drawing.Point(262, 60)
         Me.txtTotalComb3Q3.Name = "txtTotalComb3Q3"
         Me.txtTotalComb3Q3.ReadOnly = True
         Me.txtTotalComb3Q3.Size = New System.Drawing.Size(124, 20)
         Me.txtTotalComb3Q3.TabIndex = 27
-        Me.txtTotalComb3Q3.Text = "0.000"
-        Me.txtTotalComb3Q3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtTotalComb3Q3.Text = "0"
+        Me.txtTotalComb3Q3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtTotalComb2Q2
         '
-        Me.txtTotalComb2Q2.FormatString = "#,##0.000"
+        Me.txtTotalComb2Q2.FormatString = "#,##0"
         Me.txtTotalComb2Q2.Location = New System.Drawing.Point(262, 35)
         Me.txtTotalComb2Q2.Name = "txtTotalComb2Q2"
         Me.txtTotalComb2Q2.ReadOnly = True
         Me.txtTotalComb2Q2.Size = New System.Drawing.Size(124, 20)
         Me.txtTotalComb2Q2.TabIndex = 26
-        Me.txtTotalComb2Q2.Text = "0.000"
-        Me.txtTotalComb2Q2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtTotalComb2Q2.Text = "0"
+        Me.txtTotalComb2Q2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtTotalComb1Q1
         '
-        Me.txtTotalComb1Q1.FormatString = "#,##0.000"
+        Me.txtTotalComb1Q1.FormatString = "#,##0"
         Me.txtTotalComb1Q1.Location = New System.Drawing.Point(262, 11)
         Me.txtTotalComb1Q1.Name = "txtTotalComb1Q1"
         Me.txtTotalComb1Q1.ReadOnly = True
         Me.txtTotalComb1Q1.Size = New System.Drawing.Size(124, 20)
         Me.txtTotalComb1Q1.TabIndex = 25
-        Me.txtTotalComb1Q1.Text = "0.000"
-        Me.txtTotalComb1Q1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtTotalComb1Q1.Text = "0"
+        Me.txtTotalComb1Q1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb2Q4
         '
-        Me.txtComb2Q4.FormatString = "#,##0.000"
+        Me.txtComb2Q4.FormatString = "#,##0"
         Me.txtComb2Q4.Location = New System.Drawing.Point(152, 86)
         Me.txtComb2Q4.Name = "txtComb2Q4"
         Me.txtComb2Q4.ReadOnly = True
         Me.txtComb2Q4.Size = New System.Drawing.Size(90, 20)
         Me.txtComb2Q4.TabIndex = 24
-        Me.txtComb2Q4.Text = "0.000"
-        Me.txtComb2Q4.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb2Q4.Text = "0"
+        Me.txtComb2Q4.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb2Q3
         '
-        Me.txtComb2Q3.FormatString = "#,##0.000"
+        Me.txtComb2Q3.FormatString = "#,##0"
         Me.txtComb2Q3.Location = New System.Drawing.Point(152, 60)
         Me.txtComb2Q3.Name = "txtComb2Q3"
         Me.txtComb2Q3.Size = New System.Drawing.Size(90, 20)
         Me.txtComb2Q3.TabIndex = 23
-        Me.txtComb2Q3.Text = "0.000"
-        Me.txtComb2Q3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb2Q3.Text = "0"
+        Me.txtComb2Q3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb2Q2
         '
-        Me.txtComb2Q2.FormatString = "#,##0.000"
+        Me.txtComb2Q2.FormatString = "#,##0"
         Me.txtComb2Q2.Location = New System.Drawing.Point(152, 35)
         Me.txtComb2Q2.Name = "txtComb2Q2"
         Me.txtComb2Q2.ReadOnly = True
         Me.txtComb2Q2.Size = New System.Drawing.Size(90, 20)
         Me.txtComb2Q2.TabIndex = 22
-        Me.txtComb2Q2.Text = "0.000"
-        Me.txtComb2Q2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb2Q2.Text = "0"
+        Me.txtComb2Q2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb2Q1
         '
-        Me.txtComb2Q1.FormatString = "#,##0.000"
+        Me.txtComb2Q1.FormatString = "#,##0"
         Me.txtComb2Q1.Location = New System.Drawing.Point(152, 11)
         Me.txtComb2Q1.Name = "txtComb2Q1"
         Me.txtComb2Q1.ReadOnly = True
         Me.txtComb2Q1.Size = New System.Drawing.Size(90, 20)
         Me.txtComb2Q1.TabIndex = 21
-        Me.txtComb2Q1.Text = "0.000"
-        Me.txtComb2Q1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb2Q1.Text = "0"
+        Me.txtComb2Q1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb1Q4
         '
-        Me.txtComb1Q4.FormatString = "#,##0.000"
+        Me.txtComb1Q4.FormatString = "#,##0"
         Me.txtComb1Q4.Location = New System.Drawing.Point(56, 84)
         Me.txtComb1Q4.Name = "txtComb1Q4"
         Me.txtComb1Q4.ReadOnly = True
         Me.txtComb1Q4.Size = New System.Drawing.Size(90, 20)
         Me.txtComb1Q4.TabIndex = 20
-        Me.txtComb1Q4.Text = "0.000"
-        Me.txtComb1Q4.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb1Q4.Text = "0"
+        Me.txtComb1Q4.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb1Q3
         '
-        Me.txtComb1Q3.FormatString = "#,##0.000"
+        Me.txtComb1Q3.FormatString = "#,##0"
         Me.txtComb1Q3.Location = New System.Drawing.Point(56, 59)
         Me.txtComb1Q3.Name = "txtComb1Q3"
         Me.txtComb1Q3.ReadOnly = True
         Me.txtComb1Q3.Size = New System.Drawing.Size(90, 20)
         Me.txtComb1Q3.TabIndex = 19
-        Me.txtComb1Q3.Text = "0.000"
-        Me.txtComb1Q3.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb1Q3.Text = "0"
+        Me.txtComb1Q3.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb1Q2
         '
-        Me.txtComb1Q2.FormatString = "#,##0.000"
+        Me.txtComb1Q2.FormatString = "#,##0"
         Me.txtComb1Q2.Location = New System.Drawing.Point(56, 35)
         Me.txtComb1Q2.Name = "txtComb1Q2"
         Me.txtComb1Q2.ReadOnly = True
         Me.txtComb1Q2.Size = New System.Drawing.Size(90, 20)
         Me.txtComb1Q2.TabIndex = 18
-        Me.txtComb1Q2.Text = "0.000"
-        Me.txtComb1Q2.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb1Q2.Text = "0"
+        Me.txtComb1Q2.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'txtComb1Q1
         '
-        Me.txtComb1Q1.FormatString = "#,##0.000"
+        Me.txtComb1Q1.FormatString = "#,##0"
         Me.txtComb1Q1.Location = New System.Drawing.Point(56, 11)
         Me.txtComb1Q1.Name = "txtComb1Q1"
         Me.txtComb1Q1.ReadOnly = True
         Me.txtComb1Q1.Size = New System.Drawing.Size(90, 20)
         Me.txtComb1Q1.TabIndex = 17
-        Me.txtComb1Q1.Text = "0.000"
-        Me.txtComb1Q1.Value = New Decimal(New Integer() {0, 0, 0, 196608})
+        Me.txtComb1Q1.Text = "0"
+        Me.txtComb1Q1.Value = New Decimal(New Integer() {0, 0, 0, 0})
         '
         'btnDeleteQ1
         '
@@ -2608,7 +2884,7 @@ Partial Class AgreementRelation
         Me.ExpandableSplitter1.HotGripDarkColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.ExpandableSplitter1.HotGripLightColor = System.Drawing.Color.FromArgb(CType(CType(227, Byte), Integer), CType(CType(239, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.ExpandableSplitter1.HotGripLightColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.ExpandableSplitter1.Location = New System.Drawing.Point(312, 0)
+        Me.ExpandableSplitter1.Location = New System.Drawing.Point(468, 0)
         Me.ExpandableSplitter1.Name = "ExpandableSplitter1"
         Me.ExpandableSplitter1.Size = New System.Drawing.Size(5, 677)
         Me.ExpandableSplitter1.Style = DevComponents.DotNetBar.eSplitterStyle.Office2007
@@ -2627,7 +2903,7 @@ Partial Class AgreementRelation
         Me.Bar2.Location = New System.Drawing.Point(0, 0)
         Me.Bar2.MenuBar = True
         Me.Bar2.Name = "Bar2"
-        Me.Bar2.Size = New System.Drawing.Size(312, 24)
+        Me.Bar2.Size = New System.Drawing.Size(468, 24)
         Me.Bar2.Stretch = True
         Me.Bar2.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
         Me.Bar2.TabIndex = 20
@@ -2722,7 +2998,7 @@ Partial Class AgreementRelation
         Me.FilterEditor1.Office2007ColorScheme = Janus.Windows.Common.Office2007ColorScheme.[Default]
         Me.FilterEditor1.ScrollMode = Janus.Windows.UI.Dock.ScrollMode.Both
         Me.FilterEditor1.ScrollStep = 15
-        Me.FilterEditor1.Size = New System.Drawing.Size(312, 45)
+        Me.FilterEditor1.Size = New System.Drawing.Size(468, 45)
         Me.FilterEditor1.SortFieldList = False
         Me.FilterEditor1.SourceControl = Me.GridEX1
         Me.FilterEditor1.Visible = False
@@ -2759,7 +3035,7 @@ Partial Class AgreementRelation
         'AgreementRelation
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.ClientSize = New System.Drawing.Size(1028, 677)
+        Me.ClientSize = New System.Drawing.Size(1184, 677)
         Me.Controls.Add(Me.GridEX1)
         Me.Controls.Add(Me.FilterEditor1)
         Me.Controls.Add(Me.Bar2)
@@ -2824,6 +3100,8 @@ Partial Class AgreementRelation
         Me.UiTabPage2.ResumeLayout(False)
         Me.UiTabPage2.PerformLayout()
         Me.tbCombinedBrand.ResumeLayout(False)
+        Me.grpCombF.ResumeLayout(False)
+        Me.grpCombF.PerformLayout()
         Me.PanelEx2.ResumeLayout(False)
         Me.grpComS.ResumeLayout(False)
         Me.grpComS.PerformLayout()
@@ -3048,4 +3326,26 @@ Partial Class AgreementRelation
     Private WithEvents GridEX2 As Janus.Windows.GridEX.GridEX
     Private WithEvents tbFMP As System.Windows.Forms.TabPage
     Private WithEvents TabControl1 As System.Windows.Forms.TabControl
+    Private WithEvents grpCombF As System.Windows.Forms.GroupBox
+    Private WithEvents txtTotalComb3F3 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtTotalComb2F2 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtTotalComb1F1 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtComb2F3 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtComb2F2 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtComb2F1 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtComb1F3 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtComb1F2 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents txtComb1F1 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents btnDeleteF As System.Windows.Forms.Button
+    Private WithEvents Label44 As System.Windows.Forms.Label
+    Private WithEvents Label45 As System.Windows.Forms.Label
+    Private WithEvents Label46 As System.Windows.Forms.Label
+    Private WithEvents txtPBF3 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents Label43 As System.Windows.Forms.Label
+    Private WithEvents txtPBF2 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents lblPBF3 As System.Windows.Forms.Label
+    Private WithEvents txtCPF2 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents Label48 As System.Windows.Forms.Label
+    Private WithEvents txtCPF1 As Janus.Windows.GridEX.EditControls.NumericEditBox
+    Private WithEvents Label47 As System.Windows.Forms.Label
 End Class

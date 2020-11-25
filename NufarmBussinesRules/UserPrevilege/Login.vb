@@ -571,7 +571,6 @@ Namespace User
                 'NufarmBussinesRules.SharedClass.DISC_AGREE_FROM = Me.SqlCom.ExecuteScalar().ToString()
                 'NufarmBussinesRules.SharedClass.DISC_AGREE_FROM = ConfigurationManager.AppSettings("AgreementDiscount").ToString()
 
-                Me.ClearCommandParameters()
                 If IsITSupport Then
                     'Me.CloseConnection()
                     NufarmBussinesRules.User.UserLogin.IsAdmin = True
@@ -579,7 +578,7 @@ Namespace User
                     'Return True
                 End If
                 'Me.ClearCommandParameters()
-
+                Me.OpenConnection()
                 Query = "DBCC SHRINKFILE ('Nufarm_Log' , 1)"
                 Me.SqlCom.CommandText = "sp_executesql"
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)

@@ -28,7 +28,7 @@ Public Class Other_QTY
     Friend Devided_Qty As Decimal = 0
     Private RefOther As Integer = 0
     Private resultQty As Decimal = 0
-    Private Flag As String = 0
+    Private Flag As String = ""
     Private FullSize As New Size(333, 356)
     Private medSize As New Size(335, 248)
 
@@ -303,5 +303,9 @@ Public Class Other_QTY
             dgResult = Windows.Forms.DialogResult.OK
         End If
         Me.DialogResult = dgResult
+    End Sub
+
+    Private Sub Panel1_Paint(ByVal sender As System.Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles Panel1.Paint
+
     End Sub
 End Class

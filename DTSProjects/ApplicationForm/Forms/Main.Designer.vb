@@ -540,7 +540,7 @@ Partial Class Main
         Me.btnAchievementDPDR.ImageIndex = 14
         Me.btnAchievementDPDR.Name = "btnAchievementDPDR"
         Me.btnAchievementDPDR.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.ShiftAltR)
-        Me.btnAchievementDPDR.Text = "Achievement DPD R"
+        Me.btnAchievementDPDR.Text = "Achievement  DPD 4 Months"
         '
         'btnAjdustmentPKD
         '

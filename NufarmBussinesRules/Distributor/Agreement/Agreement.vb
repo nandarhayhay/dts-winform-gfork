@@ -83,12 +83,16 @@ Namespace DistributorAgreement
                     If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("Usp_Get_Target_DPD_FMP_Roundup", "")
                     Else : Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_Target_DPD_FMP_Roundup")
                     End If
-                    Me.AddParameter("@START_DATE", SqlDbType.Date, StartDate)
-                    Me.AddParameter("@END_DATE", SqlDbType.Date, endDate)
-                    Dim dtTable As New DataTable("DPD_ROUNDUP_4_MONTHS_PERIODE")
-                    setDataAdapter(Me.SqlCom).Fill(dtTable)
-                    Return dtTable.DefaultView
+                ElseIf DPDType.ToUpper().Contains("NUFARM") Then
+                    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("Usp_Get_Target_DPD_FMP_Nufarm", "")
+                    Else : Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_Target_DPD_FMP_Nufarm")
+                    End If
                 End If
+                Me.AddParameter("@START_DATE", SqlDbType.Date, StartDate)
+                Me.AddParameter("@END_DATE", SqlDbType.Date, endDate)
+                Dim dtTable As New DataTable("TARGET_DPD_4_MONTHS_PERIODE")
+                setDataAdapter(Me.SqlCom).Fill(dtTable)
+                Return dtTable.DefaultView
             Catch ex As Exception
                 Me.ClearCommandParameters()
                 Me.CloseConnection()

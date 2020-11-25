@@ -194,7 +194,8 @@ Partial Class Agreement
         'dtPicUntil
         '
         Me.dtPicUntil.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.dtPicUntil.DateFormat = Janus.Windows.CalendarCombo.DateFormat.[Long]
+        Me.dtPicUntil.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicUntil.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
         '
         '
         '
@@ -212,7 +213,8 @@ Partial Class Agreement
         'dtPicFrom
         '
         Me.dtPicFrom.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.dtPicFrom.DateFormat = Janus.Windows.CalendarCombo.DateFormat.[Long]
+        Me.dtPicFrom.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicFrom.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
         '
         '
         '

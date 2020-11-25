@@ -1548,8 +1548,10 @@ Public Class Main
                 Me.Timer2.Enabled = True : Me.Timer2.Start()
             Else
                 NufarmBussinesRules.User.UserLogin.IsAdmin = True
+                NufarmBussinesRules.User.UserLogin.UserName = "System Administrator"
                 Dim c As New NufarmBussinesRules.User.Login()
                 c.IntilializePriviledge(True)
+                NufarmBussinesRules.SharedClass.DBInvoiceTo = NufarmBussinesRules.SharedClass.CurrentInvToUse.NI109
             End If
 
         Catch ex As Exception

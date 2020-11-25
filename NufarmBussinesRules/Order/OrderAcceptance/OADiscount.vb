@@ -4269,7 +4269,6 @@ Namespace OrderAcceptance
                     Me.SqlCom.Parameters.Add("FLAG", SqlDbType.VarChar, 5).Value = Me.OA_Remainding.FLAG
                     Me.SqlDat.InsertCommand = Me.SqlCom
                     SqlDat.Update(InsertedRows) : Me.SqlDat.InsertCommand = Nothing : Me.ClearCommandParameters()
-
                 End If
 
                 If IsNothing(Me.SqlCom) Then

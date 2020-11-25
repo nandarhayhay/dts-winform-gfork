@@ -286,6 +286,8 @@ Public Class BaseForm
                 DP.Checked = False
             ElseIf TypeOf (ObjControl) Is Janus.Windows.GridEX.EditControls.NumericEditBox Then
                 CType(ObjControl, Janus.Windows.GridEX.EditControls.NumericEditBox).Value = 0
+                'ElseIf TypeOf (ObjControl) Is Janus.Windows.Common.Then Then
+                '    CType(ObjControl, Janus.Windows.GridEX.EditControls.NumericEditBox).Value = 0
             End If
         Next
 

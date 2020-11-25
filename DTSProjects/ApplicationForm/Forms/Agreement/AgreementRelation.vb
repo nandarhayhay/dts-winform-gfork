@@ -22,6 +22,7 @@ Public Class AgreementRelation
     Private AgreementEndDate As DateTime = Nothing
     Private isTransitionTime As Boolean = False
     Private ds4MPeriode As DataSet = Nothing
+    Private DPrevDisc As New DomPrevousDisc()
 #End Region
 
 #Region " Enum "
@@ -60,9 +61,54 @@ Public Class AgreementRelation
         HasFilled
         Filling
     End Enum
+    Private Class DomPrevousDisc
+        Public PBQ3 As Decimal = 0
+        Public PBQ4 As Decimal = 0
+        Public PBS2 As Decimal = 0
+        Public CPQ1 As Decimal = 0
+        Public CPQ2 As Decimal = 0
+        Public CPQ3 As Decimal = 0
+        Public CPS1 As Decimal = 0
+        Public PBY As Decimal = 0
+        Public PBF2 As Decimal = 0
+        Public PBF3 As Decimal = 0
+        Public CPF1 As Decimal = 0
+        Public CPF2 As Decimal = 0
+    End Class
 #End Region
 
 #Region " Sub "
+    Private Function HasChangedDomPrev() As Boolean
+        With Me.DPrevDisc
+            If .CPF1 <> Me.txtCPF1.Value Then
+                Return True
+            ElseIf .CPF2 <> Me.txtCPF2.Value Then
+                Return True
+            ElseIf .CPQ1 <> Me.txtCPQ1.Value Then
+                Return True
+            ElseIf .CPQ2 <> Me.txtCPQ2.Value Then
+                Return True
+            ElseIf .CPQ3 <> Me.txtCPQ3.Value Then
+                Return True
+            ElseIf .CPS1 <> Me.txtCPS1.Value Then
+                Return True
+            ElseIf .PBF2 <> Me.txtPBF2.Value Then
+                Return True
+            ElseIf .PBF3 <> Me.txtPBF3.Value Then
+                Return True
+            ElseIf .PBQ3 <> Me.txtPBQ3.Value Then
+                Return True
+            ElseIf .PBQ4 <> Me.txtPBQ4.Value Then
+                Return True
+            ElseIf .PBS2 <> Me.txtPBS2.Value Then
+                Return True
+            ElseIf .PBY <> Me.txtPBYear.Value Then
+                Return True
+            End If
+        End With
+
+        Return False
+    End Function
     Private Sub FormatGridDiscount(ByVal DGV As DataGridView)
         For Each col As DataGridViewColumn In DGV.Columns
             'PRGSV_DISC_PCT
@@ -98,6 +144,12 @@ Public Class AgreementRelation
         Me.txtCPQ2.Text = String.Empty
         Me.txtCPQ3.Text = String.Empty
         Me.txtCPS1.Text = String.Empty
+        Me.txtPBYear.Text = String.Empty
+        Me.txtPBF2.Text = String.Empty
+        Me.txtPBF3.Text = String.Empty
+        Me.txtCPF1.Text = String.Empty
+        Me.txtCPF2.Text = String.Empty
+
     End Sub
     Private Function GetTargetYear(ByVal Flag As String)
         Dim s As String = ""
@@ -245,6 +297,7 @@ Public Class AgreementRelation
     Private Sub LoadData()
         Me.clsAgInclude = New NufarmBussinesRules.DistributorAgreement.Include
         Me.clsAgInclude.GetData()
+        Me.SFM = StateFillingCombo.Filling
         Me.BindMulticolumnCombo("")
         'edit after dubugging
         Me.isTransitionTime = NufarmBussinesRules.SharedClass.ServerDate <= New DateTime(2020, 7, 31) And NufarmBussinesRules.SharedClass.ServerDate >= New DateTime(2019, 8, 1)
@@ -421,148 +474,111 @@ Public Class AgreementRelation
     Private Sub BindGridEX(ByVal dtView As DataView, ByRef rowFilter As Object)
         'Dim rw As String = "END_DATE > #" + NufarmBussinesRules.SharedClass.ServerDate.Month.ToString() + "/" + NufarmBussinesRules.SharedClass.ServerDate.Day.ToString() + _
         '"/" + NufarmBussinesRules.SharedClass.ServerDate.Year.ToString() + "#"
-        Try
-            If dtView Is Nothing Then
-                Me.GridEX1.SetDataBinding(Nothing, "")
-                Return
+        If dtView Is Nothing Then
+            Me.GridEX1.SetDataBinding(Nothing, "")
+            Return
+        Else
+            dtView.RowFilter = rowFilter
+            Me.MaySelectGrid = CanSelectGridEx.CanNot
+            Me.GridEX1.SetDataBinding(dtView, "")
+            Me.GridEX1.RetrieveStructure()
+            Me.MaySelectGrid = CanSelectGridEx.Can
+        End If
+        'langsung format grid bila ada data yang mesti di format'
+        For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
+            If Item.Type Is Type.GetType("System.DateTime") Then
+                Item.FormatMode = Janus.Windows.GridEX.FormatMode.UseIFormattable
+                Item.FormatString = "dd MMMM yyyy"
+                Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.CalendarCombo
+            ElseIf (Item.Type Is Type.GetType("System.Decimal")) Or (Item.Type Is Type.GetType("System.Double")) _
+               Or (Item.Type Is Type.GetType("System.Single")) Then
+                'Item.FormatMode = Janus.Windows.GridEX.FormatMode.UseIFormattable
+                'If Item.DataMember = "TARGET_Q1" Or Item.DataMember = "TARGET_Q2" Or Item.DataMember = "TARGET_Q3" Then _
+                'Or Item.DataMember = "TARGET_Q4" Or Item.DataMember = "TARGET_S1" Or Item.DataMember = "TARGET_S2" Or _
+                '    Item.DataMember = "TARGET_YEAR" Then
+                'End If
+                Item.FormatString = "#,##0.000"
+                Item.TotalFormatString = "#,##0.000"
+                Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
             Else
-                dtView.RowFilter = rowFilter
-                Me.MaySelectGrid = CanSelectGridEx.CanNot
-                Me.GridEX1.SetDataBinding(dtView, "")
-                Me.GridEX1.RetrieveStructure()
-                Me.MaySelectGrid = CanSelectGridEx.Can
+                Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+
             End If
-            'langsung format grid bila ada data yang mesti di format'
-            For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                If Item.Type Is Type.GetType("System.DateTime") Then
-                    Item.FormatMode = Janus.Windows.GridEX.FormatMode.UseIFormattable
-                    Item.FormatString = "dd MMMM yyyy"
-                    Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.CalendarCombo
-                ElseIf (Item.Type Is Type.GetType("System.Decimal")) Or (Item.Type Is Type.GetType("System.Double")) _
-                   Or (Item.Type Is Type.GetType("System.Single")) Then
-                    'Item.FormatMode = Janus.Windows.GridEX.FormatMode.UseIFormattable
-                    'If Item.DataMember = "TARGET_Q1" Or Item.DataMember = "TARGET_Q2" Or Item.DataMember = "TARGET_Q3" Then _
-                    'Or Item.DataMember = "TARGET_Q4" Or Item.DataMember = "TARGET_S1" Or Item.DataMember = "TARGET_S2" Or _
-                    '    Item.DataMember = "TARGET_YEAR" Then
+            If Item.DataMember.Contains("ID") Then
+                Item.Visible = False
+            End If
+            If Item.DataMember.Contains("AGREEMENT_NO") Or Item.DataMember.Contains("AGREEMENT_DESC") Or Item.DataMember.Contains("QS_TREATMENT") Or Item.DataMember.Contains("COMBINED_BRAND") Then
+                Item.Visible = False
+            End If
+        Next
+        'untuk brandInclude
+        'isi item filter datagrid
+        Me.GridEX1.RootTable.Columns(0).Visible = False
+        Me.FillFilterColumn()
+        With Me.GridEX1.RootTable
+            .Columns("DISTRIBUTOR_NAME").Width = 180
+            .Columns("AGREEMENT_NO").Width = 180
+            .Columns("AGREEMENT_DESC").Width = 230
+            .Columns("BRAND_NAME").Width = 160
+            .Columns("ID").Width = 150
+            .Columns("COMBINED_BRAND").Width = 150
+        End With
+        Select Case Me.QS_FLAG
+            Case "Q"
+                For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
+                    If Item.Key.Contains("TARGET_S") Or Item.Key.Contains("TARGET_FMP") Or Item.Key.Contains("TARGET_YEAR") Then
+                        Item.Visible = False
+                        'ElseIf Item.DataMember = "TARGET_S2" Then
+                        '    Item.Visible = False
+                    ElseIf Item.DataMember = "BRAND_ID" Then
+                        Item.Visible = False
+                    End If
+                    'If Item.DataMember.Contains("FMP") Or Item.DataMember.Contains("PL") Then
+                    '    Item.Visible = False
                     'End If
-                    Item.FormatString = "#,##0.000"
-                    Item.TotalFormatString = "#,##0.000"
-                    Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-                Else
-                    Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+                Next
+            Case "S"
+                For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
+                    If Item.Key.Contains("TARGET_Q") Or Item.Key.Contains("TARGET_FMP") Then
+                        Item.Visible = False
+                        'ElseIf Item.DataMember = "TARGET_Q2" Then
+                        '    Item.Visible = False
+                        'ElseIf Item.DataMember = "TARGET_Q3" Then
+                        '    Item.Visible = False
+                        'ElseIf Item.DataMember = "TARGET_Q4" Then
+                        'Item.Visible = False
+                    ElseIf Item.DataMember = "BRAND_ID" Then
+                        Item.Visible = False
+                    End If
+                    'If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
+                    '    Item.Visible = False
+                    'End If
+                Next
+            Case "F"
+                For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
+                    If Item.Key.Contains("TARGET_Q") Or Item.Key.Contains("TARGET_S") Or Item.Key.Contains("TARGET_YEAR") Then
+                        Item.Visible = False
+                    ElseIf Item.DataMember = "BRAND_ID" Then
+                        Item.Visible = False
+                    End If
+                    'If Item.DataMember = "TARGET_S1" Then
+                    '    Item.Visible = False
+                    'ElseIf Item.DataMember = "TARGET_S2" Then
+                    '    Item.Visible = False
+                    '    If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
+                    '        Item.Visible = False
+                    '    End If
+                    'End If
+                Next
+        End Select
+        'bila data yang diisi brandname hidekan item target_flag yang bukan berdasarkan value mcb
+        'hide kan brand_idnya juga
 
-                End If
-                If Item.DataMember.Contains("ID") Then
-                    Item.Visible = False
-                End If
-                If Item.DataMember.Contains("AGREEMENT_NO") Or Item.DataMember.Contains("AGREEMENT_DESC") Or Item.DataMember.Contains("QS_TREATMENT") Or Item.DataMember.Contains("COMBINED_BRAND") Then
-                    Item.Visible = False
-                End If
-            Next
-            'untuk brandInclude
-            'isi item filter datagrid
-            Me.GridEX1.RootTable.Columns(0).Visible = False
-            Me.FillFilterColumn()
-            With Me.GridEX1.RootTable
-                .Columns("DISTRIBUTOR_NAME").Width = 180
-                .Columns("AGREEMENT_NO").Width = 180
-                .Columns("AGREEMENT_DESC").Width = 230
-                .Columns("BRAND_NAME").Width = 160
-                .Columns("ID").Width = 150
-                .Columns("COMBINED_BRAND").Width = 150
-            End With
-            Select Case Me.TabAcktive
-                Case ActiveTab.BrandInclude
-                    Select Case Me.QS_FLAG
-                        Case "Q"
-                            For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                                If Item.Key.Contains("TARGET_S") Or Item.Key.Contains("TARGET_FMP") Or Item.Key.Contains("TARGET_YEAR") Then
-                                    Item.Visible = False
-                                    'ElseIf Item.DataMember = "TARGET_S2" Then
-                                    '    Item.Visible = False
-                                ElseIf Item.DataMember = "BRAND_ID" Then
-                                    Item.Visible = False
-                                End If
-                                'If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
-                                '    Item.Visible = False
-                                'End If
-                            Next
-                        Case "S"
-                            For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                                If Item.Key.Contains("TARGET_Q") Or Item.Key.Contains("TARGET_FMP") Then
-                                    Item.Visible = False
-                                    'ElseIf Item.DataMember = "TARGET_Q2" Then
-                                    '    Item.Visible = False
-                                    'ElseIf Item.DataMember = "TARGET_Q3" Then
-                                    '    Item.Visible = False
-                                    'ElseIf Item.DataMember = "TARGET_Q4" Then
-                                    'Item.Visible = False
-                                ElseIf Item.DataMember = "BRAND_ID" Then
-                                    Item.Visible = False
-                                End If
-                                'If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
-                                '    Item.Visible = False
-                                'End If
-                            Next
-                        Case "F"
-                            For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                                If Item.Key.Contains("TARGET_Q") Or Item.Key.Contains("TARGET_S") Or Item.Key.Contains("TARGET_YEAR") Then
-                                    Item.Visible = False
-                                ElseIf Item.DataMember = "BRAND_ID" Then
-                                    Item.Visible = False
-                                End If
-                                'If Item.DataMember = "TARGET_S1" Then
-                                '    Item.Visible = False
-                                'ElseIf Item.DataMember = "TARGET_S2" Then
-                                '    Item.Visible = False
-                                '    If Item.DataMember.Contains("FM") Or Item.DataMember.Contains("PL") Then
-                                '        Item.Visible = False
-                                '    End If
-                                'End If
-                            Next
-                    End Select
-                Case ActiveTab.CombinedBrand
-                    'Select Case Me.QS_FLAG
-                    '    Case "Q"
-                    '        For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                    '            If Item.DataMember = "TARGET_S1" Then
-                    '                Item.Visible = False
-                    '            ElseIf Item.DataMember = "TARGET_S2" Then
-                    '                Item.Visible = False
-                    '            ElseIf Item.DataMember = "BRAND_ID" Then
-                    '                Item.Visible = False
-                    '            End If
-                    '        Next
-                    '    Case "S"
-                    '        For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
-                    '            If Item.DataMember = "TARGET_Q1" Then
-                    '                Item.Visible = False
-                    '            ElseIf Item.DataMember = "TARGET_Q2" Then
-                    '                Item.Visible = False
-                    '            ElseIf Item.DataMember = "TARGET_Q3" Then
-                    '                Item.Visible = False
-                    '            ElseIf Item.DataMember = "TARGET_Q4" Then
-                    '                Item.Visible = False
-                    '            ElseIf Item.DataMember = "BRAND_ID" Then
-                    '                Item.Visible = False
-                    '            End If
-                    '        Next
-                    'End Select
+        Me.FilterEditor1.SourceControl = Me.GridEX1
+        Me.GridEXExporter1.GridEX = Me.GridEX1
+        Me.GridEXPrintDocument1.GridEX = Me.GridEX1
+        Me.PrintPreviewDialog1.Document = Me.GridEXPrintDocument1
 
-                Case ActiveTab.OAHistory
-            End Select
-            'bila data yang diisi brandname hidekan item target_flag yang bukan berdasarkan value mcb
-            'hide kan brand_idnya juga
-
-            Me.FilterEditor1.SourceControl = Me.GridEX1
-            Me.GridEXExporter1.GridEX = Me.GridEX1
-            Me.GridEXPrintDocument1.GridEX = Me.GridEX1
-            Me.PrintPreviewDialog1.Document = Me.GridEXPrintDocument1
-        Catch ex As Exception
-
-        Finally
-
-        End Try
 
     End Sub
 
@@ -910,6 +926,8 @@ Public Class AgreementRelation
             Me.ReadAccecs()
             Me.Cursor = Cursors.Default
         End Try
+        Me.SFM = StateFillingCombo.HasFilled
+        Me.SFG = StateFillingGrid.HasFilled
         Me.Hload = HasLoad.Yes
     End Sub
 
@@ -1196,6 +1214,7 @@ Public Class AgreementRelation
             If (Me.MultiColumnCombo1.SelectedIndex = -1) Or (Me.MultiColumnCombo1.Text = "") Then : Return : End If
             If Me.MaySelectGrid = CanSelectGridEx.CanNot Then : Return : End If
             Me.Cursor = Cursors.WaitCursor
+            Me.clearGivenProgressive()
             If Not (Me.GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.Record) Then
                 Me.txtQ1QTY.Enabled = False : Me.txtQ2QTY.Enabled = False
                 Me.txtQ3QTY.Enabled = False : Me.txtQ4QTY.Enabled = False
@@ -1242,12 +1261,12 @@ Public Class AgreementRelation
 
                 Me.BindGrid_1(Me.grdunAddedBrandPack, Nothing) : Me.BindGrid_1(Me.grdAddedBrandPack, Nothing)
                 Me.chkTypical.Checked = False
-                Me.clearGivenProgressive()
                 Return
             End If
             Me.SFG = StateFillingGrid.Filling : Me.Mode = SaveMode.Update
-
+            Me.DPrevDisc = New DomPrevousDisc()
             Me.Brand_IDHide = Me.GridEX1.GetValue("BRAND_ID") : Me.AGREE_BRAND_ID = Me.GridEX1.GetValue("ID").ToString()
+            'prosedure untuk mengecek reference given story di rubah, karena sudah tidak di pakai lagi,untuk given mungkin masih perlu
             Dim hasRefGivStory As Boolean = Me.clsAgInclude.HasReferencedGivenHistory(Me.AGREE_BRAND_ID, False)
             Me.txtGiven.Value = Convert.ToDecimal(Me.GridEX1.GetValue("GIVEN%"))
             Me.txtGiven.Enabled = (hasRefGivStory = False)
@@ -1276,20 +1295,20 @@ Public Class AgreementRelation
                             End If
                             Me.ClearControl(Me.grpSemesterly)
                             Me.UnabledTextBox(Me.grpSemesterly)
-                            Me.txtQ1QTY.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q1"))
-                            Me.txtQ2QTY.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q2"))
-                            Me.txtQ3QTY.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q3"))
-                            Me.txtQ4QTY.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q4"))
+                            Me.txtQ1QTY.Value = Me.GridEX1.GetValue("TARGET_Q1")
+                            Me.txtQ2QTY.Value = Me.GridEX1.GetValue("TARGET_Q2")
+                            Me.txtQ3QTY.Value = Me.GridEX1.GetValue("TARGET_Q3")
+                            Me.txtQ4QTY.Value = Me.GridEX1.GetValue("TARGET_Q4")
 
                             'FM/PL
-                            Me.txtFreeMarketQ1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q1_FM"))
-                            Me.txtFreeMarketQ2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q2_FM"))
-                            Me.txtFreeMarketQ3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q3_FM"))
-                            Me.txtFreeMarketQ4.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q4_FM"))
-                            Me.txtPlQ1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q1_PL"))
-                            Me.txtPlQ2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q2_PL"))
-                            Me.txtPlQ3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q3_PL"))
-                            Me.txtPlQ3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q3_PL"))
+                            Me.txtFreeMarketQ1.Value = Me.GridEX1.GetValue("TARGET_Q1_FM")
+                            Me.txtFreeMarketQ2.Value = Me.GridEX1.GetValue("TARGET_Q2_FM")
+                            Me.txtFreeMarketQ3.Value = Me.GridEX1.GetValue("TARGET_Q3_FM")
+                            Me.txtFreeMarketQ4.Value = Me.GridEX1.GetValue("TARGET_Q4_FM")
+                            Me.txtPlQ1.Value = Me.GridEX1.GetValue("TARGET_Q1_PL")
+                            Me.txtPlQ2.Value = Me.GridEX1.GetValue("TARGET_Q2_PL")
+                            Me.txtPlQ3.Value = Me.GridEX1.GetValue("TARGET_Q3_PL")
+                            Me.txtPlQ3.Value = Me.GridEX1.GetValue("TARGET_Q3_PL")
                             Me.tbPeriode.Text = "Quarterly Discount"
                             If Me.isTransitionTime Then
                                 'transisi
@@ -1331,7 +1350,9 @@ Public Class AgreementRelation
                             End If
 
                         Case "S"
-                            HasGeneratedDisc = Me.clsAgInclude.HasgeneratedDiscount(Me.AGREE_BRAND_ID, Me.QS_FLAG)
+                            'tahun 2019-2020 discount tidak di berikan bersama PO maka prosedure mengecek hanya sudah di generate atau belum saja
+                            'tidak harus mengecek apakah sudah di ambil oleh PO atau belum
+                            'HasGeneratedDisc = Me.clsAgInclude.HasgeneratedDiscount(Me.AGREE_BRAND_ID, Me.QS_FLAG)
                             Me.txtS1QTY.Enabled = True : Me.txtS2QTY.Enabled = True
                             If HasGeneratedDisc Then
                                 If Not CMain.IsSystemAdministrator Then
@@ -1493,15 +1514,27 @@ Public Class AgreementRelation
                                 Me.txtCPQ3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPQ3"))
                                 Me.txtCPS1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPS1"))
                                 Me.txtPBYear.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBY"))
-                            Else
-                                Me.txtPBQ3.Value = 0
-                                Me.txtPBQ4.Value = 0
-                                Me.txtPBS2.Value = 0
-                                Me.txtCPQ1.Value = 0
-                                Me.txtCPQ2.Value = 0
-                                Me.txtCPQ3.Value = 0
-                                Me.txtCPS1.Value = 0
-                                Me.txtPBYear.Value = 0
+                                'Public PBF2
+                                'Public PBF3
+                                'Public CPF1
+                                'Public CPF2
+                                Me.txtPBF2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBF2"))
+                                Me.txtPBF3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBF3"))
+                                Me.txtCPF1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPF1"))
+                                Me.txtCPF2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPF2"))
+                                With Me.DPrevDisc
+                                    .PBQ3 = Me.txtPBQ3.Value
+                                    .PBQ4 = Me.txtPBQ4.Value
+                                    .PBS2 = Me.txtPBS2.Value
+                                    .CPQ1 = Me.txtCPQ1.Value
+                                    .CPQ2 = Me.txtCPQ2.Value
+                                    .CPQ3 = Me.txtCPQ3.Value
+                                    .CPS1 = Me.txtCPS1.Value
+                                    .PBF2 = Me.txtPBF2.Value
+                                    .PBF3 = Me.txtPBF3.Value
+                                    .CPF1 = Me.txtCPF1.Value
+                                    .CPF2 = Me.txtCPF2.Value
+                                End With
                             End If
                         End If
                         Dim DV As DataView = Me.clsAgInclude.GetItemBrandPackIncludedByBrandID(Me.Brand_IDHide, Me.MultiColumnCombo1.Value.ToString(), False)
@@ -1542,14 +1575,13 @@ Public Class AgreementRelation
                     Select Case Me.QS_FLAG
                         Case "Q"
                             'transisi
-                        Case "F"
-                            Me.grpComS.Visible = False : Me.grpCombQ.Visible = True : Me.ClearControl(Me.grpCombQ)
+                            Me.grpComS.Visible = False : Me.grpCombQ.Visible = True : Me.grpCombF.Visible = False : Me.ClearControl(Me.grpCombQ)
                             Me.txtComb1Q1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q1"))
                             Me.txtComb1Q2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q2"))
                             Me.txtComb1Q3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q3"))
                             Me.txtComb1Q4.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_Q4"))
                             If Not (Me.GridEX1.GetValue("COMBINED_BRAND") Is DBNull.Value) Then
-                                Me.clsAgInclude.CreatViewCombinedBrand(Me.MultiColumnCombo1.Text, Me.TreeView1)
+                                Me.clsAgInclude.CreatViewCombinedBrand(Me.MultiColumnCombo1.Text, Me.TreeView1, False)
                                 Me.COMB_BRAND_ID = Me.GridEX1.GetValue("COMBINED_BRAND").ToString()
                                 Me.clsAgInclude.GetTabelQuantityCombined(Me.COMB_BRAND_ID, Me.MultiColumnCombo1.Text, "Q")
                                 If Me.clsAgInclude.GetTblQuantityCombined().Rows.Count > 0 Then
@@ -1572,13 +1604,46 @@ Public Class AgreementRelation
                             Me.txtTotalComb2Q2.Value = Me.txtComb1Q2.Value + Me.txtComb2Q2.Value
                             Me.txtTotalComb3Q3.Value = Me.txtComb1Q3.Value + Me.txtComb2Q3.Value
                             Me.txtTotalComb1Q1.Value = Me.txtComb1Q4.Value + Me.txtComb2Q4.Value
-                            Me.ClearControl(Me.grpComS)
+                            'Me.ClearControl(Me.grpComS)
+                        Case "F"
+                            Me.grpCombQ.Visible = False : Me.grpComS.Visible = False : Me.grpCombF.Visible = True : Me.ClearControl(Me.grpCombF)
+                            Me.txtComb1F1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP1"))
+                            Me.txtComb1F2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP2"))
+                            Me.txtComb1F3.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_FMP3"))
+                            If Not (Me.GridEX1.GetValue("COMBINED_BRAND") Is DBNull.Value) Then
+                                Me.clsAgInclude.CreatViewCombinedBrand(Me.MultiColumnCombo1.Text, Me.TreeView1, False)
+                                Me.COMB_BRAND_ID = Me.GridEX1.GetValue("COMBINED_BRAND").ToString()
+                                Me.clsAgInclude.GetTabelQuantityCombined(Me.COMB_BRAND_ID, Me.MultiColumnCombo1.Text, "F")
+                                If Me.clsAgInclude.GetTblQuantityCombined().Rows.Count > 0 Then
+                                    Me.txtComb2F1.Value = Me.clsAgInclude.GetTblQuantityCombined().Rows(0)("TARGET_FMP1")
+                                    Me.txtComb2F2.Value = Me.clsAgInclude.GetTblQuantityCombined().Rows(0)("TARGET_FMP2")
+                                    Me.txtComb2F3.Value = Me.clsAgInclude.GetTblQuantityCombined().Rows(0)("TARGET_FMP3")
+                                    Me.cmbSeconBrand.Text = Me.clsAgInclude.GetTblQuantityCombined().Rows(0)("BRAND_NAME")
+                                    Me.cmbSeconBrand.Enabled = False
+                                Else
+                                    Me.txtComb2F1.Value = 0
+                                    Me.txtComb2F2.Value = 0
+                                    Me.txtComb2F3.Value = 0
+                                    Me.cmbSeconBrand.SelectedIndex = -1
+                                    Me.cmbSeconBrand.Text = "" : Me.cmbSeconBrand.Enabled = True
+                                End If
+                            Else
+                                Me.txtComb2F1.Value = 0
+                                Me.txtComb2F2.Value = 0
+                                Me.txtComb2F3.Value = 0
+                                Me.cmbSeconBrand.SelectedIndex = -1 : Me.cmbSeconBrand.Text = ""
+                                Me.cmbSeconBrand.Enabled = True : Me.TreeView1.Nodes.Clear()
+                            End If
+                            Me.txtTotalComb1F1.Value = Me.txtComb1F1.Value + Me.txtComb2F1.Value
+                            Me.txtTotalComb2F2.Value = Me.txtComb1F2.Value + Me.txtComb2F2.Value
+                            Me.txtTotalComb1F1.Value = Me.txtComb1F3.Value + Me.txtComb2F3.Value
+                            'Me.ClearControl(Me.grpCombQ)
                         Case "S"
-                            Me.grpCombQ.Visible = False : Me.grpComS.Visible = True : Me.ClearControl(Me.grpComS)
+                            Me.grpCombQ.Visible = False : Me.grpCombF.Visible = False : Me.grpComS.Visible = True : Me.ClearControl(Me.grpComS)
                             Me.txtComb1S1.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_S1"))
                             Me.txtComb1S2.Value = Convert.ToDecimal(Me.GridEX1.GetValue("TARGET_S2"))
                             If Not (Me.GridEX1.GetValue("COMBINED_BRAND") Is DBNull.Value) Then
-                                Me.clsAgInclude.CreatViewCombinedBrand(Me.MultiColumnCombo1.Text, Me.TreeView1)
+                                Me.clsAgInclude.CreatViewCombinedBrand(Me.MultiColumnCombo1.Text, Me.TreeView1, False)
                                 Me.COMB_BRAND_ID = Me.GridEX1.GetValue("COMBINED_BRAND").ToString()
                                 Me.clsAgInclude.GetTabelQuantityCombined(Me.COMB_BRAND_ID, Me.MultiColumnCombo1.Text, "S")
                                 If Me.clsAgInclude.GetTblQuantityCombined().Rows.Count > 0 Then
@@ -1597,7 +1662,7 @@ Public Class AgreementRelation
                             End If
                             Me.txtTotalComb1S1.Value = Me.txtComb1S1.Value + Me.txtComb2S1.Value
                             Me.txtTotalComb2S2.Value = Me.txtComb1S2.Value + Me.txtComb2S2.Value
-                            Me.ClearControl(Me.grpCombQ)
+                            'Me.ClearControl(Me.grpCombQ)
                     End Select
                     'Case ActiveTab.OAHistory
                     '    If Not IsNothing(Me.clsAgInclude.ViewOAHistory()) Then
@@ -1805,7 +1870,7 @@ Public Class AgreementRelation
                 BindGrid4MPeriode()
                 Me.MainTbBrandProgressive.SelectedIndex = 1
                 Me.TabControl1.SelectedIndex = 2
-                Me.grpPotensi.Visible = False
+                'Me.grpPotensi.Visible = False
             ElseIf Me.QS_FLAG = "Q" Then
                 If Me.isTransitionTime Then
                     Dim HasRef As Boolean = False
@@ -1819,12 +1884,13 @@ Public Class AgreementRelation
                     Me.MainTbBrandProgressive.SelectedIndex = 0
                     Me.TabControl1.SelectedIndex = 1
                 End If
-                Me.grpPotensi.Visible = True
+                'Me.grpPotensi.Visible = True
             Else
                 Me.MainTbBrandProgressive.SelectedIndex = 0
                 Me.TabControl1.SelectedIndex = 0
-                Me.grpPotensi.Visible = True
+                'Me.grpPotensi.Visible = True
             End If
+
         Catch ex As Exception
             Me.ShowMessageError(ex.Message)
             Me.LogMyEvent(ex.Message, Me.Name + "_MultiColumnCombo1_ValueChanged")
@@ -1896,7 +1962,7 @@ Public Class AgreementRelation
                         Me.MaySelectGrid = CanSelectGridEx.Can
                     End If
                     Me.TreeView1.Visible = True
-                    Me.clsAgInclude.CreatViewCombinedBrand(Me.MultiColumnCombo1.Text, Me.TreeView1)
+                    Me.clsAgInclude.CreatViewCombinedBrand(Me.MultiColumnCombo1.Text, Me.TreeView1, False)
                     Me.ClearControl(Me.grpCombQ)
                     Me.ClearControl(Me.grpComS)
                     Me.grpCombQ.Visible = False
@@ -2174,9 +2240,9 @@ Public Class AgreementRelation
 
     Private Sub btnDeleteQ1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnDeleteQ1.Click
         Try
-            If (Me.txtComb2Q1.Value = 0) Or (Me.txtComb2Q2.Value = 0) Or (Me.txtComb2Q3.Value = 0) _
-                Or (Me.txtComb2Q4.Value = 0) Then : Return
-            End If
+            'If (Me.txtComb2Q1.Value = 0) Or (Me.txtComb2Q2.Value = 0) Or (Me.txtComb2Q3.Value = 0) _
+            '    Or (Me.txtComb2Q4.Value = 0) Then : Return
+            'End If
             If (Me.MultiColumnCombo1.Text = "") Or (Me.MultiColumnCombo1.SelectedIndex = -1) Then : Return : End If
             If Me.COMB_BRAND_ID = "" Then : Return : End If
             'konfirmasi ke user
@@ -2205,9 +2271,9 @@ Public Class AgreementRelation
             If Me.COMB_BRAND_ID = "" Then
                 Return
             End If
-            If (Me.txtComb2S1.Value = 0) Or (Me.txtComb2S2.Value = 0) Then
-                Return
-            End If
+            'If (Me.txtComb2S1.Value = 0) Or (Me.txtComb2S2.Value = 0) Then
+            '    Return
+            'End If
             'konfirmasi ke user
             If Me.ShowConfirmedMessage(Me.ConfirmDeleteMessage) = Windows.Forms.DialogResult.No Then
                 Return
@@ -2739,11 +2805,16 @@ Public Class AgreementRelation
             Me.clsAgInclude.CPQ3 = Me.txtCPQ3.Value
             Me.clsAgInclude.CPS1 = Me.txtCPS1.Value
             Me.clsAgInclude.PBY = Me.txtPBYear.Value
+            Me.clsAgInclude.PBF2 = Me.txtPBF2.Value
+            Me.clsAgInclude.PBF3 = Me.txtPBF3.Value
+            Me.clsAgInclude.CPF1 = Me.txtCPF1.Value
+            Me.clsAgInclude.CPF2 = Me.txtCPF2.Value
             Dim IsRoundUp As Boolean = False
             If Me.txtBrandName.Text.ToUpper.StartsWith("ROUNDUP") Then
                 IsRoundUp = True
             End If
             Me.clsAgInclude.Flag = Me.QS_FLAG
+            Dim HasChangedPrev As Boolean = Me.HasChangedDomPrev()
             Select Case Me.Mode
                 Case SaveMode.Save
                     Me.clsAgInclude.Agree_Brand_ID = Me.NewAgree_Brand_ID
@@ -2775,12 +2846,12 @@ Public Class AgreementRelation
 
                     If Not IsNothing(Me.clsAgInclude.getDsPeriod()) Then
                         If (Me.clsAgInclude.getDsPeriod.HasChanges()) Then
-                            Me.clsAgInclude.SaveBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, IsRoundUp)
+                            Me.clsAgInclude.SaveBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, IsRoundUp, HasChangedPrev)
                         Else
-                            Me.clsAgInclude.SaveBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, IsRoundUp)
+                            Me.clsAgInclude.SaveBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, IsRoundUp, HasChangedPrev)
                         End If
                     Else
-                        Me.clsAgInclude.SaveBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, IsRoundUp)
+                        Me.clsAgInclude.SaveBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, IsRoundUp, HasChangedPrev)
                     End If
                 Case SaveMode.Update
                     Me.clsAgInclude.Agree_Brand_ID = Me.AGREE_BRAND_ID
@@ -2799,23 +2870,23 @@ Public Class AgreementRelation
                         If Not IsNothing(Me.clsAgInclude.getDsPeriod()) Then
                             'Me.fillAgreebrandIDinGridProgressive()
                             If (Me.clsAgInclude.getDsPeriod.HasChanges()) Then
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp, HasChangedPrev)
                             Else
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp, HasChangedPrev)
                             End If
                         Else
-                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp)
+                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, BRANDPACKIDS, IsRoundUp, HasChangedPrev)
                         End If
                     Else
                         If Not IsNothing(Me.clsAgInclude.getDsPeriod()) Then
                             'Me.fillAgreebrandIDinGridProgressive()
                             If (Me.clsAgInclude.getDsPeriod.HasChanges()) Then
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, , IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, Me.clsAgInclude.getDsPeriod.GetChanges(), Me.ds4MPeriode, , IsRoundUp, HasChangedPrev)
                             Else
-                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, , IsRoundUp)
+                                Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, , IsRoundUp, HasChangedPrev)
                             End If
                         Else
-                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, , IsRoundUp)
+                            Me.clsAgInclude.UpdateBrandInclude(Me.QS_FLAG, , Me.ds4MPeriode, , IsRoundUp, HasChangedPrev)
                         End If
                     End If
             End Select
@@ -3499,4 +3570,47 @@ Public Class AgreementRelation
         Me.GridEX2.UpdateData()
     End Sub
 
+    Private Sub btnDeleteF_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnDeleteF.Click
+        Try
+            If (Me.MultiColumnCombo1.Text = "") Or (Me.MultiColumnCombo1.SelectedIndex = -1) Then
+                Return
+            End If
+            If Me.COMB_BRAND_ID = "" Then
+                Return
+            End If
+            'If (Me.txtComb2S1.Value = 0) Or (Me.txtComb2S2.Value = 0) Then
+            '    Return
+            'End If
+            'konfirmasi ke user
+            If Me.ShowConfirmedMessage(Me.ConfirmDeleteMessage) = Windows.Forms.DialogResult.No Then
+                Return
+            End If
+            Me.Cursor = Cursors.WaitCursor
+            Me.clsAgInclude.UpdateCombinedBrand(Me.MultiColumnCombo1.Text, Me.AGREE_BRAND_ID, _
+            Me.COMB_BRAND_ID, True, Me.GridEX1.GetValue("BRAND_NAME").ToString().Contains("ROUNDUP"))
+            'update 'comb_brand_id jadi null'dua rows combined
+            'rows yang satu yang brand_id yang berhubungan dengan agree_brand_id 
+            'row yang ke dua brand_id yang berisi comb_agree_brand_id
+            Me.ShowMessageInfo(Me.MessageSuccesDelete)
+            Me.btnRefReshCombined_BtnClick(Me.btnRefReshCombined, New System.EventArgs())
+        Catch ex As Exception
+            Me.ShowMessageError(ex.Message)
+            Me.LogMyEvent(ex.Message, Me.Name + "_btnDeleteQ1_Click")
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub txtCombF_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtComb2F1.ValueChanged, txtComb2F3.ValueChanged, txtComb1F3.ValueChanged, txtComb2F2.ValueChanged, txtComb1F2.ValueChanged, txtComb1F1.ValueChanged
+        If (DirectCast(sender, Janus.Windows.GridEX.EditControls.NumericEditBox) Is Me.txtComb1F1) Or _
+           (DirectCast(sender, Janus.Windows.GridEX.EditControls.NumericEditBox) Is Me.txtComb1F2) Then
+            Me.txtTotalComb1F1.Value = Me.txtComb1F1.Value + Me.txtComb1F2.Value
+        ElseIf (DirectCast(sender, Janus.Windows.GridEX.EditControls.NumericEditBox) Is Me.txtComb2F1) Or _
+               (DirectCast(sender, Janus.Windows.GridEX.EditControls.NumericEditBox) Is Me.txtComb2F2) Then
+            Me.txtTotalComb2F2.Value = Me.txtComb2F1.Value + Me.txtComb2F2.Value
+        ElseIf (DirectCast(sender, Janus.Windows.GridEX.EditControls.NumericEditBox) Is Me.txtComb1F3) Or _
+            (DirectCast(sender, Janus.Windows.GridEX.EditControls.NumericEditBox) Is Me.txtComb2F3) Then
+            Me.txtTotalComb3F3.Value = Me.txtComb1F3.Value + Me.txtComb2F3.Value
+        End If
+    End Sub
 End Class

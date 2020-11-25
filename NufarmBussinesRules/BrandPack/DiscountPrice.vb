@@ -9,7 +9,22 @@ Namespace Brandpack
         End Sub
         Protected Query As String = ""
         Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-            MyBase.Dispose(disposing)
+
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                        "IF EXISTS(SELECT [NAME] FROM TEMPDB.SYS.OBJECTS WHERE NAME = '##T_Get_DD_DR_CBD_" & Me.ComputerName & "'  AND Type = 'U')" & vbCrLf & _
+                        " BEGIN DROP TABLE tempdb..##T_Get_DD_DR_CBD_" & Me.ComputerName & "; END "
+                If IsNothing(Me.SqlCom) Then
+                    Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.OpenConnection() : Me.SqlCom.ExecuteScalar()
+                Me.ClearCommandParameters()
+                MyBase.Dispose(disposing)
+            Catch ex As Exception
+                Me.ClearCommandParameters() : Throw ex
+            End Try
         End Sub
 
         Public Function getBrandPackPrice(ByVal muscloseConnection As Boolean) As DataView
@@ -856,6 +871,60 @@ Namespace Brandpack
                 Throw ex
             End Try
         End Sub
+        Public Function getDiscount(ByVal TypeApp As String, ByVal BrandPackID As String, ByVal BrandPackName As String, ByVal distributorID As String, ByVal PODate As DateTime, ByVal Qty As Decimal, ByVal OA_BRANDPACK_ID As String, ByVal mustCloseConnection As Boolean) As DataTable
+            Try
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("Usp_Get_DD_DR_CBD", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_DD_DR_CBD")
+                End If
+                Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, distributorID)
+                Me.AddParameter("@PO_DATE", SqlDbType.SmallDateTime, PODate)
+                Me.AddParameter("@OA_QTY", SqlDbType.Decimal, Qty)
+                'Me.SqlCom.Parameters("@OA_QTY").Precision = 3
+                Me.AddParameter("@BRANDPACK_ID", SqlDbType.VarChar, BrandPackID)
+                Me.AddParameter("@TypeApp", SqlDbType.VarChar, TypeApp)
+                'Me.AddParameter("@BRANDPACK_NAME", SqlDbType.VarChar, BrandPackName)
+                Me.AddParameter("@COMP_NAME", SqlDbType.NVarChar, Me.ComputerName)
+                Me.OpenConnection()
+                Dim dt As DataTable = New DataTable("T_DDDRCBD")
+                setDataAdapter(Me.SqlCom).Fill(dt)
+                Me.ClearCommandParameters()
+                Dim RetDT As DataTable = dt.Copy()
+                RetDT.Clear()
+                For Each row As DataRow In dt.Rows
+                    Dim B As Boolean = True
+                    If Not IsNothing(row("BRANDPACK_ID")) And Not IsDBNull(row("BRANDPACK_ID")) Then
+                        If row("BRANDPACK_ID").ToString() <> "" Then
+                            If row("BRANDPACK_ID").ToString() <> BrandPackID Then
+                                B = False
+                            End If
+                        End If
+                    End If
+                    If CDec(row("INC_DISC")) <= 0 Then
+                        B = False
+                    End If
+                    If B Then
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                " SELECT 1 WHERE EXISTS(SELECT TOP 1 FK_BRND_DISC_PROG FROM ORDR_OA_BRANDPACK_DISC " & vbCrLf & _
+                                " WHERE FK_BRND_DISC_PROG = @FK_BRND_DISC_PROG AND GQSY_SGT_P_FLAG = @TypeApp AND OA_BRANDPACK_ID = @OA_BRANDPACK_ID) ;"
+                        Me.ResetCommandText(CommandType.Text, Query)
+                        Me.AddParameter("@FK_BRND_DISC_PROG", SqlDbType.Int, row("FK_BRND_DISC_PROG"))
+                        Me.AddParameter("@TypeApp", SqlDbType.VarChar, "O" + row("DISC_TYPE").ToString())
+                        Me.AddParameter("@OA_BRANDPACK_ID", SqlDbType.VarChar, OA_BRANDPACK_ID)
+                        Dim retval As Object = Me.SqlCom.ExecuteScalar()
+                        If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                        Else
+                            RetDT.ImportRow(row)
+                        End If
+                    End If
+                Next
+                Me.ClearCommandParameters()
+                If mustCloseConnection Then : Me.CloseConnection() : End If
+                Return RetDT
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters()
+                Throw ex
+            End Try
+        End Function
         Public Function getDiscount(ByVal OABrandPackID As String, ByVal TypeApp As String, ByVal BrandPackID As String, ByVal distributorID As String, ByVal PODate As DateTime, ByVal Qty As Decimal, ByRef RefOther As Int32, ByRef Info() As String, ByVal mustCloseConnection As Boolean) As Decimal
             Try
                 Dim result As Decimal = 0

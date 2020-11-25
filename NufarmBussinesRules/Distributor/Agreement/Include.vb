@@ -30,6 +30,10 @@ Namespace DistributorAgreement
         Public CPQ2 As Decimal = 0
         Public CPQ3 As Decimal = 0
         Public CPS1 As Decimal = 0
+        Public PBF2 As Decimal = 0
+        Public PBF3 As Decimal = 0
+        Public CPF1 As Decimal = 0
+        Public CPF2 As Decimal = 0
         Public PBY As Decimal = 0
         Public Flag As String
         Public Q1_FM As Decimal = 0
@@ -234,7 +238,7 @@ Namespace DistributorAgreement
             End Try
         End Sub
 
-        Public Sub UpdateBrandInclude(ByVal QS_FLAG As String, Optional ByRef ds As DataSet = Nothing, Optional ByVal ds4months As DataSet = Nothing, Optional ByVal BRANDPACK_IDS As Collection = Nothing, Optional ByVal IsRoundUP As Boolean = False)
+        Public Sub UpdateBrandInclude(ByVal QS_FLAG As String, Optional ByRef ds As DataSet = Nothing, Optional ByVal ds4months As DataSet = Nothing, Optional ByVal BRANDPACK_IDS As Collection = Nothing, Optional ByVal IsRoundUP As Boolean = False, Optional ByVal HasChangedPrev As Boolean = False)
             Try
                 Me.GetConnection()
                 'If IsNothing(Me.SqlCom) Then
@@ -314,8 +318,11 @@ Namespace DistributorAgreement
                     End If
                 End If
 
-                If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
-                Else
+                'If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
+                'Else
+                '    Me.SaveGivenProgressive()
+                'End If
+                If HasChangedPrev Then
                     Me.SaveGivenProgressive()
                 End If
                 If Not IsNothing(ds) Then
@@ -389,7 +396,7 @@ Namespace DistributorAgreement
             End Try
         End Sub
 
-        Public Sub SaveBrandInclude(ByVal QS_FLAG As String, Optional ByVal ds As DataSet = Nothing, Optional ByVal DSR As DataSet = Nothing, Optional ByVal IsRoundUp As Boolean = False)
+        Public Sub SaveBrandInclude(ByVal QS_FLAG As String, Optional ByVal ds As DataSet = Nothing, Optional ByVal DSR As DataSet = Nothing, Optional ByVal IsRoundUp As Boolean = False, Optional ByVal HasChangedPrev As Boolean = False)
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                         " IF NOT EXISTS(SELECT AGREE_BRAND_ID FROM AGREE_BRAND_INCLUDE WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID) " & vbCrLf & _
@@ -459,10 +466,13 @@ Namespace DistributorAgreement
                         SaveDS4Month(DSR.Tables(0), True)
                     End If
                 End If
-                If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
-                Else
+                If HasChangedPrev Then
                     Me.SaveGivenProgressive()
                 End If
+                'If Me.PBQ3 <= 0 And Me.PBQ4 <= 0 And Me.PBS2 <= 0 And Me.PBY <= 0 And Me.CPQ1 <= 0 And Me.CPQ2 <= 0 And Me.CPQ3 <= 0 And Me.CPS1 <= 0 Then
+                'Else
+                '    Me.SaveGivenProgressive()
+                'End If
                 Me.CommiteTransaction() : Me.CloseConnection()
             Catch ex As Exception
                 Me.RollbackTransaction()
@@ -552,13 +562,14 @@ Namespace DistributorAgreement
             Query = "SET NOCOUNT ON ;" & vbCrLf & _
                     "IF EXISTS(SELECT AGREE_BRAND_ID FROM GIVEN_PROGRESSIVE WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID) " & vbCrLf & _
                     "BEGIN " & vbCrLf & _
-                    "UPDATE GIVEN_PROGRESSIVE SET PBQ3 = @PBQ3,PBQ4 = @PBQ4,PBS2 = @PBS2,CPQ1 = @CPQ1,CPQ2 = @CPQ2,CPQ3 = @CPQ3,CPS1 = @CPS1,PBY = @PBY," & vbCrLf & _
+                    "UPDATE GIVEN_PROGRESSIVE SET PBQ3 = @PBQ3,PBQ4 = @PBQ4,PBS2 = @PBS2,CPQ1 = @CPQ1,CPQ2 = @CPQ2,CPQ3 = @CPQ3,CPS1 = @CPS1," & vbCrLf & _
+                    " PBF2 = @PBF2,PBF3 = @PBF3,CPF1 = @CPF1,CPF2 = @CPF2, PBY = @PBY," & vbCrLf & _
                     "MODIFY_BY = @MODIFY_BY WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID ;" & vbCrLf & _
                     "END " & vbCrLf & _
                     "ELSE " & vbCrLf & _
                     "BEGIN " & vbCrLf & _
-                    "INSERT INTO GIVEN_PROGRESSIVE(AGREE_BRAND_ID,PBQ3,PBQ4,PBS2,CPQ1,CPQ2,CPQ3,CPS1,PBY,CREATE_BY,CREATE_DATE) " & vbCrLf & _
-                    "VALUES(@AGREE_BRAND_ID,@PBQ3,@PBQ4,@PBS2,@CPQ1,@CPQ2,@CPQ3,@CPS1,@PBY,@CREATE_BY,@CREATE_DATE) ;" & vbCrLf & _
+                    "INSERT INTO GIVEN_PROGRESSIVE(AGREE_BRAND_ID,PBQ3,PBQ4,PBS2,CPQ1,CPQ2,CPQ3,CPS1,PBF2,PBF3,CPF1,CPF2,PBY,CREATE_BY,CREATE_DATE) " & vbCrLf & _
+                    "VALUES(@AGREE_BRAND_ID,@PBQ3,@PBQ4,@PBS2,@CPQ1,@CPQ2,@CPQ3,@CPS1,@PBF2,@PBF3,@CPF1,@CPF2,@PBY,@CREATE_BY,@CREATE_DATE) ;" & vbCrLf & _
                     "END "
             Me.ResetCommandText(CommandType.Text, Query)
             Me.AddParameter("@AGREE_BRAND_ID", SqlDbType.VarChar, Agree_Brand_ID, 32)
@@ -569,6 +580,10 @@ Namespace DistributorAgreement
             Me.AddParameter("@CPQ2", SqlDbType.Decimal, Me.CPQ2)
             Me.AddParameter("@CPQ3", SqlDbType.Decimal, Me.CPQ3)
             Me.AddParameter("@CPS1", SqlDbType.Decimal, Me.CPS1)
+            Me.AddParameter("@PBF2", SqlDbType.Decimal, Me.PBF2)
+            Me.AddParameter("@PBF3", SqlDbType.Decimal, Me.PBF3)
+            Me.AddParameter("@CPF1", SqlDbType.Decimal, Me.CPF1)
+            Me.AddParameter("@CPF2", SqlDbType.Decimal, Me.CPF2)
             Me.AddParameter("@PBY", SqlDbType.Decimal, Me.PBY)
             Me.AddParameter("@CREATE_BY", SqlDbType.VarChar, NufarmBussinesRules.User.UserLogin.UserName, 50)
             Me.AddParameter("@CREATE_DATE", SqlDbType.SmallDateTime, NufarmBussinesRules.SharedClass.ServerDate)
@@ -1241,20 +1256,45 @@ Namespace DistributorAgreement
                 Throw ex
             End Try
         End Function
+        'Public Function HasgeneratedDiscount(ByVal AGREE_BRAND_ID As String, ByVal FLAG As String) As Boolean
+        '    Try
+        '        Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '                 "DECLARE @V_RETVAL INT;" & vbCrLf & _
+        '                 "SET @V_RETVAL = 0; " & vbCrLf & _
+        '                 "IF EXISTS(SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'ACCRUED_HEADER' AND TABLE_TYPE = 'base table') " & vbCrLf & _
+        '                 " BEGIN " & vbCrLf & _
+        '                 "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID AND " & vbCrLf & _
+        '                 "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) " & vbCrLf & _
+        '                 "             AND AC.FLAG LIKE @FLAG + '%' ) " & vbCrLf & _
+        '                 "   BEGIN " & vbCrLf & _
+        '                 "     SET @V_RETVAL = 1 ; " & vbCrLf & _
+        '                 "   END " & vbCrLf & _
+        '                 " END " & vbCrLf & _
+        '                 " SELECT RETVAL = @V_RETVAL;"
+        '        If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql(CommandType.Text, Query)
+        '        Else : Me.ResetCommandText(CommandType.Text, Query)
+        '        End If
+        '        Me.AddParameter("@AGREE_BRAND_ID", SqlDbType.VarChar, AGREE_BRAND_ID, 32)
+        '        Me.AddParameter("@FLAG", SqlDbType.VarChar, FLAG, 2)
+        '        OpenConnection()
+        '        Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+        '        If CInt(retval) > 0 Then : Return True : End If
+        '    Catch ex As Exception
+        '        Me.CloseConnection() : Me.ClearCommandParameters()
+        '        Throw ex
+        '    End Try
+        'End Function
+
         Public Function HasgeneratedDiscount(ByVal AGREE_BRAND_ID As String, ByVal FLAG As String) As Boolean
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                          "DECLARE @V_RETVAL INT;" & vbCrLf & _
                          "SET @V_RETVAL = 0; " & vbCrLf & _
-                         "IF EXISTS(SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'ACCRUED_HEADER' AND TABLE_TYPE = 'base table') " & vbCrLf & _
-                         " BEGIN " & vbCrLf & _
-                         "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID AND " & vbCrLf & _
-                         "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) " & vbCrLf & _
+                         "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID " & vbCrLf & _
                          "             AND AC.FLAG LIKE @FLAG + '%' ) " & vbCrLf & _
                          "   BEGIN " & vbCrLf & _
                          "     SET @V_RETVAL = 1 ; " & vbCrLf & _
                          "   END " & vbCrLf & _
-                         " END " & vbCrLf & _
                          " SELECT RETVAL = @V_RETVAL;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql(CommandType.Text, Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
@@ -1330,7 +1370,7 @@ Namespace DistributorAgreement
             End Try
         End Sub
 
-        Public Sub CreatViewCombinedBrand(ByVal AGREEMENT_NO As String, ByVal TRV As System.Windows.Forms.TreeView)
+        Public Sub CreatViewCombinedBrand(ByVal AGREEMENT_NO As String, ByVal TRV As System.Windows.Forms.TreeView, ByVal mustCloseConnection As Boolean)
             Try
                 TRV.Nodes.Clear()
                 If IsNothing(Me.SqlCom) Then
@@ -1458,7 +1498,7 @@ Namespace DistributorAgreement
                         End If
                     Next
                 End If
-                Me.CloseConnection() : TRV.ExpandAll() : TRV.Update()
+                If mustCloseConnection Then : Me.CloseConnection() : End If : TRV.ExpandAll() : TRV.Update()
             Catch ex As Exception
                 Me.CloseConnection()
                 Me.ClearCommandParameters()
@@ -1825,18 +1865,32 @@ Namespace DistributorAgreement
             Try
                 Select Case QS_FLAG
                     Case "Q"
-                        If IsNothing(Me.SqlCom) Then
-                            Me.CreateCommandSql("Sp_SelectQQTY_FROM_ABI", "")
-                        Else : Me.ResetCommandText(CommandType.StoredProcedure, "Sp_SelectQQTY_FROM_ABI")
-                        End If
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                " SELECT BRAND_NAME,TARGET_Q1,TARGET_Q2,TARGET_Q3,TARGET_Q4 FROM VIEW_AGREE_BRAND_INCLUDE WHERE AGREEMENT_NO =@AGREEMENT_NO" & vbCrLf & _
+                                " AND [ID] = @COMB_AGREE_BRAND_ID"
+                        'If IsNothing(Me.SqlCom) Then
+                        '    Me.CreateCommandSql("Sp_SelectQQTY_FROM_ABI", "")
+                        'Else : Me.ResetCommandText(CommandType.StoredProcedure, "Sp_SelectQQTY_FROM_ABI")
+                        'End If
                         'Me.AddParameter("@AGREEMENT_NO", SqlDbType.VarChar, AGREEMENT_NO, 25) ' VARCHAR(25),
                         'Me.AddParameter("@COMB_AGREE_BRAND_ID", SqlDbType.VarChar, Comb_Agree_Brand_id, 32) ' VARCHAR(32)
                     Case "S"
-                        If IsNothing(Me.SqlCom) Then
-                            Me.CreateCommandSql("Sp_SelectSQTY_FROM_ABI", "")
-                        Else : Me.ResetCommandText(CommandType.StoredProcedure, "Sp_SelectSQTY_FROM_ABI")
-                        End If
+                        'If IsNothing(Me.SqlCom) Then
+                        '    Me.CreateCommandSql("Sp_SelectSQTY_FROM_ABI", "")
+                        'Else : Me.ResetCommandText(CommandType.StoredProcedure, "Sp_SelectSQTY_FROM_ABI")
+                        'End If
+                        Query = "SET  NOCOUNT ON;" & vbCrLf & _
+                                " SELECT BRAND_NAME,TARGET_S1,TARGET_S2 FROM VIEW_AGREE_BRAND_INCLUDE WHERE AGREEMENT_NO = @AGREEMENT_NO AND " & vbCrLf & _
+                                " [ID] = @COMB_AGREE_BRAND_ID"
+                    Case "F"
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                " SELECT BRAND_NAME,TARGET_FMP1,TARGET_FMP2,TARGET_FMP3 FROM VIEW_AGREE_BRAND_INCLUDE WHERE AGREEMENT_NO =@AGREEMENT_NO" & vbCrLf & _
+                                " AND [ID]= @COMB_AGREE_BRAND_ID"
                 End Select
+                If IsNothing(Me.SqlCom) Then
+                    Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
                 Me.AddParameter("@AGREEMENT_NO", SqlDbType.VarChar, AGREEMENT_NO, 25) ' VARCHAR(25),
                 Me.AddParameter("@COMB_AGREE_BRAND_ID", SqlDbType.VarChar, Comb_Agree_Brand_id, 32) ' VARCHAR(32)
                 Me.tbl_Quantity_Combined = New DataTable()
@@ -2230,7 +2284,9 @@ Namespace DistributorAgreement
                 : Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Me.Tbl_BrandComboFisrtSecond = New DataTable()
                 Me.Tbl_BrandComboFisrtSecond.Clear()
-                Me.FillDataTable(Me.Tbl_BrandComboFisrtSecond)
+                Me.OpenConnection()
+                Me.setDataAdapter(Me.SqlCom).Fill(Tbl_BrandComboFisrtSecond)
+                Me.ClearCommandParameters()
                 cmb.DataSource = Nothing
                 cmb.DataSource = Me.Tbl_BrandComboFisrtSecond
                 cmb.ValueMember = "BRAND_ID"
@@ -2243,13 +2299,37 @@ Namespace DistributorAgreement
             Return Me.Tbl_BrandComboFisrtSecond
         End Function
 
+        'Public Function HasReferencedGivenHistory(ByVal AGREE_BRAND_ID As String, ByVal mustCloseConnection As Boolean) As Boolean
+        '    Try
+        '        ''chek di Agree_disc_history dan given_story
+        '        Query = "SET NOCOUNT ON; " & vbCrLf & _
+        '        " SELECT 1 WHERE EXISTS(SELECT GS.GIVEN_ID FROM GIVEN_STORY GS INNER JOIN AGREE_BRAND_INCLUDE ABR ON ABR.AGREE_BRAND_ID = GS.AGREE_BRAND_ID " & vbCrLf & _
+        '        "                 WHERE ABR.AGREE_BRAND_ID = @AGREE_BRAND_ID) " & vbCrLf & _
+        '        "               OR EXISTS(SELECT ADH.AGREE_DISC_HIST_ID FROM AGREE_DISC_HISTORY ADH INNER JOIN AGREE_BRANDPACK_INCLUDE ABI ON ABI.AGREE_BRANDPACK_ID = ADH.AGREE_BRANDPACK_ID " & vbCrLf & _
+        '        "               WHERE ABI.AGREE_BRAND_ID = @AGREE_BRAND_ID);"
+        '        If Not IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+        '        Else : Me.ResetCommandText(CommandType.Text, Query)
+        '        End If
+        '        Me.AddParameter("@AGREE_BRAND_ID", SqlDbType.VarChar, AGREE_BRAND_ID, 32)
+        '        Me.OpenConnection()
+        '        Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+        '        If Not IsNothing(retval) And Not IsDBNull(retval) Then
+        '            If mustCloseConnection Then : Me.CloseConnection() : End If
+        '            Return (CInt(retval) > 0)
+        '        End If
+        '        If mustCloseConnection Then : Me.CloseConnection() : End If
+        '        Return False
+        '    Catch ex As Exception
+        '        Me.CloseConnection()
+        '        Throw ex
+        '    End Try
+        'End Function
+
         Public Function HasReferencedGivenHistory(ByVal AGREE_BRAND_ID As String, ByVal mustCloseConnection As Boolean) As Boolean
             Try
                 ''chek di Agree_disc_history dan given_story
                 Query = "SET NOCOUNT ON; " & vbCrLf & _
-                " SELECT 1 WHERE EXISTS(SELECT GS.GIVEN_ID FROM GIVEN_STORY GS INNER JOIN AGREE_BRAND_INCLUDE ABR ON ABR.AGREE_BRAND_ID = GS.AGREE_BRAND_ID " & vbCrLf & _
-                "                 WHERE ABR.AGREE_BRAND_ID = @AGREE_BRAND_ID) " & vbCrLf & _
-                "               OR EXISTS(SELECT ADH.AGREE_DISC_HIST_ID FROM AGREE_DISC_HISTORY ADH INNER JOIN AGREE_BRANDPACK_INCLUDE ABI ON ABI.AGREE_BRANDPACK_ID = ADH.AGREE_BRANDPACK_ID " & vbCrLf & _
+                " SELECT 1 WHERE EXISTS(SELECT ADH.AGREE_DISC_HIST_ID FROM AGREE_DISC_HISTORY ADH INNER JOIN AGREE_BRANDPACK_INCLUDE ABI ON ABI.AGREE_BRANDPACK_ID = ADH.AGREE_BRANDPACK_ID " & vbCrLf & _
                 "               WHERE ABI.AGREE_BRAND_ID = @AGREE_BRAND_ID);"
                 If Not IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)

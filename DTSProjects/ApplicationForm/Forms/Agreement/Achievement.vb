@@ -903,8 +903,9 @@ Public Class AchievementDPD
                     '================================================================
 
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
-                    Me.isAwaiting = True
+                    Me.isAwaiting = False
                     Me.SP = StatusProgress.ProcessingAcrrue
+
                     ThreadProcess = New Thread(AddressOf ShowLoading)
                     ThreadProcess.Start()
                     '=================================================================
@@ -1765,8 +1766,8 @@ Public Class AchievementDPD
                 End If
             End If
             Me.checkEnabledFlagValue(True)
-            Dim StartDate As Date = chkDistributors.DropDownList.GetValue("StarDate")
-            Dim EndDate As Date = chkDistributors.DropDownList.GetValue("EndDate")
+            Dim StartDate As Date = chkDistributors.DropDownList.GetValue("START_DATE")
+            Dim EndDate As Date = chkDistributors.DropDownList.GetValue("END_DATE")
             If StartDate >= New Date(2019, 8, 1) And EndDate <= New Date(2020, 7, 31) Then
                 Me.btnQuarter4.Visible = False
                 Me.btnQuarter4V.Visible = False

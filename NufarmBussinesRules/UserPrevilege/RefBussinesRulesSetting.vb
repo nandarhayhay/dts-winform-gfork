@@ -36,6 +36,7 @@ Namespace SettingDTS
             Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
             Dim tblSettings As New DataTable("T_Setting") : tblSettings.Clear()
             Me.SqlDat = New SqlDataAdapter(Me.SqlCom)
+            Me.OpenConnection()
             Me.SqlDat.Fill(tblSettings) : Me.ClearCommandParameters()
             Dim ListSettings As New List(Of common.SettingConfigurations)
             For i As Integer = 0 To tblSettings.Rows.Count - 1
@@ -61,6 +62,44 @@ Namespace SettingDTS
                 ListSettings.Add(SettingConfig)
             Next
             NufarmBussinesRules.SharedClass.ListSettings = ListSettings
+
+
+            Me.ClearCommandParameters()
+            ''setting Access Accpac Database apakah ke NI87 atau ke NI109 berdasarkan current user
+            Query = "SET NOCOUNT ON;" & vbCrLf & _
+            " SELECT ParamValue FROM RefBussinesRules WHERE START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) AND CreatedBy = @UserName " & vbCrLf & _
+            " AND CodeApp = 'MSC0011';"
+            Me.ResetCommandText(CommandType.Text, Query)
+            Me.AddParameter("UserName", SqlDbType.VarChar, IIf(NufarmBussinesRules.User.UserLogin.UserName <> "", NufarmBussinesRules.User.UserLogin.UserName, "System Administrator"))
+            Dim retval As Object = Me.SqlCom.ExecuteScalar()
+            Me.ClearCommandParameters()
+            Dim endDate As Date = New Date(2021, 9, 30)
+            If Not IsNothing(retval) Then
+                If retval.ToString() <> "NI87" And retval.ToString() <> "" Then
+                    NufarmBussinesRules.SharedClass.DBInvoiceTo = SharedClass.CurrentInvToUse.NI109
+                Else
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    " SELECT TOP 1 END_DATE FROM RefBussinesRules WHERE CodeApp = 'MSC0011' ;"
+                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                    retval = Me.SqlCom.ExecuteScalar()
+                    endDate = Convert.ToDateTime(retval)
+                    If NufarmBussinesRules.SharedClass.ServerDate > endDate Then
+                        NufarmBussinesRules.SharedClass.DBInvoiceTo = SharedClass.CurrentInvToUse.NI109
+                    End If
+                End If
+            Else 'cek startdate dan enddate
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " SELECT TOP 1 END_DATE FROM RefBussinesRules WHERE CodeApp = 'MSC0011' ;"
+                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                retval = Me.SqlCom.ExecuteScalar()
+                endDate = Convert.ToDateTime(retval)
+                If NufarmBussinesRules.SharedClass.ServerDate > endDate Then
+                    NufarmBussinesRules.SharedClass.DBInvoiceTo = SharedClass.CurrentInvToUse.NI109
+                End If
+            End If
+            Me.ClearCommandParameters()
         End Sub
         ''' <summary>
         ''' Nanti lagi di kerjakan sesuda selesai inti program

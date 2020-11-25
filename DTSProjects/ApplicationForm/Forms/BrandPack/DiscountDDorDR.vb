@@ -17,10 +17,10 @@ Public Class DiscountDDOrDR
     Private hasLoadForm As Boolean = False
     Private DVBrand As DataView = Nothing, DVBrandPack As DataView = Nothing, DVDistributor As DataView = Nothing, DVGroup As DataView = Nothing, DVDistListGroup As DataView = Nothing, DVProgBrand As DataView = Nothing, DVProgBrandPack As DataView = Nothing
     Private m_clsDiscountPrice As NufarmBussinesRules.Brandpack.DiscountPrice
-    Private defSizeChkCerDist As System.Drawing.Size = New Size(384, 20)
+    Private defSizeChkCerDist As System.Drawing.Size = New Size(232, 20)
     Private listCheckedBrands() As Object
     Private listCheckedBrandPacks() As Object
-    'Private defSizeChkCerGroupDist = New Size(409, 20)
+    Private defSizeChkCerGroupDist = New Size(232, 20)
     Private custSizeChkCerDist As System.Drawing.Size = New Size(181, 20)
     'Private listCheckedGroups As New List(Of String)
     'Private listCheckedBrands As New List(Of String)

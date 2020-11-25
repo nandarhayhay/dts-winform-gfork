@@ -1,5 +1,6 @@
 Imports System.Data
 Imports System.Data.SqlClient
+Imports NufarmBussinesRules.SharedClass
 Namespace Brandpack
     Public Class Pack
         Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
@@ -12,9 +13,16 @@ Namespace Brandpack
         Private m_AllDataViewPack As DataView
         Public Function getUnitAccPacc() As List(Of String)
             Try
+                Dim DBConnect As String = "NI87"
+                'If DBInvoiceTo = CurrentInvToUse.NI109 Then
+
+                'End If
+                If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                    DBConnect = "NI109"
+                End If
                 Dim ListOfUnit As New List(Of String)
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                        "SELECT DISTINCT UPPER(STOCKUNIT) FROM NI87.dbo.ICITEM;"
+                        "SELECT DISTINCT UPPER(STOCKUNIT) FROM " & DBConnect & ".dbo.ICITEM;"
                 Me.CreateCommandSql("sp_executesql", "")
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Me.OpenConnection() : Me.ExecuteReader()
@@ -104,9 +112,16 @@ Namespace Brandpack
         Public Function CreateDataViewAllPack() As DataView
             Try
                 ''ambil pack yang ada di accpac,bila belum ada inputkan
+                Dim DBConnect As String = "NI87"
+                'If DBInvoiceTo = CurrentInvToUse.NI109 Then
+
+                'End If
+                If DBConnect = CurrentInvToUse.NI109 Then
+                    DBConnect = "NI109"
+                End If
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                         "SELECT PACK_ID,BRANDPACK_NAME FROM (" & vbCrLf & _
-                        "                      SELECT DISTINCT RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) AS PACK_ID,RTRIM([DESC]) AS BRANDPACK_NAME FROM NI87.dbo.ICITEM " & vbCrLf & _
+                        "                      SELECT DISTINCT RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) AS PACK_ID,RTRIM([DESC]) AS BRANDPACK_NAME FROM " & DBConnect & ".dbo.ICITEM " & vbCrLf & _
                         " WHERE INACTIVE = 0 AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND [DESC] LIKE '%@%')IC " & vbCrLf & _
                         " WHERE NOT EXISTS(SELECT PACK_ID FROM Nufarm.dbo.BRND_PACK WHERE PACK_ID = IC.PACK_ID); "
                 Me.CreateCommandSql("sp_executesql", "")
@@ -135,7 +150,7 @@ Namespace Brandpack
                                 PackName = PackName.Trim() : Dim Query1 As String = "" : Dim StockUnit As Object = Nothing
                                 If PackName = "" Then
                                     Query1 = "SET NOCOUNT ON;" & vbCrLf & _
-                                            "SELECT TOP 1 RTRIM(STOCKUNIT)AS StockUnit,RIGHT(RTRIM(SEGMENT4),1)AS FLAG FROM NI87.dbo.ICITEM WHERE RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) = @PACK_ID AND INACTIVE = 0) OPTION(KEEP PLAN);"
+                                            "SELECT TOP 1 RTRIM(STOCKUNIT)AS StockUnit,RIGHT(RTRIM(SEGMENT4),1)AS FLAG FROM " & DBConnect & ".dbo.ICITEM WHERE RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) = @PACK_ID AND INACTIVE = 0) OPTION(KEEP PLAN);"
                                     Me.ResetCommandText(CommandType.Text, Query1)
                                     Me.SqlRe = Me.SqlCom.ExecuteReader()
                                     While Me.SqlRe.Read()

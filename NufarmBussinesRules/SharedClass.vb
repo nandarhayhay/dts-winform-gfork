@@ -1,6 +1,12 @@
 Public Class SharedClass
     Private Shared m_ServerDate As DateTime
     Private Shared m_GetDate As String
+    Public Shared DBInvoiceTo As CurrentInvToUse = CurrentInvToUse.NI87
+    Public Enum CurrentInvToUse
+        NI87
+        NI109
+    End Enum
+
     Public Shared ReadOnly Property GetDate() As String 'formaT date with full time
         Get
             Dim mydate As String = "'" & m_ServerDate.Month & "/" & m_ServerDate.Day & "/" & m_ServerDate.Year & _

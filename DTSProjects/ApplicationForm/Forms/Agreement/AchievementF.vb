@@ -436,8 +436,8 @@ Public Class AchievementF
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
 
                     Me.SP = StatusProgress.ProcessingDisc
-                    'ThreadProcess = New Thread(AddressOf ShowLoading)
-                    'ThreadProcess.Start()
+                    ThreadProcess = New Thread(AddressOf ShowLoading)
+                    ThreadProcess.Start()
                     '=================================================================
                     getDS(Me.SP)
                 Case "btnRecomputeF2"
@@ -445,16 +445,16 @@ Public Class AchievementF
                     Btn = btnRecomputeF2 : Me.btnRecomputeF2.Checked = True
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
                     Me.SP = StatusProgress.ProcessingDisc
-                    'ThreadProcess = New Thread(AddressOf ShowLoading)
-                    'ThreadProcess.Start()
+                    ThreadProcess = New Thread(AddressOf ShowLoading)
+                    ThreadProcess.Start()
                     '=================================================================
                     getDS(Me.SP)
                 Case "btnRecomputeF3" : Me.Flag = "F3" : Me.btnRecomputeF3.Checked = True
 
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
                     Me.SP = StatusProgress.ProcessingDisc
-                    'ThreadProcess = New Thread(AddressOf ShowLoading)
-                    'ThreadProcess.Start()
+                    ThreadProcess = New Thread(AddressOf ShowLoading)
+                    ThreadProcess.Start()
                     '================================================================
                     getDS(Me.SP)
                 Case "btnRefresh"

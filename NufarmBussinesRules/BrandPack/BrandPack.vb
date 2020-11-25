@@ -1,5 +1,6 @@
 Imports System.Data
 Imports System.Data.SqlClient
+Imports NufarmBussinesRules.SharedClass
 Namespace Brandpack
     Public Class BrandPack
         Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
@@ -15,6 +16,12 @@ Namespace Brandpack
         'supaya bisa saving langsung function getdataviewbrand dan getdataviewpack mesti di panggil dulu sebelum 
         'function fetcdataset
         Private Query As String = ""
+        Dim DBInvoiceTo As CurrentInvToUse = CurrentInvToUse.NI87
+        Public Sub New()
+            MyBase.New()
+            '--==============UNCOMMENT THIS AFTER NEEDED ================
+            'DBInvoiceTo = CurrentInvToUse.NI109
+        End Sub
         Public Enum CategorySearch
             Brand
             Pack
@@ -289,20 +296,24 @@ Namespace Brandpack
             Try
                 'get brandpack yang ada di accpack
                 If MustReloadToAccPac Then
+                    Dim DBConnect As String = "NI87"
+                    If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                        DBConnect = "NI109"
+                    End If
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
                            " SELECT BR.BRAND_ID,P.PACK_ID,BR.BRAND_ID  + '' + P.PACK_ID AS BRANDPACK_ID," & vbCrLf & _
                            " BR.BRAND_NAME + ' @ ' + P.PACK_NAME AS BRANDPACK_NAME," & vbCrLf & _
                            " P.QUANTITY,P.DEVIDE_FACTOR,P.UNIT FROM Nufarm.dbo.BRND_BRAND BR,Nufarm.dbo.BRND_PACK P " & vbCrLf & _
-                           " WHERE EXISTS(SELECT RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) FROM NI87.dbo.ICITEM " & vbCrLf & _
-                           "               WHERE RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND CATEGORY <> ANY(SELECT CATEGORY FROM NI87.dbo.ICCATG WHERE [DESC] NOT LIKE '%OTHERS%') " & vbCrLf & _
+                           " WHERE EXISTS(SELECT RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) FROM " & DBConnect & ".dbo.ICITEM " & vbCrLf & _
+                           "               WHERE RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND CATEGORY <> ANY(SELECT CATEGORY FROM " & DBConnect & ".dbo.ICCATG WHERE [DESC] NOT LIKE '%OTHERS%') " & vbCrLf & _
                            "               AND [DESC] NOT LIKE '%OTHER%' AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 0 " & vbCrLf & _
                            "              ) " & vbCrLf & _
-                           "   AND EXISTS(SELECT RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) FROM NI87.dbo.ICITEM" & vbCrLf & _
+                           "   AND EXISTS(SELECT RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) FROM " & DBConnect & ".dbo.ICITEM" & vbCrLf & _
                            "               WHERE RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3)  = P.PACK_ID " & vbCrLf & _
                            "               AND [DESC] NOT LIKE 'OTHER%' " & vbCrLf & _
                            "               AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 0 " & vbCrLf & _
                            "              ) " & vbCrLf & _
-                           "   AND EXISTS(SELECT ITEMNO FROM NI87.dbo.ICITEM WHERE SUBSTRING(ITEMNO,2,10) = BR.BRAND_ID  + '' + P.PACK_ID " & vbCrLf & _
+                           "   AND EXISTS(SELECT ITEMNO FROM " & DBConnect & ".dbo.ICITEM WHERE SUBSTRING(ITEMNO,2,10) = BR.BRAND_ID  + '' + P.PACK_ID " & vbCrLf & _
                            "               AND [DESC] NOT LIKE 'OTHER%' " & vbCrLf & _
                            "               AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 0 " & vbCrLf & _
                            "              ) " & vbCrLf & _
@@ -313,7 +324,6 @@ Namespace Brandpack
                     Me.SqlDat = New SqlDataAdapter(Me.SqlCom)
                     Me.OpenConnection() : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
                     If dtTable.Rows.Count > 0 Then
-
                         '"DECLARE @V_BRAND_NAME VARCHAR(50),@V_BRANDPACK_NAME VARCHAR(100),@V_PACK_NAME VARCHAR(50); " & vbCrLf & _
                         '" IF EXISTS(SELECT SUBSTRING(ITEMNO,2,10) FROM NI87.dbo.ICITEM WHERE SUBSTRING(ITEMNO,2,10) = @BRANDPACK_ID) " & vbCrLf & _
                         '" BEGIN " & vbCrLf & _
@@ -395,7 +405,7 @@ Namespace Brandpack
                            " END "
                     Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
                     'INSERT BRANDPACK GIBGRO SP
-               
+
                     Query = "SET NOCOUNT ON;SELECT BRANDPACK_ID FROM BRND_BRANDPACK WHERE BRANDPACK_NAME LIKE 'GIBGRO 10 SP%' AND isActive = 1;"
                     Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql") : Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                     Dim tblbrandPack As New DataTable("T_P_BrandPack") : tblbrandPack.Clear() : Me.SqlDat.Fill(tblbrandPack)
@@ -420,7 +430,7 @@ Namespace Brandpack
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
                             " UPDATE Nufarm.dbo.BRND_BRANDPACK SET IsActive = 0 WHERE BRANDPACK_ID = " & vbCrLf & _
                             " ANY(SELECT BRANDPACK_ID FROM Nufarm.dbo.BRND_BRANDPACK BB " & vbCrLf & _
-                            "      WHERE EXISTS(SELECT SUBSTRING(ITEMNO,2,10) FROM NI87.dbo.ICITEM WHERE SUBSTRING(ITEMNO,2,10) = BB.BRANDPACK_ID " & vbCrLf & _
+                            "      WHERE EXISTS(SELECT SUBSTRING(ITEMNO,2,10) FROM " & DBConnect & ".dbo.ICITEM WHERE SUBSTRING(ITEMNO,2,10) = BB.BRANDPACK_ID " & vbCrLf & _
                             "                   AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 1) " & vbCrLf & _
                             "      AND NOT EXISTS(SELECT BRANDPACK_ID FROM tempdb..##T_P_BrandPack WHERE BRANDPACK_ID = BB.BRANDPACK_ID) " & vbCrLf & _
                             "     );" ''& vbCrLf & _

@@ -1,6 +1,7 @@
 Imports System.Data
 Imports System.Data.SqlClient
 Imports NufarmBussinesRules
+Imports NufarmBussinesRules.SharedClass
 Namespace DistributorAgreement
     Public Class DPDAchievement
         Inherits NufarmBussinesRules.DistributorAgreement.Target_Agreement
@@ -17,6 +18,7 @@ Namespace DistributorAgreement
         Private tblAVGPrice As DataTable = Nothing
         Private mustDeletedBeforeInsert As Boolean = False
         Private MustReinsertedData As Boolean = True
+        Dim tblGP As New DataTable("T_GP")
         Private Sub CreateOrRecreatTblAchHeader(ByRef tblAchHeader As DataTable)
             'Dim AchHeader As New DataTable("T_AccrHeader") : AchHeader.Clear()
             If (tblAchHeader.Columns.Count > 0) Then
@@ -46,8 +48,13 @@ Namespace DistributorAgreement
                 .Add(New DataColumn("TARGET_PL", Type.GetType("System.Decimal")))
                 .Item("TARGET_PL").DefaultValue = 0
                 'DISPRO
+
                 .Add(New DataColumn("DISPRO", Type.GetType("System.Decimal")))
                 .Item("DISPRO").DefaultValue = 0
+
+
+                .Add(New DataColumn("GP_ID", Type.GetType("System.Int64")))
+                .Item("GP_ID").DefaultValue = 0
                 'ACH_HEADER_ID, DISTRIBUTOR_ID, AGREEMENT_NO, BRAND_ID, TARGET_FM, TARGET_PL, TARGET_VALUE, 
 
                 'TOTAL_ACTUAL
@@ -142,6 +149,35 @@ Namespace DistributorAgreement
                 .Add(New DataColumn("PBF3_DIST", Type.GetType("System.Decimal")))
                 .Item("PBF3_DIST").DefaultValue = 0
 
+                '.Add(New DataColumn("GPPBQ3", Type.GetType("System.Decimal")))
+                '.Item("GPPBQ3").DefaultValue = 0
+
+                '.Add(New DataColumn("GPPBQ4", Type.GetType("System.Decimal")))
+                '.Item("GPPBQ4").DefaultValue = 0
+
+                '.Add(New DataColumn("GPPBS2", Type.GetType("System.Decimal")))
+                '.Item("GPPBS2").DefaultValue = 0
+
+                '.Add(New DataColumn("GPPBYear", Type.GetType("System.Decimal")))
+                '.Item("GPPBPYear").DefaultValue = 0
+
+                .Add(New DataColumn("GPCPF1", Type.GetType("System.Decimal")))
+                .Item("GPCPF1").DefaultValue = 0
+
+                .Add(New DataColumn("GPCPF2", Type.GetType("System.Decimal")))
+                .Item("GPCPF2").DefaultValue = 0
+
+                .Add(New DataColumn("GPCPQ2", Type.GetType("System.Decimal")))
+                .Item("GPCPQ2").DefaultValue = 0
+
+                .Add(New DataColumn("GPCPQ3", Type.GetType("System.Decimal")))
+                .Item("GPCPQ3").DefaultValue = 0
+
+                '.Add(New DataColumn("GPCPS1", Type.GetType("System.Decimal")))
+                '.Item("GPCPS1").DefaultValue = 0
+
+                '.Add(New DataColumn("GPPBY", Type.GetType("System.Decimal")))
+                '.Item("GPPBY").DefaultValue = 0
             End With
             ''create primary key
             Dim Key(1) As DataColumn : Key(0) = tblAchHeader.Columns("ACH_HEADER_ID")
@@ -359,7 +395,9 @@ Namespace DistributorAgreement
                     Query &= " WHERE ACRH.AGREEMENT_NO = ANY(SELECT AGREEMENT_NO FROM AGREE_AGREEMENT WHERE YEAR(END_DATE) >= YEAR(@GETDATE) - 2 " & vbCrLf & _
                              "                               )  AND ACRH.FLAG = '" & Flag & "' OPTION(KEEP PLAN);"
                 End If
-                Me.CreateCommandSql(CommandType.Text, Query, ConnectionTo.Nufarm)
+                If Not IsNothing(Me.SqlCom) Then : Me.ResetCommandText(CommandType.Text, Query)
+                Else : Me.CreateCommandSql("", Query)
+                End If
                 If Not String.IsNullOrEmpty(DISTRIBUTOR_ID) Then
                     Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DISTRIBUTOR_ID)
                 End If
@@ -500,7 +538,7 @@ Namespace DistributorAgreement
                     StartDate = Convert.ToDateTime(tblDistAgreement.Rows(i)("START_DATE"))
                     EndDate = Convert.ToDateTime(tblDistAgreement.Rows(i)("END_DATE"))
                     'edit after debugging
-                    IsTransitionTime = StartDate >= New DateTime(2018, 8, 1) And EndDate <= New DateTime(2019, 7, 31)
+                    IsTransitionTime = StartDate >= New DateTime(2019, 8, 1) And EndDate <= New DateTime(2020, 7, 31)
                     PrevAgreementNo = ""
                     curAgreeStartDate = StartDate
                     curAgreeEndDate = EndDate
@@ -614,7 +652,7 @@ Namespace DistributorAgreement
             getTblCurProgAndPrevAchievement()
             UpdateTotalAllActualAndPO(tblAchHeader)
             'HITUNG DISCOUNT tblAchHeader (sudah include hitung previous discount)
-            Me.CalculateHeader(AgreementNO, FLAG, tblAchHeader)
+            Me.CalculateHeaderRoundup(AgreementNO, FLAG, tblAchHeader)
             Me.ClearCommandParameters()
             'hitung disc detail sudah include penghitungan disc previos
             Me.CalculateDetail(FLAG, tblAchDetail, tblAchHeader)
@@ -658,13 +696,14 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " INSERT INTO ACHIEVEMENT_HEADER(ACH_HEADER_ID, AGREEMENT_NO, DISTRIBUTOR_ID, BRAND_ID, AvgPriceID, FLAG, TOTAL_TARGET, TARGET_FM, TARGET_PL, TOTAL_PO, " & vbCrLf & _
                     " TOTAL_PO_VALUE, TOTAL_ACTUAL, BALANCE, ACH_DISPRO, ACH_BY_CAT,DISPRO, DISC_QTY, TOTAL_CPQ1, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3," & vbCrLf & _
-                    " DESCRIPTIONS, ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF3_DIST,CreatedDate, CreatedBy) " & vbCrLf & _
+                    " DESCRIPTIONS, ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF3_DIST,GP_ID,CreatedDate, CreatedBy) " & vbCrLf & _
                     " VALUES(@ACH_HEADER_ID, @AGREEMENT_NO, @DISTRIBUTOR_ID, @BRAND_ID, @AvgPriceID, @FLAG, @TOTAL_TARGET, @TARGET_FM, @TARGET_PL, @TOTAL_PO, " & vbCrLf & _
                     " @TOTAL_PO_VALUE, @TOTAL_ACTUAL, @BALANCE, @ACH_DISPRO, @ACH_BY_CAT,@DISPRO, @DISC_QTY, @TOTAL_CPQ1, @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, " & vbCrLf & _
-                    " @TOTAL_CPF2, @TOTAL_PBF3,@DESCRIPTIONS,@ACTUAL_DIST,@PO_DIST,@PO_VALUE_DIST,@DISC_DIST,@CPQ1_DIST,@CPQ2_DIST,@CPQ3_DIST,@CPF1_DIST,@CPF2_DIST,@PBF3_DIST,@CreatedDate, @CreatedBy);"
+                    " @TOTAL_CPF2, @TOTAL_PBF3,@DESCRIPTIONS,@ACTUAL_DIST,@PO_DIST,@PO_VALUE_DIST,@DISC_DIST,@CPQ1_DIST,@CPQ2_DIST,@CPQ3_DIST,@CPF1_DIST,@CPF2_DIST,@PBF3_DIST,@GP_ID,@CreatedDate, @CreatedBy);"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.ResetAdapterCRUD()
             With Me.SqlCom
+                .Parameters.Add("@GP_ID", SqlDbType.BigInt, 0, "GP_ID")
                 .Parameters.Add("@ACH_HEADER_ID", SqlDbType.VarChar, 55, "ACH_HEADER_ID")
                 '.Parameters.Add("@AGREEMENT_NO", SqlDbType.VarChar, 25, "AGREEMENT_NO")
                 .Parameters.Add("@DISTRIBUTOR_ID", SqlDbType.VarChar, 10, "DISTRIBUTOR_ID")
@@ -740,9 +779,14 @@ Namespace DistributorAgreement
                 DVPrevAch = tblPrevAchievement.DefaultView()
             End If
             Dim DVCurAch As DataView = tblCurAchiement.DefaultView
+            'Dim DVGivenProg As DataView = Me.tblGP.DefaultView
+            'DVGivenProg.Sort = "IDApp"
+
             For i As Integer = 0 To tblAchHeader.Rows.Count - 1
+
                 Dim RowHeader As DataRow = tblAchHeader.Rows(i), RowDetail As DataRow = Nothing
                 Dim Dispro As Decimal = Convert.ToDecimal(RowHeader("DISPRO"))
+                Dim GPID As Object = RowHeader("GP_ID")
                 '===========COMMENT THIS AFTER DEBUGGING=========================
                 'If BrandID = "77230" Or BrandID = "77240" Then
                 '    Stop
@@ -750,6 +794,7 @@ Namespace DistributorAgreement
                 '===============END COMMENT THIS AFTER DEBUGGING ==============================
                 Dim AchHeaderID As String = RowHeader("ACH_HEADER_ID").ToString()
                 Dim RowsDetail() As DataRow = tblAchDetail.Select("ACH_HEADER_ID = '" & AchHeaderID & "'")
+                Dim Index As Integer = -1
                 For i1 As Integer = 0 To RowsDetail.Length - 1
                     RowDetail = RowsDetail(i1)
                     Dim PrevDisPro As Decimal = 0, BonusQTy As Decimal = 0
@@ -757,33 +802,53 @@ Namespace DistributorAgreement
                     totalInvoiceCurrentQ1 As Decimal = 0, totalInvoiceCurrentQ2 As Decimal = 0, totalInvoiceCurrentQ3 As Decimal = 0
                     Dim AchDetailID As String = RowDetail("ACH_DETAIL_ID")
                     Dim DiscQtyBefore As Decimal = 0
+
                     Descriptions = ""
                     Select Case Flag
                         Case "F3" 'CPQ1,CPQ2,CPQ3,F1,F2
                             If IsTransitionTime Then
-                                totalInvoiceCurrentQ1 = RowDetail("TOTAL_CPQ1")
-                                Dim AchHeaderIDQ1 As String, AchHeaderIDQ2 As String, AchHeaderIDQ3 As String
-                                Dim DiscQ1 As Decimal = 0, DiscQ2 As Decimal = 0, DiscQ3 As Decimal = 0
-                                'TOTAL_CPQ1
-                                If CDec(totalInvoiceCurrentQ1) > 0 Then
-                                    AchHeaderIDQ1 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
-                                    AchHeaderIDQ1 = AchHeaderIDQ1 + "Q1"
-                                    DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDQ1 & "'"
-                                    If DVCurAch.Count > 0 Then
-                                        PrevDisPro = DVCurAch(0)("DISPRO") 'previouse dipsro Q1/Q2/Q3 percent = 100, bukan 0,1
-                                        DiscQ1 = (PrevDisPro / 100) * totalInvoiceCurrentQ1
-                                        DiscQtyBefore = DiscQ1
-                                        Descriptions &= String.Format("Q1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ1, DiscQ1)
-                                    End If
+                                If AchHeaderID.Contains("F3") Then
+                                    AchHeaderID.Replace("F3", "")
                                 End If
+                                totalInvoiceCurrentQ1 = RowDetail("TOTAL_CPQ1")
+                                'Dim AchHeaderIDQ1 As String,
+                                Dim AchHeaderIDQ2 As String, AchHeaderIDQ3 As String
+                                'Dim DiscQ1 As Decimal = 0, 
+                                Dim DiscQ2 As Decimal = 0, DiscQ3 As Decimal = 0
+                                'TOTAL_CPQ1
+                                'If CDec(totalInvoiceCurrentQ1) > 0 Then
+                                '    AchHeaderIDQ1 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
+                                '    AchHeaderIDQ1 = AchHeaderIDQ1 + "Q1"
+                                '    Index = DVGivenProg.Find(AchHeaderIDQ1)
+                                '    If Index <> -1 Then
+                                '        PrevDisPro = DVGivenProg(Index)("GPCPQ1")
+                                '    ElseIf Not IsNothing(DVCurAch) Then
+                                '        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDQ1 & "'"
+                                '        If DVCurAch.Count > 0 Then
+                                '            PrevDisPro = DVCurAch(0)("DISPRO")
+                                '        End If
+                                '    End If
+                                '    If PrevDisPro > 0 Then
+                                '        DiscQ1 = (PrevDisPro / 100) * totalInvoiceCurrentQ1
+                                '        DiscQtyBefore = DiscQ1
+                                '        Descriptions &= String.Format("Q1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ1, DiscQ1)
+                                '    End If
+                                'End If
                                 'TOTAL_CPQ2
                                 totalInvoiceCurrentQ2 = RowDetail("TOTAL_CPQ2")
                                 If CDec(totalInvoiceCurrentQ2) > 0 Then
                                     AchHeaderIDQ2 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
                                     AchHeaderIDQ2 = AchHeaderIDQ2 + "Q2"
-                                    DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDQ2 & "'"
-                                    If DVCurAch.Count > 0 Then
-                                        PrevDisPro = DVCurAch(0)("DISPRO") 'previouse dipsro Q1/Q2/Q3 percent = 100, bukan 0,1
+
+                                    If CDec(RowHeader("GPCPQ2")) > 0 Then
+                                        PrevDisPro = Convert.ToDecimal(RowHeader("GPCPQ2"))
+                                    ElseIf Not IsNothing(DVCurAch) Then
+                                        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDQ2 & "'"
+                                        If DVCurAch.Count > 0 Then
+                                            PrevDisPro = DVCurAch(0)("DISPRO")
+                                        End If
+                                    End If
+                                    If PrevDisPro > 0 Then
                                         DiscQ2 = (PrevDisPro / 100) * totalInvoiceCurrentQ2
                                         DiscQtyBefore += DiscQ2
                                         If Descriptions <> "" Then
@@ -798,9 +863,16 @@ Namespace DistributorAgreement
                                 If CDec(totalInvoiceCurrentQ3) > 0 Then
                                     AchHeaderIDQ3 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
                                     AchHeaderIDQ3 = AchHeaderIDQ3 + "Q3"
-                                    DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDQ3 & "'"
-                                    If DVCurAch.Count > 0 Then
-                                        PrevDisPro = DVCurAch(0)("DISPRO") 'previouse dipsro Q1/Q2/Q3 percent = 100, bukan 0,1
+
+                                    If CDec(RowHeader("GPCPQ3")) > 0 Then
+                                        PrevDisPro = Convert.ToDecimal(RowHeader("GPCPQ3"))
+                                    ElseIf Not IsNothing(DVCurAch) Then
+                                        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDQ3 & "'"
+                                        If DVCurAch.Count > 0 Then
+                                            PrevDisPro = DVCurAch(0)("DISPRO")
+                                        End If
+                                    End If
+                                    If PrevDisPro > 0 Then
                                         DiscQ3 = (PrevDisPro / 100) * totalInvoiceCurrentQ3
                                         DiscQtyBefore += DiscQ3
                                         If Descriptions <> "" Then
@@ -816,30 +888,44 @@ Namespace DistributorAgreement
                             If CDec(totalInvoiceCurrentF1) > 0 Then
                                 AchHeaderIDF1 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
                                 AchHeaderIDF1 = AchHeaderIDF1 + "F1"
-                                DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF1 & "'"
-                                If DVCurAch.Count > 0 Then
-                                    PrevDisPro = DVCurAch(0)("DISPRO")
+
+                                If CDec(RowHeader("GPCPF1")) > 0 Then
+                                    PrevDisPro = Convert.ToDecimal(RowHeader("GPCPF1"))
+                                ElseIf Not IsNothing(DVCurAch) Then
+                                    DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF1 & "'"
+                                    If DVCurAch.Count > 0 Then
+                                        PrevDisPro = DVCurAch(0)("DISPRO")
+                                    End If
+                                End If
+                                If PrevDisPro > 0 Then
                                     DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
                                     DiscQtyBefore += DiscF1
                                     If Descriptions <> "" Then
                                         Descriptions &= ", "
                                     End If
-                                    Descriptions &= String.Format("F1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceCurrentF1, DiscF1)
+                                    Descriptions &= String.Format("F1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
                                 End If
                             End If
                             totalInvoiceCurrentF2 = RowDetail("TOTAL_CPF2")
                             If CDec(totalInvoiceCurrentF2) > 0 Then
                                 AchHeaderIDF2 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
                                 AchHeaderIDF2 = AchHeaderIDF2 + "F2"
-                                DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF2 & "'"
-                                If DVCurAch.Count > 0 Then
-                                    PrevDisPro = DVCurAch(0)("DISPRO")
+
+                                If CDec(RowHeader("GPCPF2")) > 0 Then
+                                    PrevDisPro = Convert.ToDecimal(RowHeader("GPCPF2"))
+                                ElseIf Not IsNothing(DVCurAch) Then
+                                    DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF2 & "'"
+                                    If DVCurAch.Count > 0 Then
+                                        PrevDisPro = DVCurAch(0)("DISPRO")
+                                    End If
+                                End If
+                                If PrevDisPro > 0 Then
                                     DiscF2 = (PrevDisPro / 100) * totalInvoiceCurrentF2
                                     DiscQtyBefore += DiscF2
                                     If Descriptions <> "" Then
                                         Descriptions &= ", "
                                     End If
-                                    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceCurrentF2, DiscF2)
+                                    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF2, DiscF2)
                                 End If
                             End If
                         Case "F2"
@@ -849,31 +935,41 @@ Namespace DistributorAgreement
                             If CDec(totalInvoiceCurrentF1) > 0 Then
                                 AchHeaderIDF1 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
                                 AchHeaderIDF1 = AchHeaderIDF1 + "F1"
-                                DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF1 & "'"
-                                If DVCurAch.Count > 0 Then
-                                    PrevDisPro = DVCurAch(0)("DISPRO")
-                                    DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
-                                    DiscQtyBefore += DiscF1
-                                    If Descriptions <> "" Then
-                                        Descriptions &= ", "
+                                If CDec(RowHeader("GPCPF1")) > 0 Then
+                                    PrevDisPro = Convert.ToDecimal(RowHeader("GPCPF1"))
+                                ElseIf Not IsNothing(DVCurAch) Then
+                                    DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF1 & "'"
+                                    If DVCurAch.Count > 0 Then
+                                        PrevDisPro = DVCurAch(0)("DISPRO")
                                     End If
-                                    Descriptions &= String.Format("F1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceCurrentF1, DiscF1)
+                                End If
+                                If PrevDisPro > 0 Then
+                                    DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
+                                    DiscQtyBefore = DiscF1
+                                    Descriptions &= String.Format("F1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
                                 End If
                             End If
                             totalInvoiceBeforeF3 = RowDetail("TOTAL_PBF3")
                             Dim AchHeaderIDF3 As String = "", DiscF3 As Decimal = 0
-                            If CDec(totalInvoiceBeforeF3) > 0 And Not IsNothing(DVPrevAch) Then
+                            If CDec(totalInvoiceBeforeF3) > 0 Then
                                 AchHeaderIDF3 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
-                                AchHeaderIDF3 = AchHeaderIDF3 + "F2"
-                                DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF3 & "'"
-                                If DVPrevAch.Count > 0 Then
-                                    PrevDisPro = DVPrevAch(0)("DISPRO")
+                                AchHeaderIDF3 = AchHeaderIDF3 + "F3"
+
+                                If CDec(RowHeader("GPPBF3")) > 0 Then
+                                    PrevDisPro = Convert.ToDecimal(RowHeader("GPPBF3"))
+                                ElseIf Not IsNothing(DVPrevAch) Then
+                                    DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF3 & "'"
+                                    If DVPrevAch.Count > 0 Then
+                                        PrevDisPro = DVPrevAch(0)("DISPRO")
+                                    End If
+                                End If
+                                If PrevDisPro > 0 Then
                                     DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
                                     DiscQtyBefore += DiscF3
                                     If Descriptions <> "" Then
                                         Descriptions &= ", "
                                     End If
-                                    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceBeforeF3, DiscF3)
+                                    Descriptions &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
                                 End If
                             End If
                         Case "F1"
@@ -881,17 +977,32 @@ Namespace DistributorAgreement
                             Dim AchHeaderIDF3 As String = "", DiscF3 As Decimal = 0
                             If CDec(totalInvoiceBeforeF3) > 0 And Not IsNothing(DVPrevAch) Then
                                 AchHeaderIDF3 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
-                                AchHeaderIDF3 = AchHeaderIDF3 + "F2"
-                                DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF3 & "'"
-                                If DVPrevAch.Count > 0 Then
-                                    PrevDisPro = DVPrevAch(0)("DISPRO")
-                                    DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
-                                    DiscQtyBefore += DiscF3
-                                    If Descriptions <> "" Then
-                                        Descriptions &= ", "
+                                AchHeaderIDF3 = AchHeaderIDF3 + "F3"
+
+                                If CDec(RowHeader("GPPBF3")) > 0 Then
+                                    PrevDisPro = Convert.ToDecimal(RowHeader("GPPBF3"))
+                                ElseIf Not IsNothing(DVPrevAch) Then
+                                    DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF3 & "'"
+                                    If DVPrevAch.Count > 0 Then
+                                        PrevDisPro = DVPrevAch(0)("DISPRO")
                                     End If
-                                    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceBeforeF3, DiscF3)
                                 End If
+                                If PrevDisPro > 0 Then
+                                    DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
+                                    DiscQtyBefore = DiscF3
+                                    Descriptions &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
+                                End If
+
+                                'DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF3 & "'"
+                                'If DVPrevAch.Count > 0 Then
+                                '    PrevDisPro = DVPrevAch(0)("DISPRO")
+                                '    DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
+                                '    DiscQtyBefore += DiscF3
+                                '    If Descriptions <> "" Then
+                                '        Descriptions &= ", "
+                                '    End If
+                                '    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceBeforeF3, DiscF3)
+                                'End If
                             End If
                     End Select
                     Dim TotalActual As Decimal = Convert.ToDecimal(RowDetail("TOTAL_ACTUAL"))
@@ -977,7 +1088,7 @@ Namespace DistributorAgreement
                 End If
             Next
         End Sub
-        Private Sub CalculateHeader(ByVal AgreementNO As String, ByVal FLAG As String, ByRef tblAchHeader As DataTable)
+        Private Sub CalculateHeaderRoundup(ByVal AgreementNO As String, ByVal FLAG As String, ByRef tblAchHeader As DataTable)
             Dim RowsSelect() As DataRow = Nothing, _
             TTargetSPSG_RPM As Decimal = 0, TTargetBPSG_RPM As Decimal = 0, Percentage_SPSG_RPM As Decimal = 0, Percentage_BPSG_RPM As Decimal = 0, _
             TTargetSPSG_BIO As Decimal = 0, TTargetBPSG_BIO As Decimal = 0, Percentage_SPSG_BIO As Decimal = 0, Percentage_BPSG_BIO As Decimal = 0, _
@@ -1042,13 +1153,14 @@ Namespace DistributorAgreement
             End If
             Description = ""
             'hitung packsize group kecil
-            If Percentage_SPSG_BIO > 0 Then
+            If Percentage_SPSG_BIO > 0 Or TTargetBPSG_BIO > 0 Then
                 'hitung Dispro
                 Dispro = getDispro(Percentage_SPSG_BIO, "ROUNDUP BIOSORB", "S", FLAG)
                 ''only update that has changed
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('00601','0060200','00604')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
+                    Description = ""
                     Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
                     Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
                     Dim PerAch As Decimal = common.CommonClass.GetPercentage(100, TotalPO, TotalTarget)
@@ -1074,7 +1186,7 @@ Namespace DistributorAgreement
                 Next
             End If
 
-            If Percentage_BPSG_BIO > 0 Then
+            If Percentage_BPSG_BIO > 0 Or TTargetBPSG_BIO > 0 Then
                 'hitung Dispro
                 Dispro = 0
                 DiscDist = 0
@@ -1085,6 +1197,7 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('006020')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
+                    Description = ""
                     Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
                     Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
                     Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
@@ -1128,7 +1241,7 @@ Namespace DistributorAgreement
                 Percentage_BPSG_TR = common.CommonClass.GetPercentage(100, TPO_BPSG_TR, TTargetBPSG_TR)
             End If
             'hitung packsize group kecil
-            If Percentage_SPSG_TR > 0 Then
+            If Percentage_SPSG_TR > 0 Or TTargetSPSG_TR > 0 Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1140,6 +1253,7 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
+                    Description = ""
                     Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
                     Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
                     Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
@@ -1164,7 +1278,7 @@ Namespace DistributorAgreement
                     Row.EndEdit()
                 Next
             End If
-            If Percentage_BPSG_TR > 0 Then
+            If Percentage_BPSG_TR > 0 Or TTargetBPSG_TR > 0 Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1176,6 +1290,7 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('007820')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
+                    Description = ""
                     Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
                     Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
                     Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
@@ -1221,7 +1336,7 @@ Namespace DistributorAgreement
             End If
 
             'hitung packsize group kecil
-            If Percentage_SPSG_RPM > 0 Then
+            If Percentage_SPSG_RPM > 0 Or TTargetSPSG_RPM > 0 Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1233,6 +1348,7 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('00681','00684')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
+                    Description = ""
                     Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
                     Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
                     Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
@@ -1257,7 +1373,7 @@ Namespace DistributorAgreement
                     Row.EndEdit()
                 Next
             End If
-            If Percentage_BPSG_RPM > 0 Then
+            If Percentage_BPSG_RPM > 0 Or TTargetBPSG_RPM > 0 Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1268,6 +1384,7 @@ Namespace DistributorAgreement
                 RowsSelect = tblAchHeader.Select("BRAND_ID IN('006820')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
+                    Description = ""
                     Dim TotalPO As Decimal = Convert.ToDecimal(Row("TOTAL_PO"))
                     Dim TotalTarget As Decimal = Convert.ToDecimal(Row("TOTAL_TARGET"))
                     Dim ActualDist As Decimal = Convert.ToDecimal(Row("ACTUAL_DIST"))
@@ -1307,62 +1424,89 @@ Namespace DistributorAgreement
             Dim totalInvoiceBeforeF3 As Decimal = 0, totalInvoiceCurrentF1 As Decimal = 0, totalInvoiceCurrentF2 As Decimal = 0, totalInvoiceCurrentQ1 As Decimal = 0, totalInvoiceCurrentQ2 As Decimal = 0, _
             totalInvoiceCurrentQ3 As Decimal = 0, PrevDisPro As Decimal = 0, DVCurAch As DataView = tblCurAchiement.DefaultView, _
             DVPrevAch As DataView = Nothing
-
+            'Dim DVGivenProg As DataView = Me.tblGP.DefaultView
+            'DVGivenProg.Sort = "IDApp"
             Dim PBF3Dist As Decimal = 0, CPF1Dist As Decimal = 0, CPF2Dist As Decimal = 0, CPQ1Dist As Decimal = 0, CPQ2Dist As Decimal = 0, _
             CPQ3Dist As Decimal = 0
-
+            Dim GPID As Object = Row("GP_ID")
             If Not IsNothing(Me.tblPrevAchievement) Then
                 DVPrevAch = tblPrevAchievement.DefaultView()
             End If
 
             Dim rowsCheck() As DataRow = Nothing
+            Dim Index As Integer = -1
             'AGREE_BRAND_ID,UP_TO_PCT,PRGSV_DISC_PCT
             Dim AchID As String = Row("ACH_HEADER_ID").ToString()
             Select Case Flag
                 Case "F3" 'Q1,Q2,Q3,F1,F2
                     If IsTransitionTime Then
-                        Dim AchQ1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
-                        AchQ1 = AchQ1 + "Q1"
-                        Dim DiscQ1 As Decimal = 0, DiscQ2 As Decimal = 0, DiscQ3 As Decimal = 0
-                        totalInvoiceCurrentQ1 = Row("TOTAL_CPQ1")
-                        CPQ1Dist = Row("CPQ1_DIST")
-                        If CDec(totalInvoiceCurrentQ1) > 0 Then
-                            DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ1 & "'"
-                            If DVCurAch.Count > 0 Then
-                                PrevDisPro = DVCurAch(0)("DISPRO")
-                                DiscQ1 = (PrevDisPro / 100) * totalInvoiceCurrentQ1
-                                DiscDist += (PrevDisPro / 100) * CPQ1Dist
-                                BonusQty += DiscQ1
-                                Description &= String.Format("Q1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ1, DiscQ1)
-                            End If
+
+                        If AchID.Contains("F3") Then
+                            AchID = AchID.Replace("F3", "")
                         End If
 
-                        Dim AchQ2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
-                        AchQ2 = AchQ2 + "Q2"
+                        Dim AchQ1 As String = AchID + "Q1" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
+                        'AchQ1 = AchQ1 + "Q1"
+                        'Dim DiscQ1 As Decimal = 0, 
+                        Dim DiscQ2 As Decimal = 0, DiscQ3 As Decimal = 0
+                        totalInvoiceCurrentQ1 = Row("TOTAL_CPQ1")
+                        CPQ1Dist = Row("CPQ1_DIST")
+                        'PrevDisPro = 0
+                        'If CDec(totalInvoiceCurrentQ1) > 0 Then
+                        '    'check table given_progressive
+                        '    Index = DVGivenProg.Find(AchQ1)
+                        '    If Index <> -1 Then
+                        '        PrevDisPro = DVGivenProg(Index)("GPCPQ1")
+                        '    ElseIf Not IsNothing(DVCurAch) Then
+                        '        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ1 & "'"
+                        '        If DVCurAch.Count > 0 Then
+                        '            PrevDisPro = DVCurAch(0)("DISPRO")
+                        '        End If
+                        '    End If
+                        '    If PrevDisPro > 0 Then
+                        '        DiscQ1 = (PrevDisPro / 100) * totalInvoiceCurrentQ1
+                        '        DiscDist += (PrevDisPro / 100) * CPQ1Dist
+                        '        BonusQty += DiscQ1
+                        '        Description &= String.Format("Q1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ1, DiscQ1)
+                        '    End If
+                        'End If
+
+                        Dim AchQ2 As String = AchID + "Q2" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
+                        'AchQ2 = AchQ2 + "Q2"
                         totalInvoiceCurrentQ2 = Row("TOTAL_CPQ2")
                         CPQ2Dist = Row("CPQ2_DIST")
                         If CDec(totalInvoiceCurrentQ2) > 0 Then
-                            DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ2 & "'" '" & RowsSelect(0)("AGREE_BRAND_ID") & "' AND FLAG = 'Q2'"
-                            If DVCurAch.Count > 0 Then
-                                PrevDisPro = DVCurAch(0)("DISPRO")
-                                DiscQ2 = (PrevDisPro / 100) * totalInvoiceCurrentQ2
-                                DiscDist += (PrevDisPro / 100) * CPQ2Dist
-                                BonusQty += DiscQ2
-                                If Description <> "" Then
-                                    Description &= ", "
+                            'Index = DVGivenProg.Find(GPID)
+                            If CDec(Row("GPCPQ2")) > 0 Then
+                                PrevDisPro = Convert.ToDecimal(Row("GPCPQ2"))
+                            ElseIf Not IsNothing(DVCurAch) Then
+                                DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ2 & "'"
+                                If DVCurAch.Count > 0 Then
+                                    PrevDisPro = DVCurAch(0)("DISPRO")
                                 End If
+                            End If
+                            If PrevDisPro > 0 Then
+                                DiscQ2 = (PrevDisPro / 100) * totalInvoiceCurrentQ2
+                                DiscDist = (PrevDisPro / 100) * CPQ2Dist
+                                BonusQty += DiscQ2
                                 Description &= String.Format("Q2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ2, DiscQ2)
                             End If
                         End If
 
-                        Dim AchQ3 = AchID.Remove(AchID.LastIndexOf("|") + 1)
-                        AchQ3 = AchQ3 + "Q3"
+                        Dim AchQ3 = AchID + "Q3" '.Remove(AchID.LastIndexOf("|") + 1)
+                        'AchQ3 = AchQ3 + "Q3"
                         totalInvoiceCurrentQ3 = Row("TOTAL_CPQ3")
                         CPQ3Dist = Row("CPQ3_DIST")
                         If CDec(totalInvoiceCurrentQ3) > 0 Then
-                            DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchID & "'"
-                            If DVCurAch.Count > 0 Then
-                                PrevDisPro = DVCurAch(0)("DISPRO")
+                            If CDec(Row("GPCPQ3")) > 0 Then
+                                PrevDisPro = Convert.ToDecimal(Row("GPCPQ3"))
+                            ElseIf Not IsNothing(DVCurAch) Then
+                                DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ3 & "'"
+                                If DVCurAch.Count > 0 Then
+                                    PrevDisPro = DVCurAch(0)("DISPRO")
+                                End If
+                            End If
+                            If PrevDisPro > 0 Then
                                 DiscQ3 = (PrevDisPro / 100) * totalInvoiceCurrentQ3
                                 DiscDist += (PrevDisPro / 100) * CPQ3Dist
                                 BonusQty += DiscQ3
@@ -1375,41 +1519,63 @@ Namespace DistributorAgreement
                     End If
                     Dim DiscF1 As Decimal = 0, DiscF2 As Decimal = 0
 
-                    Dim AchF2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
-                    AchF2 = AchF2 + "F2"
+                    Dim AchF2 As String = AchID + "F2" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    'AchF2 = AchF2 + "F2"
                     totalInvoiceCurrentF2 = Row("TOTAL_CPF2")
                     CPF2Dist = Row("CPF2_DIST")
-
                     If totalInvoiceCurrentF2 > 0 Then
-                        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF2 & "'"
-                        If DVCurAch.Count > 0 Then
-                            PrevDisPro = DVCurAch(0)("DISPRO")
+                        If CDec(Row("GPCPF2")) > 0 Then
+                            PrevDisPro = Convert.ToDecimal(Row("GPCPF2"))
+                        ElseIf Not IsNothing(DVCurAch) Then
+                            DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF2 & "'"
+                            If DVCurAch.Count > 0 Then
+                                PrevDisPro = DVCurAch(0)("DISPRO")
+                            End If
+                        End If
+                        If PrevDisPro > 0 Then
                             DiscF2 = (PrevDisPro / 100) * totalInvoiceCurrentF2
                             DiscDist += (PrevDisPro / 100) * CPF2Dist
                             BonusQty += DiscF2
                             If Description <> "" Then
                                 Description &= ", "
                             End If
-                            Description &= String.Format("F2 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF2, DiscF2)
+                            Description &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF2, DiscF2)
                         End If
                     End If
-                    Dim AchF1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
-                    AchF1 = AchF1 + "F1"
+                    Dim AchF1 As String = AchID + "F1" ' AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    'AchF1 = AchF1 + "F1"
                     totalInvoiceCurrentF1 = Row("TOTAL_CPF1")
                     CPF1Dist = Row("CPF1_DIST")
-
                     If totalInvoiceCurrentF1 > 0 Then
-                        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
-                        If DVCurAch.Count > 0 Then
-                            PrevDisPro = DVCurAch(0)("DISPRO")
+                        If CDec(Row("GPCPF1")) > 0 Then
+                            PrevDisPro = Convert.ToDecimal(Row("GPCPF1"))
+                        ElseIf Not IsNothing(DVCurAch) Then
+                            DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
+                            If DVCurAch.Count > 0 Then
+                                PrevDisPro = DVCurAch(0)("DISPRO")
+                            End If
+                        End If
+                        If PrevDisPro > 0 Then
                             DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
                             DiscDist += (PrevDisPro / 100) * CPF1Dist
                             BonusQty += DiscF1
                             If Description <> "" Then
                                 Description &= ", "
                             End If
-                            Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
+                            Description &= String.Format("F1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
                         End If
+
+                        'DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
+                        'If DVCurAch.Count > 0 Then
+                        '    PrevDisPro = DVCurAch(0)("DISPRO")
+                        '    DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
+                        '    DiscDist += (PrevDisPro / 100) * CPF1Dist
+                        '    BonusQty += DiscF1
+                        '    If Description <> "" Then
+                        '        Description &= ", "
+                        '    End If
+                        '    Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
+                        'End If
                     End If
                 Case "F2" 'F1, PBF3
                     Dim AchF1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
@@ -1418,16 +1584,19 @@ Namespace DistributorAgreement
                     CPF1Dist = Row("CPF1_DIST")
                     Dim DiscF1 As Decimal = 0
                     If totalInvoiceCurrentF1 > 0 Then
-                        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
-                        If DVCurAch.Count > 0 Then
-                            PrevDisPro = DVCurAch(0)("DISPRO")
+                        If CDec(Row("GPCPF1")) > 0 Then
+                            PrevDisPro = Convert.ToDecimal(Row("GPCPF1"))
+                        ElseIf Not IsNothing(DVCurAch) Then
+                            DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
+                            If DVCurAch.Count > 0 Then
+                                PrevDisPro = DVCurAch(0)("DISPRO")
+                            End If
+                        End If
+                        If PrevDisPro > 0 Then
                             DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
                             DiscDist += (PrevDisPro / 100) * CPF1Dist
                             BonusQty += DiscF1
-                            If Description <> "" Then
-                                Description &= ", "
-                            End If
-                            Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceCurrentF1, DiscF1)
+                            Description &= String.Format("F1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
                         End If
                     End If
                     Dim AchPBF3 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
@@ -1435,17 +1604,23 @@ Namespace DistributorAgreement
                     totalInvoiceBeforeF3 = Row("TOTAL_PBF3")
                     PBF3Dist = Row("PBF3_DIST")
                     AchPBF3 = AchPBF3 + "F3"
-                    If totalInvoiceBeforeF3 > 0 And Not IsNothing(DVPrevAch) Then
-                        DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
-                        If DVPrevAch.Count > 0 Then
-                            PrevDisPro = DVPrevAch(0)("DISPRO")
+                    If totalInvoiceBeforeF3 > 0 Then
+                        If CDec(Row("GPPBF3")) > 0 Then
+                            PrevDisPro = Convert.ToDecimal(Row("GPPBF3"))
+                        ElseIf Not IsNothing(DVPrevAch) Then
+                            DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
+                            If DVPrevAch.Count > 0 Then
+                                PrevDisPro = DVPrevAch(0)("DISPRO")
+                            End If
+                        End If
+                        If PrevDisPro > 0 Then
                             DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
                             DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
                             If Description <> "" Then
                                 Description &= ", "
                             End If
-                            Description &= String.Format("F3 {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceBeforeF3, DiscF3)
+                            Description &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
                         End If
                     End If
                 Case "F1"
@@ -1454,17 +1629,20 @@ Namespace DistributorAgreement
                     totalInvoiceBeforeF3 = Row("TOTAL_PBF3")
                     PBF3Dist = Row("PBF3_DIST")
                     AchPBF3 = AchPBF3 + "F3"
-                    If totalInvoiceBeforeF3 > 0 And Not IsNothing(DVPrevAch) Then
-                        DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
-                        If DVPrevAch.Count > 0 Then
-                            PrevDisPro = DVPrevAch(0)("DISPRO")
+                    If totalInvoiceBeforeF3 > 0 Then
+                        If CDec(Row("GPPBF3")) > 0 Then
+                            PrevDisPro = Convert.ToDecimal(Row("GPPBF3"))
+                        ElseIf Not IsNothing(DVPrevAch) Then
+                            DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF3 & "'"
+                            If DVPrevAch.Count > 0 Then
+                                PrevDisPro = DVPrevAch(0)("DISPRO")
+                            End If
+                        End If
+                        If PrevDisPro > 0 Then
                             DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
                             DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
-                            If Description <> "" Then
-                                Description &= ", "
-                            End If
-                            Description &= String.Format("F3 {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceBeforeF3, DiscF3)
+                            Description &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
                         End If
                     End If
             End Select
@@ -1553,10 +1731,10 @@ Namespace DistributorAgreement
                      " SELECT PO_REF_NO,PO_REF_DATE,DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,SPPB_QTY,PO_ORIGINAL_QTY,PO_AMOUNT = PO_ORIGINAL_QTY * PO_PRICE_PERQTY,RUN_NUMBER,IncludeDPD INTO tempdb..##T_MASTER_PO_" & Me.ComputerName & " FROM ( " & vbCrLf & _
                      "  SELECT PO.PO_REF_NO,PO.PO_REF_DATE,PO.DISTRIBUTOR_ID,ABI.BRAND_ID,ABP.BRANDPACK_ID,OPB.PO_ORIGINAL_QTY,OPB.PO_PRICE_PERQTY,OOAB.QTY_EVEN + ISNULL(SB.TOTAL_DISC_QTY,0) AS SPPB_QTY,OOA.RUN_NUMBER ," & vbCrLf & _
                      "  IncludeDPD = CASE WHEN (OPB.ExcludeDPD = 0) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND IncludeDPD = 1) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND IncludeDPD = 0) THEN 'NO' " & vbCrLf & _
-                     "  WHEN EXISTS(SELECT PROJ.PROJ_REF_NO, PB.BRANDPACK_ID FROM PROJ_PROJECT PROJ INNER JOIN PROJ_BRANDPACK PB ON PROJ.PROJ_REF_NO = PB.PROJ_REF_NO WHERE PROJ.PROJ_REF_NO = PO.PROJ_REF_NO AND PB.BRANDPACK_ID = OPB.BRANDPACK_ID AND PROJ.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID) THEN 'NO' " & vbCrLf & _
-                     "  WHEN OPB.PLANTATION_ID IS NULL THEN 'YESS' ELSE 'NO' END " & vbCrLf & _
+                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
+                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN (EXISTS(SELECT PROJ.PROJ_REF_NO, PB.BRANDPACK_ID FROM PROJ_PROJECT PROJ INNER JOIN PROJ_BRANDPACK PB ON PROJ.PROJ_REF_NO = PB.PROJ_REF_NO WHERE PROJ.PROJ_REF_NO = PO.PROJ_REF_NO AND PB.BRANDPACK_ID = OPB.BRANDPACK_ID AND PROJ.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN (OPB.PLANTATION_ID IS NULL) THEN 'YESS' ELSE 'NO' END " & vbCrLf & _
                      "  FROM Nufarm.dbo.AGREE_BRAND_INCLUDE ABI " & vbCrLf & _
                      "  INNER JOIN Nufarm.DBO.AGREE_BRANDPACK_INCLUDE ABP ON ABI.AGREE_BRAND_ID = ABP.AGREE_BRAND_ID" & vbCrLf & _
                      "  INNER JOIN Nufarm.dbo.ORDR_PO_BRANDPACK OPB ON OPB.BRANDPACK_ID = ABP.BRANDPACK_ID " & vbCrLf & _
@@ -1863,7 +2041,9 @@ Namespace DistributorAgreement
             Dim tblStartDate As New DataTable("T_StartDate1")
             ''SET privouse Agreement   
             tblStartDate.Clear() : Me.setDataAdapter(Me.SqlCom).Fill(tblStartDate)
-            PrevAgreementNo = tblStartDate.Rows(0)("AGREEMENT_NO")
+            If tblStartDate.Rows.Count > 0 Then
+                PrevAgreementNo = tblStartDate.Rows(0)("AGREEMENT_NO")
+            End If
             'TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_ACTUAL, ACH_DISPRO, DISPRO,
             'CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsNew, IsChanged, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, GPPBF3, GPCPQ1
 
@@ -1896,8 +2076,9 @@ Namespace DistributorAgreement
                         CPEQ1 = StartDatePKD.AddMonths(3).AddDays(-1)
                         CPQ2 = Convert.ToDateTime(CPEQ1).AddDays(1)
                         CPEQ2 = Convert.ToDateTime(CPQ2).AddMonths(3).AddDays(-1)
-                        CPQ3 = Convert.ToDateTime(CPEQ2).AddDays(1)
-                        CPEQ3 = Convert.ToDateTime(CPQ3).AddMonths(3).AddDays(-1)
+
+                        CPQ3 = Convert.ToDateTime(CPEQ2).AddDays(1) 'cuma dua bulan pebruari dan maret
+                        CPEQ3 = Convert.ToDateTime(CPQ3).AddMonths(2).AddDays(-1)
 
                         'CPEQ3 = StartDate.AddDays(-1)
                         'CPQ3 = Convert.ToDateTime(CPEQ3).AddMonths(-3).AddDays(1)
@@ -2086,6 +2267,42 @@ Namespace DistributorAgreement
                         End If
                     End If
             End Select
+            'AMBIL DATA POTENSI BERDASARKAN AGREEMENTNO,DENGAN COLUM DISTRIBUTOR_ID,BRAND_ID,
+            Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
+                    "SELECT GP.IDApp,ACHIEVEMENT_ID = DA.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|' + @FLAG,GP.CPF1,GP.CPF2,GP.PBF3,GP.CPQ2,GP.CPQ3 " & vbCrLf & _
+                    " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
+                    " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO ;"
+            Me.ResetCommandText(CommandType.Text, Query)
+            'Me.SqlCom.Parameters.RemoveAt("@START_DATE")
+            'Me.SqlCom.Parameters.RemoveAt("@END_DATE")
+            Me.AddParameter("@FLAG", SqlDbType.VarChar, Flag)
+            tblGP.Clear()
+            setDataAdapter(Me.SqlCom).Fill(tblGP)
+            If tblGP.Rows.Count > 0 Then
+                Dim rows() As DataRow = Nothing
+                For i As Integer = 0 To tblGP.Rows.Count - 1
+                    'rows = tblAchHeader.Select("ACHIEVEMENT_ID = '" & tblGP.Rows(i)("DISTRIBUTOR_ID").ToString() & "|" & tblGP.Rows(i)("AGREE_BRAND_ID").ToString() & "|" & Flag & "'")
+                    rows = tblAchHeader.Select("ACH_HEADER_ID = '" & tblGP.Rows(i)("ACHIEVEMENT_ID") & "'")
+                    If rows.Length > 0 Then
+                        rows(0).BeginEdit()
+                        rows(0)("GP_ID") = tblGP.Rows(i)("IDApp")
+                        'rows(0)("GPPBQ4") = Convert.ToDecimal(tblGP.Rows(i)("PBQ4"))
+                        'rows(0)("GPPBS2") = Convert.ToDecimal(tblGP.Rows(i)("PBS2"))
+                        'rows(0)("GPPBQ3") = Convert.ToDecimal(tblGP.Rows(i)("PBQ3"))
+                        'rows(0)("GPCPQ1") = Convert.ToDecimal(tblGP.Rows(i)("CPQ1"))
+                        'rows(0)("GPCPQ2") = Convert.ToDecimal(tblGP.Rows(i)("CPQ2"))
+                        rows(0)("GPCPF1") = Convert.ToDecimal(tblGP.Rows(i)("CPF1"))
+                        rows(0)("GPCPF2") = Convert.ToDecimal(tblGP.Rows(i)("CPF2"))
+                        rows(0)("GPCPQ2") = Convert.ToDecimal(tblGP.Rows(i)("CPQ2"))
+                        rows(0)("GPCPQ3") = Convert.ToDecimal(tblGP.Rows(i)("CPQ3"))
+                        rows(0)("GPPBF3") = Convert.ToDecimal(tblGP.Rows(i)("PBF3"))
+                        'rows(0)("GPCPS1") = Convert.ToDecimal(tblGP.Rows(i)("CPS1"))
+                        'rows(0)("GPPBY") = Convert.ToDecimal(tblGP.Rows(i)("PBY"))
+                        rows(0).EndEdit()
+                        rows(0).AcceptChanges()
+                    End If
+                Next
+            End If
             tblAchHeader.AcceptChanges()
             Return True
         End Function

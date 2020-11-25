@@ -1,6 +1,7 @@
 Imports System.Data
 Imports System.Data.SqlClient
 Imports NufarmBussinesRules
+Imports NufarmBussinesRules.SharedClass
 Namespace DistributorAgreement
     Public Class Target_Agreement
         Inherits NufarmBussinesRules.DistributorAgreement.Agreement
@@ -52,6 +53,11 @@ Namespace DistributorAgreement
             Me.SqlRe = Me.SqlCom.ExecuteReader()
             While Me.SqlRe.Read() : retvalStartDate = SqlRe.GetString(0) : retvalEndDate = SqlRe.GetString(1) : End While
             Me.SqlRe.Close() : Me.ClearCommandParameters()
+            Dim StoredProcNI87 As String = "Usp_Create_Temp_Invoice_Table", StoredProcNI109 = "Usp_Create_Temp_Invoice_Table_NI109"
+            Dim StoredProcToUse As String = StoredProcNI87
+            If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                StoredProcToUse = StoredProcNI109
+            End If
             If Not ((StrStartDate.Equals(retvalStartDate)) Or (strEndDate.Equals(retvalEndDate))) Then
                 'bikin baru
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
@@ -61,11 +67,11 @@ Namespace DistributorAgreement
                         " BEGIN SELECT START_DATE = @D_START_DATE,END_DATE = @D_END_DATE,UserName = @UserName INTO  ##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
                         " IF EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                         " BEGIN  DROP TABLE tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
-                        " EXEC Usp_Create_Temp_Invoice_Table @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; "
+                        " EXEC " & StoredProcToUse & " @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; "
             Else
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
                         "IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                        " BEGIN  EXEC Usp_Create_Temp_Invoice_Table @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME; END " '& vbCrLf & _
+                        " BEGIN  EXEC " & StoredProcToUse & " @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME; END " '& vbCrLf & _
 
             End If
             Me.ResetCommandText(CommandType.Text, Query)
@@ -847,23 +853,23 @@ Namespace DistributorAgreement
         Private Sub DropTempTable()
 
             '---------------UNCOMENT THIS AFTER DEBUGGIN -----------------------------
-            'Query = "SET NOCOUNT ON ;" & vbCrLf &
-            '          "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf &
-            '          " BEGIN  DROP TABLE  tempdb..##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf &
-            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_MASTER_PO_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf &
-            '          " BEGIN DROP TABLE tempdb..##T_MASTER_PO_" & Me.ComputerName & " ; END " & vbCrLf &
-            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_Brand_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf &
-            '          " BEGIN DROP TABLE tempdb..##T_Agreement_Brand_" & Me.ComputerName & " ; END " & vbCrLf &
-            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_PO_Original_By_Distributor_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf &
-            '          " BEGIN DROP TABLE tempdb..##T_PO_Original_By_Distributor_" & Me.ComputerName & " ; END " & vbCrLf &
-            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_BrandPack_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf &
-            '          " BEGIN DROP TABLE tempdb..##T_Agreement_BrandPacK_" & Me.ComputerName & " ; END " & vbCrLf &
-            '          " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf &
-            '          " BEGIN DROP TABLE Tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END "
-            'Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-            'Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-            'Me.OpenConnection()
-            'Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+            Query = "SET NOCOUNT ON ;" & vbCrLf & _
+                      "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN  DROP TABLE  tempdb..##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_MASTER_PO_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_MASTER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_Brand_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_Agreement_Brand_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_PO_Original_By_Distributor_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_PO_Original_By_Distributor_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_BrandPack_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_Agreement_BrandPacK_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN DROP TABLE Tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END "
+            Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+            Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+            Me.OpenConnection()
+            Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
         End Sub
         Public Function GetAccrued(ByVal Flag As String, ByVal StartDate As DateTime, ByVal EndDate As DateTime, Optional ByVal ListDistributor As List(Of String) = Nothing)
             Try
@@ -3266,10 +3272,10 @@ Namespace DistributorAgreement
                      " SELECT PO_REF_NO,PO_REF_DATE,DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,SPPB_QTY,PO_ORIGINAL_QTY,PO_AMOUNT = PO_ORIGINAL_QTY * PO_PRICE_PERQTY,RUN_NUMBER,IncludeDPD INTO tempdb..##T_MASTER_PO_" & Me.ComputerName & " FROM ( " & vbCrLf & _
                      "  SELECT PO.PO_REF_NO,PO.PO_REF_DATE,PO.DISTRIBUTOR_ID,ABI.BRAND_ID,ABP.BRANDPACK_ID,OPB.PO_ORIGINAL_QTY,OPB.PO_PRICE_PERQTY,SB.SPPB_QTY,OOA.RUN_NUMBER ," & vbCrLf & _
                      "  IncludeDPD = CASE WHEN (OPB.ExcludeDPD = 0) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND IncludeDPD = 1) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND IncludeDPD = 0) THEN 'NO' " & vbCrLf & _
-                     "  WHEN EXISTS(SELECT PROJ.PROJ_REF_NO, PB.BRANDPACK_ID FROM PROJ_PROJECT PROJ INNER JOIN PROJ_BRANDPACK PB ON PROJ.PROJ_REF_NO = PB.PROJ_REF_NO WHERE PROJ.PROJ_REF_NO = PO.PROJ_REF_NO AND PB.BRANDPACK_ID = OPB.BRANDPACK_ID AND PROJ.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID) THEN 'NO' " & vbCrLf & _
-                     "  WHEN OPB.PLANTATION_ID IS NULL THEN 'YESS' ELSE 'NO' END " & vbCrLf & _
+                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
+                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN (EXISTS(SELECT PROJ.PROJ_REF_NO, PB.BRANDPACK_ID FROM PROJ_PROJECT PROJ INNER JOIN PROJ_BRANDPACK PB ON PROJ.PROJ_REF_NO = PB.PROJ_REF_NO WHERE PROJ.PROJ_REF_NO = PO.PROJ_REF_NO AND PB.BRANDPACK_ID = OPB.BRANDPACK_ID AND PROJ.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN (OPB.PLANTATION_ID IS NULL) THEN 'YESS' ELSE 'NO' END " & vbCrLf & _
                      "  FROM Nufarm.dbo.AGREE_BRAND_INCLUDE ABI " & vbCrLf & _
                      "  INNER JOIN Nufarm.DBO.AGREE_BRANDPACK_INCLUDE ABP ON ABI.AGREE_BRAND_ID = ABP.AGREE_BRAND_ID" & vbCrLf & _
                      "  INNER JOIN Nufarm.dbo.ORDR_PO_BRANDPACK OPB ON OPB.BRANDPACK_ID = ABP.BRANDPACK_ID " & vbCrLf & _

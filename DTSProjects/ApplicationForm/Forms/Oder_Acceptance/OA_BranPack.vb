@@ -21,6 +21,7 @@ Public Class OA_BranPack
     Private OA_REF_NO As String
     Private PRICE_PRQTY As Decimal = 0
     Private WithEvents Other_QTY As Other_QTY
+    Private WithEvents OtherDDDRCBD As OtherDDDR
     Private DDF As DataDragFrom
     Private WithEvents LftQTY As LeftQTY
     Private SSB As StateStyleButtonBar
@@ -993,7 +994,6 @@ Public Class OA_BranPack
                     End If
                 End If
                 Me.mcbBrandPack.ReadOnly = False
-
                 If Me.GridEX1.RecordCount > 0 Then
                     'GENERATE DISCOUNT PER OA 
                     Me.clsOADiscount.getTotalPrice(Me.DistributorID, Me.mcbRefNo.Value.ToString(), Me.mcbRefNo.DropDownList().GetValue("PO_REF_NO").ToString())
@@ -1787,15 +1787,10 @@ Public Class OA_BranPack
 
     '    End Try
     'End Sub
-
-    Private Function Other_QTY_OK(ByVal ResultOQty As Decimal, ByVal flag As String, ByVal RefOther As Integer) As Boolean
-
-        Me.Cursor = Cursors.WaitCursor
-        Dim LeftQTY As Decimal = ResultOQty Mod Me.Devided_Qty
-        Dim ResultQTY As Decimal = (Decimal.Truncate(ResultOQty / Me.Devided_Qty)) * Me.Devided_Qty
+    Private Function CanAccomodateDisc(ByVal TotalDisc) As Boolean
         Dim PRICE As Decimal = Convert.ToDecimal(Me.GridEX1.GetValue("OA_PRICE_PERQTY"))
         Dim AmountPrice As Decimal = 0
-        AmountPrice = PRICE * ResultQTY
+        AmountPrice = PRICE * TotalDisc
         'ambil price yang ada di pnl oa_discount
         Dim DISC_PRICE_OA As Decimal = 0
         Dim x As String = ""
@@ -1821,82 +1816,259 @@ Public Class OA_BranPack
             'Me.Other_QTY.Show(Me.pnlOADiscount)
             Return False
         End If
-        Dim IndexRow As Integer = Me.GridEX1.Row
-        Dim OA_BRANDPACK_DISC_QTY As Decimal = ResultQTY
-        Dim OA_BRANDPACK_ID As Object = Me.GridEX1.GetValue("OA_BRANDPACK_ID")
-        Me.SFG = StateFillingGrid.Filling
-        Dim GridExDataView As DataView = CType(Me.GridEX1.DataSource, DataView)
-        Dim index As Integer
+        Return True
+    End Function
+    Private Sub fillDtEvenRemain(ByVal tblResult As DataTable, ByVal TotalLimitDiscQty As Decimal, ByRef dtEven As DataTable, ByRef dtRemain As DataTable)
+        dtEven.Clear()
+        dtRemain.Clear()
+        Dim TotalDiscEven As Decimal = 0
+        Dim remainDisc As Decimal = 0
+        For Each Row As DataRow In tblResult.Rows
 
+            If TotalDiscEven + CDec(Row("INC_DISC")) <= TotalLimitDiscQty Then
+                dtEven.ImportRow(Row)
+                TotalDiscEven += CDec(Row("INC_DISC"))
+            ElseIf TotalDiscEven < TotalLimitDiscQty Then
+                'ambil kekurangannyanya biar genap
+                Dim MinusEvenQty As Decimal = TotalLimitDiscQty - TotalDiscEven
+                remainDisc = CDec(Row("INC_DISC")) - MinusEvenQty
+                'insert row to dtEven with Disc MinusEvenQty
+                Row.BeginEdit()
+                Row("INC_DISC") = MinusEvenQty
+                Row.EndEdit()
+                Row.AcceptChanges()
+                dtEven.ImportRow(Row)
+
+                'insert row to dtRemain with disc remainDisc
+                Row.BeginEdit()
+                Row("INC_DISC") = remainDisc
+                Row.EndEdit()
+                Row.AcceptChanges()
+                dtRemain.ImportRow(Row)
+                TotalDiscEven += MinusEvenQty
+            Else
+                dtRemain.ImportRow(Row)
+            End If
+        Next
+        If dtEven.Rows.Count > 0 Then
+            For i As Integer = 0 To dtEven.Rows.Count - 1
+                dtEven.Rows(i).SetAdded()
+            Next
+        Else
+            dtEven = Nothing
+        End If
+        If dtRemain.Rows.Count > 0 Then
+            For i As Integer = 0 To dtRemain.Rows.Count - 1
+                dtRemain.Rows(i).SetAdded()
+            Next
+        Else
+            dtRemain = Nothing
+        End If
+
+    End Sub
+
+    Private Function InsertOthersDDDRCBD(ByVal tblResult As DataTable, ByRef TotalDiscOut As Decimal) As Boolean
+
+        Me.Cursor = Cursors.WaitCursor
+        Dim OrgDecimalValue As Decimal = Me.clsOADiscount.getTotalQTY(Me.GridEX1.GetValue("OA_BRANDPACK_ID"), False)
+        'Dim Devided_Qty As Decimal = Me.clsOADiscount.GetDevided_QTY(Me.GridEX1.GetValue("BRANDPACK_ID").ToString())
+        Dim LeftQTY As Decimal = OrgDecimalValue Mod Devided_Qty 'sisa dari yang bisa di bagi genap
+        ''jumlahkan total discount
+        Dim oTotalDisc As Object = tblResult.Compute("SUM(INC_DISC)", "")
+        Dim TotalDisc As Decimal = 0
+        If Not IsNothing(oTotalDisc) And Not IsDBNull(oTotalDisc) Then
+            TotalDisc = Convert.ToDecimal(oTotalDisc)
+        Else
+            Return False
+        End If
+        Dim TotalLimitDiscQty As Decimal = 0 'batasan untuk memberikan discount = ResultQty
+        Dim MinusDevidedQty As Decimal = 0 'untuk mengetahu kekurangan nya discount agar genap
+        Dim lastRemain As Decimal = 0 'Nilai decimal dari remaind yang tidak bisa di ambil
+        Dim dtRemain As DataTable = tblResult.Copy()
+
+        Dim dtEven As DataTable = tblResult.Copy()
         If LeftQTY > 0 Then
-            'jadikan nilai remainding dulu
-            With Me.clsOADiscount.OA_Remainding
-                .OA_BRANDPACK_ID = OA_BRANDPACK_ID
-                .AGREE_DISC_HIST_ID = DBNull.Value
-                .BRND_B_S_ID = DBNull.Value
-                .ACHIEVMENT_BRANDPACK_ID = DBNull.Value
-                .FLAG = flag
-                .MRKT_DISC_HISt_ID = DBNull.Value
-                .MRKT_M_S_ID = DBNull.Value
-                .PROJ_DISC_HIST_ID = DBNull.Value
-                .PRICE_PRQTY = PRICE
-                .RM_OA_ID = DBNull.Value
-                .RefOther = RefOther
-            End With
-            'INSERT KE TABLE OA_BRANDPACK_DISC
-            'INSERT KE TABLE ORDR_OA_REMAINDING
-            Me.clsOADiscount.InsertOA_BRANDPACK_DISC(ResultQTY, LeftQTY, OA_BRANDPACK_ID, False)
-        ElseIf ResultQTY > 0 Then
-            With Me.clsOADiscount.OA_BRANDPACK_DISCOUNT
-                .AGREE_DISC_HIST_ID = DBNull.Value
-                .MRK_M_S_ID = DBNull.Value
-                .BRND_B_S_ID = DBNull.Value
-                .ACHIEVEMENT_BRANDPACK_ID = DBNull.Value
-                .GQSY_SGT_P_FLAG = flag
-                .MRKT_DISC_HIST_ID = DBNull.Value
-                .OA_BRANDPACK_ID = Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString()
-                .PRICE_PRQTY = PRICE
-                .PROJ_DISC_HIST_ID = DBNull.Value
-                .OA_RM_ID = DBNull.Value
-                .BRANDPACK_ID = Me.GridEX1.GetValue("BRANDPACK_ID").ToString()
-                .RefOther = RefOther
-            End With
-            Me.clsOADiscount.InsertOA_BRANDPACK_DISC(NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.OtherDiscount, _
-            ResultQTY, , , , True, Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString())
+            'untuk menjadikan genap = devided_qty - kekurangan nya = 
+            'Devided_qty - LeftQty
+            MinusDevidedQty = Devided_Qty - LeftQTY
+            If TotalDisc < MinusDevidedQty Then
+                'insert reminding
+                For i As Integer = 0 To dtRemain.Rows.Count - 1
+                    dtRemain.Rows(i).SetAdded()
+                Next
+                Me.clsOADiscount.InserDDDRCBD(Nothing, dtRemain)
+            Else
+                TotalLimitDiscQty = MinusDevidedQty
+                TotalDisc = TotalDisc - MinusDevidedQty
+                'sisanya
+                If TotalDisc >= Devided_Qty Then
+                    If TotalDisc Mod Devided_Qty > 0 Then
+                        lastRemain = TotalDisc Mod Devided_Qty
+                        TotalLimitDiscQty = TotalLimitDiscQty + (TotalDisc - lastRemain)
+                    Else
+                        TotalLimitDiscQty = TotalLimitDiscQty + TotalDisc
+                    End If
+                End If
+                If CanAccomodateDisc(TotalLimitDiscQty) Then
+                    ''proses data
+                    'insert data
+                    Me.fillDtEvenRemain(tblResult, TotalLimitDiscQty, dtEven, dtRemain)
+                    If Not IsNothing(dtEven) Or Not IsNothing(dtRemain) Then
+                        Me.clsOADiscount.InserDDDRCBD(dtEven, dtRemain)
+                    End If
+                Else
+                    Return False
+                End If
+                TotalDiscOut = TotalLimitDiscQty
+            End If
+        Else
+            If TotalDisc < Devided_Qty Then
+                For i As Integer = 0 To dtRemain.Rows.Count - 1
+                    dtRemain.Rows(i).SetAdded()
+                Next
+                ''insert ke remainding saja
+                Me.clsOADiscount.InserDDDRCBD(Nothing, dtRemain)
+            Else
+                If TotalDisc Mod Devided_Qty > 0 Then
+                    lastRemain = TotalDisc Mod Devided_Qty
+                    TotalLimitDiscQty = TotalDisc - lastRemain
+                Else
+                    TotalLimitDiscQty = TotalDisc
+                End If
+                If CanAccomodateDisc(TotalLimitDiscQty) Then
+                    ''proses data
+                    'insert data
+                    Me.fillDtEvenRemain(tblResult, TotalLimitDiscQty, dtEven, dtRemain)
+                    If Not IsNothing(dtEven) Or Not IsNothing(dtRemain) Then
+                        Me.clsOADiscount.InserDDDRCBD(dtEven, dtRemain)
+                    End If
+                Else
+                    Return False
+                End If
+                TotalDiscOut = TotalLimitDiscQty
+            End If
         End If
-        Me.SFG = StateFillingGrid.Filling
-        index = CType(Me.GridEX1.DataSource, DataView).Find(OA_BRANDPACK_ID)
-        If index <> -1 Then
-            Dim TotalDiscQty As Decimal = Convert.ToDecimal(GridExDataView(index)("TOTAL_DISC_QTY")) + ResultQTY
-            GridExDataView(index)("TOTAL_DISC_QTY") = TotalDiscQty
-            GridExDataView(index)("TOTAL_AMOUNT_DISC") = TotalDiscQty * Convert.ToDecimal(PRICE)
-            GridExDataView(index).EndEdit() : Me.GridEX1.Refetch()
-        End If
-        Me.GridEX1.Row = IndexRow
-        Me.clsOADiscount.CreateViewOABrandPackDiscount(Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString(), False)
-        Me.BindGridEx(Me.GridEX2, Me.clsOADiscount.ViewOADiscount)
-        Dim UnitOnOrder As String = ""
-        If Not IsDBNull(Me.GridEX1.GetValue("UNIT_ORDER")) Then
-            UnitOnOrder = Me.GridEX1.GetValue("UNIT_ORDER").ToString()
-        End If
-        Dim OrgDecimalValue As Decimal = Me.clsOADiscount.getTotalQTY(Me.GridEX1.GetValue("OA_BRANDPACK_ID"), True)
-        Dim LEFT_QTY = OrgDecimalValue Mod Devided_Qty
-        Me.pnlTotalRemainder.Text = "Still Remainder =  " & String.Format("{0:#,##0.000}", LEFT_QTY * Devide_Factor) & "  " & Unit & ", = " & LEFT_QTY.ToString() & "  " & UnitOnOrder
-        Me.SFG = StateFillingGrid.HasFilled
     End Function
 
-    Private Sub Other_QTY_txtPercentage_Changed(ByVal sender As Object, ByVal e As System.EventArgs) Handles Other_QTY.txtPercentage_Changed
+    'Private Function Other_QTY_OK(ByVal ResultOQty As Decimal, ByVal flag As String, ByVal RefOther As Integer) As Boolean
+
+    '    Me.Cursor = Cursors.WaitCursor
+    '    Dim LeftQTY As Decimal = ResultOQty Mod Me.Devided_Qty
+    '    Dim ResultQTY As Decimal = (Decimal.Truncate(ResultOQty / Me.Devided_Qty)) * Me.Devided_Qty
+    '    Dim PRICE As Decimal = Convert.ToDecimal(Me.GridEX1.GetValue("OA_PRICE_PERQTY"))
+    '    Dim AmountPrice As Decimal = 0
+    '    AmountPrice = PRICE * ResultQTY
+    '    'ambil price yang ada di pnl oa_discount
+    '    Dim DISC_PRICE_OA As Decimal = 0
+    '    Dim x As String = ""
+    '    Dim w As Integer = Me.pnlOADiscount.TitleText.IndexOf(":") + 3
+    '    Dim s As String
+    '    Dim a As String = ""
+    '    Do
+    '        s = Microsoft.VisualBasic.Mid(Me.pnlOADiscount.TitleText, w, 1)
+    '        If (s = "") Or (s = ".") Then
+    '        Else
+    '            a &= s
+    '        End If
+    '        w += 1
+    '    Loop Until s = ""
+    '    'GET TOTAL PRICE
+    '    DISC_PRICE_OA = Convert.ToDecimal(a) 'TOTAL DISCOUNT OA
+    '    Dim SUMPRICE As Object = Me.clsOADiscount.GetTotalPriceOAGiven(Me.mcbRefNo.Value.ToString(), False) 'TOTAL DISCOUNT YG TELAH DIBERIKAN
+    '    Dim TOTAL_LEFT_PRICE As Decimal = DISC_PRICE_OA - Convert.ToDecimal(SUMPRICE)
+    '    Dim LEFT_QTY_PRICE As Decimal = TOTAL_LEFT_PRICE / Convert.ToDecimal(PRICE)
+    '    If (AmountPrice + SUMPRICE) > DISC_PRICE_OA Then
+    '        Me.ShowMessageInfo("Discount value will exceed allowed-data" & vbCrLf & "Discount has been released " & _
+    '        String.Format("{0:#,##0.00}", SUMPRICE) & vbCrLf & "Total left discount allowed is : " & String.Format("{0:#,##0.000}", LEFT_QTY_PRICE))
+    '        'Me.Other_QTY.Show(Me.pnlOADiscount)
+    '        Return False
+    '    End If
+    '    Dim IndexRow As Integer = Me.GridEX1.Row
+    '    Dim OA_BRANDPACK_DISC_QTY As Decimal = ResultQTY
+    '    Dim OA_BRANDPACK_ID As Object = Me.GridEX1.GetValue("OA_BRANDPACK_ID")
+    '    Me.SFG = StateFillingGrid.Filling
+    '    Dim GridExDataView As DataView = CType(Me.GridEX1.DataSource, DataView)
+    '    Dim index As Integer
+
+    '    If LeftQTY > 0 Then
+    '        'jadikan nilai remainding dulu
+    '        With Me.clsOADiscount.OA_Remainding
+    '            .OA_BRANDPACK_ID = OA_BRANDPACK_ID
+    '            .AGREE_DISC_HIST_ID = DBNull.Value
+    '            .BRND_B_S_ID = DBNull.Value
+    '            .ACHIEVMENT_BRANDPACK_ID = DBNull.Value
+    '            .FLAG = flag
+    '            .MRKT_DISC_HISt_ID = DBNull.Value
+    '            .MRKT_M_S_ID = DBNull.Value
+    '            .PROJ_DISC_HIST_ID = DBNull.Value
+    '            .PRICE_PRQTY = PRICE
+    '            .RM_OA_ID = DBNull.Value
+    '            .RefOther = RefOther
+    '        End With
+    '        'INSERT KE TABLE OA_BRANDPACK_DISC
+    '        'INSERT KE TABLE ORDR_OA_REMAINDING
+    '        Me.clsOADiscount.InsertOA_BRANDPACK_DISC(ResultQTY, LeftQTY, OA_BRANDPACK_ID, False)
+    '    ElseIf ResultQTY > 0 Then
+    '        With Me.clsOADiscount.OA_BRANDPACK_DISCOUNT
+    '            .AGREE_DISC_HIST_ID = DBNull.Value
+    '            .MRK_M_S_ID = DBNull.Value
+    '            .BRND_B_S_ID = DBNull.Value
+    '            .ACHIEVEMENT_BRANDPACK_ID = DBNull.Value
+    '            .GQSY_SGT_P_FLAG = flag
+    '            .MRKT_DISC_HIST_ID = DBNull.Value
+    '            .OA_BRANDPACK_ID = Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString()
+    '            .PRICE_PRQTY = PRICE
+    '            .PROJ_DISC_HIST_ID = DBNull.Value
+    '            .OA_RM_ID = DBNull.Value
+    '            .BRANDPACK_ID = Me.GridEX1.GetValue("BRANDPACK_ID").ToString()
+    '            .RefOther = RefOther
+    '        End With
+    '        Me.clsOADiscount.InsertOA_BRANDPACK_DISC(NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.OtherDiscount, _
+    '        ResultQTY, , , , True, Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString())
+    '    End If
+    '    Me.SFG = StateFillingGrid.Filling
+    '    index = CType(Me.GridEX1.DataSource, DataView).Find(OA_BRANDPACK_ID)
+    '    If index <> -1 Then
+    '        Dim TotalDiscQty As Decimal = Convert.ToDecimal(GridExDataView(index)("TOTAL_DISC_QTY")) + ResultQTY
+    '        GridExDataView(index)("TOTAL_DISC_QTY") = TotalDiscQty
+    '        GridExDataView(index)("TOTAL_AMOUNT_DISC") = TotalDiscQty * Convert.ToDecimal(PRICE)
+    '        GridExDataView(index).EndEdit() : Me.GridEX1.Refetch()
+    '    End If
+    '    Me.GridEX1.Row = IndexRow
+    '    Me.clsOADiscount.CreateViewOABrandPackDiscount(Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString(), False)
+    '    Me.BindGridEx(Me.GridEX2, Me.clsOADiscount.ViewOADiscount)
+    '    Dim UnitOnOrder As String = ""
+    '    If Not IsDBNull(Me.GridEX1.GetValue("UNIT_ORDER")) Then
+    '        UnitOnOrder = Me.GridEX1.GetValue("UNIT_ORDER").ToString()
+    '    End If
+    '    Dim OrgDecimalValue As Decimal = Me.clsOADiscount.getTotalQTY(Me.GridEX1.GetValue("OA_BRANDPACK_ID"), True)
+    '    Dim LEFT_QTY = OrgDecimalValue Mod Devided_Qty
+    '    Me.pnlTotalRemainder.Text = "Still Remainder =  " & String.Format("{0:#,##0.000}", LEFT_QTY * Devide_Factor) & "  " & Unit & ", = " & LEFT_QTY.ToString() & "  " & UnitOnOrder
+    '    Me.SFG = StateFillingGrid.HasFilled
+    'End Function
+
+    'Private Sub Other_QTY_txtPercentage_Changed(ByVal sender As Object, ByVal e As System.EventArgs) Handles Other_QTY.txtPercentage_Changed
+    '    Try
+    '        If (Not (Me.Other_QTY.txtPercentage.Value Is Nothing)) Or (Me.Other_QTY.txtPercentage.Value = 0) Then
+    '            Me.Other_QTY.txtResult.Value = (Me.Other_QTY.txtPercentage.Value / 100) * Convert.ToDecimal(Me.GridEX1.GetValue("OA_ORIGINAL_QTY"))
+    '        Else
+    '            Me.Other_QTY.txtResult.Value = 0
+    '        End If
+    '    Catch ex As Exception
+
+    '    End Try
+    'End Sub
+    Private Sub OtherDDDRCBD_txtPercentage_Changed(ByVal sender As Object, ByVal e As System.EventArgs) Handles OtherDDDRCBD.txtPercentage_Changed
         Try
-            If (Not (Me.Other_QTY.txtPercentage.Value Is Nothing)) Or (Me.Other_QTY.txtPercentage.Value = 0) Then
-                Me.Other_QTY.txtResult.Value = (Me.Other_QTY.txtPercentage.Value / 100) * Convert.ToDecimal(Me.GridEX1.GetValue("OA_ORIGINAL_QTY"))
+            If (Not (Me.OtherDDDRCBD.txtPercentage.Value Is Nothing)) Or (Me.OtherDDDRCBD.txtPercentage.Value = 0) Then
+                Me.OtherDDDRCBD.txtResult.Value = (Me.OtherDDDRCBD.txtPercentage.Value / 100) * Convert.ToDecimal(Me.GridEX1.GetValue("OA_ORIGINAL_QTY"))
             Else
-                Me.Other_QTY.txtResult.Value = 0
+                Me.OtherDDDRCBD.txtResult.Value = 0
             End If
         Catch ex As Exception
 
         End Try
     End Sub
-
     Private Sub LftQTY_LeftQtyCancel(ByVal sender As Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LftQTY.LeftQtyCancel
         Try
             If Not IsNothing(Me.LftQTY) Then
@@ -3151,7 +3323,7 @@ Public Class OA_BranPack
                 'Devided_qty - LeftQty
                 MinusDevidedQty = Devided_Qty - LeftQTY
                 If TOTAL < MinusDevidedQty Then
-                    Me.ShowMessageInfo(String.Format("Qty < {0:#,##0.000}", Devided_Qty))
+                    Me.ShowMessageInfo(String.Format("Qty < {0:#,##0.000}", MinusDevidedQty))
                     Return
                 End If
             Else
@@ -3252,7 +3424,6 @@ Public Class OA_BranPack
             Me.ShowMessageInfo("Please define OA_REF_NO to compute by system")
             Return
         End If
-        Dim PRICE As Object = Nothing
         If Me.GridEX1.RecordCount <= 0 Then
             Me.ShowMessageInfo("Please define Brandpack name")
             Return
@@ -3265,17 +3436,28 @@ Public Class OA_BranPack
             Me.ShowMessageInfo("Please define Brandpack name")
             Return
         End If
+        Dim Price As Decimal = Convert.ToDecimal(Me.GridEX1.GetValue("OA_PRICE_PERQTY"))
+        Dim TotalDiscOut As Decimal = 0
+        Dim Flag As String = "O"
         Try
-            Me.Other_QTY = New Other_QTY()
-            With Me.Other_QTY
+            Dim IndexRow As Integer = Me.GridEX1.Row
+            Me.OtherDDDRCBD = New OtherDDDR()
+            With Me.OtherDDDRCBD
                 If Me.rdbCBD.Checked Then
                     .btnDiscCBD.Checked = True
+                    .TypeApp = "OCBD"
+                    Flag = "OCBD"
                 ElseIf Me.rdbDD.Checked Then
                     .btnDiscDD.Checked = True
+                    .TypeApp = "ODD"
+                    Flag = "ODD"
                 ElseIf Me.rdbDR.Checked Then
                     .btnDiscDr.Checked = True
+                    .TypeApp = "ODR"
+                    Flag = "ODR"
                 ElseIf Me.rdbUncategorized.Checked Then
                     .btnUncategorized.Checked = True
+                    .TypeApp = "O"
                 End If
                 .PODate = Convert.ToDateTime(Me.txTPOREFDATE.Text)
                 .BrandPackID = Me.GridEX1.GetValue("BRANDPACK_ID")
@@ -3287,34 +3469,57 @@ Public Class OA_BranPack
                 .DistributorID = Me.DistributorID
                 .Devided_Qty = Me.Devided_Qty
                 .OAQty = Me.txtQuantity.Value
-                .OABrandPackID = Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString()
-                Dim resultQty As Decimal = 0, Flag As String = "O", RefOther As Integer = 0
-                If .ShowDialog(resultQty, Flag, RefOther) = Windows.Forms.DialogResult.OK Then
-                    Select Case Flag
-                        Case "OCBD"
-                            Me.rdbCBD.Checked = True
-                            Me.rdbDD.Checked = False
-                            Me.rdbDR.Checked = False
-                            Me.rdbUncategorized.Checked = False
-                        Case "ODD"
-                            Me.rdbDD.Checked = True
-                            Me.rdbCBD.Checked = False
-                            Me.rdbDR.Checked = False
-                            Me.rdbUncategorized.Checked = False
-                        Case "ODR"
-                            Me.rdbCBD.Checked = False
-                            Me.rdbDD.Checked = False
-                            Me.rdbDR.Checked = True
-                            Me.rdbUncategorized.Checked = False
-                        Case "O"
-                            Me.rdbCBD.Checked = False
-                            Me.rdbDD.Checked = False
-                            Me.rdbDR.Checked = False
-                            Me.rdbUncategorized.Checked = True
-                    End Select
-                    Me.Other_QTY_OK(resultQty, Flag, RefOther)
+                .OABrandPackID = Me.OA_BRANDPACK_ID
+                .PricePrQty = Price
+                .BrandPackName = Me.GridEX1.GetValue("BRANDPACK_NAME").ToString()
+                If Me.DistributorID = "" Then
+                    Me.clsOADiscount.PO_From(Me.mcbRefNo.Value.ToString(), True)
+                    Me.DistribtorName = Me.clsOADiscount.DISTRIBUTOR_NAME
+                    Me.DistributorID = Me.clsOADiscount.DISTRIBUTOR_ID
+                End If
+                Dim tblResult As New DataTable("T_Result")
+                If .ShowDialog(tblResult, Flag) = Windows.Forms.DialogResult.OK Then
+                    Me.InsertOthersDDDRCBD(tblResult, TotalDiscOut)
                 End If
             End With
+            Me.SFG = StateFillingGrid.Filling
+            Dim GridExDataView As DataView = CType(Me.GridEX1.DataSource, DataView)
+            Dim index As Integer = CType(Me.GridEX1.DataSource, DataView).Find(OA_BRANDPACK_ID)
+            If index <> -1 Then
+                Dim TotalDiscQty As Decimal = Convert.ToDecimal(GridExDataView(index)("TOTAL_DISC_QTY")) + TotalDiscOut
+                GridExDataView(index)("TOTAL_DISC_QTY") = TotalDiscQty
+                GridExDataView(index)("TOTAL_AMOUNT_DISC") = TotalDiscQty * Price
+                GridExDataView(index).EndEdit()
+            End If
+            'tampilkan discount
+            Me.clsOADiscount.CreateViewOABrandPackDiscount(Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString(), False)
+            Me.BindGridEx(Me.GridEX2, Me.clsOADiscount.ViewOADiscount)
+            'cek opsi yang di pilih user
+            Dim OQData = Me.QData
+            Me.QData = QueryData.GridSelected
+            Select Case Flag
+                Case "OCBD"
+                    Me.rdbCBD.Checked = True
+                    Me.rdbCBD_CheckedChanged(Me.rdbCBD, New EventArgs())
+                Case "ODD"
+                    Me.rdbDD.Checked = True
+                    Me.rdbDD_CheckedChanged(Me.rdbDD, New EventArgs())
+                Case "ODR"
+                    Me.rdbDR.Checked = True
+                    Me.rdbDR_CheckedChanged(Me.rdbDR, New EventArgs())
+                    'Case "O"
+                    '    Me.rdbUncategorized.Checked = True
+            End Select
+            Dim UnitOnOrder As String = ""
+            If Not IsDBNull(Me.GridEX1.GetValue("UNIT_ORDER")) Then
+                UnitOnOrder = Me.GridEX1.GetValue("UNIT_ORDER").ToString()
+            End If
+            Dim OrgDecimalValue As Decimal = Me.clsOADiscount.getTotalQTY(Me.GridEX1.GetValue("OA_BRANDPACK_ID"), True)
+            Dim LEFT_QTY = OrgDecimalValue Mod Devided_Qty
+            Me.pnlTotalRemainder.Text = "Still Remainder =  " & String.Format("{0:#,##0.000}", LEFT_QTY * Devide_Factor) & "  " & Unit & ", = " & LEFT_QTY.ToString() & "  " & UnitOnOrder
+            'balikan state
+            Me.QData = OQData
+            Me.SFG = StateFillingGrid.HasFilled
         Catch ex As Exception
             Me.LogMyEvent(ex.Message, Me.Name + "_btnGenerateOtherDiscount_Click") : Me.ShowMessageInfo(ex.Message)
         Finally
@@ -4358,9 +4563,6 @@ Public Class OA_BranPack
             If Me.Mode = ModeSave.Save Then
                 If Me.mcbRefNo.SelectedIndex = -1 Then
                     Me.SFG = StateFillingGrid.Filling
-                    'Me.clsOADiscount.CreateViewOABRANDPACK("")
-                    'Me.clsOADiscount.CreateViewOABrandPackDiscount("")
-                    'Me.clsOADiscount.ViewOADiscount().RowStateFilter = Data.DataViewRowState.Added Or Data.DataViewRowState.ModifiedCurrent
                     Me.BindGridEx(Me.GridEX2, Nothing) : Me.BindGridEx(Me.GridEX1, Nothing)
                     Me.BindGridEx3(Nothing)
                     Me.grdRemainding.SetDataBinding(Nothing, "")
@@ -4375,11 +4577,7 @@ Public Class OA_BranPack
                 End If
             End If
             If Me.mcbRefNo.SelectedItem Is Nothing Then
-                'me.BindGridEx(me.GridEX1,
                 Me.SFG = StateFillingGrid.Filling
-                'Me.clsOADiscount.CreateViewOABRANDPACK("")
-                'Me.clsOADiscount.CreateViewOABrandPackDiscount("")
-                'Me.clsOADiscount.ViewOADiscount().RowStateFilter = Data.DataViewRowState.Added Or Data.DataViewRowState.ModifiedCurrent
                 Me.BindGridEx(Me.GridEX2, Nothing) : Me.BindGridEx(Me.GridEX1, Nothing)
                 Me.BindGridEx3(Nothing)
                 Me.grdRemainding.SetDataBinding(Nothing, "")
@@ -4636,9 +4834,10 @@ Public Class OA_BranPack
             If Not IsDBNull(Me.GridEX1.GetValue("UNIT_ORDER")) And Not IsNothing(Me.GridEX1.GetValue("UNIT_ORDER")) Then
                 UnitOnOrder = Me.GridEX1.GetValue("UNIT_ORDER").ToString()
             End If
-            Dim OrgDecimalValue As Decimal = Me.clsOADiscount.getTotalQTY(Me.GridEX1.GetValue("OA_BRANDPACK_ID"), False)
+            Dim OrgDecimalValue As Decimal = Me.clsOADiscount.getTotalQTY(Me.GridEX1.GetValue("OA_BRANDPACK_ID"), True)
             Dim LeftQty As Decimal = OrgDecimalValue Mod Devided_Qty
             Me.pnlTotalRemainder.Text = "Still Remainder =  " & String.Format("{0:#,##0.000}", LeftQty * Devide_Factor) & "  " & Unit & ", = " & LeftQty.ToString() & "  " & UnitOnOrder
+            Me.OA_BRANDPACK_ID = Me.GridEX1.GetValue("OA_BRANDPACK_ID")
         Catch ex As Exception
             Me.ShowMessageError(ex.Message)
             Me.LogMyEvent(ex.Message, Me.Name + "_GridEX1_CurrentCellChanged")
@@ -4885,7 +5084,8 @@ Public Class OA_BranPack
                             Me.QTY.Focus()
                             Me.QTY.NumericEditBox1.SelectAll()
                         End If
-                    Case SelectedDiscount.None
+                    Case SelectedDiscount.None 'diproses melalui recalculate
+
                 End Select
                 'check data di table Adjustment yang bisa di ambil 
                 With Me.QTY
@@ -5543,12 +5743,12 @@ Public Class OA_BranPack
                 End If
                 If Me.clsOADiscount.hasGenerateDiscountOthers(Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString(), "ODD", MustcloseConnection) = True Then
                     Me.btnGenerateOtherDiscount.Enabled = False
-                    Me.rdbDR.Checked = False
-                    Me.rdbCBD.Checked = False
                 Else
                     Me.btnGenerateOtherDiscount.Enabled = True
                 End If
-
+                Me.rdbDR.Checked = False
+                Me.rdbCBD.Checked = False
+                Me.rdbUncategorized.Checked = False
             Catch ex As Exception
                 Me.LogMyEvent(ex.Message, Me.Name + "_rdbDD_CheckedChanged") : Me.ShowMessageInfo(ex.Message)
             End Try
@@ -5567,11 +5767,12 @@ Public Class OA_BranPack
                 End If
                 If Me.clsOADiscount.hasGenerateDiscountOthers(Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString(), "ODR", MustcloseConnection) = True Then
                     Me.btnGenerateOtherDiscount.Enabled = False
-                    Me.rdbDD.Checked = False
-                    Me.rdbCBD.Checked = False
                 Else
                     Me.btnGenerateOtherDiscount.Enabled = True
                 End If
+                Me.rdbDD.Checked = False
+                Me.rdbCBD.Checked = False
+                Me.rdbUncategorized.Checked = False
             Catch ex As Exception
                 Me.LogMyEvent(ex.Message, Me.Name + "_rdbDR_CheckedChanged") : Me.ShowMessageInfo(ex.Message)
             End Try
@@ -5590,11 +5791,12 @@ Public Class OA_BranPack
                 End If
                 If Me.clsOADiscount.hasGenerateDiscountOthers(Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString(), "OCBD", MustcloseConnection) = True Then
                     Me.btnGenerateOtherDiscount.Enabled = False
-                    Me.rdbDD.Checked = False
-                    Me.rdbDR.Checked = False
                 Else
                     Me.btnGenerateOtherDiscount.Enabled = True
                 End If
+                Me.rdbDD.Checked = False
+                Me.rdbDR.Checked = False
+                Me.rdbUncategorized.Checked = False
             Catch ex As Exception
                 Me.LogMyEvent(ex.Message, Me.Name + "_rdbCBD_CheckedChanged") : Me.ShowMessageInfo(ex.Message)
             End Try

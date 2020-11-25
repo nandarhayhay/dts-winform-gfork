@@ -1,10 +1,13 @@
 Imports System.Data.SqlClient
+Imports NufarmBussinesRules.SharedClass
 Namespace PurchaseOrder
     Public Class Invoice
         Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
         Private Query As String = ""
         Public Sub New()
             MyBase.New()
+            '--==============UNCOMMENT THIS AFTER NEEDED ================
+            'DBInvoiceTo = CurrentInvToUse.NI109
         End Sub
         Public Function hasReservedInvoice(ByRef userName As String) As Boolean
             Try
@@ -37,26 +40,26 @@ Namespace PurchaseOrder
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
-        Public Sub CreateTempTable()
-            Try
-                Query = "SET NOCOUNT ON;" & vbCrLf & _
-                       "IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                       " BEGIN " & vbCrLf & _
-                       " EXEC Usp_Create_Temp_Date_Invoice @I_START_DATE = @START_DATE,@I_END_DATE = @END_DATE; " & vbCrLf & _
-                       " END " & vbCrLf & _
-                       " IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_BRANDPACK' AND TYPE = 'U') " & vbCrLf & _
-                       " BEGIN  EXEC Usp_Create_Temp_Table_BrandPack; END "
-                Me.CreateCommandSql("", Query)
-                Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, NufarmBussinesRules.SharedClass.ServerDate())
-                Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, NufarmBussinesRules.SharedClass.ServerDate())
-                Me.OpenConnection()
-                Me.SqlCom.ExecuteScalar()
-                Me.CloseConnection()
-                Me.ClearCommandParameters()
-            Catch ex As Exception
-                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
-            End Try
-        End Sub
+        'Public Sub CreateTempTable()
+        '    Try
+        '        Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '               "IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+        '               " BEGIN " & vbCrLf & _
+        '               " EXEC Usp_Create_Temp_Date_Invoice @I_START_DATE = @START_DATE,@I_END_DATE = @END_DATE; " & vbCrLf & _
+        '               " END " & vbCrLf & _
+        '               " IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_BRANDPACK' AND TYPE = 'U') " & vbCrLf & _
+        '               " BEGIN  EXEC Usp_Create_Temp_Table_BrandPack; END "
+        '        Me.CreateCommandSql("", Query)
+        '        Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, NufarmBussinesRules.SharedClass.ServerDate())
+        '        Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, NufarmBussinesRules.SharedClass.ServerDate())
+        '        Me.OpenConnection()
+        '        Me.SqlCom.ExecuteScalar()
+        '        Me.CloseConnection()
+        '        Me.ClearCommandParameters()
+        '    Catch ex As Exception
+        '        Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+        '    End Try
+        'End Sub
         Public Function GetDistributor(ByVal SearchString As String) As DataView
             Try
                 If (String.IsNullOrEmpty(SearchString)) Then
@@ -125,6 +128,11 @@ Namespace PurchaseOrder
             Me.SqlRe = Me.SqlCom.ExecuteReader()
             While Me.SqlRe.Read() : retvalStartDate = SqlRe.GetString(0) : retvalEndDate = SqlRe.GetString(1) : End While
             Me.SqlRe.Close() : Me.ClearCommandParameters()
+            Dim StoredProcNI87 As String = "Usp_Create_Temp_Invoice_Table", StoredProcNI109 = "Usp_Create_Temp_Invoice_Table_NI109"
+            Dim StoredProcToUse As String = StoredProcNI87
+            If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                StoredProcToUse = StoredProcNI109
+            End If
             If Not ((StrStartDate.Equals(retvalStartDate)) Or (strEndDate.Equals(retvalEndDate))) Then
                 'bikin baru
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
@@ -134,11 +142,11 @@ Namespace PurchaseOrder
                         " BEGIN SELECT START_DATE = @D_START_DATE,END_DATE = @D_END_DATE,UserName = @UserName INTO  ##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
                         " IF EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                         " BEGIN  DROP TABLE tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
-                        " EXEC Usp_Create_Temp_Invoice_Table @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; "
+                        " EXEC " & StoredProcToUse & " @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; "
             Else
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
                         "IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                        " BEGIN  EXEC Usp_Create_Temp_Invoice_Table @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; END " '& vbCrLf & _
+                        " BEGIN  EXEC " & StoredProcToUse & " @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; END " '& vbCrLf & _
                 '" IF NOT EXISTS(SELECT NAME FROM tempdb..SYSOBJECTS WHERE NAME = '##T_BRANDPACK' AND TYPE = 'U') " & vbCrLf & _
                 '" BEGIN  EXEC Usp_Create_Temp_Table_BrandPack; END "
             End If
@@ -153,7 +161,6 @@ Namespace PurchaseOrder
         End Sub
         Public Function GetInvoice(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal isRefDateByPO As Boolean, ByVal IsDateChanged As Boolean, ByRef t2 As DataTable, Optional ByVal DistributorID As String = "") As DataView
             Try
-                'Dim DecStartDate As Decimal = 0, DecEndDate As Decimal = 0
                 Dim LeadTimeStart As DateTime = StartDate.AddMonths(-6)
                 Dim LeadTimeEnd As DateTime = EndDate.AddMonths(6)
                 Dim strDecEndDate As String = common.CommonClass.getNumericFromDate(EndDate)

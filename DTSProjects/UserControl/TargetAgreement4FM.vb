@@ -86,14 +86,16 @@ Public Class TargetAgreement4FM
                 If .RootTable.Columns.Contains("PROD_CATEGORY") Then
                     .RootTable.Groups.Add(New Janus.Windows.GridEX.GridEXGroup(.RootTable.Columns("PROD_CATEGORY")))
                     .RootTable.Columns("PROD_CATEGORY").Visible = False
+                    .RootTable.Groups(2).GroupPrefix = ""
                 End If
                 If .RootTable.Columns.Contains("PS_GROUP") Then
                     .RootTable.Groups.Add(New Janus.Windows.GridEX.GridEXGroup(.RootTable.Columns("PS_GROUP")))
                     .RootTable.Columns("PS_GROUP").Visible = False
+                    .RootTable.Groups(2).GroupPrefix = ""
                 End If
                 .RootTable.Groups(0).GroupPrefix = ""
                 .RootTable.Groups(1).GroupPrefix = ""
-                .RootTable.Groups(2).GroupPrefix = ""
+
                 .GroupMode = Janus.Windows.GridEX.GroupMode.Collapsed
                 .GroupTotals = Janus.Windows.GridEX.GroupTotals.Always
                 .GroupByBoxVisible = False

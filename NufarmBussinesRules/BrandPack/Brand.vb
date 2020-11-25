@@ -1,11 +1,14 @@
 Imports System.Data
 Imports System.Data.SqlClient
+Imports NufarmBussinesRules.SharedClass
 Namespace Brandpack
     Public Class Brand
         Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
+        'Dim DBInvoiceTo As CurrentInvToUse = CurrentInvToUse.NI87
         Public Sub New()
             MyBase.New()
         End Sub
+
         Private m_dataView As DataView
         Private m_dataSet As DataSet
         Private m_dtViewAllBrand As DataView
@@ -56,10 +59,17 @@ Namespace Brandpack
                 'ambil brand yand ada di accpac ,bila brand belum ada di dts input kan ke dts,
                 'bila brand dengan nama yang sama maka update statusnya jadi obsolete
                 'untuk brand yang baru status semuanya active
+                Dim DBConnect As String = "NI87"
+                'If DBInvoiceTo = CurrentInvToUse.NI109 Then
+
+                'End If
+                If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                    DBConnect = "NI109"
+                End If
                 If MustReloadToAccPac Then
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
                            "SELECT DISTINCT RIGHT(RTRIM(ITEM.SEGMENT1),1) + '' + RTRIM(ITEM.SEGMENT2) AS BRAND_ID" & vbCrLf & _
-                           ",RTRIM(SUBSTRING(ITEM.[DESC],1,CHARINDEX('@',ITEM.[DESC],0)- 1))AS BRAND_NAME FROM NI87.dbo.ICITEM ITEM " & vbCrLf & _
+                           ",RTRIM(SUBSTRING(ITEM.[DESC],1,CHARINDEX('@',ITEM.[DESC],0)- 1))AS BRAND_NAME FROM " & DBConnect & ".dbo.ICITEM ITEM " & vbCrLf & _
                            " WHERE NOT EXISTS(SELECT BRAND_ID FROM Nufarm.dbo.BRND_BRAND WHERE BRAND_ID = " & vbCrLf & _
                            " RIGHT(RTRIM(ITEM.SEGMENT1),1) + '' + RTRIM(ITEM.SEGMENT2)) " & vbCrLf & _
                            " AND ITEM.INACTIVE = 0 AND RTRIM(ITEM.[DESC]) NOT LIKE '%OTHER%' AND ITEM.[DESC] LIKE '%@%'" & vbCrLf & _
@@ -73,7 +83,7 @@ Namespace Brandpack
                         Me.BeginTransaction() : Me.SqlCom.Transaction = Me.SqlTrans
                         Query = "SET NOCOUNT ON; " & vbCrLf & _
                                 " DECLARE @V_CREATE_BY VARCHAR(50); " & vbCrLf & _
-                                " SET @V_CREATE_BY = (SELECT TOP 1 AUDTUSER FROM NI87.DBO.ICITEM ITEM WHERE RIGHT(RTRIM(ITEM.SEGMENT1),1) + '' + RTRIM(ITEM.SEGMENT2) = @BRAND_ID); " & vbCrLf & _
+                                " SET @V_CREATE_BY = (SELECT TOP 1 AUDTUSER FROM " & DBConnect & ".dbo.ICITEM ITEM WHERE RIGHT(RTRIM(ITEM.SEGMENT1),1) + '' + RTRIM(ITEM.SEGMENT2) = @BRAND_ID); " & vbCrLf & _
                                 " IF NOT EXISTS(SELECT BRAND_ID FROM BRND_BRAND WHERE BRAND_ID = @BRAND_ID)" & vbCrLf & _
                                 "  BEGIN " & vbCrLf & _
                                 "  INSERT INTO BRND_BRAND(BRAND_ID,BRAND_NAME,IsActive,IsObsolete,CREATE_BY,CREATE_DATE) " & vbCrLf & _
@@ -134,7 +144,7 @@ Namespace Brandpack
                             "  ANY(SELECT BRAND_ID FROM Nufarm.dbo.BRND_BRAND BR " & vbCrLf & _
                             "      WHERE NOT EXISTS( " & vbCrLf & _
                             "                       SELECT RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) " & vbCrLf & _
-                            "                       FROM NI87.dbo.ICITEM WHERE INACTIVE = 0 AND " & vbCrLf & _
+                            "                       FROM " & DBConnect & ".dbo.ICITEM WHERE INACTIVE = 0 AND " & vbCrLf & _
                             "                       RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND [DESC] NOT LIKE '%BULK%' AND UPPER([DESC]) NOT LIKE '%OTHER%' " & vbCrLf & _
                             "                      ) " & vbCrLf & _
                             "      AND NOT EXISTS(SELECT BRAND_ID FROM tempdb..##T_P_Brand WHERE BRAND_ID = BR.BRAND_ID) " & vbCrLf & _
@@ -144,7 +154,7 @@ Namespace Brandpack
                             "     WHERE EXISTS(SELECT BRAND_ID FROM Nufarm.dbo.AGREE_BRAND_INCLUDE WHERE BRAND_ID = BR.BRAND_ID) " & vbCrLf & _
                             "     AND NOT EXISTS( " & vbCrLf & _
                             "                    SELECT RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) " & vbCrLf & _
-                            "                    FROM NI87.dbo.ICITEM WHERE INACTIVE = 0 AND " & vbCrLf & _
+                            "                    FROM " & DBConnect & ".dbo.ICITEM WHERE INACTIVE = 0 AND " & vbCrLf & _
                             "                    RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND (RTRIM(ITEMBRKID) = 'FG' OR  RTRIM(ITEMBRKID) = 'FGST') AND [DESC] NOT LIKE '%BULK%' AND UPPER([DESC]) NOT LIKE '%OTHER%'" & vbCrLf & _
                             "                   ) " & vbCrLf & _
                             "     AND NOT EXISTS(SELECT BRAND_ID FROM tempdb..##T_P_Brand WHERE BRAND_ID = BR.BRAND_ID) " & vbCrLf & _
