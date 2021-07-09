@@ -35,8 +35,6 @@ Partial Class Distributor_PO_Dispro
         Me.Label2 = New System.Windows.Forms.Label
         Me.dtPicfrom = New Janus.Windows.CalendarCombo.CalendarCombo
         Me.Label1 = New System.Windows.Forms.Label
-        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         CType(Me.GridEX1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelEx1.SuspendLayout()
         CType(Me.grpRangedate, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -84,7 +82,7 @@ Partial Class Distributor_PO_Dispro
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
         Me.GridEX1.RecordNavigator = True
-        Me.GridEX1.Size = New System.Drawing.Size(952, 418)
+        Me.GridEX1.Size = New System.Drawing.Size(967, 418)
         Me.GridEX1.TabIndex = 2
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2003
         Me.GridEX1.WatermarkImage.Image = CType(resources.GetObject("GridEX1.WatermarkImage.Image"), System.Drawing.Image)
@@ -98,7 +96,7 @@ Partial Class Distributor_PO_Dispro
         Me.PanelEx1.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelEx1.Location = New System.Drawing.Point(0, 0)
         Me.PanelEx1.Name = "PanelEx1"
-        Me.PanelEx1.Size = New System.Drawing.Size(952, 58)
+        Me.PanelEx1.Size = New System.Drawing.Size(967, 58)
         Me.PanelEx1.Style.Alignment = System.Drawing.StringAlignment.Center
         Me.PanelEx1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground
         Me.PanelEx1.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2
@@ -127,16 +125,16 @@ Partial Class Distributor_PO_Dispro
         '
         Me.UiGroupBox4.Controls.Add(Me.btnFilterDistributor)
         Me.UiGroupBox4.Controls.Add(Me.mcbDistributor)
-        Me.UiGroupBox4.Location = New System.Drawing.Point(494, 8)
+        Me.UiGroupBox4.Location = New System.Drawing.Point(425, 8)
         Me.UiGroupBox4.Name = "UiGroupBox4"
-        Me.UiGroupBox4.Size = New System.Drawing.Size(240, 37)
+        Me.UiGroupBox4.Size = New System.Drawing.Size(309, 37)
         Me.UiGroupBox4.TabIndex = 6
         Me.UiGroupBox4.Text = "Distributor"
         Me.UiGroupBox4.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
         '
         'btnFilterDistributor
         '
-        Me.btnFilterDistributor.Location = New System.Drawing.Point(215, 17)
+        Me.btnFilterDistributor.Location = New System.Drawing.Point(292, 17)
         Me.btnFilterDistributor.Name = "btnFilterDistributor"
         Me.btnFilterDistributor.Size = New System.Drawing.Size(17, 18)
         Me.btnFilterDistributor.TabIndex = 1
@@ -148,11 +146,11 @@ Partial Class Distributor_PO_Dispro
         Me.mcbDistributor.DesignTimeLayout = mcbDistributor_DesignTimeLayout
         Me.mcbDistributor.DisplayMember = "DISTRIBUTOR_NAME"
         Me.mcbDistributor.HoverMode = Janus.Windows.GridEX.HoverMode.Highlight
-        Me.mcbDistributor.Location = New System.Drawing.Point(3, 16)
+        Me.mcbDistributor.Location = New System.Drawing.Point(3, 15)
         Me.mcbDistributor.Name = "mcbDistributor"
         Me.mcbDistributor.SelectedIndex = -1
         Me.mcbDistributor.SelectedItem = Nothing
-        Me.mcbDistributor.Size = New System.Drawing.Size(208, 20)
+        Me.mcbDistributor.Size = New System.Drawing.Size(283, 20)
         Me.mcbDistributor.TabIndex = 0
         Me.mcbDistributor.ValueMember = "DISTRIBUTOR_ID"
         Me.mcbDistributor.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
@@ -173,7 +171,8 @@ Partial Class Distributor_PO_Dispro
         'dtPicUntil
         '
         Me.dtPicUntil.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.dtPicUntil.DateFormat = Janus.Windows.CalendarCombo.DateFormat.[Long]
+        Me.dtPicUntil.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicUntil.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
         '
         '
         '
@@ -182,10 +181,10 @@ Partial Class Distributor_PO_Dispro
         Me.dtPicUntil.DropDownCalendar.Name = ""
         Me.dtPicUntil.DropDownCalendar.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2003
         Me.dtPicUntil.HoverMode = Janus.Windows.CalendarCombo.HoverMode.Highlight
-        Me.dtPicUntil.Location = New System.Drawing.Point(283, 23)
+        Me.dtPicUntil.Location = New System.Drawing.Point(253, 23)
         Me.dtPicUntil.Name = "dtPicUntil"
         Me.dtPicUntil.ShowTodayButton = False
-        Me.dtPicUntil.Size = New System.Drawing.Size(204, 20)
+        Me.dtPicUntil.Size = New System.Drawing.Size(166, 20)
         Me.dtPicUntil.TabIndex = 4
         Me.dtPicUntil.Value = New Date(2009, 4, 3, 0, 0, 0, 0)
         Me.dtPicUntil.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2003
@@ -194,7 +193,7 @@ Partial Class Distributor_PO_Dispro
         '
         Me.Label2.AutoSize = True
         Me.Label2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.Label2.Location = New System.Drawing.Point(249, 26)
+        Me.Label2.Location = New System.Drawing.Point(219, 27)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(28, 13)
         Me.Label2.TabIndex = 3
@@ -203,7 +202,8 @@ Partial Class Distributor_PO_Dispro
         'dtPicfrom
         '
         Me.dtPicfrom.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.dtPicfrom.DateFormat = Janus.Windows.CalendarCombo.DateFormat.[Long]
+        Me.dtPicfrom.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicfrom.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
         '
         '
         '
@@ -215,7 +215,7 @@ Partial Class Distributor_PO_Dispro
         Me.dtPicfrom.Location = New System.Drawing.Point(44, 23)
         Me.dtPicfrom.Name = "dtPicfrom"
         Me.dtPicfrom.ShowTodayButton = False
-        Me.dtPicfrom.Size = New System.Drawing.Size(202, 20)
+        Me.dtPicfrom.Size = New System.Drawing.Size(163, 20)
         Me.dtPicfrom.TabIndex = 2
         Me.dtPicfrom.Value = New Date(2009, 4, 3, 0, 0, 0, 0)
         Me.dtPicfrom.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2003
@@ -230,14 +230,6 @@ Partial Class Distributor_PO_Dispro
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "From"
         '
-        'Timer1
-        '
-        Me.Timer1.Interval = 1000
-        '
-        'Timer2
-        '
-        Me.Timer2.Interval = 800
-        '
         'Distributor_PO_Dispro
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -245,7 +237,7 @@ Partial Class Distributor_PO_Dispro
         Me.Controls.Add(Me.GridEX1)
         Me.Controls.Add(Me.PanelEx1)
         Me.Name = "Distributor_PO_Dispro"
-        Me.Size = New System.Drawing.Size(952, 476)
+        Me.Size = New System.Drawing.Size(967, 476)
         CType(Me.GridEX1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelEx1.ResumeLayout(False)
         CType(Me.grpRangedate, System.ComponentModel.ISupportInitialize).EndInit()
@@ -266,11 +258,9 @@ Partial Class Distributor_PO_Dispro
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents dtPicfrom As Janus.Windows.CalendarCombo.CalendarCombo
     Friend WithEvents Label1 As System.Windows.Forms.Label
-    Private WithEvents Timer1 As System.Windows.Forms.Timer
     Private WithEvents UiGroupBox4 As Janus.Windows.EditControls.UIGroupBox
     Private WithEvents mcbDistributor As Janus.Windows.GridEX.EditControls.MultiColumnCombo
     Friend WithEvents GridEX1 As Janus.Windows.GridEX.GridEX
     Private WithEvents btnFilterDistributor As DTSProjects.ButtonSearch
-    Private WithEvents Timer2 As System.Windows.Forms.Timer
 
 End Class

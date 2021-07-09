@@ -14,15 +14,27 @@ Public Class AchievementF
     Private SP As StatusProgress
     Private ThreadProcess As Thread
     Dim ListAgreementNo As New List(Of String)
-    Private m_clsDPD As NufarmBussinesRules.DistributorAgreement.DPDAchievement
-    Private ReadOnly Property clsDPD() As NufarmBussinesRules.DistributorAgreement.DPDAchievement
+    Private m_clsDPD As NufarmBussinesRules.DistributorAgreement.DPDAchievementR
+    Private m_clsDPDN As NufarmBussinesRules.DistributorAgreement.DPDAchievementN
+    Private isNufarmDPD As Boolean = True
+
+    Private ReadOnly Property clsDPD() As NufarmBussinesRules.DistributorAgreement.DPDAchievementR
         Get
             If IsNothing(Me.m_clsDPD) Then
-                Me.m_clsDPD = New NufarmBussinesRules.DistributorAgreement.DPDAchievement()
+                Me.m_clsDPD = New NufarmBussinesRules.DistributorAgreement.DPDAchievementR()
             End If
             Return Me.m_clsDPD
         End Get
     End Property
+    Private ReadOnly Property clsDPDN() As NufarmBussinesRules.DistributorAgreement.DPDAchievementN
+        Get
+            If IsNothing(Me.m_clsDPDN) Then
+                Me.m_clsDPDN = New NufarmBussinesRules.DistributorAgreement.DPDAchievementN()
+            End If
+            Return Me.m_clsDPDN
+        End Get
+    End Property
+
     Private Sub ReadAcces()
         If Not CMain.IsSystemAdministrator Then
             btnFlag.Enabled = NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Achievement
@@ -46,7 +58,7 @@ Public Class AchievementF
         None
     End Enum
     Private Sub CheckedFilter()
-        If Me.chkFilter.Checked Then
+        If Me.ChkFilterDetail.Checked Then
             Me.GridEX1_CurrentCellChanged(Me.GridEX1, New EventArgs())
         Else
             If Not IsNothing(Me.GridEX2.DataSource) Then
@@ -64,6 +76,7 @@ Public Class AchievementF
             End If
             Me.GridEX2.TotalRow = Janus.Windows.GridEX.InheritableBoolean.False
         End If
+
     End Sub
 
     Private Sub GridEX1_CurrentCellChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles GridEX1.CurrentCellChanged
@@ -71,7 +84,7 @@ Public Class AchievementF
             If Me.isLoadingRow Then : Return : End If
             If IsNothing(Me.GridEX1.DataSource) Then : Return : End If
             If Me.GridEX1.RecordCount <= 0 Then : Return : End If
-            If Me.chkFilter.Checked Then
+            If Me.ChkFilterDetail.Checked Then
                 If Me.GridEX1.SelectedItems.Count > 0 Then
                     Me.Cursor = Cursors.WaitCursor
                     Me.isLoadingRow = True
@@ -170,7 +183,7 @@ Public Class AchievementF
         End Try
     End Sub
 
-    Private Sub chkFilter_CheckedChanged(ByVal sender As System.Object, ByVal e As DevComponents.DotNetBar.CheckBoxChangeEventArgs) Handles chkFilter.CheckedChanged
+    Private Sub chkFilter_CheckedChanged(ByVal sender As System.Object, ByVal e As DevComponents.DotNetBar.CheckBoxChangeEventArgs)
         Try
             Me.Cursor = Cursors.WaitCursor
             Me.isLoadingRow = True
@@ -182,87 +195,177 @@ Public Class AchievementF
             Me.Cursor = Cursors.Default
         End Try
     End Sub
-    Private Sub getDS(ByVal Sprog As StatusProgress)
-        Try
-            Select Case Sprog
-                Case StatusProgress.LoadingAchiement
-
-                    If (Not IsNothing(Me.mcbDistributor.Value)) And (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
-                        If Me.chkDistributors.CheckedValues.Length > 0 Then
-                            Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString(), ListAgreementNo)
-                        Else
-                            Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
-                        End If
-                    ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
-                        If Me.chkDistributors.CheckedValues.Length > 0 Then
-                            For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
-                                If Not ListAgreementNo.Contains(Me.chkDistributors.CheckedValues.GetValue(i).ToString()) Then
-                                    ListAgreementNo.Add(Me.chkDistributors.CheckedValues.GetValue(i).ToString())
-                                End If
-                            Next
-                            Me.DS = Me.clsDPD.getAchievement(Me.Flag, , ListAgreementNo)
-                        End If
-                    ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
-                        Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
+    Private Sub ProceedRoundupDPD(ByVal Sprog As StatusProgress)
+        Select Case Sprog
+            Case StatusProgress.LoadingAchiement
+                If (Not IsNothing(Me.mcbDistributor.Value)) And (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString(), ListAgreementNo)
                     Else
-                        Me.DS = Me.clsDPD.getAchievement(Me.Flag, True)
+                        Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
                     End If
-                Case StatusProgress.ProcessingDisc
-                    Dim DVAgreement As DataView = Nothing 'DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable()
-                    Dim DVAgreeOri As DataView = Nothing
-                    If (Not IsNothing(Me.mcbDistributor.Value) And Me.mcbDistributor.SelectedIndex <> -1) And _
-                        (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
-                        If Me.chkDistributors.CheckedValues.Length > 0 Then
-                            DVAgreement = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
-                            DVAgreeOri = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
-                            DVAgreement.Table.Clear() : DVAgreement.Sort = "AGREEMENT_NO"
-                            DVAgreeOri.Sort = "AGREEMENT_NO"
-                            Dim DrV As DataRowView = Nothing
-                            For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
-                                Dim AgreementNo = Me.chkDistributors.CheckedValues.GetValue(i)
-                                Dim Index As Integer = DVAgreement.Find(AgreementNo)
-                                If Index = -1 Then
-                                    DrV = DVAgreement.AddNew()
-                                    Dim IndexOri As Integer = DVAgreeOri.Find(AgreementNo)
-                                    DrV("AGREEMENT_NO") = AgreementNo
-                                    DrV("START_DATE") = DVAgreeOri(IndexOri)("START_DATE")
-                                    DrV("END_DATE") = DVAgreeOri(IndexOri)("END_DATE")
-                                    DrV.EndEdit()
-                                End If
-                            Next
-                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, DVAgreement.ToTable(), Me.mcbDistributor.Value.ToString())
-                        Else
-                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, , Me.mcbDistributor.Value.ToString())
-                        End If
-                    ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
+                ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            If Not ListAgreementNo.Contains(Me.chkDistributors.CheckedValues.GetValue(i).ToString()) Then
+                                ListAgreementNo.Add(Me.chkDistributors.CheckedValues.GetValue(i).ToString())
+                            End If
+                        Next
+                        Me.DS = Me.clsDPD.getAchievement(Me.Flag, , ListAgreementNo)
+                    End If
+                ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
+                    Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
+                Else
+                    Me.DS = Me.clsDPD.getAchievement(Me.Flag, True)
+                End If
+            Case StatusProgress.ProcessingDisc
+                Dim DVAgreement As DataView = Nothing 'DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable()
+                Dim DVAgreeOri As DataView = Nothing
+                If (Not IsNothing(Me.mcbDistributor.Value) And Me.mcbDistributor.SelectedIndex <> -1) And _
+                    (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        DVAgreement = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreeOri = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreement.Table.Clear() : DVAgreement.Sort = "AGREEMENT_NO"
+                        DVAgreeOri.Sort = "AGREEMENT_NO"
+                        Dim DrV As DataRowView = Nothing
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            Dim AgreementNo = Me.chkDistributors.CheckedValues.GetValue(i)
+                            Dim Index As Integer = DVAgreement.Find(AgreementNo)
+                            If Index = -1 Then
+                                DrV = DVAgreement.AddNew()
+                                Dim IndexOri As Integer = DVAgreeOri.Find(AgreementNo)
+                                DrV("AGREEMENT_NO") = AgreementNo
+                                DrV("START_DATE") = DVAgreeOri(IndexOri)("START_DATE")
+                                DrV("END_DATE") = DVAgreeOri(IndexOri)("END_DATE")
+                                DrV.EndEdit()
+                            End If
+                        Next
+                        Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, DVAgreement.ToTable(), Me.mcbDistributor.Value.ToString())
+                    Else
                         Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, , Me.mcbDistributor.Value.ToString())
-                    ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
-                        If Me.chkDistributors.CheckedValues.Length > 0 Then
-                            DVAgreement = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
-                            DVAgreeOri = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
-                            DVAgreement.Table.Clear() : DVAgreement.Sort = "AGREEMENT_NO"
-                            DVAgreeOri.Sort = "AGREEMENT_NO"
-                            Dim DrV As DataRowView = Nothing
-                            For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
-                                Dim AgreementNo = Me.chkDistributors.CheckedValues.GetValue(i)
-                                Dim Index As Integer = DVAgreement.Find(AgreementNo)
-                                If Index = -1 Then
-                                    DrV = DVAgreement.AddNew()
-                                    Dim IndexOri As Integer = DVAgreeOri.Find(AgreementNo)
-                                    DrV("AGREEMENT_NO") = AgreementNo
-                                    DrV("START_DATE") = DVAgreeOri(IndexOri)("START_DATE")
-                                    DrV("END_DATE") = DVAgreeOri(IndexOri)("END_DATE")
-                                    DrV.EndEdit()
-                                End If
-                            Next
-                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, DVAgreement.ToTable())
-                        Else
-                            Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag)
-                        End If
-                    ElseIf Me.Flag <> "" Then
+                    End If
+                ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
+                    Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, , Me.mcbDistributor.Value.ToString())
+                ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        DVAgreement = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreeOri = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreement.Table.Clear() : DVAgreement.Sort = "AGREEMENT_NO"
+                        DVAgreeOri.Sort = "AGREEMENT_NO"
+                        Dim DrV As DataRowView = Nothing
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            Dim AgreementNo = Me.chkDistributors.CheckedValues.GetValue(i)
+                            Dim Index As Integer = DVAgreement.Find(AgreementNo)
+                            If Index = -1 Then
+                                DrV = DVAgreement.AddNew()
+                                Dim IndexOri As Integer = DVAgreeOri.Find(AgreementNo)
+                                DrV("AGREEMENT_NO") = AgreementNo
+                                DrV("START_DATE") = DVAgreeOri(IndexOri)("START_DATE")
+                                DrV("END_DATE") = DVAgreeOri(IndexOri)("END_DATE")
+                                DrV.EndEdit()
+                            End If
+                        Next
+                        Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag, DVAgreement.ToTable())
+                    Else
                         Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag)
                     End If
-            End Select
+                ElseIf Me.Flag <> "" Then
+                    Me.DS = Me.clsDPD.CalculateAchievement(Me.Flag)
+                End If
+        End Select
+    End Sub
+    Private Sub ProceedNufarmDPD(ByVal Sprog As StatusProgress)
+        Select Case Sprog
+            Case StatusProgress.LoadingAchiement
+                If (Not IsNothing(Me.mcbDistributor.Value)) And (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        Me.DS = Me.clsDPDN.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString(), ListAgreementNo)
+                    Else
+                        Me.DS = Me.clsDPDN.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
+                    End If
+                ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            If Not ListAgreementNo.Contains(Me.chkDistributors.CheckedValues.GetValue(i).ToString()) Then
+                                ListAgreementNo.Add(Me.chkDistributors.CheckedValues.GetValue(i).ToString())
+                            End If
+                        Next
+                        Me.DS = Me.clsDPDN.getAchievement(Me.Flag, , ListAgreementNo)
+                    End If
+                ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
+                    Me.DS = Me.clsDPDN.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
+                Else
+                    Me.DS = Me.clsDPDN.getAchievement(Me.Flag, True)
+                End If
+            Case StatusProgress.ProcessingDisc
+                Dim DVAgreement As DataView = Nothing 'DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable()
+                Dim DVAgreeOri As DataView = Nothing
+                If (Not IsNothing(Me.mcbDistributor.Value) And Me.mcbDistributor.SelectedIndex <> -1) And _
+                    (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        DVAgreement = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreeOri = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreement.Table.Clear() : DVAgreement.Sort = "AGREEMENT_NO"
+                        DVAgreeOri.Sort = "AGREEMENT_NO"
+                        Dim DrV As DataRowView = Nothing
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            Dim AgreementNo = Me.chkDistributors.CheckedValues.GetValue(i)
+                            Dim Index As Integer = DVAgreement.Find(AgreementNo)
+                            If Index = -1 Then
+                                DrV = DVAgreement.AddNew()
+                                Dim IndexOri As Integer = DVAgreeOri.Find(AgreementNo)
+                                DrV("AGREEMENT_NO") = AgreementNo
+                                DrV("START_DATE") = DVAgreeOri(IndexOri)("START_DATE")
+                                DrV("END_DATE") = DVAgreeOri(IndexOri)("END_DATE")
+                                DrV.EndEdit()
+                            End If
+                        Next
+                        Me.DS = Me.clsDPDN.CalculateAchievement(Me.Flag, DVAgreement.ToTable(), Me.mcbDistributor.Value.ToString())
+                    Else
+                        Me.DS = Me.clsDPDN.CalculateAchievement(Me.Flag, , Me.mcbDistributor.Value.ToString())
+                    End If
+                ElseIf (Not IsNothing(Me.mcbDistributor.Value)) And (Me.mcbDistributor.SelectedIndex <> -1) Then
+                    Me.DS = Me.clsDPDN.CalculateAchievement(Me.Flag, , Me.mcbDistributor.Value.ToString())
+                ElseIf Not IsNothing(Me.chkDistributors.CheckedValues) Then
+                    If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        DVAgreement = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreeOri = DirectCast(Me.chkDistributors.DropDownDataSource, DataView).ToTable.Copy().DefaultView
+                        DVAgreement.Table.Clear() : DVAgreement.Sort = "AGREEMENT_NO"
+                        DVAgreeOri.Sort = "AGREEMENT_NO"
+                        Dim DrV As DataRowView = Nothing
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            Dim AgreementNo = Me.chkDistributors.CheckedValues.GetValue(i)
+                            Dim Index As Integer = DVAgreement.Find(AgreementNo)
+                            If Index = -1 Then
+                                DrV = DVAgreement.AddNew()
+                                Dim IndexOri As Integer = DVAgreeOri.Find(AgreementNo)
+                                DrV("AGREEMENT_NO") = AgreementNo
+                                DrV("START_DATE") = DVAgreeOri(IndexOri)("START_DATE")
+                                DrV("END_DATE") = DVAgreeOri(IndexOri)("END_DATE")
+                                DrV.EndEdit()
+                            End If
+                        Next
+                        Me.DS = Me.clsDPDN.CalculateAchievement(Me.Flag, DVAgreement.ToTable())
+                    Else
+                        Me.DS = Me.clsDPDN.CalculateAchievement(Me.Flag)
+                    End If
+                ElseIf Me.Flag <> "" Then
+                    Me.DS = Me.clsDPDN.CalculateAchievement(Me.Flag)
+                End If
+        End Select
+    End Sub
+    Private Sub getDS(ByVal Sprog As StatusProgress)
+        Try
+            'check apakah pkd roundup atau nufarm
+            If Me.cmbDPDType.SelectedIndex = 2 Then : Me.isNufarmDPD = False : End If
+
+            If isNufarmDPD Then
+                Me.ProceedNufarmDPD(Sprog)
+            Else
+                Me.ProceedRoundupDPD(Sprog)
+            End If
+
             If Not IsNothing(Me.DS) Then
                 Me.BindGrid()
             End If
@@ -277,15 +380,38 @@ Public Class AchievementF
             Me.GridEX1.SetDataBinding(Me.DS.Tables("ACHIEVEMENT_HEADER").DefaultView, "")
             Me.GridEX1.DropDowns("BRAND").SetDataBinding(Me.DS.Tables("T_BRAND").DefaultView(), "")
             Me.GridEX2.SetDataBinding(Me.DS.Tables("ACHIEVEMENT_DETAIL").DefaultView(), "")
-            If Me.chkFilter.Checked Then
+            If Me.ChkFilterDetail.Checked Then
                 Me.isLoadingRow = False
                 Me.GridEX1_CurrentCellChanged(Me.GridEX1, New EventArgs())
             End If
+            Me.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
+            Me.GridEX1.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
+            For Each col As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
+                If col.DataTypeCode = TypeCode.Boolean Then
+                    col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CheckBox
+                ElseIf col.DataTypeCode = TypeCode.DateTime Then
+                    col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CalendarDropDown
+                Else
+                    col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+                End If
+            Next
+            For Each col As Janus.Windows.GridEX.GridEXColumn In Me.GridEX2.RootTable.Columns
+                If col.DataTypeCode = TypeCode.Boolean Then
+                    col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CheckBox
+                ElseIf col.DataTypeCode = TypeCode.DateTime Then
+                    col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CalendarDropDown
+                Else
+                    col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+                End If
+            Next
+
         Else
             Me.GridEX1.SetDataBinding(Nothing, "") : Me.GridEX2.SetDataBinding(Nothing, "")
         End If
+        ''hide column yang tidak perlu sesuai type achievement
 
     End Sub
+
     Private Sub AchievementF_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         If Not IsNothing(Me.DS) Then
             Me.isLoadingRow = True
@@ -360,6 +486,7 @@ Public Class AchievementF
         Me.ReadAcces()
         CMain.FormLoading = Main.StatusForm.HasLoaded : CMain.StatProg = Main.StatusProgress.None
         Me.ExpandableSplitter2.Expanded = False
+        Me.cmbDPDType.SelectedIndex = 0
     End Sub
 
     Private Sub GridEX2_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GridEX2.Enter
@@ -430,17 +557,27 @@ Public Class AchievementF
                         MessageBox.Show("Data Exported to " & Me.SaveFileDialog1.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
                 Case "btnRecomputeF1"
+                    If Me.cmbDPDType.SelectedIndex <= 0 Then
+                        Me.ShowMessageInfo("Please enter DPD type")
+                        Me.cmbDPDType.Focus()
+                        Return
+                    End If
                     Me.Flag = "F1"
                     Btn = btnRecomputeF1
                     Me.btnRecomputeF1.Checked = True
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
 
                     Me.SP = StatusProgress.ProcessingDisc
-                    ThreadProcess = New Thread(AddressOf ShowLoading)
-                    ThreadProcess.Start()
+                    'ThreadProcess = New Thread(AddressOf ShowLoading)
+                    'ThreadProcess.Start()
                     '=================================================================
                     getDS(Me.SP)
                 Case "btnRecomputeF2"
+                    If Me.cmbDPDType.SelectedIndex <= 0 Then
+                        Me.ShowMessageInfo("Please enter DPD type")
+                        Me.cmbDPDType.Focus()
+                        Return
+                    End If
                     Me.Flag = "F2"
                     Btn = btnRecomputeF2 : Me.btnRecomputeF2.Checked = True
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
@@ -449,8 +586,13 @@ Public Class AchievementF
                     ThreadProcess.Start()
                     '=================================================================
                     getDS(Me.SP)
-                Case "btnRecomputeF3" : Me.Flag = "F3" : Me.btnRecomputeF3.Checked = True
-
+                Case "btnRecomputeF3"
+                    If Me.cmbDPDType.SelectedIndex <= 0 Then
+                        Me.ShowMessageInfo("Please enter DPD type")
+                        Me.cmbDPDType.Focus()
+                        Return
+                    End If
+                    Me.Flag = "F3" : Me.btnRecomputeF3.Checked = True
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
                     Me.SP = StatusProgress.ProcessingDisc
                     ThreadProcess = New Thread(AddressOf ShowLoading)
@@ -618,5 +760,18 @@ Public Class AchievementF
         If Me.chkDistributors.CheckedValues.Length <= 0 Then : Return : End If
         Me.checkEnabledFlagValue()
 
+    End Sub
+
+    Private Sub ChkFilterDetail_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ChkFilterDetail.CheckedChanged
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            Me.isLoadingRow = True
+            CheckedFilter()
+            Me.isLoadingRow = False
+        Catch ex As Exception
+            Me.isLoadingRow = False
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
     End Sub
 End Class

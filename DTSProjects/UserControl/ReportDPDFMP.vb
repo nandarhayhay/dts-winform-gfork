@@ -1,5 +1,5 @@
 Imports System.Threading
-Public Class Distributor_PO_Dispro
+Public Class ReportDPDFMP
     Private m_DistReport As NufarmBussinesRules.DistributorReport.Dist_Report
     Private Delegate Sub onShowingProgress(ByVal message As String)
     Private Event ShowProgres As onShowingProgress
@@ -28,27 +28,6 @@ Public Class Distributor_PO_Dispro
         End While
         Thread.Sleep(100) : Me.LD.Close() : Me.LD = Nothing
     End Sub
-    Private Sub getData()
-        Try
-            Me.Cursor = Cursors.WaitCursor
-            Me.GridEX1.SetDataBinding(Nothing, "")
-            Me.GridEX1.Update()
-            If (Me.mcbDistributor.Value Is Nothing) Or (Me.mcbDistributor.SelectedItem Is Nothing) Then
-                Me.clsDistReport.Create_View_ReportPODispro(Convert.ToDateTime(Me.dtPicfrom.Value.ToShortDateString()), Convert.ToDateTime(Me.dtPicUntil.Value.ToShortDateString()))
-            Else
-                Me.clsDistReport.Create_View_ReportPODispro(Convert.ToDateTime(Me.dtPicfrom.Value.ToShortDateString()), Convert.ToDateTime(Me.dtPicUntil.Value.ToShortDateString()), Me.mcbDistributor.Value.ToString())
-            End If
-            Me.GridEX1.SetDataBinding(Me.clsDistReport.ViewPODisPro(), "")
-            Me.GridEX1.RootTable.Columns("DISTRIBUTOR_NAME").AutoSize()
-            Me.GridEX1.RootTable.Columns("BRANDPACK_NAME").AutoSize()
-            Me.HasLoadReport = True : Me.IsFailedToLoad = False
-        Catch ex As Exception
-            Me.StatProg = StatusProgress.None : Me.IsFirstLoadReport = False : Me.HasLoadReport = True : Me.IsFailedToLoad = True : RaiseEvent CloseProgress() : Throw ex
-        Finally
-            Me.StatProg = StatusProgress.None : Me.Cursor = Cursors.Default
-        End Try
-    End Sub
-
     Private Property clsDistReport() As NufarmBussinesRules.DistributorReport.Dist_Report
         Get
             If IsNothing(Me.m_DistReport) Then
@@ -64,34 +43,23 @@ Public Class Distributor_PO_Dispro
     Friend Sub RefreshData()
         Me.btnApplyRange_Click(Me.btnApplyRange, New EventArgs())
     End Sub
-
-    Private Sub Distributor_PO_Dispro_Disposed(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Disposed
+    Private Sub getData()
         Try
             Me.Cursor = Cursors.WaitCursor
-            If Not IsNothing(Me.clsDistReport) Then
-                Me.clsDistReport.Dispose(False)
+            Dim DV As DataView = Nothing
+            If (Me.mcbDistributor.Value Is Nothing) Or (Me.mcbDistributor.SelectedItem Is Nothing) Then
+                DV = Me.clsDistReport.GetDPDFMP(Convert.ToDateTime(Me.dtPicfrom.Value.ToShortDateString()), Convert.ToDateTime(Me.dtPicUntil.Value.ToShortDateString()))
+            Else
+                DV = Me.clsDistReport.GetDPDFMP(Convert.ToDateTime(Me.dtPicfrom.Value.ToShortDateString()), Convert.ToDateTime(Me.dtPicUntil.Value.ToShortDateString()), Me.mcbDistributor.Value.ToString())
             End If
+            Me.GridEX1.SetDataBinding(DV, "")
+            Me.GridEX1.RootTable.Columns("DISTRIBUTOR_NAME").AutoSize()
+            Me.GridEX1.RootTable.Columns("BRANDPACK_NAME").AutoSize()
+            Me.HasLoadReport = True : Me.IsFailedToLoad = False
         Catch ex As Exception
-
-        End Try
-    End Sub
-
-    Private Sub Distributor_PO_Dispro_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        Try
-            Me.Cursor = Cursors.WaitCursor
-            Me.dtPicfrom.Value = NufarmBussinesRules.SharedClass.ServerDate()
-            Me.dtPicUntil.Value = NufarmBussinesRules.SharedClass.ServerDate()
-            Dim DV As DataView = Me.clsDistReport.CreateViewDistributor()
-            Me.mcbDistributor.SetDataBinding(DV, "")
-            'AddHandler Timer1.Tick, AddressOf ChekTimer
-            'AddHandler Timer2.Tick, AddressOf ChekTimer2
-            'Addhandler Timer2.Tick,Addressof che
-            Me.IsFirstLoadReport = True
-            'btnApplyRange_Click(Me.btnApplyRange, New EventArgs())
-        Catch ex As Exception
-
+            Me.StatProg = StatusProgress.None : Me.IsFirstLoadReport = False : Me.HasLoadReport = True : Me.IsFailedToLoad = True : RaiseEvent CloseProgress() : Throw ex
         Finally
-            Me.Cursor = Cursors.Default
+            Me.StatProg = StatusProgress.None : Me.Cursor = Cursors.Default
         End Try
     End Sub
 
@@ -115,9 +83,13 @@ Public Class Distributor_PO_Dispro
         End Try
     End Sub
 
-    'Private Sub Timer1_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Timer1.Tick
-    '    Me.tickCount += 1
-    'End Sub
+    Private Sub ReportDPDFMP_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Me.dtPicfrom.Value = NufarmBussinesRules.SharedClass.ServerDate()
+        Me.dtPicUntil.Value = NufarmBussinesRules.SharedClass.ServerDate()
+        Dim DV As DataView = Me.clsDistReport.CreateViewDistributor()
+        Me.mcbDistributor.SetDataBinding(DV, "")
+        Me.IsFirstLoadReport = True
+    End Sub
 
     Private Sub btnFilterDistributor_btnClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFilterDistributor.btnClick
         Try
@@ -129,13 +101,9 @@ Public Class Distributor_PO_Dispro
             MessageBox.Show(itemCount.ToString() & " item(s) found", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
         Catch ex As Exception
-
+            MessageBox.Show(ex.Message)
         Finally
             Me.Cursor = Cursors.Default
         End Try
     End Sub
-
-    'Private Sub Timer2_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer2.Tick
-    '    Me.CounterTimer2 += 1
-    'End Sub
 End Class

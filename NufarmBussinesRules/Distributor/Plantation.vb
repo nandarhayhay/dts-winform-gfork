@@ -1,6 +1,7 @@
 Imports System.Data.SqlClient
 Imports System.Data
 Imports System.Windows.Forms
+Imports NufarmBussinesRules.SharedClass
 Namespace Plantation
     Public Class Plantation
         Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
@@ -607,6 +608,11 @@ Namespace Plantation
                 Me.SqlRe = Me.SqlCom.ExecuteReader()
                 While Me.SqlRe.Read() : retvalStartDate = SqlRe.GetString(0) : retvalEndDate = SqlRe.GetString(1) : End While
                 Me.SqlRe.Close() : Me.ClearCommandParameters()
+                Dim StoredProcNI87 As String = "Usp_Create_Temp_Invoice_Table", StoredProcNI109 = "Usp_Create_Temp_Invoice_Table_NI109"
+                Dim StoredProcToUse As String = StoredProcNI87
+                If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                    StoredProcToUse = StoredProcNI109
+                End If
                 If Not ((StrStartDate.Equals(retvalStartDate)) Or (strEndDate.Equals(retvalEndDate))) Then
                     'bikin baru
                     Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
@@ -616,11 +622,11 @@ Namespace Plantation
                             " BEGIN SELECT START_DATE = @D_START_DATE,END_DATE = @D_END_DATE,UserName = @UserName INTO  ##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
                             " IF EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                             " BEGIN  DROP TABLE tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
-                            " EXEC Usp_Create_Temp_Invoice_Table @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; "
+                            " EXEC " & StoredProcToUse & " @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; "
                 Else
                     Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON;" & vbCrLf & _
                             "IF NOT EXISTS(SELECT NAME FROM [tempdb].[sys].[objects] WHERE NAME = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
-                            " BEGIN  EXEC Usp_Create_Temp_Invoice_Table @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; END " '& vbCrLf & _
+                            " BEGIN  EXEC " & StoredProcToUse & " @DEC_START_DATE = @D_START_DATE,@DEC_END_DATE = @D_END_DATE,@COMPUTERNAME = @C_NAME ; END " '& vbCrLf & _
                     '" IF NOT EXISTS(SELECT NAME FROM tempdb..SYSOBJECTS WHERE NAME = '##T_BRANDPACK' AND TYPE = 'U') " & vbCrLf & _
                     '" BEGIN  EXEC Usp_Create_Temp_Table_BrandPack; END "
                 End If

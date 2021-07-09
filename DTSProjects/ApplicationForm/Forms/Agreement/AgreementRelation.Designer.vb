@@ -1429,7 +1429,7 @@ Partial Class AgreementRelation
         Me.tbProgByVolume.Padding = New System.Windows.Forms.Padding(3)
         Me.tbProgByVolume.Size = New System.Drawing.Size(362, 177)
         Me.tbProgByVolume.TabIndex = 0
-        Me.tbProgByVolume.Text = "Q/S Dispro"
+        Me.tbProgByVolume.Text = "Q/S/F(Nufarm) "
         Me.tbProgByVolume.UseVisualStyleBackColor = True
         '
         'tbPeriodic
@@ -1546,7 +1546,7 @@ Partial Class AgreementRelation
         Me.tbYearly.Controls.Add(Me.dgvYearly)
         Me.tbYearly.Location = New System.Drawing.Point(1, 21)
         Me.tbYearly.Name = "tbYearly"
-        Me.tbYearly.Size = New System.Drawing.Size(239, 149)
+        Me.tbYearly.Size = New System.Drawing.Size(354, 149)
         Me.tbYearly.TabStop = True
         Me.tbYearly.Text = "Yearly discount"
         '
@@ -1590,7 +1590,7 @@ Partial Class AgreementRelation
         DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgvYearly.RowHeadersDefaultCellStyle = DataGridViewCellStyle10
         Me.dgvYearly.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvYearly.Size = New System.Drawing.Size(239, 149)
+        Me.dgvYearly.Size = New System.Drawing.Size(354, 149)
         Me.dgvYearly.StandardTab = True
         Me.dgvYearly.TabIndex = 11
         '
@@ -1646,7 +1646,7 @@ Partial Class AgreementRelation
         Me.tbProgF.Padding = New System.Windows.Forms.Padding(3)
         Me.tbProgF.Size = New System.Drawing.Size(362, 177)
         Me.tbProgF.TabIndex = 2
-        Me.tbProgF.Text = "4 Months periode"
+        Me.tbProgF.Text = "4 Months periode(Roundup)"
         Me.tbProgF.UseVisualStyleBackColor = True
         '
         'GridEX2
@@ -1915,7 +1915,7 @@ Partial Class AgreementRelation
         Me.tbPotensiPeriodBefore.Size = New System.Drawing.Size(362, 81)
         Me.tbPotensiPeriodBefore.StateStyles.FormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.tbPotensiPeriodBefore.TabStop = True
-        Me.tbPotensiPeriodBefore.Text = "Previous Before"
+        Me.tbPotensiPeriodBefore.Text = "Previous Periode"
         '
         'txtPBF3
         '
@@ -2102,7 +2102,7 @@ Partial Class AgreementRelation
         Me.Label47.Name = "Label47"
         Me.Label47.Size = New System.Drawing.Size(19, 13)
         Me.Label47.TabIndex = 26
-        Me.Label47.Text = "F2"
+        Me.Label47.Text = "F1"
         '
         'txtCPS1
         '

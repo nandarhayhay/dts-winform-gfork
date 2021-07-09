@@ -631,34 +631,57 @@ Namespace DistributorAgreement
 
         Public Sub DeleteAgreeProgDiscount(ByRef ds As DataSet, ByVal AgreeBrandID As String, ByVal Flag As String, ByVal mustCloseConnection As Boolean)
             Try
-                Query = "SET NOCOUNT ON;" & vbCrLf & _
-                        " DECLARE @CombAgreeBrandID VARCHAR(35) " & vbCrLf & _
-                        " SET @CombAgreeBrandID = (SELECT TOP 1 COMB_AGREE_BRAND_ID FROM AGREE_BRAND_INCLUDE WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID) ; " & vbCrLf & _
-                        "  IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER WHERE((AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID)) " & vbCrLf & _
-                        " BEGIN " & vbCrLf & _
-                        "    DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                        "    WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID) AND FLAG LIKE @QSY_DISC_FLAG + '%') AND LEFT_QTY = DISC_QTY;" & vbCrLf & _
-                        "    DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID " & vbCrLf & _
-                        "    AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                        "    WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) AND FLAG LIKE @QSY_DISC_FLAG + '%';" & vbCrLf & _
-                        "   IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
-                        "      BEGIN " & vbCrLf & _
-                        "       DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                        "       WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG LIKE @QSY_DISC_FLAG + '%') AND LEFT_QTY = DISC_QTY;" & vbCrLf & _
-                        "       DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID " & vbCrLf & _
-                        "       AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                        "       WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) AND FLAG LIKE @QSY_DISC_FLAG + '%';" & vbCrLf & _
-                        "      END " & vbCrLf & _
-                        " END " & vbCrLf & _
-                        " DELETE FROM AGREE_PROG_DISC WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID; " & vbCrLf & _
-                        " DELETE FROM AGREE_PROG_DISC_VAL WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID; " & vbCrLf & _
-                        " DELETE FROM GIVEN_PROGRESSIVE WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID ;" & vbCrLf & _
-                        " IF (@CombAgreeBrandID IS NOT NULL) " & vbCrLf & _
-                        " BEGIN " & vbCrLf & _
-                        " DELETE FROM AGREE_PROG_DISC WHERE AGREE_BRAND_ID = @CombAgreeBrandID ; " & vbCrLf & _
-                        " DELETE FROM GIVEN_PROGRESSIVE WHERE AGREE_BRAND_ID = @CombAgreeBrandID ;" & vbCrLf & _
-                        " DELETE FROM AGREE_PROG_DISC_VAL WHERE AGREE_BRAND_ID = @CombAgreeBrandID ;" & vbCrLf & _
-                        " END "
+                If Not Flag.ToString().Contains("F") Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            " DECLARE @CombAgreeBrandID VARCHAR(35) " & vbCrLf & _
+                            " SET @CombAgreeBrandID = (SELECT TOP 1 COMB_AGREE_BRAND_ID FROM AGREE_BRAND_INCLUDE WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID) ; " & vbCrLf & _
+                            "  IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER WHERE((AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID)) " & vbCrLf & _
+                            " BEGIN " & vbCrLf & _
+                            "    DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                            "    WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID) AND FLAG LIKE @QSY_DISC_FLAG + '%') AND LEFT_QTY = DISC_QTY;" & vbCrLf & _
+                            "    DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID " & vbCrLf & _
+                            "    AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                            "    WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) AND FLAG LIKE @QSY_DISC_FLAG + '%';" & vbCrLf & _
+                            "   IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
+                            "      BEGIN " & vbCrLf & _
+                            "       DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                            "       WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG LIKE @QSY_DISC_FLAG + '%') AND LEFT_QTY = DISC_QTY;" & vbCrLf & _
+                            "       DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID " & vbCrLf & _
+                            "       AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                            "       WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) AND FLAG LIKE @QSY_DISC_FLAG + '%';" & vbCrLf & _
+                            "      END " & vbCrLf & _
+                            " END " & vbCrLf & _
+                            " DELETE FROM AGREE_PROG_DISC WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID; " & vbCrLf & _
+                            " DELETE FROM AGREE_PROG_DISC_VAL WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID; " & vbCrLf & _
+                            " DELETE FROM GIVEN_PROGRESSIVE WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID ;" & vbCrLf & _
+                            " IF (@CombAgreeBrandID IS NOT NULL) " & vbCrLf & _
+                            " BEGIN " & vbCrLf & _
+                            " DELETE FROM AGREE_PROG_DISC WHERE AGREE_BRAND_ID = @CombAgreeBrandID ; " & vbCrLf & _
+                            " DELETE FROM GIVEN_PROGRESSIVE WHERE AGREE_BRAND_ID = @CombAgreeBrandID ;" & vbCrLf & _
+                            " DELETE FROM AGREE_PROG_DISC_VAL WHERE AGREE_BRAND_ID = @CombAgreeBrandID ;" & vbCrLf & _
+                            " END "
+                Else
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            " DECLARE @CombAgreeBrandID VARCHAR(35) " & vbCrLf & _
+                            " SET @CombAgreeBrandID = (SELECT TOP 1 COMB_AGREE_BRAND_ID FROM AGREE_BRAND_INCLUDE WHERE AGREE_BRAND_ID = @AGREE_BRAND_ID) ; " & vbCrLf & _
+                            "  IF EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE((AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID)) " & vbCrLf & _
+                            " BEGIN " & vbCrLf & _
+                            "    DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER " & vbCrLf & _
+                            "    WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID) AND FLAG LIKE @QSY_DISC_FLAG + '%') AND LEFT_QTY = DISC_QTY;" & vbCrLf & _
+                            "    DELETE FROM ACHIEVEMENT_HEADER WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID " & vbCrLf & _
+                            "    AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
+                            "    WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) AND FLAG LIKE @QSY_DISC_FLAG + '%';" & vbCrLf & _
+                            "   IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
+                            "     BEGIN " & vbCrLf & _
+                            "       DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER " & vbCrLf & _
+                            "       WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG LIKE @QSY_DISC_FLAG + '%') AND LEFT_QTY = DISC_QTY;" & vbCrLf & _
+                            "       DELETE FROM ACHIEVEMENT_HEADER WHERE (AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID " & vbCrLf & _
+                            "       AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
+                            "       WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) AND FLAG LIKE @QSY_DISC_FLAG + '%';" & vbCrLf & _
+                            "     END " & vbCrLf & _
+                            " END "
+                End If
+
                 '" IF EXISTS(SELECT BRND_B_S_ID FROM BRND_BRANDPACK_SAVING BBS INNER JOIN AGREE_BRANDPACK_INCLUDE ABI " & vbCrLf & _
                 '"    ON ABI.AGREE_BRANDPACK_ID = BBS.AGREE_BRANDPACK_ID WHERE ABI.AGREE_BRAND_ID = @AGREE_BRAND_ID AND BBS.QSY_FLAG LIKE @QSY_DISC_FLAG + '%') " & vbCrLf & _
                 '"  BEGIN " & vbCrLf & _
@@ -715,7 +738,8 @@ Namespace DistributorAgreement
         Public Function HasUsedGivenProgressive(ByVal AGREE_BRAND_ID As String, ByVal mustCloseConnection As Boolean) As Boolean
             Try
                 Query = "SET NOCOUNT ON ;" & vbCrLf & _
-                        "SELECT 1 WHERE EXISTS(SELECT GP_ID FROM ACCRUED_HEADER WHERE AGREEMENT_NO + '' + BRAND_ID = @AGREE_BRAND_ID); "
+                        "SELECT 1 WHERE EXISTS(SELECT GP_ID FROM ACCRUED_HEADER WHERE AGREEMENT_NO + '' + BRAND_ID = @AGREE_BRAND_ID) " & vbCrLf & _
+                        " OR EXISTS(SELECT GP_ID FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO + '' + BRAND_ID = @AGREE_BRAND_ID) "
                 If IsNothing(Me.SqlCom) Then
                     Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
@@ -725,9 +749,7 @@ Namespace DistributorAgreement
                 Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
                 If mustCloseConnection Then : Me.CloseConnection() : End If
                 If Not IsNothing(retval) And Not IsDBNull(retval) Then
-                    If CInt(retval) > 0 Then
-                        Return True
-                    End If
+                    Return (CInt(retval) > 0)
                 End If
                 Return False
             Catch ex As Exception
@@ -796,89 +818,171 @@ Namespace DistributorAgreement
                 Dim CommandInsert As SqlCommand = Me.SqlConn.CreateCommand()
                 With CommandInsert
                     .CommandType = CommandType.Text
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                            "IF (LEN(@QSY_DISC_FLAG) > 1) " & vbCrLf & _
-                            " BEGIN " & vbCrLf & _
-                            "   IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
-                            "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 " & vbCrLf & _
-                            "             AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                            "      BEGIN " & vbCrLf & _
-                           "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
-                            "       RETURN;" & vbCrLf & _
-                            "      END " & vbCrLf & _
-                            "   ELSE IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
-                            "                   AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                            "       BEGIN " & vbCrLf & _
-                            "         DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                            "         WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                            "         DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                            "         AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                            "         WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                            "       END " & vbCrLf & _
-                            " END " & vbCrLf & _
-                            "INSERT INTO AGREE_PROG_DISC(AGREE_BRAND_ID,PRGSV_DISC_PCT,QSY_DISC_FLAG,UP_TO_PCT,CREATE_BY,CREATE_DATE) " & vbCrLf & _
-                            "VALUES(@AGREE_BRAND_ID,@PRGSV_DISC_PCT,UPPER(@QSY_DISC_FLAG),@UP_TO_PCT,@CREATE_BY,@CREATE_DATE);"
+                    If QS_FLAG.ToUpper().Contains("F") Then
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                "IF (LEN(@QSY_DISC_FLAG) > 1) " & vbCrLf & _
+                                " BEGIN " & vbCrLf & _
+                                "   IF EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
+                                "             EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = AC.ACH_HEADER_ID) " & vbCrLf & _
+                                "             AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                "      BEGIN " & vbCrLf & _
+                               "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
+                                "       RETURN;" & vbCrLf & _
+                                "      END " & vbCrLf & _
+                                "   ELSE IF EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
+                                "                   AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                "       BEGIN " & vbCrLf & _
+                                "         DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER " & vbCrLf & _
+                                "         WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG));" & vbCrLf & _
+                                "         DELETE FROM ACHIEVEMENT_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                "         AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
+                                "         WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                "       END " & vbCrLf & _
+                                " END " & vbCrLf & _
+                                "INSERT INTO AGREE_PROG_DISC(AGREE_BRAND_ID,PRGSV_DISC_PCT,QSY_DISC_FLAG,UP_TO_PCT,CREATE_BY,CREATE_DATE) " & vbCrLf & _
+                                "VALUES(@AGREE_BRAND_ID,@PRGSV_DISC_PCT,UPPER(@QSY_DISC_FLAG),@UP_TO_PCT,@CREATE_BY,@CREATE_DATE);"
+                    Else
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                "IF (LEN(@QSY_DISC_FLAG) > 1) " & vbCrLf & _
+                                " BEGIN " & vbCrLf & _
+                                "   IF EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
+                                "             EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = AC.ACH_HEADER_ID AND CAN_RELEASE = 1 " & vbCrLf & _
+                                "             AND LEFT_QTY < DISC_QTY)) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                "      BEGIN " & vbCrLf & _
+                               "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
+                                "       RETURN;" & vbCrLf & _
+                                "      END " & vbCrLf & _
+                                "   ELSE IF EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
+                                "                   AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                "       BEGIN " & vbCrLf & _
+                                "         DELETE FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                                "         WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                                "         DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                "         AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                                "         WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                "       END " & vbCrLf & _
+                                " END " & vbCrLf & _
+                                "INSERT INTO AGREE_PROG_DISC(AGREE_BRAND_ID,PRGSV_DISC_PCT,QSY_DISC_FLAG,UP_TO_PCT,CREATE_BY,CREATE_DATE) " & vbCrLf & _
+                                "VALUES(@AGREE_BRAND_ID,@PRGSV_DISC_PCT,UPPER(@QSY_DISC_FLAG),@UP_TO_PCT,@CREATE_BY,@CREATE_DATE);"
+                    End If
+
                     .CommandText = Query
                     .Transaction = Me.SqlTrans
                 End With
                 Dim CommandUpdate As SqlCommand = Me.SqlConn.CreateCommand()
                 With CommandUpdate
                     .CommandType = CommandType.Text
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                            "IF (LEN(@QSY_DISC_FLAG) > 1) " & vbCrLf & _
-                            " BEGIN " & vbCrLf & _
-                            "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE((AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
-                            "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                            "   BEGIN " & vbCrLf & _
-                            "    IF(@IsRoundUp = 0) " & vbCrLf & _
-                            "       BEGIN " & vbCrLf & _
-                            "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
-                            "        RETURN;" & vbCrLf & _
-                            "       END " & vbCrLf & _
-                            "   END " & vbCrLf & _
-                            " END " & vbCrLf & _
-                            " IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
-                            "            AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                            "   BEGIN " & vbCrLf & _
-                            "      DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                            "      WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                            "      DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                            "      AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                            "      WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                            "   END " & vbCrLf & _
-                            "UPDATE AGREE_PROG_DISC SET AGREE_BRAND_ID = @AGREE_BRAND_ID,QSY_DISC_FLAG = UPPER(@QSY_DISC_FLAG)," & _
-                            "PRGSV_DISC_PCT = @PRGSV_DISC_PCT,UP_TO_PCT = @UP_TO_PCT,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE " & vbCrLf & _
-                            " WHERE UNIQUE_ID = CAST(@UNIQUE_ID AS VARCHAR(100));"
+                    If QS_FLAG.ToUpper().Contains("F") Then
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                 "IF (LEN(@QSY_DISC_FLAG) > 1) " & vbCrLf & _
+                                 " BEGIN " & vbCrLf & _
+                                 "  IF EXISTS(SELECT AC.ACH_HEADER_ID FROM ACHIEVEMENT_HEADER AC WHERE((AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
+                                 "             EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = AC.ACH_HEADER_ID) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                 "   BEGIN " & vbCrLf & _
+                                 "    IF(@IsRoundUp = 0) " & vbCrLf & _
+                                 "       BEGIN " & vbCrLf & _
+                                 "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
+                                 "        RETURN;" & vbCrLf & _
+                                 "       END " & vbCrLf & _
+                                 "   END " & vbCrLf & _
+                                 " END " & vbCrLf & _
+                                 " IF EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
+                                 "            AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                 "   BEGIN " & vbCrLf & _
+                                 "      DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER " & vbCrLf & _
+                                 "      WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG));" & vbCrLf & _
+                                 "      DELETE FROM ACHIEVEMENT_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                 "      AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
+                                 "      WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                 "   END " & vbCrLf & _
+                                 "UPDATE AGREE_PROG_DISC SET AGREE_BRAND_ID = @AGREE_BRAND_ID,QSY_DISC_FLAG = UPPER(@QSY_DISC_FLAG)," & _
+                                 "PRGSV_DISC_PCT = @PRGSV_DISC_PCT,UP_TO_PCT = @UP_TO_PCT,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE " & vbCrLf & _
+                                 " WHERE UNIQUE_ID = CAST(@UNIQUE_ID AS VARCHAR(100));"
+                    Else
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                "IF (LEN(@QSY_DISC_FLAG) > 1) " & vbCrLf & _
+                                " BEGIN " & vbCrLf & _
+                                "  IF EXISTS(SELECT AC.ACH_HEADER_ID FROM ACCRUED_HEADER AC WHERE((AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
+                                "             EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = AC.ACH_HEADER_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                "   BEGIN " & vbCrLf & _
+                                "    IF(@IsRoundUp = 0) " & vbCrLf & _
+                                "       BEGIN " & vbCrLf & _
+                                "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
+                                "        RETURN;" & vbCrLf & _
+                                "       END " & vbCrLf & _
+                                "   END " & vbCrLf & _
+                                " END " & vbCrLf & _
+                                " IF EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
+                                "            AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                "   BEGIN " & vbCrLf & _
+                                "      DELETE FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                                "      WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                                "      DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                "      AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                                "      WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                "   END " & vbCrLf & _
+                                "UPDATE AGREE_PROG_DISC SET AGREE_BRAND_ID = @AGREE_BRAND_ID,QSY_DISC_FLAG = UPPER(@QSY_DISC_FLAG)," & _
+                                "PRGSV_DISC_PCT = @PRGSV_DISC_PCT,UP_TO_PCT = @UP_TO_PCT,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE " & vbCrLf & _
+                                " WHERE UNIQUE_ID = CAST(@UNIQUE_ID AS VARCHAR(100));"
+                    End If
+
                     .CommandText = Query
                     .Transaction = Me.SqlTrans
                 End With
                 Dim CommandDelete As SqlCommand = Me.SqlConn.CreateCommand()
                 With CommandDelete
                     .CommandType = CommandType.Text
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                            "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID AND " & vbCrLf & _
-                            "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                            "   BEGIN " & vbCrLf & _
-                            "   IF(@IsRoundUp = 0) " & vbCrLf & _
-                            "       BEGIN " & vbCrLf & _
-                            "        RAISERROR('BrandPack already used in OA',16,1);" & vbCrLf & _
-                            "        RETURN;" & vbCrLf & _
-                            "       END " & vbCrLf & _
-                            "   END " & vbCrLf & _
-                            "    DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                            "    WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG =  UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                            "         DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                            "         AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                            "         WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                            " IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
-                            "      BEGIN " & vbCrLf & _
-                            "        DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                            "        WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                             "       DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                            "        AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                            "        WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                            "      END " & vbCrLf & _
-                            " DELETE FROM AGREE_PROG_DISC WHERE UNIQUE_ID = CAST(@UNIQUE_ID AS  VARCHAR(100));"
+                    If QS_FLAG.ToUpper().Contains("F") Then
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                  "  IF EXISTS(SELECT AC.ACH_HEADER_ID FROM ACHIEVEMENT_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID AND " & vbCrLf & _
+                                  "             EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = AC.ACH_HEADER_ID) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                  "   BEGIN " & vbCrLf & _
+                                  "    IF(@IsRoundUp = 0) " & vbCrLf & _
+                                  "       BEGIN " & vbCrLf & _
+                                  "        RAISERROR('BrandPack already used in OA',16,1);" & vbCrLf & _
+                                  "        RETURN;" & vbCrLf & _
+                                  "       END " & vbCrLf & _
+                                  "   END " & vbCrLf & _
+                                  "    DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER " & vbCrLf & _
+                                  "    WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG =  UPPER(@QSY_DISC_FLAG));" & vbCrLf & _
+                                  "    DELETE FROM ACHIEVEMENT_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                  "    AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
+                                  "    WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                  " IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
+                                  "      BEGIN " & vbCrLf & _
+                                  "        DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER " & vbCrLf & _
+                                  "        WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG = UPPER(@QSY_DISC_FLAG)) ;" & vbCrLf & _
+                                   "       DELETE FROM ACHIEVEMENT_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                  "        AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
+                                  "        WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                  "      END " & vbCrLf & _
+                                  " DELETE FROM AGREE_PROG_DISC WHERE UNIQUE_ID = CAST(@UNIQUE_ID AS  VARCHAR(100));"
+                    Else
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                "  IF EXISTS(SELECT AC.ACH_HEADER_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID AND " & vbCrLf & _
+                                "             EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = AC.ACH_HEADER_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                "   BEGIN " & vbCrLf & _
+                                "   IF(@IsRoundUp = 0) " & vbCrLf & _
+                                "       BEGIN " & vbCrLf & _
+                                "        RAISERROR('BrandPack already used in OA',16,1);" & vbCrLf & _
+                                "        RETURN;" & vbCrLf & _
+                                "       END " & vbCrLf & _
+                                "   END " & vbCrLf & _
+                                "    DELETE FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                                "    WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG =  UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                                "         DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                "         AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                                "         WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                " IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
+                                "      BEGIN " & vbCrLf & _
+                                "        DELETE FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                                "        WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                                 "       DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                "        AND ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                                "        WHERE NOT EXISTS(SELECT ACH_HEADER_ID FROM ACCRUED_DETAIL WHERE ACH_HEADER_ID = ACRH.ACH_HEADER_ID)) ;" & vbCrLf & _
+                                "      END " & vbCrLf & _
+                                " DELETE FROM AGREE_PROG_DISC WHERE UNIQUE_ID = CAST(@UNIQUE_ID AS  VARCHAR(100));"
+                    End If
                     .CommandType = CommandType.Text
                     .CommandText = Query
                     .Transaction = Me.SqlTrans
@@ -1013,188 +1117,189 @@ Namespace DistributorAgreement
 
 
                 ''===================== PROG DISC VAL===========================================
-
                 tblName = "T_" & QS_FLAG & "_Flag_Val"
-
-                ''============TABLE T_Q/S_FLAG====================
-                Query = " SET NOCOUNT ON;" & vbCrLf & _
-                       " IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
-                       "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 " & vbCrLf & _
-                       "             AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                       "      BEGIN " & vbCrLf & _
-                       "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
-                       "       RETURN;" & vbCrLf & _
-                       "      END " & vbCrLf & _
-                       " ELSE IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
-                       "                   AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                       "       BEGIN " & vbCrLf & _
-                       "         DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                       "         WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                       "         DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                       "         AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                       "         WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                       "       END " & vbCrLf & _
-                       " INSERT INTO AGREE_PROG_DISC_VAL(AGREE_BRAND_ID,PRGSV_DISC_PCT,QSY_DISC_FLAG,CREATE_BY,CREATE_DATE) " & vbCrLf & _
-                       " VALUES(@AGREE_BRAND_ID,@PRGSV_DISC_PCT,UPPER(@QSY_DISC_FLAG),@CREATE_BY,@CREATE_DATE); "
-                NewRows = ds.Tables(tblName).Select("", "", DataViewRowState.Added)
-                If NewRows.Length > 0 Then
-                    With CommandInsert
-                        .CommandText = Query
-                        If IsNothing(.Transaction) Then
-                            .Transaction = Me.SqlTrans
+                If ds.Tables.Contains(tblName) Then
+                    If ds.Tables(tblName).GetChanges().Rows.Count() > 0 Then
+                        ''============TABLE T_Q/S_FLAG====================
+                        Query = " SET NOCOUNT ON;" & vbCrLf & _
+                               " IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
+                               "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 " & vbCrLf & _
+                               "             AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                               "      BEGIN " & vbCrLf & _
+                               "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
+                               "       RETURN;" & vbCrLf & _
+                               "      END " & vbCrLf & _
+                               " ELSE IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
+                               "                   AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                               "       BEGIN " & vbCrLf & _
+                               "         DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                               "         WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                               "         DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                               "         AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                               "         WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
+                               "       END " & vbCrLf & _
+                               " INSERT INTO AGREE_PROG_DISC_VAL(AGREE_BRAND_ID,PRGSV_DISC_PCT,QSY_DISC_FLAG,CREATE_BY,CREATE_DATE) " & vbCrLf & _
+                               " VALUES(@AGREE_BRAND_ID,@PRGSV_DISC_PCT,UPPER(@QSY_DISC_FLAG),@CREATE_BY,@CREATE_DATE); "
+                        NewRows = ds.Tables(tblName).Select("", "", DataViewRowState.Added)
+                        If NewRows.Length > 0 Then
+                            With CommandInsert
+                                .CommandText = Query
+                                If IsNothing(.Transaction) Then
+                                    .Transaction = Me.SqlTrans
+                                End If
+                                .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
+                                .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
+                                .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
+                                .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
+                                .Parameters.Add("@CREATE_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
+                            End With
+                            Me.SqlDat.Update(NewRows)
+                            CommandInsert.Parameters.Clear()
                         End If
-                        .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
-                        .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
-                        .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
-                        .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
-                        .Parameters.Add("@CREATE_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
-                    End With
-                    Me.SqlDat.Update(NewRows)
-                    CommandInsert.Parameters.Clear()
-                End If
 
-                ''============TABLE T_Y_Flag_Val====================
-                NewRows = ds.Tables("T_Y_Flag_Val").Select("", "", DataViewRowState.Added)
-                If NewRows.Length > 0 Then
-                    With CommandInsert
-                        .CommandText = Query
-                        If IsNothing(.Transaction) Then
-                            .Transaction = Me.SqlTrans
+                        ''============TABLE T_Y_Flag_Val====================
+                        NewRows = ds.Tables("T_Y_Flag_Val").Select("", "", DataViewRowState.Added)
+                        If NewRows.Length > 0 Then
+                            With CommandInsert
+                                .CommandText = Query
+                                If IsNothing(.Transaction) Then
+                                    .Transaction = Me.SqlTrans
+                                End If
+                                .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
+                                .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
+                                .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
+                                .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
+                                .Parameters.Add("@CREATE_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
+                            End With
+                            Me.SqlDat.Update(NewRows)
+                            CommandInsert.Parameters.Clear()
                         End If
-                        .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
-                        .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
-                        .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
-                        .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
-                        .Parameters.Add("@CREATE_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
-                    End With
-                    Me.SqlDat.Update(NewRows)
-                    CommandInsert.Parameters.Clear()
-                End If
 
-                ''============TABLE T_Q/S_FLAG====================
-                Query = "SET NOCOUNT ON;" & vbCrLf & _
-                          " IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE((AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
-                          "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                          "   BEGIN " & vbCrLf & _
-                          "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
-                          "        RETURN;" & vbCrLf & _
-                          "   END " & vbCrLf & _
-                          " IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
-                          "            AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                          "   BEGIN " & vbCrLf & _
-                          "      DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                          "      WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                          "      DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                          "      AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                          "      WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                          "   END " & vbCrLf & _
-                          " UPDATE AGREE_PROG_DISC SET QSY_DISC_FLAG = UPPER(@QSY_DISC_FLAG)," & _
-                          " PRGSV_DISC_PCT = @PRGSV_DISC_PCT,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE " & vbCrLf & _
-                          " WHERE IDApp = @IDApp; "
-                UpdatedRows = ds.Tables(tblName).Select("", "", DataViewRowState.ModifiedOriginal)
-                If UpdatedRows.Length > 0 Then
-                    With CommandUpdate
-                        .CommandText = Query
-                        If IsNothing(.Transaction) Then
-                            .Transaction = Me.SqlTrans
+                        ''============TABLE T_Q/S_FLAG====================
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                  " IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE((AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID) AND " & vbCrLf & _
+                                  "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                  "   BEGIN " & vbCrLf & _
+                                  "        RAISERROR('Discount already used in OA',16,1);" & vbCrLf & _
+                                  "        RETURN;" & vbCrLf & _
+                                  "   END " & vbCrLf & _
+                                  " IF EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE ((AC.AGREEMENT_NO + AC.BRAND_ID) = @AGREE_BRAND_ID) " & vbCrLf & _
+                                  "            AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                                  "   BEGIN " & vbCrLf & _
+                                  "      DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                                  "      WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                                  "      DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                                  "      AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                                  "      WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
+                                  "   END " & vbCrLf & _
+                                  " UPDATE AGREE_PROG_DISC SET QSY_DISC_FLAG = UPPER(@QSY_DISC_FLAG)," & _
+                                  " PRGSV_DISC_PCT = @PRGSV_DISC_PCT,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE " & vbCrLf & _
+                                  " WHERE IDApp = @IDApp; "
+                        UpdatedRows = ds.Tables(tblName).Select("", "", DataViewRowState.ModifiedOriginal)
+                        If UpdatedRows.Length > 0 Then
+                            With CommandUpdate
+                                .CommandText = Query
+                                If IsNothing(.Transaction) Then
+                                    .Transaction = Me.SqlTrans
+                                End If
+                                .Parameters.Add("@IDApp", SqlDbType.Int).SourceColumn = "IDApp"
+                                .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
+                                .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
+                                .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
+                                .Parameters.Add("@MODIFY_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
+                                .Parameters.Add("@MODIFY_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
+                            End With
+                            SqlDat.Update(UpdatedRows)
+                            CommandUpdate.Parameters.Clear()
                         End If
-                        .Parameters.Add("@IDApp", SqlDbType.Int).SourceColumn = "IDApp"
-                        .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
-                        .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
-                        .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
-                        .Parameters.Add("@MODIFY_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
-                        .Parameters.Add("@MODIFY_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
-                    End With
-                    SqlDat.Update(UpdatedRows)
-                    CommandUpdate.Parameters.Clear()
-                End If
 
-                ''============TABLE T_Y_Flag_Val====================
-                UpdatedRows = ds.Tables("T_Y_Flag_Val").Select("", "", DataViewRowState.ModifiedOriginal)
-                If UpdatedRows.Length > 0 Then
-                    With CommandUpdate
-                        .CommandText = Query
-                        If IsNothing(.Transaction) Then
-                            .Transaction = Me.SqlTrans
+                        ''============TABLE T_Y_Flag_Val====================
+                        UpdatedRows = ds.Tables("T_Y_Flag_Val").Select("", "", DataViewRowState.ModifiedOriginal)
+                        If UpdatedRows.Length > 0 Then
+                            With CommandUpdate
+                                .CommandText = Query
+                                If IsNothing(.Transaction) Then
+                                    .Transaction = Me.SqlTrans
+                                End If
+                                .Parameters.Add("@IDApp", SqlDbType.Int).SourceColumn = "IDApp"
+                                .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
+                                .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
+                                .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
+                                .Parameters.Add("@MODIFY_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
+                                .Parameters.Add("@MODIFY_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
+                            End With
+                            SqlDat.Update(UpdatedRows)
+                            CommandUpdate.Parameters.Clear()
                         End If
-                        .Parameters.Add("@IDApp", SqlDbType.Int).SourceColumn = "IDApp"
-                        .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
-                        .Parameters.Add("@PRGSV_DISC_PCT", SqlDbType.Decimal).SourceColumn = "PRGSV_DISC_PCT"
-                        .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
-                        .Parameters.Add("@MODIFY_BY", SqlDbType.VarChar, 50).Value = NufarmBussinesRules.User.UserLogin.UserName
-                        .Parameters.Add("@MODIFY_DATE", SqlDbType.DateTime).Value = NufarmBussinesRules.SharedClass.ServerDate()
-                    End With
-                    SqlDat.Update(UpdatedRows)
-                    CommandUpdate.Parameters.Clear()
-                End If
 
-                Query = "SET NOCOUNT ON;" & vbCrLf & _
-                       "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID AND " & vbCrLf & _
-                       "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
-                       "   BEGIN " & vbCrLf & _
-                       "    DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                       "        WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG =  UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                       "    DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                       "         AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                       "         WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                       "   END " & vbCrLf & _
-                       " IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
-                       "      BEGIN " & vbCrLf & _
-                       "        DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
-                       "        WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
-                       "       DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
-                       "        AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
-                       "        WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
-                       "      END " & vbCrLf & _
-                       " DELETE FROM AGREE_PROG_DISC_VAL WHERE IDApp = @IDApp ;"
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                               "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID AND " & vbCrLf & _
+                               "             EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = AC.ACHIEVEMENT_ID AND CAN_RELEASE = 1 AND LEFT_QTY < DISC_QTY) AND FLAG = UPPER(@QSY_DISC_FLAG)) " & vbCrLf & _
+                               "   BEGIN " & vbCrLf & _
+                               "    DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                               "        WHERE (AGREEMENT_NO + '' + BRAND_ID) = @AGREE_BRAND_ID AND FLAG =  UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                               "    DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                               "         AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                               "         WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
+                               "   END " & vbCrLf & _
+                               " IF (@CombAgreeBrandID IS NOT NULL)" & vbCrLf & _
+                               "      BEGIN " & vbCrLf & _
+                               "        DELETE FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER " & vbCrLf & _
+                               "        WHERE ((AGREEMENT_NO + '' + BRAND_ID) = @CombAgreeBrandID) AND FLAG = UPPER(@QSY_DISC_FLAG)) AND LEFT_QTY = DISC_QTY ;" & vbCrLf & _
+                               "       DELETE FROM ACCRUED_HEADER WHERE (AGREEMENT_NO + BRAND_ID) = @AGREE_BRAND_ID AND FLAG = UPPER(@QSY_DISC_FLAG) " & vbCrLf & _
+                               "        AND ACHIEVEMENT_ID = ANY(SELECT ACHIEVEMENT_ID FROM ACCRUED_HEADER ACRH " & vbCrLf & _
+                               "        WHERE NOT EXISTS(SELECT ACHIEVEMENT_ID FROM ACCRUED_DETAIL WHERE ACHIEVEMENT_ID = ACRH.ACHIEVEMENT_ID)) ;" & vbCrLf & _
+                               "      END " & vbCrLf & _
+                               " DELETE FROM AGREE_PROG_DISC_VAL WHERE IDApp = @IDApp ;"
 
-                ''============TABLE T_Q/S_FLAG====================
-                DeletedRows = ds.Tables(tblName).Select("", "", DataViewRowState.Deleted)
-                If DeletedRows.Length > 0 Then
-                    With CommandDelete
-                        .CommandText = Query
-                        If IsNothing(.Transaction) Then
-                            .Transaction = Me.SqlTrans
+                        ''============TABLE T_Q/S_FLAG====================
+                        DeletedRows = ds.Tables(tblName).Select("", "", DataViewRowState.Deleted)
+                        If DeletedRows.Length > 0 Then
+                            With CommandDelete
+                                .CommandText = Query
+                                If IsNothing(.Transaction) Then
+                                    .Transaction = Me.SqlTrans
+                                End If
+                                .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
+                                .Parameters("@AGREE_BRAND_ID").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@IDApp", SqlDbType.UniqueIdentifier).SourceColumn = "IDApp"
+                                .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
+                                .Parameters("@QSY_DISC_FLAG").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@CombAgreeBrandID", SqlDbType.VarChar, 32).Value = CombAgreeBrandID
+                            End With
+                            SqlDat.Update(DeletedRows)
+                            CommandDelete.Parameters.Clear()
                         End If
-                        .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
-                        .Parameters("@AGREE_BRAND_ID").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@IDApp", SqlDbType.UniqueIdentifier).SourceColumn = "IDApp"
-                        .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
-                        .Parameters("@QSY_DISC_FLAG").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@CombAgreeBrandID", SqlDbType.VarChar, 32).Value = CombAgreeBrandID
-                    End With
-                    SqlDat.Update(DeletedRows)
-                    CommandDelete.Parameters.Clear()
-                End If
 
-                ''============TABLE T_Y_Flag_Val====================
-                DeletedRows = ds.Tables("T_Y_Flag_Val").Select("", "", DataViewRowState.Deleted)
-                If DeletedRows.Length > 0 Then
-                    With CommandDelete
-                        .CommandText = Query
-                        If IsNothing(.Transaction) Then
-                            .Transaction = Me.SqlTrans
+                        ''============TABLE T_Y_Flag_Val====================
+                        DeletedRows = ds.Tables("T_Y_Flag_Val").Select("", "", DataViewRowState.Deleted)
+                        If DeletedRows.Length > 0 Then
+                            With CommandDelete
+                                .CommandText = Query
+                                If IsNothing(.Transaction) Then
+                                    .Transaction = Me.SqlTrans
+                                End If
+                                .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
+                                .Parameters("@AGREE_BRAND_ID").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@IDApp", SqlDbType.UniqueIdentifier).SourceColumn = "IDApp"
+                                .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
+                                .Parameters("@QSY_DISC_FLAG").SourceVersion = DataRowVersion.Original
+                                .Parameters.Add("@CombAgreeBrandID", SqlDbType.VarChar, 32).Value = CombAgreeBrandID
+                            End With
+                            SqlDat.Update(DeletedRows)
+                            CommandDelete.Parameters.Clear()
                         End If
-                        .Parameters.Add("@AGREE_BRAND_ID", SqlDbType.VarChar, 32).SourceColumn = "AGREE_BRAND_ID"
-                        .Parameters("@AGREE_BRAND_ID").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@IDApp", SqlDbType.UniqueIdentifier).SourceColumn = "IDApp"
-                        .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@QSY_DISC_FLAG", SqlDbType.VarChar, 2).SourceColumn = "QSY_DISC_FLAG"
-                        .Parameters("@QSY_DISC_FLAG").SourceVersion = DataRowVersion.Original
-                        .Parameters.Add("@CombAgreeBrandID", SqlDbType.VarChar, 32).Value = CombAgreeBrandID
-                    End With
-                    SqlDat.Update(DeletedRows)
-                    CommandDelete.Parameters.Clear()
+                    End If
                 End If
                 ''======================== END PROG DISC VALUE ====================================================
                 ''===============================================================================================
                 If Not IsPending_Transaction Then
                     Me.CommiteTransaction() : Me.CloseConnection()
                 End If
-
             Catch ex As Exception
                 Me.RollbackTransaction()
                 Me.CloseConnection() : Me.ClearCommandParameters()
@@ -1292,6 +1397,8 @@ Namespace DistributorAgreement
                          "SET @V_RETVAL = 0; " & vbCrLf & _
                          "  IF EXISTS(SELECT AC.ACHIEVEMENT_ID FROM ACCRUED_HEADER AC WHERE (AC.AGREEMENT_NO + '' + AC.BRAND_ID) = @AGREE_BRAND_ID " & vbCrLf & _
                          "             AND AC.FLAG LIKE @FLAG + '%' ) " & vbCrLf & _
+                         " OR EXISTS(SELECT AC1.ACH_HEADER_ID FROM ACCRUED_HEADER AC1 WHERE (AC1.AGREEMENT_NO + '' + AC1.BRAND_ID) = @AGREE_BRAND_ID " & vbCrLf & _
+                         "             AND AC1.FLAG LIKE @FLAG + '%' ) " & vbCrLf & _
                          "   BEGIN " & vbCrLf & _
                          "     SET @V_RETVAL = 1 ; " & vbCrLf & _
                          "   END " & vbCrLf & _
@@ -1698,11 +1805,12 @@ Namespace DistributorAgreement
                 Return Me.m_DSPeriodic
             End Get
         End Property
-        'Public ReadOnly Property GetTableFMP() As DataTable
-        '    Get
-        '        Return Me.m_dataTableFMP
-        '    End Get
-        'End Property
+        Private m_dataTableFMP As DataTable
+        Public ReadOnly Property GetTableFMP() As DataTable
+            Get
+                Return Me.m_dataTableFMP
+            End Get
+        End Property
 #End Region
 
 #Region " Function "
@@ -1774,10 +1882,10 @@ Namespace DistributorAgreement
                     Case "F"
                         ''============FILL DISCOUNT VOLUME==================
                         'Query = "SELECT * FROM 
-                        'Me.m_dataTableFMP = New DataTable("T_F_Flag")
-                        'Me.m_dataTableFMP.Clear()
-                        'Me.SqlDat.Fill(Me.m_dataTableFMP)
-
+                        Me.m_dataTableFMP = New DataTable("T_F_Flag")
+                        Me.m_dataTableFMP.Clear()
+                        Me.SqlDat.Fill(Me.m_dataTableFMP)
+                        Me.m_DSPeriodic.Tables.Add(Me.m_dataTableFMP)
                         ' ''============FILL DISCOUNT VALUE==================
                         'Query = "SET NOCOUNT ON; " & vbCrLf & _
                         '      " SELECT IDApp,AGREE_BRAND_ID,QSY_DISC_FLAG, PRGSV_DISC_PCT  FROM AGREE_PROG_DISC_VAL " & vbCrLf & _
@@ -1790,31 +1898,27 @@ Namespace DistributorAgreement
                         ''==========ADD BOTH Tables to dataset=========================
                         'Me.m_DSPeriodic.Tables.Add(Me.m_dataTableFMP)
                         'Me.m_DSPeriodic.Tables.Add(Me.m_dataTableFMPV)
-
                 End Select
-
                 Me.ClearCommandParameters()
-
                 Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Select_Y_Flag")
                 Me.AddParameter("@AGREE_BRAND_ID", SqlDbType.VarChar, AGREE_BRAND_ID, 32)
                 Me.m_dataTableYearly = New DataTable("T_Y_Flag")
                 Me.m_dataTableYearly.Clear()
                 setDataAdapter(Me.SqlCom).Fill(Me.m_dataTableYearly)
 
-                Query = "SET NOCOUNT ON; " & vbCrLf & _
-                        " SELECT IDApp,AGREE_BRAND_ID,QSY_DISC_FLAG, PRGSV_DISC_PCT " & vbCrLf & _
-                        " FROM AGREE_PROG_DISC_VAL " & vbCrLf & _
-                        " WHERE (QSY_DISC_FLAG = 'Y') AND (AGREE_BRAND_ID = @AGREE_BRAND_ID) "
-                Me.ResetCommandText(CommandType.Text, Query)
-                Me.m_dataTableYearlyV = New DataTable("T_Y_Flag_Val")
-                Me.m_dataTableYearlyV.Clear()
-                setDataAdapter(Me.SqlCom).Fill(Me.m_dataTableYearlyV)
-
                 '==========ADD BOTH Tables yearly to dataset=========================
-
                 Me.m_DSPeriodic.Tables.Add(Me.m_dataTableYearly)
-                Me.m_DSPeriodic.Tables.Add(Me.m_dataTableYearlyV)
-
+                If Not Flag.Contains("F") Then
+                    Query = "SET NOCOUNT ON; " & vbCrLf & _
+                            " SELECT IDApp,AGREE_BRAND_ID,QSY_DISC_FLAG, PRGSV_DISC_PCT " & vbCrLf & _
+                            " FROM AGREE_PROG_DISC_VAL " & vbCrLf & _
+                            " WHERE (QSY_DISC_FLAG = 'Y') AND (AGREE_BRAND_ID = @AGREE_BRAND_ID) "
+                    Me.ResetCommandText(CommandType.Text, Query)
+                    Me.m_dataTableYearlyV = New DataTable("T_Y_Flag_Val")
+                    Me.m_dataTableYearlyV.Clear()
+                    setDataAdapter(Me.SqlCom).Fill(Me.m_dataTableYearlyV)
+                    Me.m_DSPeriodic.Tables.Add(Me.m_dataTableYearlyV)
+                End If
             Catch ex As Exception
                 Me.CloseConnection()
                 Me.ClearCommandParameters()

@@ -87,7 +87,7 @@ Public Class PO
     End Sub
 
     Private Sub ReadAcces()
-        If Not CMain.IsSystemAdministrator = True Then
+        If Not CMain.IsSystemAdministrator = True And Not NufarmBussinesRules.User.UserLogin.IsAdmin Then
             If NufarmBussinesRules.User.Privilege.ALLOW_DELETE.PO = True Then
                 Me.grdPurchaseOrder.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.True
             Else
@@ -616,7 +616,7 @@ Public Class PO
                     Return
                 End If
                 If Not IsNothing(Me.grdPurchaseOrder.GetValue("CREATE_DATE")) And Not IsDBNull(Me.grdPurchaseOrder.GetValue("CREATE_DATE")) Then
-                    If CMain.IsSystemAdministrator Then
+                    If CMain.IsSystemAdministrator Or NufarmBussinesRules.User.UserLogin.IsAdmin Then
                     Else
                         If Not IsNothing(Me.grdPurchaseOrder.GetValue("CREATE_DATE")) And Not IsDBNull(Me.grdPurchaseOrder.GetValue("CREATE_DATE")) Then
                             'chek apakah data sudah ada OA_ORIGINAL nya

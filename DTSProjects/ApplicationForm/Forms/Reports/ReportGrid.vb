@@ -512,6 +512,32 @@ Public Class ReportGrid
         End If
         Me.GetStateChecked(CType(sender, DevComponents.DotNetBar.ButtonItem))
     End Sub
+    Private Sub ShowPoAndDPDFMP(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        If Not IsNothing(Me.ActiveDoc) Then
+            If Me.ActiveDoc.Name = "ReportDPDFMP" Then
+            Else
+                Me.ActiveDoc.Dispose()
+                Dim DPD As New ReportDPDFMP()
+                DPD.Parent = Me.ExpandablePanel1
+                DPD.Dock = DockStyle.Fill
+                DPD.Show()
+                Me.m_Grid = DPD.GridEX1
+                Me.ActiveDoc = DPD
+                DPD.BringToFront()
+            End If
+        Else
+            'Me.ActiveDoc.Dispose()
+            Dim DPD As New ReportDPDFMP()
+            DPD.Parent = Me.ExpandablePanel1
+            DPD.Dock = DockStyle.Fill
+            DPD.Show()
+            Me.m_Grid = DPD.GridEX1
+            Me.ActiveDoc = DPD
+            DPD.BringToFront()
+        End If
+        Me.GetStateChecked(CType(sender, DevComponents.DotNetBar.ButtonItem))
+    End Sub
+
     Private Sub ShowAccrue(ByVal sender As System.Object, ByVal e As System.EventArgs)
         If Not IsNothing(Me.ActiveDoc) Then
             If Me.ActiveDoc.Name = "Acrue" Then
@@ -785,6 +811,7 @@ Public Class ReportGrid
                 Case "btnReportSales" : Me.ShowSalesReport(sender, e)
                 Case "btnReportDDDR" : Me.ShowDDDRReport(sender, e)
                 Case "btnTarget4MPeriode" : Me.ShowAgree4MPeriode(sender, e)
+                Case "btnPOAndDPDFMP" : Me.ShowPoAndDPDFMP(sender, e)
             End Select
             If Not IsNothing(Me.ActiveDoc) Then
                 If Not IsNothing(Me.m_Grid) Then

@@ -47,6 +47,7 @@ Partial Class ReportGrid
         Me.btnSummaryPlantation = New DevComponents.DotNetBar.ButtonItem
         Me.btnReportSales = New DevComponents.DotNetBar.ButtonItem
         Me.btnReportDDDR = New DevComponents.DotNetBar.ButtonItem
+        Me.btnTarget4MPeriode = New DevComponents.DotNetBar.ButtonItem
         Me.ButtonItem2 = New DevComponents.DotNetBar.ButtonItem
         Me.btnCardView = New DevComponents.DotNetBar.ButtonItem
         Me.btnSingleCard = New DevComponents.DotNetBar.ButtonItem
@@ -58,7 +59,7 @@ Partial Class ReportGrid
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
         Me.ExpandablePanel1 = New DevComponents.DotNetBar.ExpandablePanel
-        Me.btnTarget4MPeriode = New DevComponents.DotNetBar.ButtonItem
+        Me.btnPOAndDPDFMP = New DevComponents.DotNetBar.ButtonItem
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -189,7 +190,7 @@ Partial Class ReportGrid
         'ButtonItem1
         '
         Me.ButtonItem1.Name = "ButtonItem1"
-        Me.ButtonItem1.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDistributorReport, Me.btnOAReport, Me.btnSPPBReport, Me.btnThirdParty, Me.btnTargetAgreement, Me.btnPODispro, Me.btnPODisproByBrand, Me.btnDPRD, Me.btnAccrue, Me.RecapNasionalDPRD, Me.btnSummaryPlantation, Me.btnReportSales, Me.btnReportDDDR, Me.btnTarget4MPeriode})
+        Me.ButtonItem1.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDistributorReport, Me.btnOAReport, Me.btnSPPBReport, Me.btnThirdParty, Me.btnTargetAgreement, Me.btnPODispro, Me.btnPODisproByBrand, Me.btnDPRD, Me.btnAccrue, Me.RecapNasionalDPRD, Me.btnSummaryPlantation, Me.btnReportSales, Me.btnReportDDDR, Me.btnTarget4MPeriode, Me.btnPOAndDPDFMP})
         Me.ButtonItem1.Text = "Show Data"
         '
         'btnDistributorReport
@@ -273,6 +274,11 @@ Partial Class ReportGrid
         '
         Me.btnReportDDDR.Name = "btnReportDDDR"
         Me.btnReportDDDR.Text = "Report DD DR"
+        '
+        'btnTarget4MPeriode
+        '
+        Me.btnTarget4MPeriode.Name = "btnTarget4MPeriode"
+        Me.btnTarget4MPeriode.Text = "Target 4M Periode"
         '
         'ButtonItem2
         '
@@ -361,10 +367,11 @@ Partial Class ReportGrid
         Me.ExpandablePanel1.TitleStyle.GradientAngle = 90
         Me.ExpandablePanel1.TitleText = "Type of Report"
         '
-        'btnTarget4MPeriode
+        'btnPOAndDPDFMP
         '
-        Me.btnTarget4MPeriode.Name = "btnTarget4MPeriode"
-        Me.btnTarget4MPeriode.Text = "Target 4M Periode"
+        Me.btnPOAndDPDFMP.ImageIndex = 17
+        Me.btnPOAndDPDFMP.Name = "btnPOAndDPDFMP"
+        Me.btnPOAndDPDFMP.Text = "Recap PO DPD FMP"
         '
         'ReportGrid
         '
@@ -418,5 +425,6 @@ Partial Class ReportGrid
     Private WithEvents btnReportSales As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnReportDDDR As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnTarget4MPeriode As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnPOAndDPDFMP As DevComponents.DotNetBar.ButtonItem
 
 End Class

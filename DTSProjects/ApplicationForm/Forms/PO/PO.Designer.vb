@@ -133,6 +133,7 @@ Partial Class PO
         'grdPurchaseOrder
         '
         Me.grdPurchaseOrder.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.[True]
+        Me.grdPurchaseOrder.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
         Me.grdPurchaseOrder.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.grdPurchaseOrder.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.grdPurchaseOrder.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
@@ -686,7 +687,7 @@ Partial Class PO
         Me.Bar1.DockSide = DevComponents.DotNetBar.eDockSide.Document
         Me.Bar1.Location = New System.Drawing.Point(499, 434)
         Me.Bar1.Name = "Bar1"
-        Me.Bar1.Size = New System.Drawing.Size(69, 182)
+        Me.Bar1.Size = New System.Drawing.Size(69, 189)
         Me.Bar1.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2003
         Me.Bar1.TabIndex = 3
         Me.Bar1.TabStop = False

@@ -7,6 +7,30 @@ Namespace DistributorReport
         Private m_View_Target_4MPeriode As DataView
         Private m_ViewPODispro As DataView
         Private Query As String = ""
+        Public Function GetDPDFMP(ByVal START_DATE As Object, ByVal END_DATE As Object, Optional ByVal _
+            DISTRIBUTOR_ID As String = "") As DataView
+            Try
+                If IsNothing(Me.SqlCom) Then
+                    Me.CreateCommandSql(CommandType.StoredProcedure, "Usp_Get_Total_PO_And_DPD")
+                Else
+                    Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Get_Total_PO_And_DPD")
+                End If
+                If DISTRIBUTOR_ID = "" Then
+                    Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DBNull.Value, 10) ' VARCHAR(10),
+                Else
+                    Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DISTRIBUTOR_ID, 10) ' VARCHAR(10),
+                End If
+                    Me.AddParameter("@START_DATE", SqlDbType.DateTime, START_DATE) ' DATETIME,
+                    Me.AddParameter("@END_DATE", SqlDbType.DateTime, END_DATE) ' DATETIME
+                Dim dtTable As New DataTable("RPODispro") : dtTable.Clear()
+                setDataAdapter(Me.SqlCom).Fill(dtTable)
+                Return dtTable.DefaultView()
+            Catch ex As Exception
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw ex
+            End Try
+        End Function
         Public Function Create_View_ReportPODispro(ByVal START_DATE As Object, ByVal END_DATE As Object, Optional ByVal _
             DISTRIBUTOR_ID As String = "") As DataView
             Try
@@ -40,6 +64,7 @@ Namespace DistributorReport
                 Me.FillDataTable(dtTable) : Me.m_ViewPODispro = dtTable.DefaultView()
                 Return Me.m_ViewPODispro
             Catch ex As Exception
+                Me.ClearCommandParameters()
                 Me.CloseConnection()
                 Throw ex
             End Try

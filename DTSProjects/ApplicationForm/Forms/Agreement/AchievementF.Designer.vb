@@ -51,11 +51,16 @@ Partial Class AchievementF
         Me.btnFilterEqual = New DevComponents.DotNetBar.ButtonItem
         Me.btnExport = New DevComponents.DotNetBar.ButtonItem
         Me.btnRefresh = New DevComponents.DotNetBar.ButtonItem
+        Me.cmbDPDType = New DevComponents.DotNetBar.ComboBoxItem
+        Me.cmbItemUnchoosed = New DevComponents.Editors.ComboItem
+        Me.DPDTypeNufarm = New DevComponents.Editors.ComboItem
+        Me.DPDTypeRoundUp = New DevComponents.Editors.ComboItem
         Me.btnFlag = New DevComponents.DotNetBar.ButtonItem
         Me.btnRecomputeF1 = New DevComponents.DotNetBar.ButtonItem
         Me.btnRecomputeF2 = New DevComponents.DotNetBar.ButtonItem
         Me.btnRecomputeF3 = New DevComponents.DotNetBar.ButtonItem
-        Me.chkFilter = New DevComponents.DotNetBar.CheckBoxItem
+        Me.cmbAchRoundup = New DevComponents.Editors.ComboItem
+        Me.cmbAchNufarm = New DevComponents.Editors.ComboItem
         Me.Panel1 = New System.Windows.Forms.Panel
         Me.GridEX1 = New Janus.Windows.GridEX.GridEX
         Me.ExpandablePanel1 = New DevComponents.DotNetBar.ExpandablePanel
@@ -70,6 +75,8 @@ Partial Class AchievementF
         Me.Label2 = New System.Windows.Forms.Label
         Me.FilterEditor1 = New Janus.Windows.FilterEditor.FilterEditor
         Me.Panel2 = New System.Windows.Forms.Panel
+        Me.pnlCheckBox = New System.Windows.Forms.Panel
+        Me.ChkFilterDetail = New System.Windows.Forms.CheckBox
         Me.GridEX2 = New Janus.Windows.GridEX.GridEX
         Me.ExpandableSplitter2 = New DevComponents.DotNetBar.ExpandableSplitter
         Me.ContextMenuStrip1.SuspendLayout()
@@ -79,6 +86,7 @@ Partial Class AchievementF
         Me.ExpandablePanel1.SuspendLayout()
         CType(Me.mcbDistributor, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
+        Me.pnlCheckBox.SuspendLayout()
         CType(Me.GridEX2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -171,10 +179,10 @@ Partial Class AchievementF
         Me.Bar2.Dock = System.Windows.Forms.DockStyle.Top
         Me.Bar2.FadeEffect = True
         Me.Bar2.Images = Me.ImageList1
-        Me.Bar2.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnGrid, Me.btnFilter, Me.btnExport, Me.btnRefresh, Me.btnFlag, Me.chkFilter})
+        Me.Bar2.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnGrid, Me.btnFilter, Me.btnExport, Me.btnRefresh, Me.cmbDPDType, Me.btnFlag})
         Me.Bar2.Location = New System.Drawing.Point(0, 0)
         Me.Bar2.Name = "Bar2"
-        Me.Bar2.Size = New System.Drawing.Size(1001, 25)
+        Me.Bar2.Size = New System.Drawing.Size(1001, 27)
         Me.Bar2.Stretch = True
         Me.Bar2.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
         Me.Bar2.TabIndex = 23
@@ -265,6 +273,29 @@ Partial Class AchievementF
         Me.btnRefresh.Text = "Refresh"
         Me.btnRefresh.Tooltip = "Reload all possible data row  and refresh grid"
         '
+        'cmbDPDType
+        '
+        Me.cmbDPDType.AlwaysShowCaption = True
+        Me.cmbDPDType.ComboWidth = 110
+        Me.cmbDPDType.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.cmbDPDType.ItemHeight = 16
+        Me.cmbDPDType.Items.AddRange(New Object() {Me.cmbItemUnchoosed, Me.DPDTypeNufarm, Me.DPDTypeRoundUp})
+        Me.cmbDPDType.Name = "cmbDPDType"
+        Me.cmbDPDType.PreventEnterBeep = True
+        '
+        'cmbItemUnchoosed
+        '
+        Me.cmbItemUnchoosed.Text = "<==SELECT==>"
+        Me.cmbItemUnchoosed.TextAlignment = System.Drawing.StringAlignment.Center
+        '
+        'DPDTypeNufarm
+        '
+        Me.DPDTypeNufarm.Text = "Nufarm"
+        '
+        'DPDTypeRoundUp
+        '
+        Me.DPDTypeRoundUp.Text = "ROUNDUP"
+        '
         'btnFlag
         '
         Me.btnFlag.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
@@ -288,19 +319,22 @@ Partial Class AchievementF
         Me.btnRecomputeF3.Name = "btnRecomputeF3"
         Me.btnRecomputeF3.Text = "(Re)Compute F3"
         '
-        'chkFilter
+        'cmbAchRoundup
         '
-        Me.chkFilter.Name = "chkFilter"
-        Me.chkFilter.Text = "Filter Detail with header(row on header data is selected)"
+        Me.cmbAchRoundup.Text = "ROUNDUP"
+        '
+        'cmbAchNufarm
+        '
+        Me.cmbAchNufarm.Text = "Nufarm Product"
         '
         'Panel1
         '
         Me.Panel1.Controls.Add(Me.GridEX1)
         Me.Panel1.Controls.Add(Me.ExpandablePanel1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(0, 70)
+        Me.Panel1.Location = New System.Drawing.Point(0, 72)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1001, 212)
+        Me.Panel1.Size = New System.Drawing.Size(1001, 210)
         Me.Panel1.TabIndex = 24
         '
         'GridEX1
@@ -329,7 +363,7 @@ Partial Class AchievementF
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
         Me.GridEX1.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.GridEX1.Size = New System.Drawing.Size(1001, 173)
+        Me.GridEX1.Size = New System.Drawing.Size(1001, 171)
         Me.GridEX1.TabIndex = 38
         Me.GridEX1.TableHeaderFormatStyle.FontBold = Janus.Windows.GridEX.TriState.[True]
         Me.GridEX1.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
@@ -484,7 +518,7 @@ Partial Class AchievementF
         Me.FilterEditor1.DefaultConditionOperator = Janus.Data.ConditionOperator.Contains
         Me.FilterEditor1.Dock = System.Windows.Forms.DockStyle.Top
         Me.FilterEditor1.InnerAreaStyle = Janus.Windows.UI.Dock.PanelInnerAreaStyle.UseFormatStyle
-        Me.FilterEditor1.Location = New System.Drawing.Point(0, 25)
+        Me.FilterEditor1.Location = New System.Drawing.Point(0, 27)
         Me.FilterEditor1.MinSize = New System.Drawing.Size(16, 45)
         Me.FilterEditor1.Name = "FilterEditor1"
         Me.FilterEditor1.Office2007ColorScheme = Janus.Windows.Common.Office2007ColorScheme.[Default]
@@ -496,12 +530,32 @@ Partial Class AchievementF
         '
         'Panel2
         '
+        Me.Panel2.Controls.Add(Me.pnlCheckBox)
         Me.Panel2.Controls.Add(Me.GridEX2)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel2.Location = New System.Drawing.Point(0, 286)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(1001, 167)
         Me.Panel2.TabIndex = 25
+        '
+        'pnlCheckBox
+        '
+        Me.pnlCheckBox.Controls.Add(Me.ChkFilterDetail)
+        Me.pnlCheckBox.Dock = System.Windows.Forms.DockStyle.Top
+        Me.pnlCheckBox.Location = New System.Drawing.Point(0, 0)
+        Me.pnlCheckBox.Name = "pnlCheckBox"
+        Me.pnlCheckBox.Size = New System.Drawing.Size(1001, 26)
+        Me.pnlCheckBox.TabIndex = 28
+        '
+        'ChkFilterDetail
+        '
+        Me.ChkFilterDetail.AutoSize = True
+        Me.ChkFilterDetail.Location = New System.Drawing.Point(3, 5)
+        Me.ChkFilterDetail.Name = "ChkFilterDetail"
+        Me.ChkFilterDetail.Size = New System.Drawing.Size(287, 17)
+        Me.ChkFilterDetail.TabIndex = 0
+        Me.ChkFilterDetail.Text = "Filter Detail with header(row on header data is selected)"
+        Me.ChkFilterDetail.UseVisualStyleBackColor = True
         '
         'GridEX2
         '
@@ -591,6 +645,8 @@ Partial Class AchievementF
         Me.ExpandablePanel1.PerformLayout()
         CType(Me.mcbDistributor, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel2.ResumeLayout(False)
+        Me.pnlCheckBox.ResumeLayout(False)
+        Me.pnlCheckBox.PerformLayout()
         CType(Me.GridEX2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
@@ -623,7 +679,6 @@ Partial Class AchievementF
     Private WithEvents btnRecomputeF1 As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnRecomputeF2 As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnRecomputeF3 As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents chkFilter As DevComponents.DotNetBar.CheckBoxItem
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Private WithEvents FilterEditor1 As Janus.Windows.FilterEditor.FilterEditor
     Friend WithEvents ExpandablePanel1 As DevComponents.DotNetBar.ExpandablePanel
@@ -640,5 +695,13 @@ Partial Class AchievementF
     Private WithEvents GridEX1 As Janus.Windows.GridEX.GridEX
     Private WithEvents GridEX2 As Janus.Windows.GridEX.GridEX
     Private WithEvents ExpandableSplitter2 As DevComponents.DotNetBar.ExpandableSplitter
+    Private WithEvents cmbAchRoundup As DevComponents.Editors.ComboItem
+    Private WithEvents cmbAchNufarm As DevComponents.Editors.ComboItem
+    Private WithEvents pnlCheckBox As System.Windows.Forms.Panel
+    Private WithEvents ChkFilterDetail As System.Windows.Forms.CheckBox
+    Private WithEvents cmbDPDType As DevComponents.DotNetBar.ComboBoxItem
+    Private WithEvents cmbItemUnchoosed As DevComponents.Editors.ComboItem
+    Private WithEvents DPDTypeNufarm As DevComponents.Editors.ComboItem
+    Private WithEvents DPDTypeRoundUp As DevComponents.Editors.ComboItem
 
 End Class

@@ -1270,49 +1270,53 @@ Public Class DistributorAgreement
                     'CHECK_GROUP
                 End If
 
-                If Me.rdbQuarterly.Checked = True Then
-                    If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "Q", False) = True Then
-                        HasGeneratedDiscountProgressive = True
-                        Me.dgvPeriodic.Enabled = False : Me.MultiColumnCombo1.ReadOnly = True
-                        Me.dgvPeriodicVal.Enabled = True
-                        If Me.chkAgreementGroup.Checked = True Then
-                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
-                        Else
-                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
-                        End If
-                    Else
-                        Me.MultiColumnCombo1.ReadOnly = False
-                    End If
-                ElseIf Me.rdbSemeterly.Checked = True Then
-                    If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "S", False) = True Then
-                        HasGeneratedDiscountProgressive = True
-                        Me.dgvPeriodic.Enabled = False : Me.MultiColumnCombo1.ReadOnly = True
-                        Me.dgvPeriodicVal.Enabled = True
-                        If Me.chkAgreementGroup.Checked = True Then
-                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
-                        Else
-                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
-                        End If
-                    Else
-                        Me.MultiColumnCombo1.ReadOnly = False
-                    End If
-                ElseIf Me.rdbFMP.Checked = True Then
-                    Me.MultiColumnCombo1.ReadOnly = False
-                End If
+                Dim StartDate As DateTime = Convert.ToDateTime(Me.GridEX1.GetValue("START_DATE")), EndDate As DateTime = Convert.ToDateTime(Me.GridEX1.GetValue("END_DATE"))
 
-                If Me.rdbQuarterly.Checked Or Me.rdbSemeterly.Checked Then
-                    If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "Y", True) = True Then
-                        Me.dgvYearly.Enabled = False : HasGeneratedDiscountProgressive = True
-                        Me.MultiColumnCombo1.ReadOnly = True
-                        Me.dgvYearlyVal.Enabled = True
-                        If Me.chkAgreementGroup.Checked = True Then
-                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
+                If EndDate.Year <= 2019 Then
+                    If Me.rdbQuarterly.Checked = True Then
+                        If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "Q", False) = True Then
+                            HasGeneratedDiscountProgressive = True
+                            Me.dgvPeriodic.Enabled = False : Me.MultiColumnCombo1.ReadOnly = True
+                            Me.dgvPeriodicVal.Enabled = True
+                            If Me.chkAgreementGroup.Checked = True Then
+                                Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
+                            Else
+                                Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
+                            End If
                         Else
-                            Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
+                            Me.MultiColumnCombo1.ReadOnly = False
                         End If
-                    Else
-                        Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
+                    ElseIf Me.rdbSemeterly.Checked = True Then
+                        If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "S", False) = True Then
+                            HasGeneratedDiscountProgressive = True
+                            Me.dgvPeriodic.Enabled = False : Me.MultiColumnCombo1.ReadOnly = True
+                            Me.dgvPeriodicVal.Enabled = True
+                            If Me.chkAgreementGroup.Checked = True Then
+                                Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
+                            Else
+                                Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
+                            End If
+                        Else
+                            Me.MultiColumnCombo1.ReadOnly = False
+                        End If
+                    ElseIf Me.rdbFMP.Checked = True Then
                         Me.MultiColumnCombo1.ReadOnly = False
+                    End If
+
+                    If Me.rdbQuarterly.Checked Or Me.rdbSemeterly.Checked Then
+                        If Me.clsDiscAgreement.HasGeneratedProgressiveDiscount(Me.GridEX1.GetValue("AGREEMENT_NO").ToString(), "Y", True) = True Then
+                            Me.dgvYearly.Enabled = False : HasGeneratedDiscountProgressive = True
+                            Me.MultiColumnCombo1.ReadOnly = True
+                            Me.dgvYearlyVal.Enabled = True
+                            If Me.chkAgreementGroup.Checked = True Then
+                                Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = True
+                            Else
+                                Me.chkComboDistributor.DropDownList().Columns("DISTRIBUTOR_ID").ShowRowSelector = False
+                            End If
+                        Else
+                            Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
+                            Me.MultiColumnCombo1.ReadOnly = False
+                        End If
                     End If
                 End If
                 Me.txtAgreementNumber.Enabled = False : Me.rdbQuarterly.Enabled = False

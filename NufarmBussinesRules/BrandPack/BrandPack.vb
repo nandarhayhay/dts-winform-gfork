@@ -16,7 +16,6 @@ Namespace Brandpack
         'supaya bisa saving langsung function getdataviewbrand dan getdataviewpack mesti di panggil dulu sebelum 
         'function fetcdataset
         Private Query As String = ""
-        Dim DBInvoiceTo As CurrentInvToUse = CurrentInvToUse.NI87
         Public Sub New()
             MyBase.New()
             '--==============UNCOMMENT THIS AFTER NEEDED ================

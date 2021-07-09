@@ -201,45 +201,44 @@ Public Class AgreementRelation
         End Select
     End Sub
 
-    Private Function IsValidDatagrid() As Boolean
-        If Not IsNothing(Me.clsAgInclude.getDsPeriod) Then
-            If Me.clsAgInclude.getDsPeriod.HasChanges() Then
-                If (CType(Me.dgvPeriodic.DataSource, DataTable).DataSet.HasChanges()) Then
-                    If Me.QS_FLAG = "Q" Then
-                        For i As Integer = 0 To Me.clsAgInclude.GetTableQuarterly().Rows.Count - 1
-                            If (Me.dgvPeriodic.Item(2, i).Value Is DBNull.Value) Or (Me.dgvPeriodic.Item(3, i).Value Is DBNull.Value) Then
-                                Me.baseTooltip.SetToolTip(Me.dgvPeriodic, "Invalid / Null value." & vbCrLf & "Some column has an invalid / null value")
-                                Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.dgvPeriodic), Me.dgvPeriodic, 2000)
-                                Me.dgvPeriodic.Focus()
-                                Return False
-                            End If
-                        Next
-                    ElseIf Me.QS_FLAG = "S" Then
-                        For i As Integer = 0 To Me.clsAgInclude.GetTableSemesterly().Rows.Count - 1
-                            If (Me.dgvPeriodic.Item(2, i).Value Is DBNull.Value) Or (Me.dgvPeriodic.Item(3, i).Value Is DBNull.Value) Then
-                                Me.baseTooltip.SetToolTip(Me.dgvPeriodic, "Invalid / Null value." & vbCrLf & "Some column has an invalid / null value")
-                                Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.dgvPeriodic), Me.dgvPeriodic, 2000)
-                                Me.dgvPeriodic.Focus()
-                                Return False
-                            End If
-                        Next
-                    End If
-                End If
-                If (CType(Me.dgvYearly.DataSource, DataTable).DataSet.HasChanges()) Then
-                    For i As Integer = 0 To Me.clsAgInclude.GetTableYearly().Rows.Count - 1
-                        If (Me.dgvPeriodic.Item(2, i).Value Is DBNull.Value) Or (Me.dgvPeriodic.Item(3, i).Value Is DBNull.Value) Then
-                            Me.baseTooltip.SetToolTip(Me.dgvPeriodic, "Invalid / Null value." & vbCrLf & "Some column has an invalid / null value")
-                            Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.dgvPeriodic), Me.dgvPeriodic, 2500)
-                            Me.dgvPeriodic.Focus()
-                            Return False
-                        End If
-                    Next
-                End If
-            End If
-        End If
-        Return True
-    End Function
-
+    'Private Function IsValidDatagrid() As Boolean
+    '    If Not IsNothing(Me.clsAgInclude.getDsPeriod) Then
+    '        If Me.clsAgInclude.getDsPeriod.HasChanges() Then
+    '            If (CType(Me.dgvPeriodic.DataSource, DataTable).DataSet.HasChanges()) Then
+    '                If Me.QS_FLAG = "Q" Then
+    '                    For i As Integer = 0 To Me.clsAgInclude.GetTableQuarterly().Rows.Count - 1
+    '                        If (Me.dgvPeriodic.Item(2, i).Value Is DBNull.Value) Or (Me.dgvPeriodic.Item(3, i).Value Is DBNull.Value) Then
+    '                            Me.baseTooltip.SetToolTip(Me.dgvPeriodic, "Invalid / Null value." & vbCrLf & "Some column has an invalid / null value")
+    '                            Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.dgvPeriodic), Me.dgvPeriodic, 2000)
+    '                            Me.dgvPeriodic.Focus()
+    '                            Return False
+    '                        End If
+    '                    Next
+    '                ElseIf Me.QS_FLAG = "S" Then
+    '                    For i As Integer = 0 To Me.clsAgInclude.GetTableSemesterly().Rows.Count - 1
+    '                        If (Me.dgvPeriodic.Item(2, i).Value Is DBNull.Value) Or (Me.dgvPeriodic.Item(3, i).Value Is DBNull.Value) Then
+    '                            Me.baseTooltip.SetToolTip(Me.dgvPeriodic, "Invalid / Null value." & vbCrLf & "Some column has an invalid / null value")
+    '                            Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.dgvPeriodic), Me.dgvPeriodic, 2000)
+    '                            Me.dgvPeriodic.Focus()
+    '                            Return False
+    '                        End If
+    '                    Next
+    '                End If
+    '            End If
+    '            If (CType(Me.dgvYearly.DataSource, DataTable).DataSet.HasChanges()) Then
+    '                For i As Integer = 0 To Me.clsAgInclude.GetTableYearly().Rows.Count - 1
+    '                    If (Me.dgvPeriodic.Item(2, i).Value Is DBNull.Value) Or (Me.dgvPeriodic.Item(3, i).Value Is DBNull.Value) Then
+    '                        Me.baseTooltip.SetToolTip(Me.dgvPeriodic, "Invalid / Null value." & vbCrLf & "Some column has an invalid / null value")
+    '                        Me.baseTooltip.Show(Me.baseTooltip.GetToolTip(Me.dgvPeriodic), Me.dgvPeriodic, 2500)
+    '                        Me.dgvPeriodic.Focus()
+    '                        Return False
+    '                    End If
+    '                Next
+    '            End If
+    '        End If
+    '    End If
+    '    Return True
+    'End Function
 
     Private Sub ReadAccecs()
         If Not CMain.IsSystemAdministrator Then
@@ -376,9 +375,11 @@ Public Class AgreementRelation
                 Next
         End Select
     End Sub
-    Private Sub BindGrid4MPeriode()
-        Me.GridEX2.SetDataBinding(Me.ds4MPeriode.Tables(0).DefaultView(), "")
-
+    Private Sub BindGrid4MPeriode(ByVal DV As Object)
+        Me.GridEX2.SetDataBinding(DV, "")
+        If IsNothing(DV) Then
+            Return
+        End If
         'FLAG
         Dim VList() As String = {"F1", "F2", "F3"}
         Dim ColFlag As Janus.Windows.GridEX.GridEXColumn = Me.GridEX2.RootTable.Columns("FLAG")
@@ -466,9 +467,6 @@ Public Class AgreementRelation
         ValueListCat.PopulateValueList(tblPsGroup.DefaultView, "PSValue", "PSName")
         ColCat.EditTarget = Janus.Windows.GridEX.EditTarget.Value
         ColCat.DefaultGroupInterval = Janus.Windows.GridEX.GroupInterval.Text
-
-
-
     End Sub
 
     Private Sub BindGridEX(ByVal dtView As DataView, ByRef rowFilter As Object)
@@ -502,7 +500,6 @@ Public Class AgreementRelation
                 Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
             Else
                 Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-
             End If
             If Item.DataMember.Contains("ID") Then
                 Item.Visible = False
@@ -1128,7 +1125,7 @@ Public Class AgreementRelation
     'End Sub
 
     Private Sub dgvPeriodic_MouseClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles dgvPeriodic.MouseClick
-        If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) And (Me.QS_FLAG = "S" Or Me.QS_FLAG = "Q") Then
+        If (Me.chkTypical.Checked = True) And (Me.chkTypical.Enabled = True) Then ' And (Me.QS_FLAG = "S" Or Me.QS_FLAG = "Q") 
             Me.dgvPeriodic.Enabled = True
         Else
             Me.dgvPeriodic.Enabled = False
@@ -1162,7 +1159,7 @@ Public Class AgreementRelation
                 End If
             End If
             If e.ColumnIndex = 4 Then : Return : End If
-            If Not (Me.dgvPeriodic.Item(2, e.RowIndex).Value Is Nothing) Or Not (Me.dgvPeriodic.Item(3, e.RowIndex).Value Is Nothing) Then
+            If Not (Me.dgvPeriodic.Item(2, e.RowIndex).Value Is Nothing) And Not (Me.dgvPeriodic.Item(3, e.RowIndex).Value Is Nothing) Then
                 If Me.Mode = SaveMode.Save Then
                     Me.dgvPeriodic.Item(1, e.RowIndex).Value = CObj(Me.NewAgree_Brand_ID)
                 Else
@@ -1208,6 +1205,74 @@ Public Class AgreementRelation
 
 #Region " GRID EX "
 
+    Private Sub CheckCustomProgAndCombinedBrand()
+        If Me.clsAgInclude.IsCustomProgressiveDiscount(Me.AGREE_BRAND_ID, False) Then ''sudah di input 
+            Me.dgvPeriodicVal.Enabled = True : Me.dgvYearlyVal.Enabled = True
+            Me.clsAgInclude.GetDsSetPeriod(Me.AGREE_BRAND_ID, Me.QS_FLAG)
+            Me.grdunAddedBrandPack.Enabled = True
+        Else
+            'check apakah ada combined brand dengan status progressive discountnya custom
+            If Not IsDBNull(GridEX1.GetValue("COMBINED_BRAND")) Then
+                'check ke database apakah combinedbrand ini ada di agree_prog_discount
+                If (Me.clsAgInclude.IsCustomProgressiveDiscount(Me.GridEX1.GetValue("COMBINED_BRAND").ToString(), False)) Then
+                    Me.chkTypical.Checked = True
+                    ''matikan control
+                    Me.chkTypical.Enabled = False
+                    Me.dgvPeriodic.Enabled = False : Me.dgvPeriodicVal.Enabled = False
+                    Me.dgvYearly.Enabled = False : Me.dgvYearlyVal.Enabled = False
+                    Me.grdunAddedBrandPack.Enabled = False
+                    Me.clsAgInclude.GetDsSetPeriod(Me.GridEX1.GetValue("COMBINED_BRAND").ToString(), Me.QS_FLAG)
+                    Me.IsEnabledEditgrid = False
+                Else
+                    Me.chkTypical.Enabled = True : Me.chkTypical.Checked = False
+                    Me.dgvPeriodic.Enabled = True : Me.dgvPeriodicVal.Enabled = True
+                    Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
+                    Me.grdunAddedBrandPack.Enabled = True
+                    Me.clsAgInclude.GetDsSetPeriod(Me.AGREE_BRAND_ID, Me.QS_FLAG)
+                    'check apakah data sudah di generate/belum 
+                End If
+            Else
+                'Me.dgvPeriodic.Enabled = True : Me.dgvPeriodicVal.Enabled = True
+                'Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
+                Me.chkTypical.Enabled = True : Me.chkTypical.Checked = False
+                Me.grdunAddedBrandPack.Enabled = True
+                Me.clsAgInclude.GetDsSetPeriod(Me.AGREE_BRAND_ID, Me.QS_FLAG)
+            End If
+        End If
+        Me.dgvPeriodicVal.Enabled = True
+        If (Me.QS_FLAG = "Q") Then
+            Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
+            Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
+            'transisi
+            'Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+            'Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableFMPV()
+        ElseIf Me.QS_FLAG = "S" Then
+            Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableSemesterly()
+            Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableSemesterlyV()
+            'ElseIf Me.QS_FLAG = "F" Then
+            '    Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+            '    Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableFMPV()
+        ElseIf Me.QS_FLAG = "F" Then
+            Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+            Me.dgvPeriodicVal.DataSource = Nothing
+            Me.dgvPeriodicVal.Enabled = False
+        End If
+        Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
+
+        If Not IsNothing(Me.dgvPeriodicVal.DataSource) Then
+            Me.dgvPeriodicVal.Columns(0).Visible = False
+            Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+            Me.dgvPeriodic.Columns(0).Visible = False
+            Me.dgvYearlyVal.Columns(0).Visible = False
+        End If
+        Me.dgvYearly.Columns(0).Visible = False
+        'JIKA END_DATE AGREEMENT <= 31 AGUSTUS 2009 HIDE COLUMN
+        If AgreementEndDate < New DateTime(2010, 9, 1) Then
+            Me.dgvPeriodic.Columns("QSY_DISC_FLAG").Visible = False
+        Else
+            Me.dgvPeriodic.Columns("QSY_DISC_FLAG").Visible = True
+        End If
+    End Sub
     Private Sub GridEX1_CurrentCellChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles GridEX1.CurrentCellChanged
         Try
             If Me.Hload = HasLoad.NotYet Then : Return : End If
@@ -1417,6 +1482,11 @@ Public Class AgreementRelation
                             End If
                     End Select
                     Me.txtBrandName.Text = Me.GridEX1.GetValue("BRAND_NAME").ToString()
+                    If Me.txtBrandName.Text.Contains("ROUNDUP") Then
+                        Me.MainTbBrandProgressive.SelectedIndex = 1
+                    Else
+                        Me.MainTbBrandProgressive.SelectedIndex = 0
+                    End If
                     Dim Index As Integer
                     Index = Me.clsAgInclude.ViewFilterBrand.Find(CObj(Me.Brand_IDHide))
                     If Index <> -1 Then
@@ -1438,104 +1508,53 @@ Public Class AgreementRelation
                             Me.DataToolStripMenuItem.Enabled = False
                         End If
                         Me.IsEnabledEditgrid = True
+                        Me.chkTypical.Checked = True : Me.chkTypical.Enabled = True
+                        Me.dgvPeriodic.Enabled = True : Me.dgvYearly.Enabled = True
                         If Me.QS_FLAG = "F" Then
                             Me.chkTypical.Checked = True : Me.chkTypical.Enabled = True
-                            Me.dgvPeriodic.Enabled = False : Me.dgvYearly.Enabled = False
-                            Me.dgvPeriodicVal.Enabled = False : Me.dgvYearlyVal.Enabled = False
+                            ''check apakah product Nufarm atau bukan
+                            If Not Me.GridEX1.GetValue("BRAND_NAME").ToString().Contains("ROUNDUP") Then
+                                CheckCustomProgAndCombinedBrand()
+                                'Else
+                                '    'get datasource
+                            End If                            ''----UNTUK Product nufarm di hidupkan lagi karena sama baik product nufarm atau roundup thn 2020-2021 pake 4M Periode
+                            'Me.dgvPeriodic.Enabled = False : Me.dgvYearly.Enabled = False
+                            'Me.dgvPeriodicVal.Enabled = False : Me.dgvYearlyVal.Enabled = False
                         Else
-                            If Me.clsAgInclude.IsCustomProgressiveDiscount(Me.AGREE_BRAND_ID, False) Then ''sudah di input 
-                                Me.chkTypical.Checked = True : Me.chkTypical.Enabled = True
-                                Me.dgvPeriodic.Enabled = True : Me.dgvYearly.Enabled = True
-                                Me.dgvPeriodicVal.Enabled = True : Me.dgvYearlyVal.Enabled = True
-                                Me.clsAgInclude.GetDsSetPeriod(Me.AGREE_BRAND_ID, Me.QS_FLAG)
-                                Me.grdunAddedBrandPack.Enabled = True
-                            Else
-                                'check apakah ada combined brand dengan status progressive discountnya custom
-                                If Not IsDBNull(GridEX1.GetValue("COMBINED_BRAND")) Then
-                                    'check ke database apakah combinedbrand ini ada di agree_prog_discount
-                                    If (Me.clsAgInclude.IsCustomProgressiveDiscount(Me.GridEX1.GetValue("COMBINED_BRAND").ToString(), False)) Then
-                                        Me.chkTypical.Checked = True
-                                        ''matikan control
-                                        Me.chkTypical.Enabled = False
-                                        Me.dgvPeriodic.Enabled = False : Me.dgvPeriodicVal.Enabled = False
-                                        Me.dgvYearly.Enabled = False : Me.dgvYearlyVal.Enabled = False
-                                        Me.grdunAddedBrandPack.Enabled = False
-                                        Me.clsAgInclude.GetDsSetPeriod(Me.GridEX1.GetValue("COMBINED_BRAND").ToString(), Me.QS_FLAG)
-                                        Me.IsEnabledEditgrid = False
-                                    Else
-                                        Me.chkTypical.Enabled = True : Me.chkTypical.Checked = False
-                                        Me.dgvPeriodic.Enabled = True : Me.dgvPeriodicVal.Enabled = True
-                                        Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
-                                        Me.grdunAddedBrandPack.Enabled = True
-                                        Me.clsAgInclude.GetDsSetPeriod(Me.AGREE_BRAND_ID, Me.QS_FLAG)
-                                        'check apakah data sudah di generate/belum 
-                                    End If
-                                Else
-                                    Me.dgvPeriodic.Enabled = True : Me.dgvPeriodicVal.Enabled = True
-                                    Me.dgvYearly.Enabled = True : Me.dgvYearlyVal.Enabled = True
-                                    Me.chkTypical.Enabled = True : Me.chkTypical.Checked = False
-                                    Me.grdunAddedBrandPack.Enabled = True
-                                    Me.clsAgInclude.GetDsSetPeriod(Me.AGREE_BRAND_ID, Me.QS_FLAG)
-                                End If
-                            End If
-                            If (Me.QS_FLAG = "Q") Then
-                                Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
-                                Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
-                                'transisi
-                                'Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
-                                'Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableFMPV()
-                            ElseIf Me.QS_FLAG = "S" Then
-                                Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableSemesterly()
-                                Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableSemesterlyV()
-                                'ElseIf Me.QS_FLAG = "F" Then
-                                '    Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
-                                '    Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableFMPV()
-                            End If
-                            Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
-                            Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
-                            Me.dgvPeriodic.Columns(0).Visible = False
-                            Me.dgvPeriodicVal.Columns(0).Visible = False
-                            Me.dgvYearly.Columns(0).Visible = False
-                            Me.dgvYearlyVal.Columns(0).Visible = False
-                            'JIKA END_DATE AGREEMENT <= 31 AGUSTUS 2009 HIDE COLUMN
-                            If AgreementEndDate < New DateTime(2010, 9, 1) Then
-                                Me.dgvPeriodic.Columns("QSY_DISC_FLAG").Visible = False
-                            Else
-                                Me.dgvPeriodic.Columns("QSY_DISC_FLAG").Visible = True
-                            End If
-                            'get Given Progressive
-                            Dim tblProgressive As DataTable = Me.clsAgInclude.getGivenProgressive(Me.AGREE_BRAND_ID, True)
-                            If tblProgressive.Rows.Count > 0 Then
-                                Me.txtPBQ3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBQ3"))
-                                Me.txtPBQ4.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBQ4"))
-                                Me.txtPBS2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBS2"))
-                                Me.txtCPQ1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPQ1"))
-                                Me.txtCPQ2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPQ2"))
-                                Me.txtCPQ3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPQ3"))
-                                Me.txtCPS1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPS1"))
-                                Me.txtPBYear.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBY"))
-                                'Public PBF2
-                                'Public PBF3
-                                'Public CPF1
-                                'Public CPF2
-                                Me.txtPBF2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBF2"))
-                                Me.txtPBF3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBF3"))
-                                Me.txtCPF1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPF1"))
-                                Me.txtCPF2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPF2"))
-                                With Me.DPrevDisc
-                                    .PBQ3 = Me.txtPBQ3.Value
-                                    .PBQ4 = Me.txtPBQ4.Value
-                                    .PBS2 = Me.txtPBS2.Value
-                                    .CPQ1 = Me.txtCPQ1.Value
-                                    .CPQ2 = Me.txtCPQ2.Value
-                                    .CPQ3 = Me.txtCPQ3.Value
-                                    .CPS1 = Me.txtCPS1.Value
-                                    .PBF2 = Me.txtPBF2.Value
-                                    .PBF3 = Me.txtPBF3.Value
-                                    .CPF1 = Me.txtCPF1.Value
-                                    .CPF2 = Me.txtCPF2.Value
-                                End With
-                            End If
+                            CheckCustomProgAndCombinedBrand()
+                        End If
+                        'get Given Progressive
+                        Dim tblProgressive As DataTable = Me.clsAgInclude.getGivenProgressive(Me.AGREE_BRAND_ID, True)
+                        If tblProgressive.Rows.Count > 0 Then
+                            Me.txtPBQ3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBQ3"))
+                            Me.txtPBQ4.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBQ4"))
+                            Me.txtPBS2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBS2"))
+                            Me.txtCPQ1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPQ1"))
+                            Me.txtCPQ2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPQ2"))
+                            Me.txtCPQ3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPQ3"))
+                            Me.txtCPS1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPS1"))
+                            Me.txtPBYear.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBY"))
+                            'Public PBF2
+                            'Public PBF3
+                            'Public CPF1
+                            'Public CPF2
+                            Me.txtPBF2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBF2"))
+                            Me.txtPBF3.Value = Convert.ToDecimal(tblProgressive.Rows(0)("PBF3"))
+                            Me.txtCPF1.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPF1"))
+                            Me.txtCPF2.Value = Convert.ToDecimal(tblProgressive.Rows(0)("CPF2"))
+                            With Me.DPrevDisc
+                                .PBQ3 = Me.txtPBQ3.Value
+                                .PBQ4 = Me.txtPBQ4.Value
+                                .PBS2 = Me.txtPBS2.Value
+                                .CPQ1 = Me.txtCPQ1.Value
+                                .CPQ2 = Me.txtCPQ2.Value
+                                .CPQ3 = Me.txtCPQ3.Value
+                                .CPS1 = Me.txtCPS1.Value
+                                .PBF2 = Me.txtPBF2.Value
+                                .PBF3 = Me.txtPBF3.Value
+                                .CPF1 = Me.txtCPF1.Value
+                                .CPF2 = Me.txtCPF2.Value
+                            End With
                         End If
                         Dim DV As DataView = Me.clsAgInclude.GetItemBrandPackIncludedByBrandID(Me.Brand_IDHide, Me.MultiColumnCombo1.Value.ToString(), False)
                         Me.BindGrid_1(Me.grdAddedBrandPack, DV)
@@ -1553,14 +1572,14 @@ Public Class AgreementRelation
                         Me.FormatGridDiscount(Me.dgvYearly)
                         Me.FormatGridDiscount(Me.dgvYearlyVal)
                     End If
-                    Me.grpPotensi.Enabled = True
+                    ''chek apakah roudup bukan
 
+                    Me.grpPotensi.Enabled = True
                     'Me.baseTooltip.SetToolTip(Me.lstItemBrandPack, "Double Click one of the Item(s) on this ListBox" & vbCrLf & "If you intend to Insert Item.")
                 Case ActiveTab.CombinedBrand
                     Me.TreeView1.Visible = True
                     Me.AGREE_BRAND_ID = Me.GridEX1.GetValue("ID").ToString()
                     Me.lblFirstBrand.Text = Me.GridEX1.GetValue("BRAND_NAME").ToString()
-
                     'check apakah data ada di table agree_prog_disc
                     'jika tidak ada tampilkan di combofirstsecond yang combined null 
                     Me.HFC = HasFilledComboFirstSecond.Filling 'untuk mematikan event combo selection change pada saat item combo di fill
@@ -1772,10 +1791,10 @@ Public Class AgreementRelation
                 e.Cancel = True : Return
             End If
             Dim Message As String = ""
-            If Me.clsAgInclude.CheckChildReference_BrandPack_Include(Me.grdAddedBrandPack.GetValue("BRANDPACK_ID").ToString(), _
-            Me.MultiColumnCombo1.Text, Message) > 0 Then
-                Me.ShowMessageInfo(Me.MessageCantDeleteData & vbCrLf & Message) : e.Cancel = True : Return
-            End If
+            'If Me.clsAgInclude.CheckChildReference_BrandPack_Include(Me.grdAddedBrandPack.GetValue("BRANDPACK_ID").ToString(), _
+            'Me.MultiColumnCombo1.Text, Message) > 0 Then
+            '    Me.ShowMessageInfo(Me.MessageCantDeleteData & vbCrLf & Message) : e.Cancel = True : Return
+            'End If
             'confirmasikan ke user
             If Me.ShowConfirmedMessage(Me.ConfirmDeleteMessage) = Windows.Forms.DialogResult.No Then : e.Cancel = True : Return : End If
             Me.Cursor = Cursors.WaitCursor
@@ -1846,7 +1865,7 @@ Public Class AgreementRelation
             End If
             Dim Index As Integer = Me.clsAgInclude.ViewAgreement.Find(Me.MultiColumnCombo1.Text)
             If Index <> -1 Then
-                Me.QS_FLAG = Me.clsAgInclude.ViewAgreement(Index)("QS_TREATMENT_FLAG").ToString()
+                Me.QS_FLAG = Me.clsAgInclude.ViewAgreement(Index)("QS_TREATMENT_FLAG").ToString().ToUpper()
                 Dim StartDate As DateTime = Me.clsAgInclude.ViewAgreement(Index)("START_DATE")
                 Dim EndDate As DateTime = Me.clsAgInclude.ViewAgreement(Index)("END_DATE")
                 If StartDate >= New Date(2019, 8, 1) And EndDate <= New Date(2020, 7, 31) And Me.QS_FLAG = "Q" Then
@@ -1865,9 +1884,13 @@ Public Class AgreementRelation
             End Select
             If Me.QS_FLAG = "F" Then
                 Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, True)
-                Me.ds4MPeriode = New DataSet("DS4periode")
-                Me.ds4MPeriode.Tables.Add(tbl)
-                BindGrid4MPeriode()
+                If Not IsNothing(tbl) Then
+                    Me.ds4MPeriode = New DataSet("DS4periode")
+                    Me.ds4MPeriode.Tables.Add(tbl)
+                    Me.BindGrid4MPeriode(Me.ds4MPeriode.Tables(0).DefaultView())
+                Else
+                    BindGrid4MPeriode(Nothing)
+                End If
                 Me.MainTbBrandProgressive.SelectedIndex = 1
                 Me.TabControl1.SelectedIndex = 2
                 'Me.grpPotensi.Visible = False
@@ -1877,7 +1900,7 @@ Public Class AgreementRelation
                     Dim tbl As DataTable = Me.clsAgInclude.getSchemaR(Me.MultiColumnCombo1.Text, True)
                     Me.ds4MPeriode = New DataSet("DS4periode")
                     Me.ds4MPeriode.Tables.Add(tbl)
-                    BindGrid4MPeriode()
+                    BindGrid4MPeriode(Me.ds4MPeriode.Tables(0).DefaultView())
                     Me.MainTbBrandProgressive.SelectedIndex = 1
                     Me.TabControl1.SelectedIndex = 2
                 Else
@@ -2095,7 +2118,10 @@ Public Class AgreementRelation
                 'Me.clsAgInclude.GetTableQuarterly().Clear()
                 Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
                 Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
-
+            ElseIf Me.QS_FLAG = "F" Then
+                Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+                Me.dgvPeriodicVal.DataSource = Nothing
+                Me.dgvPeriodicVal.Enabled = False
             End If
             Me.chkTypical.Enabled = True
 
@@ -2636,54 +2662,54 @@ Public Class AgreementRelation
         End Try
     End Sub
 
-    Private Sub fillAgreebrandIDinGridProgressive()
-        If Me.clsAgInclude.getDsPeriod.Tables(0).Rows.Count > 0 Then
-            For i As Integer = 0 To Me.clsAgInclude.getDsPeriod.Tables(0).Rows.Count - 1
-                If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("UP_TO_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("UP_TO_PCT")) Then
-                    If IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID")) Or IsNothing(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID")) Then
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
-                    ElseIf Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
-                    End If
-                    If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("PRGSV_DISC_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("PRGSV_DISC_PCT")) Then
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
-                    ElseIf Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
-                    End If
-                End If
-            Next
-            For i As Integer = 0 To Me.clsAgInclude.getDsPeriod.Tables(1).Rows.Count - 1
-                If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("UP_TO_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("UP_TO_PCT")) Then
-                    If IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID")) Or IsNothing(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID")) Then
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
-                    ElseIf Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
-                    End If
-                    If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("PRGSV_DISC_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("PRGSV_DISC_PCT")) Then
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
-                    ElseIf Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
-                        Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
-                    End If
-                End If
-            Next
-        End If
-    End Sub
+    'Private Sub fillAgreebrandIDinGridProgressive()
+    '    If Me.clsAgInclude.getDsPeriod.Tables(0).Rows.Count > 0 Then
+    '        For i As Integer = 0 To Me.clsAgInclude.getDsPeriod.Tables(0).Rows.Count - 1
+    '            If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("UP_TO_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("UP_TO_PCT")) Then
+    '                If IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID")) Or IsNothing(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID")) Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
+    '                ElseIf Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
+    '                End If
+    '                If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("PRGSV_DISC_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("PRGSV_DISC_PCT")) Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
+    '                ElseIf Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(0).Rows(i).EndEdit()
+    '                End If
+    '            End If
+    '        Next
+    '        For i As Integer = 0 To Me.clsAgInclude.getDsPeriod.Tables(1).Rows.Count - 1
+    '            If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("UP_TO_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("UP_TO_PCT")) Then
+    '                If IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID")) Or IsNothing(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID")) Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
+    '                ElseIf Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
+    '                End If
+    '                If Not IsDBNull(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("PRGSV_DISC_PCT")) And Not IsNothing(Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("PRGSV_DISC_PCT")) Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
+    '                ElseIf Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID").ToString() <> Me.NewAgree_Brand_ID Then
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).BeginEdit()
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i)("AGREE_BRAND_ID") = Me.NewAgree_Brand_ID
+    '                    Me.clsAgInclude.getDsPeriod.Tables(1).Rows(i).EndEdit()
+    '                End If
+    '            End If
+    '        Next
+    '    End If
+    'End Sub
 
     Private Sub SavingChanges1_btnSaveClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SavingChanges1.btnSaveClick
         Try
@@ -2719,7 +2745,6 @@ Public Class AgreementRelation
                     Return
                 End If
             End If
-
             'Me.clsAgInclude = New NufarmBussinesRules.DistributorAgreement.Include()
             Me.clsAgInclude.Agreement_no = Me.MultiColumnCombo1.Text
             Dim GivenPersen As Decimal = Me.txtGiven.Value
@@ -3002,18 +3027,25 @@ Public Class AgreementRelation
                     table.Rows.Clear()
                 Next
                 Me.dgvPeriodicVal.Rows.Clear()
-                Me.dgvPeriodicVal.Rows.Clear()
                 Me.dgvYearly.Rows.Clear()
                 Me.dgvYearlyVal.Rows.Clear()
                 If (Me.QS_FLAG = "S") Then
                     Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableSemesterly()
                     Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableSemesterlyV()
+                    Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
                 ElseIf (Me.QS_FLAG = "Q") Then
                     Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
                     Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
+                    Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+                ElseIf Me.QS_FLAG = "F" Then
+                    Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+                    Me.dgvPeriodicVal.DataSource = Nothing
+                    Me.dgvPeriodicVal.Enabled = False
                 End If
-                Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
-                Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+                If Not IsNothing(Me.clsAgInclude.GetTableYearly) Then
+                    Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
+                End If
+                'Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
                 Me.grpPotensi.Enabled = False
             End If
             Me.FormatGridDiscount(Me.dgvPeriodic)
@@ -3083,14 +3115,27 @@ Public Class AgreementRelation
                 If (Me.QS_FLAG = "S") Then
                     Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableSemesterly()
                     Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableSemesterlyV()
+                    Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+                    Me.dgvYearlyVal.Enabled = True
+                    Me.dgvPeriodicVal.Enabled = True
                 ElseIf (Me.QS_FLAG = "Q") Then
                     Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
                     Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
+                    Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+                    Me.dgvPeriodicVal.Enabled = True
+                    Me.dgvYearlyVal.Enabled = True
+                ElseIf Me.QS_FLAG = "F" Then
+                    Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+                    Me.dgvPeriodicVal.DataSource = Nothing
+                    Me.dgvPeriodicVal.Enabled = False
+                    Me.dgvYearlyVal.Enabled = False
                 End If
-                Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
-                Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
-                Me.dgvPeriodic.Enabled = True : Me.dgvYearly.Enabled = True
-                Me.dgvPeriodicVal.Enabled = True : Me.dgvYearlyVal.Enabled = True
+                If Not IsNothing(Me.clsAgInclude.GetTableYearly) Then
+                    Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
+                    Me.dgvYearly.Enabled = True
+                End If
+                'Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+                'Me.dgvPeriodic.Enabled = True
                 Me.grpPotensi.Enabled = True
                 'CHEK APAKAH DATA SUDAH DI GENERATE
             Else
@@ -3126,7 +3171,6 @@ Public Class AgreementRelation
                         End If
                     End If
                     'clearkan text
-
                     Me.clearGivenProgressive()
                     For Each table As DataTable In Me.clsAgInclude.getDsPeriod().Tables
                         table.Rows.Clear()
@@ -3135,12 +3179,21 @@ Public Class AgreementRelation
                     If (Me.QS_FLAG = "S") Then
                         Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableSemesterly()
                         Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableSemesterlyV()
+                        Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
                     ElseIf (Me.QS_FLAG = "Q") Then
                         Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableQuarterly()
                         Me.dgvPeriodicVal.DataSource = Me.clsAgInclude.GetTableQuarterlyV()
+                        Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+                    ElseIf Me.QS_FLAG = "F" Then
+                        Me.dgvPeriodic.DataSource = Me.clsAgInclude.GetTableFMP()
+                        Me.dgvPeriodicVal.DataSource = Nothing
+                        Me.dgvPeriodicVal.Enabled = False
+                        Me.dgvYearlyVal.Enabled = False
                     End If
-                    Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
-                    Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
+                    If Not IsNothing(Me.clsAgInclude.GetTableYearly()) Then
+                        Me.dgvYearly.DataSource = Me.clsAgInclude.GetTableYearly()
+                    End If
+                    'Me.dgvYearlyVal.DataSource = Me.clsAgInclude.GetTableYearlyV()
                     Me.grpPotensi.Enabled = False
                 End If
             End If

@@ -112,11 +112,12 @@ Namespace Brandpack
         Public Function CreateDataViewAllPack() As DataView
             Try
                 ''ambil pack yang ada di accpac,bila belum ada inputkan
-                Dim DBConnect As String = "NI87"
+                Dim DBInvoiceTo As NufarmBussinesRules.SharedClass.CurrentInvToUse
                 'If DBInvoiceTo = CurrentInvToUse.NI109 Then
 
                 'End If
-                If DBConnect = CurrentInvToUse.NI109 Then
+                Dim DBConnect As String = "NI87"
+                If DBInvoiceTo = CurrentInvToUse.NI109 Then
                     DBConnect = "NI109"
                 End If
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
