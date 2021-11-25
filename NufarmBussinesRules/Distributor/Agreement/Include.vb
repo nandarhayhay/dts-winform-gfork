@@ -1615,7 +1615,7 @@ Namespace DistributorAgreement
 
         Public Function SearchAgreement(ByVal SearchAgree As String) As DataView
             Try
-                Dim Query As String = "SET NOCOUNT ON;SELECT TOP 100 DISTRIBUTOR_ID,DISTRIBUTOR_NAME,AGREEMENT_NO,AGREEMENT_DESC,QS_TREATMENT_FLAG,START_DATE,END_DATE," & _
+                Dim Query As String = "SET NOCOUNT ON;SELECT TOP 1000 DISTRIBUTOR_ID,DISTRIBUTOR_NAME,AGREEMENT_NO,AGREEMENT_DESC,QS_TREATMENT_FLAG,START_DATE,END_DATE," & _
                 "QS_TREATMENT_FLAG FROM VIEW_AGREEMENT WHERE AGREEMENT_NO LIKE '%" & SearchAgree & "%'"
                 If IsNothing(Me.SqlCom) Then
                     Me.CreateCommandSql("sp_executesql", "")

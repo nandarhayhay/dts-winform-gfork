@@ -568,8 +568,8 @@ Public Class AchievementF
                     '================UNCOMMENT THIS AFTER DEBUGGING===================
 
                     Me.SP = StatusProgress.ProcessingDisc
-                    'ThreadProcess = New Thread(AddressOf ShowLoading)
-                    'ThreadProcess.Start()
+                    ThreadProcess = New Thread(AddressOf ShowLoading)
+                    ThreadProcess.Start()
                     '=================================================================
                     getDS(Me.SP)
                 Case "btnRecomputeF2"

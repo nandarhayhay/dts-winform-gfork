@@ -580,7 +580,7 @@ Namespace DistributorAgreement
                     ListAgreement.Add(tblDistAgreement.Rows(i)("AGREEMENT_NO"))
                 Next
                 Dim Ds As DataSet = Me.getAchievement(Flag, DISTRIBUTOR_ID, ListAgreement)
-                Me.DisposeTempDB()
+                'Me.DisposeTempDB()
                 Return Ds
             Catch ex As Exception
                 If Not IsNothing(Me.SqlRe) Then
@@ -1519,7 +1519,8 @@ Namespace DistributorAgreement
                     End If
                     Dim DiscF1 As Decimal = 0, DiscF2 As Decimal = 0
 
-                    Dim AchF2 As String = AchID + "F2" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    Dim AchF2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1) : AchF2 += "F2" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
+
                     'AchF2 = AchF2 + "F2"
                     totalInvoiceCurrentF2 = Row("TOTAL_CPF2")
                     CPF2Dist = Row("CPF2_DIST")
@@ -1542,7 +1543,7 @@ Namespace DistributorAgreement
                             Description &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF2, DiscF2)
                         End If
                     End If
-                    Dim AchF1 As String = AchID + "F1" ' AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    Dim AchF1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1) : AchF1 += "F1" ': AchID.Remove(AchID.LastIndexOf("|") + 1)
                     'AchF1 = AchF1 + "F1"
                     totalInvoiceCurrentF1 = Row("TOTAL_CPF1")
                     CPF1Dist = Row("CPF1_DIST")
@@ -2060,7 +2061,7 @@ Namespace DistributorAgreement
             CPEQ2 As Object = Nothing, CPEQ3 As Object = Nothing, CPQ1 As Object = Nothing, CPEQ1 As Object = Nothing
             Select Case Flag
                 Case "F2"
-                    CPEF1 = StartDate.AddDays(-1)
+                    CPEF1 = StartDate
                     CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
                     'strFlag
                 Case "F3"
@@ -2090,7 +2091,7 @@ Namespace DistributorAgreement
                         CPEF2 = StartDate.AddDays(-1)
                         CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
                         CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
-                        CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
+                        CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(2)
                     End If
 
             End Select
@@ -2207,6 +2208,8 @@ Namespace DistributorAgreement
                         End If
                     End If
                     If Not IsNothing(CPF1) Then
+                        tblTemp = New DataTable("T_TEMP")
+                        Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPF1)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF1))
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
@@ -2222,23 +2225,27 @@ Namespace DistributorAgreement
                         End If
                     End If
                     If Not IsNothing(CPQ1) Then
+                        Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPQ1)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ1))
+                        tblTemp = New DataTable("T_TEMP")
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
-                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ2_DIST")
+                            SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ1_DIST")
                             Me.ResetCommandText(CommandType.Text, Query2)
                             tblTemp = New DataTable("T_TEMP")
                             tblTemp.Clear()
                             setDataAdapter(Me.SqlCom).Fill(tblTemp)
                             If tblTemp.Rows.Count > 0 Then
-                                SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_CPQ2")
+                                SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_CPQ1")
                             End If
                         End If
                     End If
                     If Not IsNothing(CPQ2) Then
+                        Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPQ2)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ2))
+                        tblTemp = New DataTable("T_TEMP")
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ2_DIST")
@@ -2252,8 +2259,10 @@ Namespace DistributorAgreement
                         End If
                     End If
                     If Not IsNothing(CPQ3) Then
+                        Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPQ3)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ3))
+                        tblTemp = New DataTable("T_TEMP")
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ3_DIST")
@@ -3469,10 +3478,10 @@ Namespace DistributorAgreement
                     If Target <> 0 Then
                         Percentage = common.CommonClass.GetPercentage(100, TotalPOOriginal, Target)
                     End If
-                    DVCustom.RowFilter = "AGREE_BRAND_ID = '" & RowsSelect(0)("AGREE_BRAND_ID").ToString() & "'"
+                    DVCustom.RowFilter = "AGREE_BRAND_ID = '" & RowsSelect(0)("AGREE_BRAND_ID").ToString() & "' AND QSY_DISC_FLAG = '" & FLAG & "'"
                     If DVCustom.Count <= 0 Then
                         If (CombAgreeBrandID <> "") Then
-                            DVCustom.RowFilter = "AGREE_BRAND_ID = '" & CombAgreeBrandID & "'"
+                            DVCustom.RowFilter = "AGREE_BRAND_ID = '" & CombAgreeBrandID & "'" & "' AND QSY_DISC_FLAG = '" & FLAG & "'"
                         End If
                     End If
                     If DVCustom.Count > 0 Then
@@ -3569,7 +3578,7 @@ Namespace DistributorAgreement
             Select Case Flag
                 Case "F3" 'F1,F2
                     Dim DiscF1 As Decimal = 0, DiscF2 As Decimal = 0
-                    Dim AchF2 As String = AchID + "F2" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    Dim AchF2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1) : AchF2 += "F2" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
                     'AchF2 = AchF2 + "F2"
                     totalInvoiceCurrentF2 = Row("TOTAL_CPF2")
                     CPF2Dist = Row("CPF2_DIST")
@@ -3592,7 +3601,7 @@ Namespace DistributorAgreement
                             Description &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF2, DiscF2)
                         End If
                     End If
-                    Dim AchF1 As String = AchID + "F1" ' AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    Dim AchF1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1) : AchF1 += "F1" ' AchID.Remove(AchID.LastIndexOf("|") + 1)
                     'AchF1 = AchF1 + "F1"
                     totalInvoiceCurrentF1 = Row("TOTAL_CPF1")
                     CPF1Dist = Row("CPF1_DIST")
@@ -3819,6 +3828,7 @@ Namespace DistributorAgreement
                      " SELECT PO_REF_NO,PO_REF_DATE,DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,SPPB_QTY,PO_ORIGINAL_QTY,PO_AMOUNT = PO_ORIGINAL_QTY * PO_PRICE_PERQTY,RUN_NUMBER,IncludeDPD INTO tempdb..##T_MASTER_PO_" & Me.ComputerName & " FROM ( " & vbCrLf & _
                      "  SELECT PO.PO_REF_NO,PO.PO_REF_DATE,PO.DISTRIBUTOR_ID,ABI.BRAND_ID,ABP.BRANDPACK_ID,OPB.PO_ORIGINAL_QTY,OPB.PO_PRICE_PERQTY,OOAB.QTY_EVEN + ISNULL(SB.TOTAL_DISC_QTY,0) AS SPPB_QTY,OOA.RUN_NUMBER ," & vbCrLf & _
                      "  IncludeDPD = CASE WHEN (OPB.ExcludeDPD = 0) THEN 'YESS' " & vbCrLf & _
+                     "  WHEN (OPB.ExcludeDPD = 1) THEN 'NO' " & vbCrLf & _
                      "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
                      "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
                      "  WHEN (EXISTS(SELECT PROJ.PROJ_REF_NO, PB.BRANDPACK_ID FROM PROJ_PROJECT PROJ INNER JOIN PROJ_BRANDPACK PB ON PROJ.PROJ_REF_NO = PB.PROJ_REF_NO WHERE PROJ.PROJ_REF_NO = PO.PROJ_REF_NO AND PB.BRANDPACK_ID = OPB.BRANDPACK_ID AND PROJ.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID)) THEN 'NO' " & vbCrLf & _
@@ -4187,10 +4197,16 @@ Namespace DistributorAgreement
                     '    CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
                     '    CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
                     'End If
+                    'CPEF2 = StartDate.AddDays(-1)
+                    'CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
+                    'CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
+                    'CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
+
                     CPEF2 = StartDate.AddDays(-1)
                     CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
                     CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
-                    CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
+                    CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(2)
+
             End Select
             Dim tblTemp As New DataTable("T_TEMP") : tblTemp.Clear()
             '---------------------QUERY UNTUK MENTOTAL KAN TOTAL invoice QTY BRAND DIANTARA START_DATE AND END_DATE PO grouped by BRAND ---------------------------
@@ -4327,8 +4343,10 @@ Namespace DistributorAgreement
                         End If
                     End If
                     If Not IsNothing(CPF1) Then
+                        Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPF1)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF1))
+                        tblTemp = New DataTable("T_TEMP")
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPF1_DIST")
@@ -4358,8 +4376,10 @@ Namespace DistributorAgreement
                         End If
                     End If
                     If Not IsNothing(CPF1) Then
+                        Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPF1)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF1))
+                        tblTemp = New DataTable("T_TEMP")
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPF1_DIST")

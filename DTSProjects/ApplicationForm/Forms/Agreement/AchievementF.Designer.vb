@@ -369,7 +369,7 @@ Partial Class AchievementF
         Me.GridEX1.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
         Me.GridEX1.TableHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
-        Me.GridEX1.WatermarkImage.Image = CType(resources.GetObject("GridEX1.WatermarkImage.Image"), System.Drawing.Image)
+        Me.GridEX1.WatermarkImage.Image = CType(resources.GetObject("resource.Image"), System.Drawing.Image)
         Me.GridEX1.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
         '
         'ExpandablePanel1

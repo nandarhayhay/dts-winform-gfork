@@ -117,9 +117,9 @@ Namespace Brandpack
 
                 'End If
                 Dim DBConnect As String = "NI87"
-                If DBInvoiceTo = CurrentInvToUse.NI109 Then
-                    DBConnect = "NI109"
-                End If
+                'If DBInvoiceTo = CurrentInvToUse.NI109 Then
+                DBConnect = "NI109"
+                'End If
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                         "SELECT PACK_ID,BRANDPACK_NAME FROM (" & vbCrLf & _
                         "                      SELECT DISTINCT RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) AS PACK_ID,RTRIM([DESC]) AS BRANDPACK_NAME FROM " & DBConnect & ".dbo.ICITEM " & vbCrLf & _

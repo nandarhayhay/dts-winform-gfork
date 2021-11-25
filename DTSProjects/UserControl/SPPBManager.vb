@@ -1042,8 +1042,8 @@ Public Class SPPBManager
 
     Private Sub chkFilter_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkFilter.CheckedChanged
         If IsNothing(Me.grdHeader.DataSource) Then : Return : End If
-        If Me.grdHeader.GetRow().RowType = Janus.Windows.GridEX.RowType.Record Then : Return : End If
-        If Me.grdHeader.RecordCount > 0 Then : Return : End If
+        If Me.grdHeader.GetRow().RowType <> Janus.Windows.GridEX.RowType.Record Then : Return : End If
+        If Me.grdHeader.RecordCount <= 0 Then : Return : End If
         Me.grdHeader.RemoveFilters()
         Me.IsLoadding = True
         Try

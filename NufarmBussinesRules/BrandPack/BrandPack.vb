@@ -398,6 +398,7 @@ Namespace Brandpack
                             "        SELECT '00055005L-D'   AS BRANDPACK_ID UNION ALL " & vbCrLf & _
                             "        SELECT '00681001LD'    AS BRANDPACK_ID UNION ALL " & vbCrLf & _
                             "        SELECT '006820020LD'   AS BRANDPACK_ID UNION ALL " & vbCrLf & _
+                            "        SELECT '0008450CPD'    AS BRANDPACK_ID UNION ALL " & vbCrLf & _
                             "        SELECT '00684004LD'    AS BRANDPACK_ID " & vbCrLf & _
                             "        )T; " & vbCrLf & _
                             " CREATE CLUSTERED INDEX IDX_T_P_B_1 ON tempdb..##T_P_BRANDPACK(BRANDPACK_ID); " & vbCrLf & _

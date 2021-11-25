@@ -137,27 +137,27 @@ Namespace DistributorReport
             End Try
         End Function
 
-        Public Function Create_View_TA_4MPeriode(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal HasChangedPeriode As Boolean) As DataView
-            Try
-                If HasChangedPeriode Then
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    " IF EXISTS(SELECT * FROM tempdb.sys.objects WHERE [NAME] = '##T_TargetAgreementReport_4MPeriode_" & Me.ComputerName & "') " & vbCrLf & _
-                    " BEGIN DROP TABLE TEMPDB..##T_TargetAgreementReport_4MPeriode_" & Me.ComputerName & "; END "
+        'Public Function Create_View_TA_4MPeriode(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal HasChangedPeriode As Boolean) As DataView
+        '    Try
+        '        If HasChangedPeriode Then
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '            " IF EXISTS(SELECT * FROM tempdb.sys.objects WHERE [NAME] = '##T_TargetAgreementReport_4MPeriode_" & Me.ComputerName & "') " & vbCrLf & _
+        '            " BEGIN DROP TABLE TEMPDB..##T_TargetAgreementReport_4MPeriode_" & Me.ComputerName & "; END "
 
-                    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
-                    Else
-                        Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                    End If
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+        '            If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+        '            Else
+        '                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+        '            End If
+        '            Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
 
-                    Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+        '            Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
 
-                End If
-            Catch ex As Exception
-                Me.CloseConnection() : Me.ClearCommandParameters()
-                Throw ex
-            End Try
-        End Function
+        '        End If
+        '    Catch ex As Exception
+        '        Me.CloseConnection() : Me.ClearCommandParameters()
+        '        Throw ex
+        '    End Try
+        'End Function
         Public Function Create_View_TA(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal HasChangedPeriode As Boolean) As DataView
             Try
                 Me.OpenConnection()
