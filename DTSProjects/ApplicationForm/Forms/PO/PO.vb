@@ -99,6 +99,11 @@ Public Class PO
                 Me.btnPOHeaderAndDetail.Visible = False
                 Me.btnEdit.Visible = False
             End If
+            If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Achievement Then
+                Me.grdPurchaseOrder.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
+            Else
+                Me.grdPurchaseOrder.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
+            End If
             If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.PO Then
                 Me.btnManagePO.Visible = True
                 Me.btnPOHeaderAndDetail.Visible = True
@@ -193,19 +198,22 @@ Public Class PO
         Me.grdPurchaseOrder.RootTable.Columns("DISTRIBUTOR_ID").Visible = True
 
         Me.grdPurchaseOrder.RootTable.Columns("DISTRIBUTOR_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+        Me.grdPurchaseOrder.RootTable.Columns("DISTRIBUTOR_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
         'Me.grdPurchaseOrder.RootTable.Columns("DISTRIBUTOR_ID").Caption = "DISTRIBUTOR_NAME"
         Me.grdPurchaseOrder.RootTable.Columns("DISTRIBUTOR_ID").ShowInFieldChooser = True
         Me.grdPurchaseOrder.RootTable.Columns("DISTRIBUTOR_ID").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+        Me.grdPurchaseOrder.RootTable.Columns("DISTRIBUTOR_ID").EditType = Janus.Windows.GridEX.EditType.NoEdit
 
         Me.grdPurchaseOrder.RootTable.Columns("PO_REF_DATE").FilterEditType = Janus.Windows.GridEX.FilterEditType.CalendarCombo
         Me.grdPurchaseOrder.RootTable.Columns("PO_REF_DATE").LimitToList = True
         Me.grdPurchaseOrder.RootTable.Columns("PO_REF_DATE").AllowSort = True
         Me.grdPurchaseOrder.RootTable.Columns("PO_REF_DATE").FormatString = "dd MMMM yyyy"
+        Me.grdPurchaseOrder.RootTable.Columns("PO_REF_DATE").EditType = Janus.Windows.GridEX.EditType.NoEdit
 
         Me.grdPurchaseOrder.RootTable.Columns("PO_REF_NO").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-
+        Me.grdPurchaseOrder.RootTable.Columns("PO_REF_NO").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-
+        Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.TotalRow = Janus.Windows.GridEX.InheritableBoolean.True
 
         Me.grdPurchaseOrder.RootTable.Columns("QUANTITY").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
@@ -213,12 +221,13 @@ Public Class PO
         Me.grdPurchaseOrder.RootTable.Columns("QUANTITY").TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
         Me.grdPurchaseOrder.RootTable.Columns("QUANTITY").FormatString = "#,##0.000"
         Me.grdPurchaseOrder.RootTable.Columns("QUANTITY").TotalFormatString = "#,##0.000"
+        Me.grdPurchaseOrder.RootTable.Columns("QUANTITY").EditType = Janus.Windows.GridEX.EditType.NoEdit
 
         Me.grdPurchaseOrder.RootTable.Columns("PRICE/QTY").FormatString = "#,##0.00"
         Me.grdPurchaseOrder.RootTable.Columns("PRICE/QTY").HeaderAlignment = Janus.Windows.GridEX.TextAlignment.Center
         Me.grdPurchaseOrder.RootTable.Columns("PRICE/QTY").TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
-
         Me.grdPurchaseOrder.RootTable.Columns("PRICE/QTY").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+        Me.grdPurchaseOrder.RootTable.Columns("PRICE/QTY").EditType = Janus.Windows.GridEX.EditType.NoEdit
 
         Me.grdPurchaseOrder.RootTable.Columns("TOTAL").AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
         Me.grdPurchaseOrder.RootTable.Columns("TOTAL").TotalFormatMode = Janus.Windows.GridEX.FormatMode.UseStringFormat
@@ -228,35 +237,44 @@ Public Class PO
 
         Me.grdPurchaseOrder.RootTable.Columns("TOTAL").HeaderAlignment = Janus.Windows.GridEX.TextAlignment.Center
         Me.grdPurchaseOrder.RootTable.Columns("TOTAL").TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
+        Me.grdPurchaseOrder.RootTable.Columns("TOTAL").EditType = Janus.Windows.GridEX.EditType.NoEdit
 
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_ID").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
 
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_ID").Visible = False
+        Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_ID").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.GroupByBoxVisible = False
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+        Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS").EditType = Janus.Windows.GridEX.EditType.NoEdit
 
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS2").Caption = "CSE REMARK"
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS2").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS2").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS2").Width = 210
+        Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS2").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("PLANTATION_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("PLANTATION_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-
+        Me.grdPurchaseOrder.RootTable.Columns("PLANTATION_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("PROJECT_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("PROJECT_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-
+        Me.grdPurchaseOrder.RootTable.Columns("PROJECT_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("PROJ_REF_NO").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("PROJ_REF_NO").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+        Me.grdPurchaseOrder.RootTable.Columns("PROJ_REF_NO").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("CREATE_DATE").Visible = False
         Me.grdPurchaseOrder.RootTable.Columns("CREATE_DATE").FormatString = "dd MMMM yyyy"
+        Me.grdPurchaseOrder.RootTable.Columns("CREATE_DATE").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("MODIFY_DATE").Visible = False
         Me.grdPurchaseOrder.RootTable.Columns("MODIFY_DATE").FormatString = "dd MMMM yyyy"
+        Me.grdPurchaseOrder.RootTable.Columns("MODIFY_DATE").EditType = Janus.Windows.GridEX.EditType.NoEdit
 
         'For Each col As Janus.Windows.GridEX.GridEXColumn In Me.grdPurchaseOrder.RootTable.Columns
         '    col.AutoSize()
         'Next
         Me.grdPurchaseOrder.RootTable.Columns("ExcludeDPD").Visible = NufarmBussinesRules.User.UserLogin.IsAdmin
+        Me.grdPurchaseOrder.RootTable.Columns("ExcludeDPD").EditType = Janus.Windows.GridEX.EditType.CheckBox
+
         Me.AddConditionalFormatingGrid()
     End Sub
     Private Sub AddConditionalFormatingGrid()

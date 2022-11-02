@@ -123,7 +123,7 @@ Namespace Brandpack
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                         "SELECT PACK_ID,BRANDPACK_NAME FROM (" & vbCrLf & _
                         "                      SELECT DISTINCT RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) AS PACK_ID,RTRIM([DESC]) AS BRANDPACK_NAME FROM " & DBConnect & ".dbo.ICITEM " & vbCrLf & _
-                        " WHERE INACTIVE = 0 AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND [DESC] LIKE '%@%')IC " & vbCrLf & _
+                        " WHERE INACTIVE = 0 AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST' OR RTRIM(ITEMBRKID) = 'FGTOLL') AND [DESC] LIKE '%@%')IC " & vbCrLf & _
                         " WHERE NOT EXISTS(SELECT PACK_ID FROM Nufarm.dbo.BRND_PACK WHERE PACK_ID = IC.PACK_ID); "
                 Me.CreateCommandSql("sp_executesql", "")
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)

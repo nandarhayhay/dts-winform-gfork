@@ -694,7 +694,7 @@ Public Class DiscountDDOrDR
 
     Private Sub FillValueList()
         'AMBIL DATA DI ACCPACK 
-        Dim VList() As String = {"DD", "DR", "CBD"}
+        Dim VList() As String = {"DD", "DR", "CBD", "DK"}
         Dim ColDiscType As Janus.Windows.GridEX.GridEXColumn = Me.grdProgDisc.RootTable.Columns("TypeApp")
         ColDiscType.EditType = Janus.Windows.GridEX.EditType.DropDownList
         ColDiscType.AutoComplete = True : ColDiscType.HasValueList = True

@@ -4054,11 +4054,11 @@ Namespace DistributorAgreement
                     strFlag = FLAG.Remove(1, 1)
                     Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                               "SELECT  1 WHERE EXISTS(SELECT ABI.AGREE_BRAND_ID FROM AGREE_BRAND_INCLUDE ABI INNER JOIN AGREE_PROG_DISC APD " & vbCrLf & _
-                              "                       ON ABI.AGREE_BRAND_ID = APD.AGREE_BRAND_ID WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                              "                       ON ABI.AGREE_BRAND_ID = APD.AGREE_BRAND_ID WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                               "                       AND APD.QSY_DISC_FLAG = '" & strFlag & "') " & vbCrLf & _
                               "             OR EXISTS(SELECT AA.AGREEMENT_NO FROM AGREE_AGREEMENT AA INNER JOIN AGREE_PROGRESSIVE_DISCOUNT APD " & vbCrLf & _
                               "                       ON AA.AGREEMENT_NO = APD.AGREEMENT_NO INNER JOIN AGREE_BRAND_INCLUDE ABI ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-                              "                       WHERE AA.AGREEMENT_NO = @AGREEMENT_NO AND APD.QSY_DISC_FLAG = '" & strFlag & "')" & vbCrLf & _
+                              "                       WHERE RTRIM(LTRIM(AA.AGREEMENT_NO)) = @AGREEMENT_NO AND APD.QSY_DISC_FLAG = '" & strFlag & "')" & vbCrLf & _
                               "                       OPTION(KEEP PLAN); "
                 Else
                     strFlag = FLAG

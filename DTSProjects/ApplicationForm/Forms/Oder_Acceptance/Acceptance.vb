@@ -1829,4 +1829,33 @@ Public Class Acceptance
             Me.Cursor = Cursors.Default
         End If
     End Sub
+
+    Private Sub rdbDK_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rdbDK.CheckedChanged
+        If Me.rdbDK.Checked Then
+            Try
+                Me.Cursor = Cursors.WaitCursor
+                Me.GridEX1.SetDataBinding(Nothing, "")
+                Me.GridEX2.SetDataBinding(Nothing, "")
+                If Not (Me.cmbDistributor.SelectedItem Is Nothing) Then
+                    Me.clsOA.CreateViewOABrandPack(Me.cmbDistributor.Value.ToString(), "ODK", _
+                   Convert.ToDateTime(Me.dtPicFrom.Value.ToShortDateString()), Convert.ToDateTime(Me.dtpicUntil.Value.ToShortDateString()))
+
+                    'Me.clsOA.CreateViewOABrandPack(Me.cmbDistributor.Value.ToString(), "O")
+                    Me.clsOA.ViewOABrandPack().RowFilter = Me.GetFilterDate()
+                    Me.BindGrid(Me.GridEX1, Me.clsOA.ViewOABrandPack())
+                    Me.clsOA.CreateViewOtherDiscount(Me.cmbDistributor.Value.ToString(), Convert.ToDateTime(Me.dtPicFrom.Value.ToShortDateString()), _
+                    Convert.ToDateTime(Me.dtpicUntil.Value.ToShortDateString()), "ODK")
+                Else
+                    Me.Cursor = Cursors.Default : Me.ShowMessageInfo("Please Define distributor.!")
+                    'Me.rdbYearly.Checked = False
+                    Return
+                End If
+                Me.GridEX1.RootTable.Caption = "DISTRIBUTOR_NAME : " & DISTRIBUTOR_NAME & "(OA_BRANDPACK)"
+            Catch ex As Exception
+                Me.LogMyEvent(ex.Message, Me.Name + "_rdbDK_CheckedChanged")
+                Me.ShowMessageInfo(ex.Message)
+            End Try
+            Me.Cursor = Cursors.Default
+        End If
+    End Sub
 End Class

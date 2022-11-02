@@ -597,7 +597,7 @@ Namespace DistributorAgreement
         Private Sub getTblCurProgAndPrevAchievement()
             Query = "SET NOCOUNT ON;" & vbCrLf & _
                     " SELECT PRODUCT_CATEGORY,PS_CATEGORY,UP_TO_PCT,DISC_PCT, FLAG FROM AGREE_PROG_DISC_R " & vbCrLf & _
-                    " WHERE AGREEMENT_NO = @AGREEMENT_NO;"
+                    " WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO;"
             tblDiscProgressive = New DataTable("tblProgressive")
             Me.ResetCommandText(CommandType.Text, Query)
             setDataAdapter(Me.SqlCom).Fill(tblDiscProgressive)
@@ -607,10 +607,10 @@ Namespace DistributorAgreement
             'GET achievement data from current agreement previous flag 
             Query = "SET NOCOUNT ON;" & vbCrLf
             If Me.IsTransitionTime Then
-                Query = "SELECT ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACCRUED_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG IN('Q1','Q2','Q3') " & vbCrLf & _
+                Query = "SELECT ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACCRUED_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG IN('Q1','Q2','Q3') " & vbCrLf & _
                 " UNION " & vbCrLf
             End If
-            Query &= "SELECT ACH_HEADER_ID AS ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG IN('F1','F2') "
+            Query &= "SELECT ACH_HEADER_ID AS ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG IN('F1','F2') "
             Me.ResetCommandText(CommandType.Text, Query)
             Me.tblCurAchiement = New DataTable("tblProgressive")
             setDataAdapter(Me.SqlCom).Fill(Me.tblCurAchiement)
@@ -631,7 +631,7 @@ Namespace DistributorAgreement
 
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     "SELECT  1 WHERE EXISTS(SELECT APD.AGREEMENT_NO FROM AGREE_AGREEMENT AA INNER JOIN AGREE_PROG_DISC_R APD " & vbCrLf & _
-                    "                       ON AA.AGREEMENT_NO = APD.AGREEMENT_NO WHERE AA.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    "                       ON AA.AGREEMENT_NO = APD.AGREEMENT_NO WHERE RTRIM(LTRIM(AA.AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     "                       AND APD.FLAG = @FLAG)"
 
             Me.ResetCommandText(CommandType.Text, Query)
@@ -681,14 +681,14 @@ Namespace DistributorAgreement
 
             ''delete dulu data by agreement dan flag
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
-            "DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG);"
+            "DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG = @FLAG);"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.AddParameter("@AGREEMENT_NO", SqlDbType.VarChar, AgreementNO, 25)
             Me.AddParameter("@FLAG", SqlDbType.VarChar, FLAG)
             Me.SqlCom.ExecuteScalar()
 
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
-                    "DELETE FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG;"
+                    "DELETE FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG = @FLAG;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.SqlCom.ExecuteScalar()
 
@@ -1651,7 +1651,7 @@ Namespace DistributorAgreement
         Private Function FillAchHeaderAndDetail(ByVal AgreementNo As String, ByVal Flag As String, ByRef tblAchHeader As DataTable, _
             ByRef tblAchDetail As DataTable, ByVal StartDate As DateTime, ByVal EndDate As DateTime) As Boolean
             Query = "SET NOCOUNT ON ;" & vbCrLf & _
-            " SELECT TOP 1 START_DATE, END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO ;"
+            " SELECT TOP 1 START_DATE, END_DATE FROM AGREE_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.SqlRe = Me.SqlCom.ExecuteReader()
             Dim StartDatePKD As New DateTime(2019, 8, 1), EndDatePKD As New DateTime(2020, 7, 31)
@@ -1750,8 +1750,8 @@ Namespace DistributorAgreement
                      "      ) " & vbCrLf & _
                      "      GROUP BY OOBD.OA_BRANDPACK_ID " & vbCrLf & _
                      "  )SB ON SB.OA_BRANDPACK_ID = OOAB.OA_BRANDPACK_ID" & vbCrLf & _
-                     "  WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND OPB.PO_ORIGINAL_QTY > 0 " & vbCrLf & _
-                     "  AND PO.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO) " & vbCrLf & _
+                     "  WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND OPB.PO_ORIGINAL_QTY > 0 " & vbCrLf & _
+                     "  AND PO.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO) " & vbCrLf & _
                      " )B ;" & vbCrLf & _
                      " CREATE CLUSTERED INDEX IX_T_MASTER_PO ON ##T_MASTER_PO_" & Me.ComputerName & "(PO_REF_DATE,PO_REF_NO,RUN_NUMBER,DISTRIBUTOR_ID,BRANDPACK_ID) ;"
             '============================= END UNCOMMENT THIS AFTER DEBUGGING =============================================================
@@ -1779,7 +1779,7 @@ Namespace DistributorAgreement
                     "       INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON Tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
                     "       AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER)) " & vbCrLf & _
                     "            WHERE PO.DISTRIBUTOR_ID = SOME( " & vbCrLf & _
-                    "       	 SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    "       	 SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     "     		 )" & vbCrLf & _
                     "       AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                     "      )INV1   " & vbCrLf & _
@@ -1794,11 +1794,11 @@ Namespace DistributorAgreement
             'jika total rows  di agreement brand by PSG <> total Rows di ach_header -hapus rows di ach header
             'jika ada perubahan data di ach_header karena ada perubahan actual di invoce --hapus rows di ach header
             Query = " SET NOCOUNT ON;" & vbCrLf & _
-            "SELECT COUNT(*) FROM AGREE_BRAND_INCLUDE WHERE AGREEMENT_NO = @AGREEMENT_NO;"
+            "SELECT COUNT(*) FROM AGREE_BRAND_INCLUDE WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO;"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim totalRowsAgree As Integer = CInt(Me.SqlCom.ExecuteScalar())
             Query = " SET NOCOUNT ON" & vbCrLf & _
-            " SELECT COUNT(*) FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG"
+            " SELECT COUNT(*) FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG = @FLAG"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim totalRowsAch As Integer = CInt(Me.SqlCom.ExecuteScalar())
             If totalRowsAch <> totalRowsAgree Then
@@ -1812,7 +1812,7 @@ Namespace DistributorAgreement
                         " SELECT 1 WHERE EXISTS(SELECT * FROM Nufarm.DBO.ACHIEVEMENT_HEADER ACH " & vbCrLf & _
                         " INNER JOIN Tempdb..##T_Agreement_Brand_" & Me.ComputerName & " INV" & vbCrLf & _
                         " ON ACH.BRAND_ID = INV.BRAND_ID AND ACH.DISTRIBUTOR_ID = INV.DISTRIBUTOR_ID " & vbCrLf & _
-                        " WHERE ACH.AGREEMENT_NO = @AGREEMENT_NO AND ACH.TOTAL_ACTUAL <> CAST((ISNULL(INV.TOTAL_INVOICE,0))AS DECIMAL(18,3)) AND ACH.FLAG = @FLAG) ;"
+                        " WHERE RTRIM(LTRIM(ACH.AGREEMENT_NO)) = @AGREEMENT_NO AND ACH.TOTAL_ACTUAL <> CAST((ISNULL(INV.TOTAL_INVOICE,0))AS DECIMAL(18,3)) AND ACH.FLAG = @FLAG) ;"
                 Me.ResetCommandText(CommandType.Text, Query)
                 Dim retval As Object = Me.SqlCom.ExecuteScalar()
                 If IsNothing(retval) Or IsDBNull(retval) Then
@@ -1828,7 +1828,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " SELECT DISTINCT ABI.AGREE_BRAND_ID,(SELECT MAX(IDApp) FROM brnd_AVGPrice WHERE BRAND_ID = ABI.BRAND_ID AND START_DATE >= AA.START_DATE AND END_DATE <= AA.END_DATE) AS AvgPriceID   " & vbCrLf & _
                     " FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-                    " WHERE AA.AGREEMENT_NO = @AGREEMENT_NO ;"
+                    " WHERE RTRIM(LTRIM(AA.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
             tblAVGPrice = New DataTable("AVGPrice")
             setDataAdapter(Me.SqlCom).Fill(tblAVGPrice)
@@ -1838,7 +1838,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     "SELECT DA.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRAND_ID,ABI.TARGET_" & strFlag & ", ABI.TARGET_" & strFlag.Remove(3, 1) & "_FM" & Flag.Remove(0, 1) & ", ABI.TARGET_" & strFlag.Remove(3, 1) & "_PL" & Flag.Remove(0, 1) & vbCrLf & _
                     " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-                    " WHERE DA.AGREEMENT_NO = @AGREEMENT_NO ;"
+                    " WHERE RTRIM(LTRIM(DA.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             'ACH_HEADER_ID, DISTRIBUTOR_ID, AGREEMENT_NO, BRAND_ID,AGREE_BRAND_ID,TARGET, TARGET_FM, TARGET_PL, TARGET_VALUE,FLAG,
             'TOTAL_TARGET, TOTAL_PO, TOTAL_PO_VALUE, BALANCE, TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_ACTUAL, ACH_DISPRO, DISPRO,DESCRIPTIONS
             'CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsNew, IsChanged, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, 
@@ -1899,7 +1899,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; SELECT ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID," & vbCrLf & _
                     " ISNULL(SUM(PO.PO_ORIGINAL_QTY),0)AS PO_DIST,ISNULL(SUM(PO.PO_AMOUNT),0) AS PO_VALUE_DIST FROM Nufarm.DBO.VIEW_AGREE_BRANDPACK_INCLUDE ABI " & vbCrLf & _
                     " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.DISTRIBUTOR_ID = ABI.DISTRIBUTOR_ID AND PO.BRANDPACK_ID = ABI.BRANDPACK_ID " & vbCrLf & _
-                    " WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    " WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE " & vbCrLf & _
                     " GROUP BY ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID OPTION(KEEP PLAN);"
             Me.ResetCommandText(CommandType.Text, Query)
@@ -1982,7 +1982,7 @@ Namespace DistributorAgreement
                     "   	)INVOICE" & vbCrLf & _
                     " ON PO.BRANDPACK_ID = INVOICE.BRANDPACK_ID " & vbCrLf & _
                     " AND ((PO.PO_REF_NO = INVOICE.PONUMBER) Or (PO.RUN_NUMBER = INVOICE.REFERENCE)) " & vbCrLf & _
-                    " WHERE PO.DISTRIBUTOR_ID = SOME( SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO )" & vbCrLf & _
+                    " WHERE PO.DISTRIBUTOR_ID = SOME( SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO )" & vbCrLf & _
                     " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                     ")INV " & vbCrLf & _
                     " GROUP BY DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID"
@@ -2011,7 +2011,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; SELECT ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRANDPACK_ID," & vbCrLf & _
                     " ISNULL(SUM(PO.PO_ORIGINAL_QTY),0)AS TOTAL_PO_ORIGINAL FROM Nufarm.DBO.VIEW_AGREE_BRANDPACK_INCLUDE ABI " & vbCrLf & _
                     " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.DISTRIBUTOR_ID = ABI.DISTRIBUTOR_ID AND PO.BRANDPACK_ID = ABI.BRANDPACK_ID " & vbCrLf & _
-                    " WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    " WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS'" & vbCrLf & _
                     " GROUP BY ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRANDPACK_ID OPTION(KEEP PLAN);"
             Me.ResetCommandText(CommandType.Text, Query)
@@ -2034,10 +2034,10 @@ Namespace DistributorAgreement
             End If
             Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
                        "DECLARE @V_START_DATE SMALLDATETIME ;" & vbCrLf & _
-                       "SET @V_START_DATE = (SELECT START_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO); " & vbCrLf & _
+                       "SET @V_START_DATE = (SELECT START_DATE FROM AGREE_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO); " & vbCrLf & _
                        "SELECT TOP 1 AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,AA.QS_TREATMENT_FLAG FROM AGREE_AGREEMENT AA INNER JOIN DISTRIBUTOR_AGREEMENT DA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
                        " WHERE AA.END_DATE < @V_START_DATE " & vbCrLf & _
-                       " AND DA.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO) ORDER BY AA.START_DATE DESC ;"
+                       " AND DA.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO) ORDER BY AA.START_DATE DESC ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim tblStartDate As New DataTable("T_StartDate1")
             ''SET privouse Agreement   
@@ -2106,7 +2106,7 @@ Namespace DistributorAgreement
                                  "       INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON Tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
                                  "       AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER)) " & vbCrLf & _
                                  "            WHERE PO.DISTRIBUTOR_ID = SOME( " & vbCrLf & _
-                                 "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                                 "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                                  "     		)" & vbCrLf & _
                                  "       AND PO.PO_REF_DATE >= @START_DATE AND PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                                  "      )INV1   " & vbCrLf & _
@@ -2122,7 +2122,7 @@ Namespace DistributorAgreement
                                    "       INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON Tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
                                    "       AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER)) " & vbCrLf & _
                                    "            WHERE PO.DISTRIBUTOR_ID = SOME( " & vbCrLf & _
-                                   "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                                   "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                                    "     		)" & vbCrLf & _
                                    "       AND PO.PO_REF_DATE >= @START_DATE AND PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                                    "      )INV1   " & vbCrLf & _
@@ -2280,7 +2280,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
                     "SELECT GP.IDApp,ACHIEVEMENT_ID = DA.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|' + @FLAG,GP.CPF1,GP.CPF2,GP.PBF3,GP.CPQ2,GP.CPQ3 " & vbCrLf & _
                     " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-                    " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO ;"
+                    " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
             'Me.SqlCom.Parameters.RemoveAt("@START_DATE")
             'Me.SqlCom.Parameters.RemoveAt("@END_DATE")
@@ -2917,17 +2917,17 @@ Namespace DistributorAgreement
                             End If
                             strDecEndDate = common.CommonClass.getNumericFromDate(EndDateF1)
                             Me.CreateTempTable(StartDateF1, EndDateF1, strDecStartDate, strDecEndDate)
-                            Me.GenerateDiscount(Flag, StartDateF1, EndDateF1, tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString(), tblAchHeader, tblAchDetail, MessageDetail, HasTarget, EndDate)
+                            Me.GenerateDiscount(Flag, StartDateF1, EndDateF1, tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString().Trim(), tblAchHeader, tblAchDetail, MessageDetail, HasTarget, EndDate)
                         Case "F2"
                             strDecStartDate = common.CommonClass.getNumericFromDate(StartDateF2)
                             strDecEndDate = common.CommonClass.getNumericFromDate(EndDateF2)
                             Me.CreateTempTable(StartDateF2, EndDateF2, strDecStartDate, strDecEndDate)
-                            Me.GenerateDiscount(Flag, StartDateF2, EndDateF2, tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString(), tblAchHeader, tblAchDetail, MessageDetail, HasTarget, EndDate)
+                            Me.GenerateDiscount(Flag, StartDateF2, EndDateF2, tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString().Trim(), tblAchHeader, tblAchDetail, MessageDetail, HasTarget, EndDate)
                         Case "F3"
                             strDecStartDate = common.CommonClass.getNumericFromDate(StartDateF3)
                             strDecEndDate = common.CommonClass.getNumericFromDate(EndDateF3)
                             Me.CreateTempTable(StartDateF3, EndDateF3, strDecStartDate, strDecEndDate)
-                            Me.GenerateDiscount(Flag, StartDateF3, EndDateF3, tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString(), tblAchHeader, tblAchDetail, MessageDetail, HasTarget, EndDate)
+                            Me.GenerateDiscount(Flag, StartDateF3, EndDateF3, tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString().Trim(), tblAchHeader, tblAchDetail, MessageDetail, HasTarget, EndDate)
                     End Select
                     If Not HasTarget Then : tblDistAgreement.Rows.RemoveAt(i) : i -= 1 : End If
                 Next
@@ -2939,7 +2939,7 @@ Namespace DistributorAgreement
                 Me.ClearCommandParameters()
                 Dim ListAgreement As New List(Of String)
                 For i As Integer = 0 To tblDistAgreement.Rows.Count - 1
-                    ListAgreement.Add(tblDistAgreement.Rows(i)("AGREEMENT_NO"))
+                    ListAgreement.Add(tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString().Trim())
                 Next
                 Dim Ds As DataSet = Me.getAchievement(Flag, DISTRIBUTOR_ID, ListAgreement)
                 Me.DisposeTempDB()
@@ -2959,7 +2959,7 @@ Namespace DistributorAgreement
         Private Sub getTblCurProgAndPrevAchievement()
             Query = "SET NOCOUNT ON;" & vbCrLf & _
                     " SELECT ABI.AGREE_BRAND_ID,APD.UP_TO_PCT,APD.PRGSV_DISC_PCT,APD.QSY_DISC_FLAG FROM AGREE_PROG_DISC APD " & vbCrLf & _
-                    " INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = APD.AGREE_BRAND_ID WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO;"
+                    " INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = APD.AGREE_BRAND_ID WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO;"
             tblDiscProgressive = New DataTable("tblProgressive")
             Me.ResetCommandText(CommandType.Text, Query)
             setDataAdapter(Me.SqlCom).Fill(tblDiscProgressive)
@@ -2968,7 +2968,7 @@ Namespace DistributorAgreement
 
             'GET achievement data from current agreement previous flag 
             Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT ACH_HEADER_ID AS ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG IN('F1','F2') "
+                    "SELECT ACH_HEADER_ID AS ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG IN('F1','F2') "
             'If Me.IsTransitionTime Then
             '    Query = "SELECT ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACCRUED_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG IN('','Q2','Q3') " & vbCrLf & _
             '    " UNION " & vbCrLf
@@ -2982,10 +2982,10 @@ Namespace DistributorAgreement
             'get previous agreement no 
             Query = "SET NOCOUNT ON;" & vbCrLf & _
             " DECLARE @V_PREV_AG_NO VARCHAR(25);DECLARE @V_START_DATE SMALLDATETIME ; " & vbCrLf & _
-            " SET @V_START_DATE  = (SELECT TOP 1 START_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO);" & vbCrLf & _
+            " SET @V_START_DATE  = (SELECT TOP 1 START_DATE FROM AGREE_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO);" & vbCrLf & _
             " SET @V_PREV_AG_NO = (SELECT TOP 1 AA.AGREEMENT_NO FROM AGREE_AGREEMENT AA INNER JOIN DISTRIBUTOR_AGREEMENT DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
-            "                       WHERE AA.AGREEMENT_NO != @AGREEMENT_NO AND AA.START_DATE < @V_START_DATE AND DATEDIFF(MONTH,START_DATE,END_DATE) =11 " & vbCrLf & _
-            "                       AND DISTRIBUTOR_ID = ANY(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO) ORDER BY AA.START_DATE DESC);  " & vbCrLf & _
+            "                       WHERE RTRIM(LTRIM(AA.AGREEMENT_NO)) != @AGREEMENT_NO AND AA.START_DATE < @V_START_DATE AND DATEDIFF(MONTH,START_DATE,END_DATE) =11 " & vbCrLf & _
+            "                       AND DISTRIBUTOR_ID = ANY(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO) ORDER BY AA.START_DATE DESC);  " & vbCrLf & _
             " SELECT ACH_HEADER_ID AS ACHIEVEMENT_ID,AGREEMENT_NO + BRAND_ID AS AGREE_BRAND_ID,FLAG,DISPRO FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @V_PREV_AG_NO AND FLAG IN ('S2','F3') ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.tblPrevAchievement = New DataTable("tblPreviousAchievement")
@@ -2997,7 +2997,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     "SELECT  1 WHERE EXISTS(SELECT AA.AGREEMENT_NO FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN AGREE_PROG_DISC APD " & vbCrLf & _
                     "                       ON APD.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID  " & vbCrLf & _
-                    "                       WHERE AA.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    "                       WHERE RTRIM(LTRIM(AA.AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     "                       AND APD.QSY_DISC_FLAG = 'F1')"
 
             Me.ResetCommandText(CommandType.Text, Query)
@@ -3011,7 +3011,7 @@ Namespace DistributorAgreement
             CreateOrRecreateTblAchDetail(tblAchDetail)
 
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
-                    "SELECT COUNT(AGREEMENT_NO) FROM DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO OPTION(KEEP PLAN);"
+                    "SELECT COUNT(AGREEMENT_NO) FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO OPTION(KEEP PLAN);"
 
             Me.ResetCommandText(CommandType.Text, Query)
             Dim IsTargetGroup As Boolean = (CInt(Me.SqlCom.ExecuteScalar()) > 1)
@@ -3052,14 +3052,14 @@ Namespace DistributorAgreement
 
             ''delete dulu data by agreement dan flag
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
-            "DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG);"
+            "DELETE FROM ACHIEVEMENT_DETAIL WHERE ACH_HEADER_ID = ANY(SELECT ACH_HEADER_ID FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG = @FLAG);"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.AddParameter("@AGREEMENT_NO", SqlDbType.VarChar, AgreementNO, 25)
             Me.AddParameter("@FLAG", SqlDbType.VarChar, FLAG)
             Me.SqlCom.ExecuteScalar()
 
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
-                    "DELETE FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG;"
+                    "DELETE FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG = @FLAG;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.SqlCom.ExecuteScalar()
 
@@ -3747,7 +3747,7 @@ Namespace DistributorAgreement
         Private Function FillAchHeaderAndDetail(ByVal AgreementNo As String, ByVal Flag As String, ByRef tblAchHeader As DataTable, _
             ByRef tblAchDetail As DataTable, ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal IsTargetGroup As Boolean) As Boolean
             Query = "SET NOCOUNT ON ;" & vbCrLf & _
-            " SELECT TOP 1 START_DATE, END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO ;"
+            " SELECT TOP 1 START_DATE, END_DATE FROM AGREE_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.SqlRe = Me.SqlCom.ExecuteReader()
             Dim StartDatePKD As New DateTime(2019, 8, 1), EndDatePKD As New DateTime(2020, 7, 31)
@@ -3847,8 +3847,8 @@ Namespace DistributorAgreement
                      "      ) " & vbCrLf & _
                      "      GROUP BY OOBD.OA_BRANDPACK_ID " & vbCrLf & _
                      "  )SB ON SB.OA_BRANDPACK_ID = OOAB.OA_BRANDPACK_ID" & vbCrLf & _
-                     "  WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND OPB.PO_ORIGINAL_QTY > 0 " & vbCrLf & _
-                     "  AND PO.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO) " & vbCrLf & _
+                     "  WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND OPB.PO_ORIGINAL_QTY > 0 " & vbCrLf & _
+                     "  AND PO.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO) " & vbCrLf & _
                      " )B ;" & vbCrLf & _
                      " CREATE CLUSTERED INDEX IX_T_MASTER_PO ON ##T_MASTER_PO_" & Me.ComputerName & "(PO_REF_DATE,PO_REF_NO,RUN_NUMBER,DISTRIBUTOR_ID,BRANDPACK_ID) ;"
             '============================= END UNCOMMENT THIS AFTER DEBUGGING =============================================================
@@ -3881,7 +3881,7 @@ Namespace DistributorAgreement
                     "       INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON Tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
                     "       AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER)) " & vbCrLf & _
                     "            WHERE PO.DISTRIBUTOR_ID = SOME( " & vbCrLf & _
-                    "       	 SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    "       	 SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     "     		 )" & vbCrLf & _
                     "       AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                     "      )INV1   " & vbCrLf & _
@@ -3896,11 +3896,11 @@ Namespace DistributorAgreement
             'jika total rows  di agreement brand by PSG <> total Rows di ach_header -hapus rows di ach header
             'jika ada perubahan data di ach_header karena ada perubahan actual di invoce --hapus rows di ach header
             Query = " SET NOCOUNT ON;" & vbCrLf & _
-            "SELECT COUNT(*) FROM AGREE_BRAND_INCLUDE WHERE AGREEMENT_NO = @AGREEMENT_NO;"
+            "SELECT COUNT(*) FROM AGREE_BRAND_INCLUDE WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO;"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim totalRowsAgree As Integer = CInt(Me.SqlCom.ExecuteScalar())
             Query = " SET NOCOUNT ON" & vbCrLf & _
-            " SELECT COUNT(*) FROM ACHIEVEMENT_HEADER WHERE AGREEMENT_NO = @AGREEMENT_NO AND FLAG = @FLAG"
+            " SELECT COUNT(*) FROM ACHIEVEMENT_HEADER WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO AND FLAG = @FLAG"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim totalRowsAch As Integer = CInt(Me.SqlCom.ExecuteScalar())
             If totalRowsAch <> totalRowsAgree Then
@@ -3914,7 +3914,7 @@ Namespace DistributorAgreement
                         " SELECT 1 WHERE EXISTS(SELECT * FROM Nufarm.DBO.ACHIEVEMENT_HEADER ACH " & vbCrLf & _
                         " INNER JOIN Tempdb..##T_Agreement_Brand_" & Me.ComputerName & " INV" & vbCrLf & _
                         " ON ACH.BRAND_ID = INV.BRAND_ID AND ACH.DISTRIBUTOR_ID = INV.DISTRIBUTOR_ID " & vbCrLf & _
-                        " WHERE ACH.AGREEMENT_NO = @AGREEMENT_NO AND ACH.TOTAL_ACTUAL <> CAST((ISNULL(INV.TOTAL_INVOICE,0))AS DECIMAL(18,3)) AND ACH.FLAG = @FLAG) ;"
+                        " WHERE RTRIM(LTRIM(ACH.AGREEMENT_NO)) = @AGREEMENT_NO AND ACH.TOTAL_ACTUAL <> CAST((ISNULL(INV.TOTAL_INVOICE,0))AS DECIMAL(18,3)) AND ACH.FLAG = @FLAG) ;"
                 Me.ResetCommandText(CommandType.Text, Query)
                 Dim retval As Object = Me.SqlCom.ExecuteScalar()
                 If IsNothing(retval) Or IsDBNull(retval) Then
@@ -3930,7 +3930,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " SELECT DISTINCT ABI.AGREE_BRAND_ID,(SELECT MAX(IDApp) FROM brnd_AVGPrice WHERE BRAND_ID = ABI.BRAND_ID AND START_DATE >= AA.START_DATE AND END_DATE <= AA.END_DATE) AS AvgPriceID   " & vbCrLf & _
                     " FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-                    " WHERE AA.AGREEMENT_NO = @AGREEMENT_NO ;"
+                    " WHERE RTRIM(LTRIM(AA.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
             tblAVGPrice = New DataTable("AVGPrice")
             setDataAdapter(Me.SqlCom).Fill(tblAVGPrice)
@@ -3940,7 +3940,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     "SELECT DA.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRAND_ID,ABI.TARGET_" & strFlag & ", ABI.TARGET_" & strFlag.Remove(3, 1) & "_FM" & Flag.Remove(0, 1) & ", ABI.TARGET_" & strFlag.Remove(3, 1) & "_PL" & Flag.Remove(0, 1) & vbCrLf & _
                     " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-                    " WHERE DA.AGREEMENT_NO = @AGREEMENT_NO ;"
+                    " WHERE RTRIM(LTRIM(DA.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             'ACH_HEADER_ID, DISTRIBUTOR_ID, AGREEMENT_NO, BRAND_ID,AGREE_BRAND_ID,TARGET, TARGET_FM, TARGET_PL, TARGET_VALUE,FLAG,
             'TOTAL_TARGET, TOTAL_PO, TOTAL_PO_VALUE, BALANCE, TOTAL_PBQ3, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_ACTUAL, ACH_DISPRO, DISPRO,DESCRIPTIONS
             'CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsNew, IsChanged, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, 
@@ -4002,7 +4002,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; SELECT ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID," & vbCrLf & _
                     " ISNULL(SUM(PO.PO_ORIGINAL_QTY),0)AS PO_DIST,ISNULL(SUM(PO.PO_AMOUNT),0) AS PO_VALUE_DIST FROM Nufarm.DBO.VIEW_AGREE_BRANDPACK_INCLUDE ABI " & vbCrLf & _
                     " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.DISTRIBUTOR_ID = ABI.DISTRIBUTOR_ID AND PO.BRANDPACK_ID = ABI.BRANDPACK_ID " & vbCrLf & _
-                    " WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    " WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE " & vbCrLf & _
                     " GROUP BY ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID OPTION(KEEP PLAN);"
             Me.ResetCommandText(CommandType.Text, Query)
@@ -4085,7 +4085,7 @@ Namespace DistributorAgreement
                     "   	)INVOICE" & vbCrLf & _
                     " ON PO.BRANDPACK_ID = INVOICE.BRANDPACK_ID " & vbCrLf & _
                     " AND ((PO.PO_REF_NO = INVOICE.PONUMBER) Or (PO.RUN_NUMBER = INVOICE.REFERENCE)) " & vbCrLf & _
-                    " WHERE PO.DISTRIBUTOR_ID = SOME( SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO )" & vbCrLf & _
+                    " WHERE PO.DISTRIBUTOR_ID = SOME( SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO )" & vbCrLf & _
                     " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                     ")INV " & vbCrLf & _
                     " GROUP BY DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID"
@@ -4114,7 +4114,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ; SELECT ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRANDPACK_ID," & vbCrLf & _
                     " ISNULL(SUM(PO.PO_ORIGINAL_QTY),0)AS TOTAL_PO_ORIGINAL FROM Nufarm.DBO.VIEW_AGREE_BRANDPACK_INCLUDE ABI " & vbCrLf & _
                     " INNER JOIN tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO ON PO.DISTRIBUTOR_ID = ABI.DISTRIBUTOR_ID AND PO.BRANDPACK_ID = ABI.BRANDPACK_ID " & vbCrLf & _
-                    " WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                    " WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                     " AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS'" & vbCrLf & _
                     " GROUP BY ABI.DISTRIBUTOR_ID,ABI.AGREE_BRAND_ID,ABI.BRANDPACK_ID OPTION(KEEP PLAN);"
             Me.ResetCommandText(CommandType.Text, Query)
@@ -4138,10 +4138,10 @@ Namespace DistributorAgreement
 
             Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
                        "DECLARE @V_START_DATE SMALLDATETIME ;" & vbCrLf & _
-                       "SET @V_START_DATE = (SELECT START_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO); " & vbCrLf & _
+                       "SET @V_START_DATE = (SELECT START_DATE FROM AGREE_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO); " & vbCrLf & _
                        "SELECT TOP 1 AA.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,AA.QS_TREATMENT_FLAG FROM AGREE_AGREEMENT AA INNER JOIN DISTRIBUTOR_AGREEMENT DA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO " & vbCrLf & _
                        " WHERE AA.END_DATE < @V_START_DATE AND DATEDIFF(MONTH,AA.START_DATE,AA.END_DATE) = 11 " & vbCrLf & _
-                       " AND DA.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO) ORDER BY AA.START_DATE DESC ;"
+                       " AND DA.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO) ORDER BY AA.START_DATE DESC ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Dim tblStartDate As New DataTable("T_StartDate1")
             ''SET privouse Agreement   
@@ -4219,7 +4219,7 @@ Namespace DistributorAgreement
                                  "       INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON Tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
                                  "       AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER)) " & vbCrLf & _
                                  "            WHERE PO.DISTRIBUTOR_ID = SOME( " & vbCrLf & _
-                                 "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                                 "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                                  "     		)" & vbCrLf & _
                                  "       AND PO.PO_REF_DATE >= @START_DATE AND PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                                  "      )INV1   " & vbCrLf & _
@@ -4235,7 +4235,7 @@ Namespace DistributorAgreement
                                    "       INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON Tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
                                    "       AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER)) " & vbCrLf & _
                                    "            WHERE PO.DISTRIBUTOR_ID = SOME( " & vbCrLf & _
-                                   "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO " & vbCrLf & _
+                                   "       	    SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO " & vbCrLf & _
                                    "     		)" & vbCrLf & _
                                    "       AND PO.PO_REF_DATE >= @START_DATE AND PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                                    "      )INV1   " & vbCrLf & _
@@ -4398,7 +4398,7 @@ Namespace DistributorAgreement
             Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
                     "SELECT GP.IDApp,ACHIEVEMENT_ID = DA.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|' + @FLAG,GP.CPF1,GP.CPF2,GP.PBF3,GP.PBS2 " & vbCrLf & _
                     " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-                    " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO ;"
+                    " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
             'Me.SqlCom.Parameters.RemoveAt("@START_DATE")
             'Me.SqlCom.Parameters.RemoveAt("@END_DATE")

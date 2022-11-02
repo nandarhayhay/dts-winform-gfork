@@ -145,6 +145,9 @@ Public Class ProductClassified
                 FE.SheetName = "Product_Classified"
                 FE.IncludeFormatStyle = False
                 FE.IncludeExcelProcessingInstruction = True
+                GridEX1.RootTable.Columns(0).Visible = True
+                GridEX1.RootTable.Columns("1BRAND_ID").Visible = True
+                GridEX1.RootTable.Columns("1CLASS_ID").Visible = True
                 FE.ExportMode = Janus.Windows.GridEX.ExportMode.AllRows
                 Dim SD As New SaveFileDialog()
                 SD.OverwritePrompt = True
@@ -159,6 +162,9 @@ Public Class ProductClassified
                         MessageBox.Show("Data Exported to " & SD.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End Using
                 End If
+                GridEX1.RootTable.Columns(0).Visible = False
+                GridEX1.RootTable.Columns("1BRAND_ID").Visible = False
+                GridEX1.RootTable.Columns("1CLASS_ID").Visible = False
                 Me.Cursor = Cursors.Default
             Catch ex As Exception
 

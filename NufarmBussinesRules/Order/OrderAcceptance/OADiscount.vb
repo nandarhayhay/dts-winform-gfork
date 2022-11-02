@@ -329,6 +329,7 @@ Namespace OrderAcceptance
             Public OCBD As Boolean
             Public ODD As Boolean
             Public ODR As Boolean
+            Public ODK As Boolean
         End Structure
 #End Region
 
@@ -379,6 +380,7 @@ Namespace OrderAcceptance
                                 Case "OCBD" : flag = "OTHER DISC(CBD)"
                                 Case "ODD" : flag = "OTHER DISC(DD)"
                                 Case "ODR" : flag = "OTHER DISC(DR)"
+                                Case "ODK" : flag = "OTHER DISC(DK)"
                                 Case "CR" : flag = "CP(RD)"
                                 Case "G" : flag = "GIVEN PKD"
                                 Case "CP" : flag = "CP(D)_DIST"
@@ -1161,7 +1163,7 @@ Namespace OrderAcceptance
                             Me.AddParameter("@OA_BRANDPACK_ID", SqlDbType.VarChar, OA_BRANDPACK_ID, 75) ' VARCHAR(70),
                             Me.AddParameter("@DISCOUNT_TYPE", SqlDbType.VarChar, "Sales_Discount", 20) ' VARCHAR(20)
                             Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
-                        Case "O", "OCBD", "ODD", "ODR"
+                        Case "O", "OCBD", "ODD", "ODR", "ODK"
                             Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Check_Sum_Mathching_Disc_Qty")
                             Me.AddParameter("@OA_BRANDPACK_ID", SqlDbType.VarChar, OA_BRANDPACK_ID, 75) ' VARCHAR(70),
                             Me.AddParameter("@DISCOUNT_TYPE", SqlDbType.VarChar, "Other_Discount", 20) ' VARCHAR(20)
@@ -3532,6 +3534,7 @@ Namespace OrderAcceptance
             Dim IsCBD As Boolean = False
             Dim IsODD As Boolean = False
             Dim IsODR As Boolean = False
+            Dim IsODK As Boolean = False
             Me.ResetCommandText(CommandType.StoredProcedure, "Usp_Check_Availability_Disc_Other")
             Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DISTRIBUTOR_ID, 10)
             Me.AddParameter("@BRANDPACK_ID", SqlDbType.VarChar, BRANDPACK_ID, 14)
@@ -3551,6 +3554,7 @@ Namespace OrderAcceptance
             Me.SqlCom.Parameters.Add("@O_DD", SqlDbType.Bit).Direction = ParameterDirection.Output
             Me.SqlCom.Parameters.Add("@O_DR", SqlDbType.Bit).Direction = ParameterDirection.Output
             Me.SqlCom.Parameters.Add("@O_CBD", SqlDbType.Bit).Direction = ParameterDirection.Output
+            Me.SqlCom.Parameters.Add("@O_DK", SqlDbType.Bit).Direction = ParameterDirection.Output
             Me.AddParameter("@PO_DATE", SqlDbType.SmallDateTime, PO_Date)
             Me.SqlCom.Parameters.Add("@RETURN_VALUE", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
@@ -3572,6 +3576,7 @@ Namespace OrderAcceptance
                     IsCBD = Convert.ToBoolean(Me.SqlCom.Parameters()("@O_CBD").Value)
                     IsODD = Convert.ToBoolean(Me.SqlCom.Parameters()("@O_DD").Value)
                     IsODR = Convert.ToBoolean(Me.SqlCom.Parameters()("@O_DR").Value)
+                    IsODK = Convert.ToBoolean(Me.SqlCom.Parameters()("@O_DK").Value)
                     Dim result As Decimal = 0
                     'Query = "SET NOCOUNT ON;" & vbCrLf & _
                     '        " SELECT TOP 1 IDApp,APPLY_TO,APPLY_DATE FROM BRND_DISC_HEADER WHERE APPLY_DATE <= @PODate ORDER BY APPLY_DATE DESC ;"
@@ -3778,6 +3783,45 @@ Namespace OrderAcceptance
                     If Not Me.IsHasOtherDisc.ODD Then
                         Me.IsHasOtherDisc.ODD = result > 0
                     End If
+                    result = 0 'reset result
+                    If IsODK Then
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                " SELECT BRAND_ID,BRANDPACK_ID,MoreThanQty,Disc FROM BRND_DISC_PROG WHERE FKApp = @IDApp AND TypeApp = @TypeApp ORDER BY MoreThanQty DESC,Disc DESC;"
+                        Me.ResetCommandText(CommandType.Text, Query)
+                        Me.AddParameter("@IDApp", SqlDbType.Int, IDApp)
+                        Me.AddParameter("@TypeApp", SqlDbType.VarChar, "DK")
+                        Dim MoreThanQty As Decimal = 0, Disc As Decimal = 0
+                        Me.ExecuteReader()
+                        While Me.SqlRe.Read()
+                            OBrandID = Me.SqlRe(0)
+                            OBrandPackID = Me.SqlRe(1)
+                            MoreThanQty = Me.SqlRe.GetDecimal(2)
+                            Disc = Me.SqlRe.GetDecimal(3)
+                            If Not IsNothing(OBrandPackID) And Not IsDBNull(OBrandPackID) Then
+                                If OBrandPackID.ToString() = BRANDPACK_ID Then
+                                    If OAQty >= MoreThanQty Then
+                                        result = OAQty * (Disc / 100)
+                                    End If
+                                    Exit While
+                                End If
+                            ElseIf Not IsNothing(OBrandID) And Not IsDBNull(OBrandID) Then
+                                If OBrandID.ToString() = brandID Then
+                                    If OAQty >= MoreThanQty Then
+                                        result = OAQty * (Disc / 100)
+                                    End If
+                                    Exit While
+                                End If
+                            Else
+                                If OAQty >= MoreThanQty Then
+                                    result = OAQty * (Disc / 100)
+                                    Exit While
+                                End If
+                            End If
+                        End While : Me.SqlRe.Close() : Me.ClearCommandParameters()
+                    End If
+                    If Not Me.IsHasOtherDisc.ODK Then
+                        Me.IsHasOtherDisc.ODK = result > 0
+                    End If
                 End If
             End If
             Me.ClearCommandParameters()
@@ -3944,6 +3988,8 @@ Namespace OrderAcceptance
                         Me.IsHasOtherDisc.OCBD = False
                         Me.IsHasOtherDisc.ODD = False
                         Me.IsHasOtherDisc.ODR = False
+                        Me.IsHasOtherDisc.ODK = False
+
                         ''check program2 apakah lebih dari pada satu
                         ''GET StartDate PKD
                         Query = "SET NOCOUNT ON;" & vbCrLf & _
@@ -3983,7 +4029,7 @@ Namespace OrderAcceptance
                                 ApplyDate = Convert.ToDateTime(tbl.Rows(i)("APPLY_DATE"))
                                 EndDate = Convert.ToDateTime(tbl.Rows(i)("END_DATE"))
                                 Me.ChekAvailabilityDiscOther(IDApp, ApplyTo, ApplyDate, EndDate, PO_DATE, DISTRIBUTOR_ID, BRANDPACK_ID, OAQTy)
-                                If Me.IsHasOtherDisc.OCBD = True And Me.IsHasOtherDisc.ODD = True And Me.IsHasOtherDisc.ODR = True Then
+                                If Me.IsHasOtherDisc.OCBD = True And Me.IsHasOtherDisc.ODD = True And Me.IsHasOtherDisc.ODR = True And Me.IsHasOtherDisc.ODK = True Then
                                     Exit For
                                 End If
                             Next

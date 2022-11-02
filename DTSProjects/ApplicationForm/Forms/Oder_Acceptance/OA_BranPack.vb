@@ -373,11 +373,11 @@ Public Class OA_BranPack
                 '                Case "OCBD" : flag = "OTHER DISC(CBD)"
                 'Case "ODD" : flag = "OTHER DISC(DD)"
                 'Case "ODR" : flag = "OTHER DISC(DR"
-            ElseIf DiscountFrom = "OTHER DISC" Or DiscountFrom = "OTHER DISC(CBD)" Or DiscountFrom = "OTHER DISC(DD)" Or DiscountFrom = "OTHER DISC(DR)" Then
+            ElseIf DiscountFrom = "OTHER DISC" Or DiscountFrom = "OTHER DISC(CBD)" Or DiscountFrom = "OTHER DISC(DD)" Or DiscountFrom = "OTHER DISC(DR)" Or DiscountFrom = "OTHER DISC(DK)" Then
                 Dim dtview As DataView = DirectCast(Me.GridEX2.DataSource, DataView)
                 For i As Integer = 0 To dtview.Count - 1
                     If dtview(i)("OA_BRANDPACK_ID").ToString() = OA_BRANDPACK_ID Then
-                        If (CBool(dtview(i)("ISREMAINDING")) = True) And ((dtview(i)("GQSY_SGT_P_FLAG") = "O") Or (dtview(i)("GQSY_SGT_P_FLAG") = "OCBD") Or (dtview(i)("GQSY_SGT_P_FLAG") = "ODD") Or (dtview(i)("GQSY_SGT_P_FLAG") = "ODR")) Then
+                        If (CBool(dtview(i)("ISREMAINDING")) = True) And ((dtview(i)("GQSY_SGT_P_FLAG") = "O") Or (dtview(i)("GQSY_SGT_P_FLAG") = "OCBD") Or (dtview(i)("GQSY_SGT_P_FLAG") = "ODD") Or (dtview(i)("GQSY_SGT_P_FLAG") = "ODR") Or (dtview(i)("GQSY_SGT_P_FLAG") = "ODK")) Then
                             Me.ShowMessageInfo("Can not delete Parent Other because has child remainding other" & vbCrLf & "You must first delete child remainding other")
                             Return -1
                         End If
@@ -899,13 +899,15 @@ Public Class OA_BranPack
             ElseIf dtview(i)("FLAG") = "MT" Then
                 dtview(i)("LEFT_QTY_FROM") = "SALES_TARGET"
             ElseIf dtview(i)("FLAG") = "O" Then
-                dtview(i)("LEFT_QTY_FROM") = "OTHERS"
+                dtview(i)("LEFT_QTY_FROM") = "OTHER"
             ElseIf dtview(i)("FLAG") = "OCBD" Then
-                dtview(i)("LEFT_QTY_FROM") = "OTHERS(CBD)"
+                dtview(i)("LEFT_QTY_FROM") = "OTHER(CBD)"
             ElseIf dtview(i)("FLAG") = "ODD" Then
-                dtview(i)("LEFT_QTY_FROM") = "OTHERS(DD)"
+                dtview(i)("LEFT_QTY_FROM") = "OTHER(DD)"
             ElseIf dtview(i)("FLAG") = "ODR" Then
-                dtview(i)("LEFT_QTY_FROM") = "OTHERS(DR)"
+                dtview(i)("LEFT_QTY_FROM") = "OTHER(DR)"
+            ElseIf dtview(i)("FLAG") = "ODK" Then
+                dtview(i)("LEFT_QTY_FROM") = "OTHER(DK)"
             ElseIf dtview(i)("FLAG") = "DN" Then
                 dtview(i)("LEFT_QTY_FROM") = "DK(N)"
             ElseIf dtview(i)("FLAG") = "CA" Then
@@ -2217,7 +2219,7 @@ Public Class OA_BranPack
                                         Me.clsOADiscount.InsertOA_BRANDPACK_DISC(NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.None, _
                                         OrgDecimalValue, , , , False, _
                                         Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString())
-                                    Case "O", "OCBD", "ODD", "ODR"
+                                    Case "O", "OCBD", "ODD", "ODR", "ODK"
                                         Me.clsOADiscount.InsertOA_BRANDPACK_DISC(NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.None, _
                                      OrgDecimalValue, , , , True, _
                                      Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString())
@@ -2301,7 +2303,7 @@ Public Class OA_BranPack
                         Case "DK", "KP", "MG", "CR", "CP", "CP", "CS", "TS", "TD", "CT", "CD", "DN", "CA"
                             Me.clsOADiscount.Update_OABRANDPACK_DISC(OA_BRANDPACK_DISC_ID, BRANDPACK_ID, OA_BRANDPACK_ID, QTY, Me.GridEX2.GetValue("GQSY_SGT_P_FLAG").ToString(), _
                                                         Me.GridEX2.GetValue("OA_RM_ID").ToString(), , , "", Me.GridEX1.GetValue("MRKT_DISC_HIST_ID").ToString(), , , False)
-                        Case "O", "OCBD", "ODD", "ODR"
+                        Case "O", "OCBD", "ODD", "ODR", "ODK"
                             Me.clsOADiscount.Update_OABRANDPACK_DISC(OA_BRANDPACK_DISC_ID, BRANDPACK_ID, OA_BRANDPACK_ID, QTY, Flag, _
                                                         Me.GridEX2.GetValue("OA_RM_ID").ToString(), , , "", , , , True)
                         Case "G"
@@ -2340,7 +2342,7 @@ Public Class OA_BranPack
                 ElseIf Not IsDBNull(Me.GridEX2.GetValue("PROJ_DISC_HIST_ID")) Then
                     Me.clsOADiscount.Update_OABRANDPACK_DISC(OA_BRANDPACK_DISC_ID, BRANDPACK_ID, OA_BRANDPACK_ID, QTY, "", , _
                                        , , "", , , Me.GridEX2.GetValue("PROJ_DISC_HIST_ID").ToString())
-                ElseIf Flag = "O" Or Flag = "OCBD" Or Flag = "ODD" Or Flag = "ODR" Then
+                ElseIf Flag = "O" Or Flag = "OCBD" Or Flag = "ODD" Or Flag = "ODR" Or Flag = "ODK" Then
                     Me.clsOADiscount.Update_OABRANDPACK_DISC(OA_BRANDPACK_DISC_ID, BRANDPACK_ID, OA_BRANDPACK_ID, QTY, Flag, , _
                                            , , "", , , , True)
                 End If
@@ -2433,6 +2435,7 @@ Public Class OA_BranPack
         Me.rdbDD.Enabled = Me.clsOADiscount.IsHasOtherDisc.ODD
         Me.rdbDR.Enabled = Me.clsOADiscount.IsHasOtherDisc.ODR
         Me.rdbCBD.Enabled = Me.clsOADiscount.IsHasOtherDisc.OCBD
+        Me.rdbDK.Enabled = Me.clsOADiscount.IsHasOtherDisc.ODK
         Me.setUnabledRadioButton()
     End Sub
     Private Sub setUnabledRadioButton()
@@ -2467,7 +2470,7 @@ Public Class OA_BranPack
         If Not Me.rdbDD.Enabled Then : Me.rdbDD.Checked = False : End If
         If Not Me.rdbDR.Enabled Then : Me.rdbDR.Checked = False : End If
         If Not Me.rdbCBD.Enabled Then : Me.rdbCBD.Checked = False : End If
-
+        If Not Me.rdbDK.Enabled Then : Me.rdbDK.Checked = False : End If
     End Sub
     Private Sub unabledRadioButton()
         Me.rdbPeriodDiscount1.Checked = False
@@ -3458,6 +3461,10 @@ Public Class OA_BranPack
                 ElseIf Me.rdbUncategorized.Checked Then
                     .btnUncategorized.Checked = True
                     .TypeApp = "O"
+                ElseIf Me.rdbDK.Checked Then
+                    .btnDiscDK.Checked = True
+                    .TypeApp = "ODK"
+                    Flag = "ODK"
                 End If
                 .PODate = Convert.ToDateTime(Me.txTPOREFDATE.Text)
                 .BrandPackID = Me.GridEX1.GetValue("BRANDPACK_ID")
@@ -3507,6 +3514,9 @@ Public Class OA_BranPack
                 Case "ODR"
                     Me.rdbDR.Checked = True
                     Me.rdbDR_CheckedChanged(Me.rdbDR, New EventArgs())
+                Case "ODK"
+                    Me.rdbDK.Checked = True
+                    Me.rdbDK_CheckedChanged(Me.rdbDR, New EventArgs())
                     'Case "O"
                     '    Me.rdbUncategorized.Checked = True
             End Select
@@ -5604,7 +5614,7 @@ Public Class OA_BranPack
                         NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.MarketingDiscount, _
                         QTY, , , , False, _
                         Me.grdRemainding.GetValue("OA_BRANDPACK_ID").ToString(), , Me.grdRemainding.GetValue("MRKT_M_S_ID").ToString())
-                    Case "O", "OCBD", "ODD", "ODR"
+                    Case "O", "OCBD", "ODD", "ODR", "ODK"
                         Me.clsOADiscount.Delete_OA_Remainding(Me.grdRemainding.GetValue("OA_RM_ID").ToString(), _
                         NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.OtherDiscount, _
                         QTY, , , , True, _
@@ -5681,7 +5691,7 @@ Public Class OA_BranPack
                             NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.MarketingDiscount, _
                             Qty, , , , False, _
                             Me.grdRemainding.GetValue("OA_BRANDPACK_ID").ToString(), , Me.grdRemainding.GetValue("MRKT_M_S_ID").ToString())
-                        Case "O", "OCBD", "ODD", "ODR"
+                        Case "O", "OCBD", "ODD", "ODR", "ODK"
                             Me.clsOADiscount.Delete_OA_Remainding(Me.grdRemainding.GetValue("OA_RM_ID").ToString(), _
                             NufarmBussinesRules.OrderAcceptance.OADiscount.SelectedDiscount.OtherDiscount, _
                             Qty, , , , True, _
@@ -5749,6 +5759,7 @@ Public Class OA_BranPack
                 Me.rdbDR.Checked = False
                 Me.rdbCBD.Checked = False
                 Me.rdbUncategorized.Checked = False
+                Me.rdbDK.Checked = False
             Catch ex As Exception
                 Me.LogMyEvent(ex.Message, Me.Name + "_rdbDD_CheckedChanged") : Me.ShowMessageInfo(ex.Message)
             End Try
@@ -5773,6 +5784,7 @@ Public Class OA_BranPack
                 Me.rdbDD.Checked = False
                 Me.rdbCBD.Checked = False
                 Me.rdbUncategorized.Checked = False
+                Me.rdbDK.Checked = False
             Catch ex As Exception
                 Me.LogMyEvent(ex.Message, Me.Name + "_rdbDR_CheckedChanged") : Me.ShowMessageInfo(ex.Message)
             End Try
@@ -5797,6 +5809,7 @@ Public Class OA_BranPack
                 Me.rdbDD.Checked = False
                 Me.rdbDR.Checked = False
                 Me.rdbUncategorized.Checked = False
+                Me.rdbDK.Checked = False
             Catch ex As Exception
                 Me.LogMyEvent(ex.Message, Me.Name + "_rdbCBD_CheckedChanged") : Me.ShowMessageInfo(ex.Message)
             End Try
@@ -5807,6 +5820,31 @@ Public Class OA_BranPack
     Private Sub rdbUncategorized_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rdbUncategorized.CheckedChanged
         If Me.rdbUncategorized.Checked Then
             Me.btnGenerateOtherDiscount.Enabled = True
+        End If
+    End Sub
+
+    Private Sub rdbDK_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rdbDK.CheckedChanged
+        If Me.rdbDK.Checked Then
+            Try
+                Me.Cursor = Cursors.WaitCursor
+                Me.OA_BRANDPACK_ID = Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString()
+                Dim MustcloseConnection As Boolean = False
+                If Me.QData = QueryData.GridSelected Or Me.QData = QueryData.NavigationPanel Then : MustcloseConnection = False
+                Else : MustcloseConnection = True
+                End If
+                If Me.clsOADiscount.hasGenerateDiscountOthers(Me.GridEX1.GetValue("OA_BRANDPACK_ID").ToString(), "ODK", MustcloseConnection) = True Then
+                    Me.btnGenerateOtherDiscount.Enabled = False
+                Else
+                    Me.btnGenerateOtherDiscount.Enabled = True
+                End If
+                Me.rdbDD.Checked = False
+                Me.rdbDR.Checked = False
+                Me.rdbUncategorized.Checked = False
+                Me.rdbCBD.Checked = False
+            Catch ex As Exception
+                Me.LogMyEvent(ex.Message, Me.Name + "_rdbDK_CheckedChanged") : Me.ShowMessageInfo(ex.Message)
+            End Try
+            Me.Cursor = Cursors.Default
         End If
     End Sub
 End Class

@@ -22,10 +22,10 @@ Public Class User
         Dim cString As String = ""
         Dim cOutput As String = ""
         cInput = Trim(cInput)
-        cInput = StrReverse(cInput)
+        Dim ncInput As String = StrReverse(cInput)
 
-        For nHitung = 1 To cInput.Length
-            cString = cInput.Substring(nHitung - 1, 1)
+        For nHitung = 1 To ncInput.Length
+            cString = ncInput.Substring(nHitung - 1, 1)
             cOutput += Chr((Asc(cString) + nHitung) - nTambah)
         Next
 

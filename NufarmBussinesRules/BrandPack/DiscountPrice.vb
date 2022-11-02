@@ -123,15 +123,15 @@ Namespace Brandpack
                             " INNER JOIN ORDR_PO_BRANDPACK PB ON PB.BRANDPACK_ID = BP.BRANDPACK_ID INNER JOIN ORDR_OA_BRANDPACK OOB ON OOB.PO_BRANDPACK_ID = PB.PO_BRANDPACK_ID " & vbCrLf & _
                             " INNER JOIN ORDR_OA_BRANDPACK_DISC OOBD ON OOBD.OA_BRANDPACK_ID = OOB.OA_BRANDPACK_ID " & vbCrLf & _
                             " INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = BP.BRAND_ID " & vbCrLf & _
-                            " WHERE OOBD.RefOther = @IDApp ; "
+                            " WHERE OOBD.RefOther = @IDApp OR OOBD.FK_BRND_DISC_PROG = @IDApp; "
                     Me.ResetCommandText(CommandType.Text, Query)
                     Me.AddParameter("@IDApp", SqlDbType.Int, IDApp)
                     Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
 
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
                             "SELECT BDP.*,HasRef = CASE WHEN (BDP.BRANDPACK_ID IS NOT NULL AND EXISTS(SELECT BRANDPACK_ID FROM ##T_DISC_PROG_" & Me.ComputerName & " T_PROG WHERE T_PROG.BRANDPACK_ID = BDP.BRANDPACK_ID AND 'O' + BDP.TypeApp = T_PROG.Flag)) THEN 1 " & vbCrLf & _
-                            "   WHEN (BDP.BRAND_ID IS NOT NULL AND EXISTS(SELECT BRAND_ID FROM ##T_DISC_PROG_" & Me.ComputerName & " T_PROG WHERE T_PROG.BRAND_ID = BDP.BRAND_ID AND 'O' + BDP.TypeApp = T_PROG.Flag)) THEN 1 " & vbCrLf & _
-                            "   WHEN (EXISTS(SELECT Flag FROM ##T_DISC_PROG_" & Me.ComputerName & " T_PROG WHERE 'O' + BDP.TypeApp = T_PROG.Flag)) THEN 1 " & vbCrLf & _
+                            "   WHEN (BDP.BRAND_ID IS NOT NULL AND EXISTS(SELECT BRAND_ID FROM ##T_DISC_PROG_" & Me.ComputerName & " T_PROG WHERE T_PROG.BRAND_ID = BDP.BRAND_ID AND T_PROG.Flag = 'O' + BDP.TypeApp)) THEN 1 " & vbCrLf & _
+                            "   WHEN (EXISTS(SELECT Flag FROM ##T_DISC_PROG_" & Me.ComputerName & " T_PROG WHERE T_PROG.Flag = 'O' + BDP.TypeApp )) THEN 1 " & vbCrLf & _
                             " ELSE 0 END  FROM BRND_DISC_PROG BDP WHERE BDP.FKApp = @IDApp ;"
                 Else
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
@@ -163,7 +163,9 @@ Namespace Brandpack
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                 " SELECT 1 WHERE EXISTS(SELECT RefOther FROM ORDR_OA_BRANDPACK_DISC WHERE RefOther = @IDApp) " & vbCrLf & _
-                "           OR EXISTS(SELECT RefOther FROM ORDR_OA_REMAINDING WHERE RefOther = @IDApp); "
+                "          OR EXISTS(SELECT RefOther FROM ORDR_OA_REMAINDING WHERE RefOther = @IDApp) " & vbCrLf & _
+                "          OR EXISTS(SELECT FK_BRND_DISC_PROG FROM ORDR_OA_BRANDPACK_DISC WHERE FK_BRND_DISC_PROG = @IDApp) " & vbCrLf & _
+                "          OR EXISTS(SELECT FK_BRND_DISC_PROG FROM ORDR_OA_REMAINDING WHERE FK_BRND_DISC_PROG = @IDApp);"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If
