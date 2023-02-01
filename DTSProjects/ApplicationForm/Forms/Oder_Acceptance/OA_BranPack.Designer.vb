@@ -83,6 +83,7 @@ Partial Class OA_BranPack
         Me.ExpandableSplitter1 = New DevComponents.DotNetBar.ExpandableSplitter
         Me.NavigationPane1 = New DevComponents.DotNetBar.NavigationPane
         Me.pnlOtherDiscount = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.rdbDK = New Janus.Windows.EditControls.UIRadioButton
         Me.rdbUncategorized = New Janus.Windows.EditControls.UIRadioButton
         Me.rdbCBD = New Janus.Windows.EditControls.UIRadioButton
         Me.rdbDR = New Janus.Windows.EditControls.UIRadioButton
@@ -704,6 +705,7 @@ Partial Class OA_BranPack
         '
         'pnlOtherDiscount
         '
+        Me.pnlOtherDiscount.Controls.Add(Me.rdbDK)
         Me.pnlOtherDiscount.Controls.Add(Me.rdbUncategorized)
         Me.pnlOtherDiscount.Controls.Add(Me.rdbCBD)
         Me.pnlOtherDiscount.Controls.Add(Me.rdbDR)
@@ -723,10 +725,19 @@ Partial Class OA_BranPack
         Me.pnlOtherDiscount.Style.GradientAngle = 90
         Me.pnlOtherDiscount.TabIndex = 5
         '
+        'rdbDK
+        '
+        Me.rdbDK.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbDK.Location = New System.Drawing.Point(0, 69)
+        Me.rdbDK.Name = "rdbDK"
+        Me.rdbDK.Size = New System.Drawing.Size(139, 23)
+        Me.rdbDK.TabIndex = 21
+        Me.rdbDK.Text = "DK"
+        Me.rdbDK.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
         'rdbUncategorized
         '
-        Me.rdbUncategorized.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbUncategorized.Location = New System.Drawing.Point(0, 69)
+        Me.rdbUncategorized.Location = New System.Drawing.Point(0, 91)
         Me.rdbUncategorized.Name = "rdbUncategorized"
         Me.rdbUncategorized.Size = New System.Drawing.Size(139, 23)
         Me.rdbUncategorized.TabIndex = 20
@@ -1805,5 +1816,6 @@ Partial Class OA_BranPack
     Private WithEvents rdbDR As Janus.Windows.EditControls.UIRadioButton
     Private WithEvents rdbDD As Janus.Windows.EditControls.UIRadioButton
     Private WithEvents rdbUncategorized As Janus.Windows.EditControls.UIRadioButton
+    Private WithEvents rdbDK As Janus.Windows.EditControls.UIRadioButton
 
 End Class

@@ -145,7 +145,7 @@ Namespace Brandpack
                             "      WHERE NOT EXISTS( " & vbCrLf & _
                             "                       SELECT RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) " & vbCrLf & _
                             "                       FROM " & DBConnect & ".dbo.ICITEM WHERE INACTIVE = 0 AND " & vbCrLf & _
-                            "                       RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND [DESC] NOT LIKE '%BULK%' AND UPPER([DESC]) NOT LIKE '%OTHER%' " & vbCrLf & _
+                            "                       RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST' OR RTRIM(ITEMBRKID) = 'FGTOLL') AND [DESC] NOT LIKE '%BULK%' AND UPPER([DESC]) NOT LIKE '%OTHER%' " & vbCrLf & _
                             "                      ) " & vbCrLf & _
                             "      AND NOT EXISTS(SELECT BRAND_ID FROM tempdb..##T_P_Brand WHERE BRAND_ID = BR.BRAND_ID) " & vbCrLf & _
                             "      );" & vbCrLf & _
@@ -155,7 +155,7 @@ Namespace Brandpack
                             "     AND NOT EXISTS( " & vbCrLf & _
                             "                    SELECT RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) " & vbCrLf & _
                             "                    FROM " & DBConnect & ".dbo.ICITEM WHERE INACTIVE = 0 AND " & vbCrLf & _
-                            "                    RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND (RTRIM(ITEMBRKID) = 'FG' OR  RTRIM(ITEMBRKID) = 'FGST') AND [DESC] NOT LIKE '%BULK%' AND UPPER([DESC]) NOT LIKE '%OTHER%'" & vbCrLf & _
+                            "                    RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND (RTRIM(ITEMBRKID) = 'FG' OR  RTRIM(ITEMBRKID) = 'FGST' OR RTRIM(ITEMBRKID) = 'FGTOLL') AND [DESC] NOT LIKE '%BULK%' AND UPPER([DESC]) NOT LIKE '%OTHER%'" & vbCrLf & _
                             "                   ) " & vbCrLf & _
                             "     AND NOT EXISTS(SELECT BRAND_ID FROM tempdb..##T_P_Brand WHERE BRAND_ID = BR.BRAND_ID) " & vbCrLf & _
                             "     );"

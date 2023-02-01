@@ -26,7 +26,7 @@ Public Class OtherDDDR
     Private Sub OtherDDDR_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
             Dim Flag As String = "O"
-            If Me.btnDiscCBD.Checked = True Or Me.btnDiscDD.Checked = True Or Me.btnDiscDr.Checked = True Then
+            If Me.btnDiscCBD.Checked = True Or Me.btnDiscDD.Checked = True Or Me.btnDiscDr.Checked = True Or Me.btnDiscDK.Checked = True Then
                 If btnDiscCBD.Checked Then
                     Me.pnlUncategorizedDisc.Enabled = False
                     Me.TypeApp = "CBD"
@@ -39,6 +39,10 @@ Public Class OtherDDDR
                     Me.pnlUncategorizedDisc.Enabled = False
                     Me.TypeApp = "DR"
                     Flag = "ODR"
+                ElseIf btnDiscDK.Checked Then
+                    Me.pnlUncategorizedDisc.Enabled = False
+                    Me.TypeApp = "DK"
+                    Flag = "ODK"
                     'ElseIf Me.btnUncategorized.Checked Then
                     '    Me.pnlUncategorizedDisc.Enabled = True
                     '    Me.TypeApp = "O"
@@ -145,6 +149,10 @@ Public Class OtherDDDR
                         Me.pnlUncategorizedDisc.Enabled = False
                         TypeApp = "DR"
                         Flag = "ODR"
+                    Case "btnDiscDK"
+                        Me.pnlUncategorizedDisc.Enabled = False
+                        TypeApp = "DK"
+                        Flag = "ODK"
                     Case "btnUncategorized"
                         Me.pnlUncategorizedDisc.Enabled = True
                         TypeApp = "O"
@@ -276,6 +284,8 @@ Public Class OtherDDDR
                 ElseIf Me.btnDiscDr.Checked Then
                     Me.Flag = "ODR"
                     'Me.resultQty = Me.txtDiscType.Value
+                ElseIf Me.btnDiscDK.Checked Then
+                    Me.Flag = "ODK"
                 End If
                 With Me.tblResult
                     With Me.tblResult

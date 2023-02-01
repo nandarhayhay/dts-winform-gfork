@@ -692,7 +692,7 @@ Public Class DistributorAgreement
             If Me.chkAgreementGroup.Checked = False Then
                 Me.clsDiscAgreement.DISTRIBUTOR_ID = Me.MultiColumnCombo1.Value
             End If
-            Me.clsDiscAgreement.AGREEMENT_NO = Me.txtAgreementNumber.Text
+            Me.clsDiscAgreement.AGREEMENT_NO = Me.txtAgreementNumber.Text.Trim()
             If Me.rdbQuarterly.Checked = True Then
                 Me.clsDiscAgreement.QS_Treatment_Flag = "Q"
             ElseIf Me.rdbSemeterly.Checked = True Then

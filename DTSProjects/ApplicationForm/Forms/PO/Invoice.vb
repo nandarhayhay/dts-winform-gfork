@@ -603,6 +603,7 @@ Public Class Invoice
                 Me.Timer1.Interval = 1000 : Me.OtherUserProcessing = ""
                 mustReload = False
             Catch ex As Exception
+                Me.ShowMessageInfo(ex.Message)
                 Me.mustReload = False : Me.OtherUserProcessing = String.Empty
                 Me.StatProg = StatusProgress.None : Me.Timer1.Stop() : Me.Timer1.Enabled = False
             End Try

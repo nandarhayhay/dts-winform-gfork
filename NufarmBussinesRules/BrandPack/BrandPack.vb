@@ -305,16 +305,16 @@ Namespace Brandpack
                            " P.QUANTITY,P.DEVIDE_FACTOR,P.UNIT FROM Nufarm.dbo.BRND_BRAND BR,Nufarm.dbo.BRND_PACK P " & vbCrLf & _
                            " WHERE EXISTS(SELECT RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) FROM " & DBConnect & ".dbo.ICITEM " & vbCrLf & _
                            "               WHERE RIGHT(RTRIM(SEGMENT1),1) + '' + RTRIM(SEGMENT2) = BR.BRAND_ID AND CATEGORY <> ANY(SELECT CATEGORY FROM " & DBConnect & ".dbo.ICCATG WHERE [DESC] NOT LIKE '%OTHERS%') " & vbCrLf & _
-                           "               AND [DESC] NOT LIKE '%OTHER%' AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 0 " & vbCrLf & _
+                           "               AND [DESC] NOT LIKE '%OTHER%' AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST' OR RTRIM(ITEMBRKID) = 'FGTOLL') AND INACTIVE = 0 " & vbCrLf & _
                            "              ) " & vbCrLf & _
                            "   AND EXISTS(SELECT RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3) FROM " & DBConnect & ".dbo.ICITEM" & vbCrLf & _
                            "               WHERE RTRIM(SEGMENT4) + '' + RTRIM(SEGMENT3)  = P.PACK_ID " & vbCrLf & _
                            "               AND [DESC] NOT LIKE 'OTHER%' " & vbCrLf & _
-                           "               AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 0 " & vbCrLf & _
+                           "               AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST' OR RTRIM(ITEMBRKID) = 'FGTOLL') AND INACTIVE = 0 " & vbCrLf & _
                            "              ) " & vbCrLf & _
                            "   AND EXISTS(SELECT ITEMNO FROM " & DBConnect & ".dbo.ICITEM WHERE SUBSTRING(ITEMNO,2,10) = BR.BRAND_ID  + '' + P.PACK_ID " & vbCrLf & _
                            "               AND [DESC] NOT LIKE 'OTHER%' " & vbCrLf & _
-                           "               AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 0 " & vbCrLf & _
+                           "               AND [DESC] NOT LIKE 'ROUNDUP%' AND [DESC] NOT LIKE '%BULK%' AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST' OR RTRIM(ITEMBRKID) = 'FGTOLL') AND INACTIVE = 0 " & vbCrLf & _
                            "              ) " & vbCrLf & _
                            " AND NOT EXISTS(SELECT BRANDPACK_ID FROM Nufarm.dbo.BRND_BRANDPACK WHERE BRANDPACK_ID =  BR.BRAND_ID  + '' + P.PACK_ID); "
                     Me.CreateCommandSql("sp_executesql", "")
@@ -431,7 +431,7 @@ Namespace Brandpack
                             " UPDATE Nufarm.dbo.BRND_BRANDPACK SET IsActive = 0 WHERE BRANDPACK_ID = " & vbCrLf & _
                             " ANY(SELECT BRANDPACK_ID FROM Nufarm.dbo.BRND_BRANDPACK BB " & vbCrLf & _
                             "      WHERE EXISTS(SELECT SUBSTRING(ITEMNO,2,10) FROM " & DBConnect & ".dbo.ICITEM WHERE SUBSTRING(ITEMNO,2,10) = BB.BRANDPACK_ID " & vbCrLf & _
-                            "                   AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST') AND INACTIVE = 1) " & vbCrLf & _
+                            "                   AND (RTRIM(ITEMBRKID) = 'FG' OR RTRIM(ITEMBRKID) = 'FGST' OR RTRIM(ITEMBRKID) = 'FGTOLL') AND INACTIVE = 1) " & vbCrLf & _
                             "      AND NOT EXISTS(SELECT BRANDPACK_ID FROM tempdb..##T_P_BrandPack WHERE BRANDPACK_ID = BB.BRANDPACK_ID) " & vbCrLf & _
                             "     );" ''& vbCrLf & _
                     '"UPDATE Nufarm.dbo.BRND_BRANDPACK SET IsActive = 1,IsObsolete = 1 WHERE BRANDPACK_ID = " & vbCrLf & _

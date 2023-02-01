@@ -105,6 +105,7 @@ Partial Class Acceptance
         Me.ExpandableSplitter1 = New DevComponents.DotNetBar.ExpandableSplitter
         Me.GridEX3 = New Janus.Windows.GridEX.GridEX
         Me.spliterOA = New DevComponents.DotNetBar.ExpandableSplitter
+        Me.rdbDK = New System.Windows.Forms.RadioButton
         Me.PanelEx1.SuspendLayout()
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Bar2.SuspendLayout()
@@ -510,6 +511,7 @@ Partial Class Acceptance
         '
         Me.ExpandablePanel3.CanvasColor = System.Drawing.SystemColors.Control
         Me.ExpandablePanel3.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
+        Me.ExpandablePanel3.Controls.Add(Me.rdbDK)
         Me.ExpandablePanel3.Controls.Add(Me.rdbUncategorized)
         Me.ExpandablePanel3.Controls.Add(Me.rdbCBD)
         Me.ExpandablePanel3.Controls.Add(Me.rdbDR)
@@ -539,10 +541,9 @@ Partial Class Acceptance
         'rdbUncategorized
         '
         Me.rdbUncategorized.AutoSize = True
-        Me.rdbUncategorized.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbUncategorized.Location = New System.Drawing.Point(0, 69)
+        Me.rdbUncategorized.Location = New System.Drawing.Point(1, 95)
         Me.rdbUncategorized.Name = "rdbUncategorized"
-        Me.rdbUncategorized.Size = New System.Drawing.Size(158, 17)
+        Me.rdbUncategorized.Size = New System.Drawing.Size(94, 17)
         Me.rdbUncategorized.TabIndex = 4
         Me.rdbUncategorized.TabStop = True
         Me.rdbUncategorized.Text = "Uncategorized"
@@ -1220,6 +1221,17 @@ Partial Class Acceptance
         Me.spliterOA.TabIndex = 26
         Me.spliterOA.TabStop = False
         '
+        'rdbDK
+        '
+        Me.rdbDK.AutoSize = True
+        Me.rdbDK.Location = New System.Drawing.Point(1, 73)
+        Me.rdbDK.Name = "rdbDK"
+        Me.rdbDK.Size = New System.Drawing.Size(40, 17)
+        Me.rdbDK.TabIndex = 5
+        Me.rdbDK.TabStop = True
+        Me.rdbDK.Text = "DK"
+        Me.rdbDK.UseVisualStyleBackColor = True
+        '
         'Acceptance
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1344,5 +1356,6 @@ Partial Class Acceptance
     Private WithEvents rdbCBD As System.Windows.Forms.RadioButton
     Private WithEvents rdbDR As System.Windows.Forms.RadioButton
     Private WithEvents rdbDD As System.Windows.Forms.RadioButton
+    Private WithEvents rdbDK As System.Windows.Forms.RadioButton
 
 End Class

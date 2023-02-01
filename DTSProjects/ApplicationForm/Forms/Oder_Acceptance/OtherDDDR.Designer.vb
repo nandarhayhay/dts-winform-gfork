@@ -40,6 +40,7 @@ Partial Class OtherDDDR
         Me.Panel1 = New System.Windows.Forms.Panel
         Me.btnCancel = New Janus.Windows.EditControls.UIButton
         Me.btnOK = New Janus.Windows.EditControls.UIButton
+        Me.btnDiscDK = New DevComponents.DotNetBar.ButtonItem
         Me.grdPanel1.SuspendLayout()
         Me.pnlUncategorizedDisc.SuspendLayout()
         Me.grpMethode.SuspendLayout()
@@ -79,10 +80,10 @@ Partial Class OtherDDDR
         Me.ItemPanel1.BackgroundStyle.PaddingRight = 1
         Me.ItemPanel1.BackgroundStyle.PaddingTop = 1
         Me.ItemPanel1.Dock = System.Windows.Forms.DockStyle.Left
-        Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDiscDD, Me.btnDiscDr, Me.btnDiscCBD, Me.btnUncategorized})
+        Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnDiscDD, Me.btnDiscDr, Me.btnDiscCBD, Me.btnDiscDK, Me.btnUncategorized})
         Me.ItemPanel1.Location = New System.Drawing.Point(0, 0)
         Me.ItemPanel1.Name = "ItemPanel1"
-        Me.ItemPanel1.Size = New System.Drawing.Size(289, 28)
+        Me.ItemPanel1.Size = New System.Drawing.Size(316, 28)
         Me.ItemPanel1.TabIndex = 1
         Me.ItemPanel1.Text = "ItemPanel1"
         '
@@ -258,6 +259,11 @@ Partial Class OtherDDDR
         Me.btnOK.Text = "&OK"
         Me.btnOK.VisualStyle = Janus.Windows.UI.VisualStyle.Office2007
         '
+        'btnDiscDK
+        '
+        Me.btnDiscDK.Name = "btnDiscDK"
+        Me.btnDiscDK.Text = "DK"
+        '
         'OtherDDDR
         '
         Me.AcceptButton = Me.btnOK
@@ -298,5 +304,6 @@ Partial Class OtherDDDR
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Private WithEvents btnCancel As Janus.Windows.EditControls.UIButton
     Private WithEvents btnOK As Janus.Windows.EditControls.UIButton
+    Friend WithEvents btnDiscDK As DevComponents.DotNetBar.ButtonItem
 
 End Class
