@@ -1,4 +1,5 @@
 Imports System.Threading
+Imports System.Configuration
 Public Class PO
 #Region " Deklarasi "
     Private clsPO As NufarmBussinesRules.PurchaseOrder.PORegistering
@@ -12,6 +13,8 @@ Public Class PO
     Private StatProg As StatusProgress = StatusProgress.None
     Friend MustReload As Boolean = False
     Private hasLoadGrid As Boolean = False
+    Private isHOUser As Boolean = CBool(ConfigurationManager.AppSettings("IsHO"))
+    Private ShowPrice As Boolean = CBool(ConfigurationManager.AppSettings("ShowPrice"))
 #End Region
 
 #Region " Enum "
@@ -238,7 +241,12 @@ Public Class PO
         Me.grdPurchaseOrder.RootTable.Columns("TOTAL").HeaderAlignment = Janus.Windows.GridEX.TextAlignment.Center
         Me.grdPurchaseOrder.RootTable.Columns("TOTAL").TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
         Me.grdPurchaseOrder.RootTable.Columns("TOTAL").EditType = Janus.Windows.GridEX.EditType.NoEdit
-
+        If Not Me.isHOUser Then
+            Me.grdPurchaseOrder.RootTable.Columns("PRICE/QTY").Visible = False
+            Me.grdPurchaseOrder.RootTable.Columns("PRICE/QTY").ShowInFieldChooser = False
+            Me.grdPurchaseOrder.RootTable.Columns("TOTAL").Visible = False
+            Me.grdPurchaseOrder.RootTable.Columns("TOTAL").ShowInFieldChooser = False
+        End If
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_ID").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
 
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_ID").Visible = False
@@ -534,6 +542,7 @@ Public Class PO
                             Me.SaveFileDialog1.DefaultExt = ".xls"
                             Me.SaveFileDialog1.Filter = "All Files|*.*"
                             Me.SaveFileDialog1.InitialDirectory = "C:\"
+                            Me.SaveFileDialog1.RestoreDirectory = True
                             If Me.SaveFileDialog1.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
                                 Dim FS As New System.IO.FileStream(Me.SaveFileDialog1.FileName, IO.FileMode.Create)
                                 Me.GridEXExporter1.GridEX = Me.grdPencapaian

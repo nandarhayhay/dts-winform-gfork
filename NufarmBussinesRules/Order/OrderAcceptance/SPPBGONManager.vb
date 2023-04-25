@@ -138,7 +138,7 @@ Namespace OrderAcceptance
                       "SELECT PO.PO_REF_NO,PO.DISTRIBUTOR_ID,PO.PO_REF_DATE,PO.PROJ_REF_NO,P.PROJECT_NAME,DR.DISTRIBUTOR_NAME INTO ##T_HEADER_PO_" & Me.ComputerName & " FROM ORDR_PURCHASE_ORDER PO INNER JOIN DIST_DISTRIBUTOR DR " & vbCrLf & _
                       " ON PO.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID LEFT OUTER JOIN PROJ_PROJECT P ON PO.PROJ_REF_NO = P.PROJ_REF_NO " & vbCrLf
             Query &= QueryCriteria
-            Query &= " CREATE CLUSTERED INDEX IX_T_HEADER_PO_" & Me.ComputerName & " ON ##T_HEADER_PO_" & Me.ComputerName & "(PO_REF_NO);"
+            Query &= " --CREATE CLUSTERED INDEX IX_T_HEADER_PO_" & Me.ComputerName & " ON ##T_HEADER_PO_" & Me.ComputerName & "(PO_REF_NO);"
             If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
             Else : Me.ResetCommandText(CommandType.Text, Query)
             End If
@@ -159,7 +159,7 @@ Namespace OrderAcceptance
                 " LEFT OUTER JOIN PRODUCT_CLASS CLS ON (CLS.BRAND_ID = BR.BRAND_ID AND CLS.INACTIVE = 0) " & vbCrLf & _
                 " LEFT OUTER JOIN PLANTATION PL ON PL.PLANTATION_ID = OPB.PLANTATION_ID " & vbCrLf
             Query &= QueryCriteria & vbCrLf
-            Query &= " CREATE NONCLUSTERED INDEX IX_T_PO_DETAIL_" & Me.ComputerName & " ON ##T_PO_DETAIL_" & Me.ComputerName & "(PO_REF_NO,PO_BRANDPACK_ID) ;"
+            Query &= " --CREATE NONCLUSTERED INDEX IX_T_PO_DETAIL_" & Me.ComputerName & " ON ##T_PO_DETAIL_" & Me.ComputerName & "(PO_REF_NO,PO_BRANDPACK_ID) ;"
             Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
             '-----------------------------------------------------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ Namespace OrderAcceptance
                     "                  )OA " & vbCrLf & _
                     " ON OA.PO_REF_NO = PO.PO_REF_NO AND OA.PO_BRANDPACK_ID = OPB.PO_BRANDPACK_ID " & vbCrLf
             Query &= QueryCriteria & vbCrLf
-            Query &= " CREATE NONCLUSTERED INDEX IX_T_R_OA_BrandPack_" & Me.ComputerName & " ON ##T_R_OA_BrandPack_" & Me.ComputerName & "(PO_REF_NO,OA_BRANDPACK_ID,PO_BRANDPACK_ID) ;"
+            Query &= " --CREATE NONCLUSTERED INDEX IX_T_R_OA_BrandPack_" & Me.ComputerName & " ON ##T_R_OA_BrandPack_" & Me.ComputerName & "(PO_REF_NO,OA_BRANDPACK_ID,PO_BRANDPACK_ID) ;"
             Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
 
 
@@ -203,7 +203,7 @@ Namespace OrderAcceptance
                        " INNER JOIN TERRITORY TERR ON TERR.TERRITORY_ID = ST.TERRITORY_ID INNER JOIN TERRITORY_MANAGER TM ON ST.TM_ID = TM.TM_ID " & vbCrLf & _
                        " INNER JOIN ORDR_ORDER_ACCEPTANCE OOA ON OST.OA_ID = OOA.OA_ID INNER JOIN ORDR_PURCHASE_ORDER PO ON PO.PO_REF_NO = OOA.PO_REF_NO INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TERR.REGIONAL_ID "
             Query &= QueryCriteria & vbCrLf
-            Query &= " CREATE NONCLUSTERED INDEX IX_T_R_OA_SHIP_TO_" & Me.ComputerName & " ON ##T_R_OA_SHIP_TO_" & Me.ComputerName & "(OA_ID) ;"
+            Query &= " --CREATE NONCLUSTERED INDEX IX_T_R_OA_SHIP_TO_" & Me.ComputerName & " ON ##T_R_OA_SHIP_TO_" & Me.ComputerName & "(OA_ID) ;"
             Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
 
 
@@ -225,7 +225,7 @@ Namespace OrderAcceptance
                       "BEGIN DROP TABLE TEMPDB..##T_HEADER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
                       "SELECT PO.PO_REF_NO,PO.DISTRIBUTOR_ID,PO.PO_REF_DATE,PO.PROJ_REF_NO,P.PROJECT_NAME,DR.DISTRIBUTOR_NAME INTO ##T_HEADER_PO_" & Me.ComputerName & " FROM ORDR_PURCHASE_ORDER PO INNER JOIN DIST_DISTRIBUTOR DR " & vbCrLf & _
                       " ON PO.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID LEFT OUTER JOIN PROJ_PROJECT P ON PO.PROJ_REF_NO = P.PROJ_REF_NO WHERE PO.PO_REF_DATE >= @FROM_DATE AND PO.PO_REF_DATE <= @UNTIL_DATE ;" & vbCrLf & _
-                      " CREATE CLUSTERED INDEX IX_T_HEADER_PO_" & Me.ComputerName & " ON ##T_HEADER_PO_" & Me.ComputerName & "(PO_REF_NO);"
+                      " --CREATE CLUSTERED INDEX IX_T_HEADER_PO_" & Me.ComputerName & " ON ##T_HEADER_PO_" & Me.ComputerName & "(PO_REF_NO);"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If
@@ -247,7 +247,7 @@ Namespace OrderAcceptance
                 " LEFT OUTER JOIN PLANTATION PL ON PL.PLANTATION_ID = OPB.PLANTATION_ID " & vbCrLf & _
                 " LEFT OUTER JOIN PRODUCT_CLASS CLS ON (CLS.BRAND_ID = BR.BRAND_ID AND CLS.INACTIVE = 0) " & vbCrLf & _
                 " WHERE PO.PO_REF_DATE >= @FROM_DATE AND PO.PO_REF_DATE <= @UNTIL_DATE ; " & vbCrLf & _
-                " CREATE NONCLUSTERED INDEX IX_T_PO_DETAIL_" & Me.ComputerName & " ON ##T_PO_DETAIL_" & Me.ComputerName & "(PO_REF_NO,PO_BRANDPACK_ID) ;"
+                " --CREATE NONCLUSTERED INDEX IX_T_PO_DETAIL_" & Me.ComputerName & " ON ##T_PO_DETAIL_" & Me.ComputerName & "(PO_REF_NO,PO_BRANDPACK_ID) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
                 '-----------------------------------------------------------------------------------------------------------------------
 
@@ -263,7 +263,7 @@ Namespace OrderAcceptance
                         "                  )OA " & vbCrLf & _
                         " ON OA.PO_REF_NO = PO.PO_REF_NO AND OA.PO_BRANDPACK_ID = OPB.PO_BRANDPACK_ID " & vbCrLf & _
                         " WHERE PO.PO_REF_DATE >= @FROM_DATE AND PO.PO_REF_DATE <= @UNTIL_DATE ;" & vbCrLf & _
-                        " CREATE NONCLUSTERED INDEX IX_T_R_OA_BrandPack_" & Me.ComputerName & " ON ##T_R_OA_BrandPack_" & Me.ComputerName & "(PO_REF_NO,OA_BRANDPACK_ID,PO_BRANDPACK_ID) ;"
+                        " --CREATE NONCLUSTERED INDEX IX_T_R_OA_BrandPack_" & Me.ComputerName & " ON ##T_R_OA_BrandPack_" & Me.ComputerName & "(PO_REF_NO,OA_BRANDPACK_ID,PO_BRANDPACK_ID) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
 
 
@@ -281,7 +281,7 @@ Namespace OrderAcceptance
                         " ON GD.GON_HEADER_ID = GH.GON_HEADER_ID LEFT OUTER JOIN GON_RECEIVED_BACK GR ON GR.GRB_ID = GH.GON_HEADER_ID WHERE GH.GON_DATE >= @FROM_DATE GROUP BY GD.SPPB_BRANDPACK_ID)GON " & vbCrLf & _
                         " ON GON.SPPB_BRANDPACK_ID = SB1.SPPB_BRANDPACK_ID " & vbCrLf & _
                         " WHERE PO.PO_REF_DATE >= @FROM_DATE AND PO.PO_REF_DATE <= @UNTIL_DATE ;" & vbCrLf & _
-                        " CREATE NONCLUSTERED INDEX IX_T_R_SPPB_" & Me.ComputerName & " ON ##T_R_SPPB_" & Me.ComputerName & "(OA_BRANDPACK_ID,SPPB_DATE) ;"
+                        " --CREATE NONCLUSTERED INDEX IX_T_R_SPPB_" & Me.ComputerName & " ON ##T_R_SPPB_" & Me.ComputerName & "(OA_BRANDPACK_ID,SPPB_DATE) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
 
                 '========================SHIP TO MANAGER AND DISTRIBUTOR==========================================
@@ -292,7 +292,7 @@ Namespace OrderAcceptance
                          " INNER JOIN TERRITORY TERR ON TERR.TERRITORY_ID = ST.TERRITORY_ID INNER JOIN TERRITORY_MANAGER TM ON ST.TM_ID = TM.TM_ID " & vbCrLf & _
                          " INNER JOIN ORDR_ORDER_ACCEPTANCE OOA ON OST.OA_ID = OOA.OA_ID INNER JOIN ORDR_PURCHASE_ORDER PO ON PO.PO_REF_NO = OOA.PO_REF_NO INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TERR.REGIONAL_ID " & vbCrLf & _
                          " WHERE PO.PO_REF_DATE >= @FROM_DATE AND PO.PO_REF_DATE <= @UNTIL_DATE ;" & vbCrLf & _
-                         " CREATE NONCLUSTERED INDEX IX_T_R_OA_SHIP_TO_" & Me.ComputerName & " ON ##T_R_OA_SHIP_TO_" & Me.ComputerName & "(OA_ID) ;"
+                         " --CREATE NONCLUSTERED INDEX IX_T_R_OA_SHIP_TO_" & Me.ComputerName & " ON ##T_R_OA_SHIP_TO_" & Me.ComputerName & "(OA_ID) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
 
                 ''Created GON Data
@@ -304,7 +304,7 @@ Namespace OrderAcceptance
                         "BEGIN DROP TABLE TEMPDB..##T_HEADER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
                         "SELECT PO.PO_REF_NO,PO.DISTRIBUTOR_ID,PO.PO_REF_DATE,PO.PROJ_REF_NO,P.PROJECT_NAME,DR.DISTRIBUTOR_NAME INTO ##T_HEADER_PO_" & Me.ComputerName & " FROM ORDR_PURCHASE_ORDER PO INNER JOIN DIST_DISTRIBUTOR DR " & vbCrLf & _
                         " ON PO.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID LEFT OUTER JOIN PROJ_PROJECT P ON PO.PROJ_REF_NO = P.PROJ_REF_NO WHERE PO.PO_REF_DATE >= @FROM_DATE ;" & vbCrLf & _
-                        " CREATE CLUSTERED INDEX IX_T_HEADER_PO_" & Me.ComputerName & " ON ##T_HEADER_PO_" & Me.ComputerName & "(PO_REF_NO);"
+                        " --CREATE CLUSTERED INDEX IX_T_HEADER_PO_" & Me.ComputerName & " ON ##T_HEADER_PO_" & Me.ComputerName & "(PO_REF_NO);"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If
@@ -325,7 +325,7 @@ Namespace OrderAcceptance
                 " LEFT OUTER JOIN PRODUCT_CLASS CLS ON (CLS.BRAND_ID = BR.BRAND_ID AND CLS.INACTIVE = 0) " & vbCrLf & _
                 " LEFT OUTER JOIN PLANTATION PL ON PL.PLANTATION_ID = OPB.PLANTATION_ID " & vbCrLf & _
                 " WHERE PO.PO_REF_DATE >= @FROM_DATE AND PO.PO_REF_DATE <= @UNTIL_DATE ; " & vbCrLf & _
-                " CREATE NONCLUSTERED INDEX IX_T_PO_DETAIL_" & Me.ComputerName & " ON ##T_PO_DETAIL_" & Me.ComputerName & "(PO_REF_NO,PO_BRANDPACK_ID) ;"
+                " --CREATE NONCLUSTERED INDEX IX_T_PO_DETAIL_" & Me.ComputerName & " ON ##T_PO_DETAIL_" & Me.ComputerName & "(PO_REF_NO,PO_BRANDPACK_ID) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
                 '-----------------------------------------------------------------------------------------------------------------------
 
@@ -341,7 +341,7 @@ Namespace OrderAcceptance
                         "                  )OA " & vbCrLf & _
                         " ON OA.PO_REF_NO = PO.PO_REF_NO AND OA.PO_BRANDPACK_ID = OPB.PO_BRANDPACK_ID " & vbCrLf & _
                         " WHERE PO.PO_REF_DATE >= @FROM_DATE  ;" & vbCrLf & _
-                        " CREATE NONCLUSTERED INDEX IX_T_R_OA_BrandPack_" & Me.ComputerName & " ON ##T_R_OA_BrandPack_" & Me.ComputerName & "(PO_REF_NO,OA_BRANDPACK_ID,PO_BRANDPACK_ID) ;"
+                        " --CREATE NONCLUSTERED INDEX IX_T_R_OA_BrandPack_" & Me.ComputerName & " ON ##T_R_OA_BrandPack_" & Me.ComputerName & "(PO_REF_NO,OA_BRANDPACK_ID,PO_BRANDPACK_ID) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
                 '----------------------------------------------------------------------------------------------
 
@@ -359,7 +359,7 @@ Namespace OrderAcceptance
                         " ON GD.GON_HEADER_ID = GH.GON_HEADER_ID LEFT OUTER JOIN GON_RECEIVED_BACK GR ON GR.GRB_ID = GH.GON_HEADER_ID WHERE GH.GON_DATE >= @FROM_DATE GROUP BY GD.SPPB_BRANDPACK_ID)GON " & vbCrLf & _
                         " ON GON.SPPB_BRANDPACK_ID = SB1.SPPB_BRANDPACK_ID  " & vbCrLf & _
                         " WHERE SH.SPPB_DATE >= @FROM_DATE AND SH.SPPB_DATE <= @UNTIL_DATE ;" & vbCrLf & _
-                        " CREATE NONCLUSTERED INDEX IX_T_R_SPPB_" & Me.ComputerName & " ON ##T_R_SPPB_" & Me.ComputerName & "(OA_BRANDPACK_ID,SPPB_DATE) ;"
+                        " --CREATE NONCLUSTERED INDEX IX_T_R_SPPB_" & Me.ComputerName & " ON ##T_R_SPPB_" & Me.ComputerName & "(OA_BRANDPACK_ID,SPPB_DATE) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
 
                 '========================SHIP TO MANAGER AND DISTRIBUTOR==========================================
@@ -370,7 +370,7 @@ Namespace OrderAcceptance
                          " INNER JOIN TERRITORY TERR ON TERR.TERRITORY_ID = ST.TERRITORY_ID INNER JOIN TERRITORY_MANAGER TM ON ST.TM_ID = TM.TM_ID " & vbCrLf & _
                          " INNER JOIN ORDR_ORDER_ACCEPTANCE OOA ON OST.OA_ID = OOA.OA_ID INNER JOIN ORDR_PURCHASE_ORDER PO ON PO.PO_REF_NO = OOA.PO_REF_NO INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TERR.REGIONAL_ID " & vbCrLf & _
                          " WHERE PO.PO_REF_DATE >= @FROM_DATE ;" & vbCrLf & _
-                         " CREATE NONCLUSTERED INDEX IX_T_R_OA_SHIP_TO_" & Me.ComputerName & " ON ##T_R_OA_SHIP_TO_" & Me.ComputerName & "(OA_ID) ;"
+                         " --CREATE NONCLUSTERED INDEX IX_T_R_OA_SHIP_TO_" & Me.ComputerName & " ON ##T_R_OA_SHIP_TO_" & Me.ComputerName & "(OA_ID) ;"
                 Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
             End If
 
@@ -430,7 +430,7 @@ Namespace OrderAcceptance
                               " LEFT OUTER JOIN ##T_R_OA_BrandPack_" & Me.ComputerName & " OA ON OA.PO_BRANDPACK_ID = PB.PO_BRANDPACK_ID AND OA.PO_REF_NO = PO.PO_REF_NO " & vbCrLf & _
                               " LEFT OUTER JOIN ##T_R_OA_SHIP_TO_" & Me.ComputerName & " ST ON ST.OA_ID = OA.OA_ID " & vbCrLf & _
                               " LEFT OUTER JOIN ##T_R_SPPB_" & Me.ComputerName & " SB ON SB.OA_BRANDPACK_ID = OA.OA_BRANDPACK_ID " & vbCrLf & _
-                              " CREATE CLUSTERED INDEX IX_T_F_R_SPPB_" & Me.ComputerName & " ON ##T_F_R_SPPB_" & Me.ComputerName & "(SPPB_BRANDPACK_ID,SPPB_DATE,SPPB_NO) ;"
+                              " --CREATE CLUSTERED INDEX IX_T_F_R_SPPB_" & Me.ComputerName & " ON ##T_F_R_SPPB_" & Me.ComputerName & "(SPPB_BRANDPACK_ID,SPPB_DATE,SPPB_NO) ;"
 
                     Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                     Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
@@ -454,8 +454,10 @@ Namespace OrderAcceptance
                 Query = "SET NOCOUNT ON; SET ARITHABORT OFF; SET ANSI_WARNINGS OFF ; " & vbCrLf & _
                          "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_F_R_SPPB_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
                          " BEGIN " & vbCrLf & _
-                        " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.SPPB_DATE,TFR.CREATE_DATE,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE,GH.GON_NO,TFR.BRANDPACK_ID,TFR.BRANDPACK_NAME,GH.GON_DATE, E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY, " & vbCrLf & _
-                        " (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * PO_ORIGINAL_QTY AS SALES_QTY,GD.IsOpen," & vbCrLf & _
+                        " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.SPPB_DATE,TFR.CREATE_DATE,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE,GH.GON_NO,TFR.BRANDPACK_ID,TFR.BRANDPACK_NAME,GH.GON_DATE," & vbCrLf & _
+                        " E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END, " & vbCrLf & _
+                        " GT.GT_ID,GA.GON_ID_AREA,GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY, " & vbCrLf & _
+                        " (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * PO_ORIGINAL_QTY AS SALES_QTY,GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsOpen,GH.WARHOUSE,GH.POLICE_NO_TRANS,GH.DRIVER_TRANS," & vbCrLf & _
                         " IsCompleted = CONVERT(BIT,(CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN 1 ELSE 0 END))," & vbCrLf & _
                         " GRB.RETURNED_GON_DATE,GAP = CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN (DATEDIFF(DAY,GH.GON_DATE,GRB.RETURNED_GON_DATE)) ELSE NULL END, GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem " & vbCrLf & _
                         " FROM TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR INNER JOIN GON_HEADER GH ON GH.SPPB_NO = TFR.SPPB_NO INNER JOIN GON_DETAIL GD ON GH.GON_HEADER_ID = GD.GON_HEADER_ID AND GD.SPPB_BRANDPACK_ID = TFR.SPPB_BRANDPACK_ID " & vbCrLf & _
@@ -474,6 +476,86 @@ Namespace OrderAcceptance
             End Try
             Return DS
         End Function
+        Public Function getDTSPPBGON(ByVal MasterCategory As String, ByVal CustomCategory As String, ByVal PONumber As String, ByVal SPPBNO As Object, ByVal GONNUmber As Object, ByVal FromDate As Object, ByVal UntilDate As Object, ByVal MustReloadData As Boolean) As DataTable
+            ''BUAT TABLE Temporary untuk SPPB dan GON
+            Try
+                'untuk category custom
+                ''master temporary data hanya ship-to manager
+                Select Case MasterCategory
+                    Case "ByGON", "BySPPB"
+                        If MustReloadData Then
+                            Me.CreateTempTableByMasterCategory(Convert.ToDateTime(FromDate), Convert.ToDateTime(UntilDate), MasterCategory)
+                        End If
+                    Case "ByCustom"
+                        Dim QueryCriteria As String = ""
+                        Select Case CustomCategory
+                            Case "PO_NUMBER"
+                                If MustReloadData Then
+                                    QueryCriteria = " WHERE PO.PO_REF_NO LIKE '%'+@PO_REF_NO+'%' " & vbCrLf
+                                    Me.CreateTempTableByCustomCategory(QueryCriteria, "@PO_REF_NO", PONumber)
+                                End If
+                            Case "SPPB_NUMBER"
+                                If MustReloadData Then
+                                    QueryCriteria = " WHERE PO.PO_REF_NO = ANY(SELECT SH.PO_REF_NO FROM SPPB_HEADER SH WHERE EXISTS(SELECT SPPB_BRANDPACK_ID FROM SPPB_BRANDPACK WHERE SPPB_NO = SH.SPPB_NO) AND SH.SPPB_NO LIKE '%'+@SPPB_NO+'%') "
+                                    Me.CreateTempTableByCustomCategory(QueryCriteria, "@SPPB_NO", SPPBNO)
+                                End If
+                            Case "GON_NUMBER"
+                                If MustReloadData Then
+                                    QueryCriteria = " WHERE PO.PO_REF_NO = ANY(SELECT SH.PO_REF_NO FROM SPPB_HEADER SH INNER JOIN GON_HEADER GH ON GH.SPPB_NO = SH.SPPB_NO WHERE EXISTS(SELECT SPPB_BRANDPACK_ID FROM SPPB_BRANDPACK WHERE SPPB_NO = SH.SPPB_NO) AND GH.GON_NO LIKE '%'+@GON_NO+'%') "
+                                    Me.CreateTempTableByCustomCategory(QueryCriteria, "@GON_NO", GONNUmber)
+                                End If
+                        End Select
+                End Select
+
+                ''CREATE QUERY SPPB
+
+                '======================   QUERY REPORT SPPB   ===================================================================
+                If MustReloadData Then
+                    Query = "SET NOCOUNT ON ;" & vbCrLf & _
+                              "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_F_R_SPPB_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                              "BEGIN DROP TABLE " & " TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " ; END " & vbCrLf & _
+                              "SELECT PO.DISTRIBUTOR_ID,PO.DISTRIBUTOR_NAME,PO.PO_REF_NO,PO.PO_REF_DATE," & vbCrLf & _
+                              " PO_CATEGORY = CASE WHEN (PB.PLANTATION_ID IS NOT NULL) THEN 'PLANTATION' " & vbCrLf & _
+                              "                WHEN (PB.PROJ_BRANDPACK_ID IS NOT NULL) THEN 'PROJECT' ELSE 'FREE MARKET' END,PB.CLASS_NAME,PB.BRAND_NAME,PB.BRANDPACK_ID,PB.BRANDPACK_NAME," & vbCrLf & _
+                              " PB.PO_ORIGINAL_QTY,PB.PRICE,ST.REGIONAL_AREA AS SHIP_TO_REGIONAL,ST.TERRITORY_AREA AS SHIP_TO_TERRITORY,ST.MANAGER AS SALES_PERSON,PB.DESCRIPTIONS2 AS CSE_REMARK,OA.OA_BRANDPACK_ID,SB.SPPB_BRANDPACK_ID,SB.SPPB_NO,SB.SPPB_DATE,SB.CREATE_DATE,SB.SPPB_QTY,SB.BALANCE,SB.STATUS,SB.TOTAL_GON,SB.TOTAL_GON_QTY,SB.LAST_GON_DATE,SB.LAST_GON_RETDATE,SB.CREATE_BY,SB.REMARK,SB.IsUpdatedBySystem " & vbCrLf & _
+                              " INTO TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " FROM TEMPDB..##T_HEADER_PO_" & Me.ComputerName & " PO INNER JOIN ##T_PO_DETAIL_" & Me.ComputerName & " PB ON PO.PO_REF_NO = PB.PO_REF_NO " & vbCrLf & _
+                              " LEFT OUTER JOIN ##T_R_OA_BrandPack_" & Me.ComputerName & " OA ON OA.PO_BRANDPACK_ID = PB.PO_BRANDPACK_ID AND OA.PO_REF_NO = PO.PO_REF_NO " & vbCrLf & _
+                              " LEFT OUTER JOIN ##T_R_OA_SHIP_TO_" & Me.ComputerName & " ST ON ST.OA_ID = OA.OA_ID " & vbCrLf & _
+                              " LEFT OUTER JOIN ##T_R_SPPB_" & Me.ComputerName & " SB ON SB.OA_BRANDPACK_ID = OA.OA_BRANDPACK_ID " & vbCrLf & _
+                              " --CREATE CLUSTERED INDEX IX_T_F_R_SPPB_" & Me.ComputerName & " ON ##T_F_R_SPPB_" & Me.ComputerName & "(SPPB_BRANDPACK_ID,SPPB_DATE,SPPB_NO) ;"
+
+                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                    Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                End If
+
+
+                'CREATE table GON
+                Dim tblGON As New DataTable("GON_DETAIL_INFO")
+                tblGON.Clear()
+                Query = "SET NOCOUNT ON; SET ARITHABORT OFF; SET ANSI_WARNINGS OFF ; " & vbCrLf & _
+                         "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_F_R_SPPB_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                         " BEGIN " & vbCrLf & _
+                        " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.SPPB_DATE,TFR.CREATE_DATE,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE,GH.GON_NO,TFR.BRANDPACK_ID,TFR.BRANDPACK_NAME,GH.GON_DATE," & vbCrLf & _
+                        " E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END, " & vbCrLf & _
+                        " GA.AREA,GT.TRANSPORTER_NAME,GD.GON_QTY, " & vbCrLf & _
+                        " (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * PO_ORIGINAL_QTY AS SALES_QTY,GD.BatchNo,GH.WARHOUSE,GH.POLICE_NO_TRANS,GH.DRIVER_TRANS," & vbCrLf & _
+                        " GD.CreatedBy,GD.CreatedDate " & vbCrLf & _
+                        " FROM TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR INNER JOIN GON_HEADER GH ON GH.SPPB_NO = TFR.SPPB_NO INNER JOIN GON_DETAIL GD ON GH.GON_HEADER_ID = GD.GON_HEADER_ID AND GD.SPPB_BRANDPACK_ID = TFR.SPPB_BRANDPACK_ID " & vbCrLf & _
+                        " LEFT OUTER JOIN GON_AREA GA ON GA.GON_ID_AREA = GH.GON_ID_AREA " & vbCrLf & _
+                        " LEFT OUTER JOIN GON_TRANSPORTER GT ON GT.GT_ID = GH.GT_ID " & vbCrLf & _
+                        " END "
+                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.setDataAdapter(Me.SqlCom).Fill(tblGON) : Me.ClearCommandParameters()
+                'don't close the connection until form is closed also
+                Return tblGON
+
+            Catch ex As Exception
+                Me.OpenConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
+
         Public Function getWeelySalesReportByClass(ByVal IsForEntrySPPB As Boolean) As DataTable
             Try
                 Query = "SET NOCOUNT ON ;" & vbCrLf & _
@@ -490,9 +572,9 @@ Namespace OrderAcceptance
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
                     " IF OBJECT_ID('TEMPDB..##T_GH_SPPB_" & Me.ComputerName & "') IS NOT NULL " & vbCrLf & _
                     " BEGIN DROP TABLE TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " ; END " & vbCrLf & _
-                    " SELECT GH1.GON_HEADER_ID,GH1.GON_ID_AREA,GH1.GT_ID,GH1.SPPB_NO,GH1.GON_NO,GH1.GON_DATE, GD.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY,GD.IsOpen,GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem INTO TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " FROM GON_HEADER GH1 INNER JOIN GON_DETAIL GD ON GD.GON_HEADER_ID = GH1.GON_HEADER_ID " & vbCrLf & _
+                    " SELECT GH1.GON_HEADER_ID,GH1.GON_ID_AREA,GH1.GT_ID,GH1.SPPB_NO,GH1.GON_NO,GH1.GON_DATE,GH1.WARHOUSE,GH1.POLICE_NO_TRANS,GH1.DRIVER_TRANS,GD.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY,GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsOpen,GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem INTO TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " FROM GON_HEADER GH1 INNER JOIN GON_DETAIL GD ON GD.GON_HEADER_ID = GH1.GON_HEADER_ID " & vbCrLf & _
                     " INNER JOIN TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR ON (TFR.SPPB_BRANDPACK_ID = GD.SPPB_BRANDPACK_ID AND GH1.SPPB_NO = TFR.SPPB_NO);" & vbCrLf & _
-                    " CREATE CLUSTERED INDEX IX_T_GH_SPPB_" & Me.ComputerName & " ON tempdb..##T_GH_SPPB_" & Me.ComputerName & "(SPPB_NO,SPPB_BRANDPACK_ID) ;"
+                    " --CREATE CLUSTERED INDEX IX_T_GH_SPPB_" & Me.ComputerName & " ON tempdb..##T_GH_SPPB_" & Me.ComputerName & "(SPPB_NO,SPPB_BRANDPACK_ID) ;"
                     ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                     AddParameter("@stmt", SqlDbType.NVarChar, Query)
                     SqlCom.ExecuteScalar() : ClearCommandParameters()
@@ -501,8 +583,8 @@ Namespace OrderAcceptance
                               "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_F_R_SPPB_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
                               " BEGIN " & vbCrLf & _
                              " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.BRANDPACK_ID,TFR.CLASS_NAME,TFR.BRAND_NAME,TFR.BRANDPACK_NAME,TFR.PO_ORIGINAL_QTY,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.SPPB_DATE,TFR.CREATE_DATE,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE, " & vbCrLf & _
-                             " GH.GON_NO,GH.GON_DATE, E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GH.GON_DETAIL_ID,GH.GON_QTY, " & vbCrLf & _
-                             "  SALES_QTY = CASE WHEN GH.GON_QTY IS NULL THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GH.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END, GH.IsOpen," & vbCrLf & _
+                             " GH.GON_NO,GH.GON_DATE, E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END,GT.GT_ID,GA.GON_ID_AREA, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GH.GON_DETAIL_ID,GH.GON_QTY, " & vbCrLf & _
+                             "  SALES_QTY = CASE WHEN GH.GON_QTY IS NULL THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GH.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END,GH.BatchNo,GH.UNIT1,GH.VOL1,GH.UNIT2,GH.VOL2,GH.IsOpen,GH.WARHOUSE,GH.POLICE_NO_TRANS,GH.DRIVER_TRANS," & vbCrLf & _
                              " IsCompleted = CONVERT(BIT,(CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN 1 ELSE 0 END))," & vbCrLf & _
                              " GRB.RETURNED_GON_DATE,GAP = CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN (DATEDIFF(DAY,GH.GON_DATE,GRB.RETURNED_GON_DATE)) ELSE NULL END, GH.CreatedBy,GH.CreatedDate,GH.IsUpdatedBySystem " & vbCrLf & _
                              " INTO TEMPDB..##T_SALES_REPORT_" & Me.ComputerName & " FROM TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR LEFT OUTER JOIN TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " GH ON (GH.SPPB_NO = TFR.SPPB_NO AND GH.SPPB_BRANDPACK_ID = TFR.SPPB_BRANDPACK_ID) " & vbCrLf & _
@@ -514,8 +596,9 @@ Namespace OrderAcceptance
                     Query = "SET NOCOUNT ON; SET ARITHABORT OFF; SET ANSI_WARNINGS OFF ; " & vbCrLf & _
                              "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_F_R_SPPB_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
                              " BEGIN " & vbCrLf & _
-                            " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.BRANDPACK_NAME,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE,GH.GON_NO,TFR.BRANDPACK_ID,GH.GON_DATE, E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY, " & vbCrLf & _
-                            " SALES_QTY = CASE WHEN (GD.GON_QTY IS NULL) THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END ,GD.IsOpen," & vbCrLf & _
+                            " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.BRANDPACK_NAME,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE,GH.GON_NO,TFR.BRANDPACK_ID,GH.GON_DATE, " & vbCrLf & _
+                            " E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END,GT.GT_ID,GA.GON_ID_AREA, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY," & vbCrLf & _
+                            " SALES_QTY = CASE WHEN (GD.GON_QTY IS NULL) THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END, GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsOpen,GH.WARHOUSE,GH.POLICE_NO_TRANS,GH.DRIVER_TRANS," & vbCrLf & _
                             " IsCompleted = CONVERT(BIT,(CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN 1 ELSE 0 END))," & vbCrLf & _
                             " GRB.RETURNED_GON_DATE,GAP = CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN (DATEDIFF(DAY,GH.GON_DATE,GRB.RETURNED_GON_DATE)) ELSE NULL END, GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem " & vbCrLf & _
                             " INTO TEMPDB..##T_SALES_REPORT_" & Me.ComputerName & "  FROM TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR INNER JOIN GON_HEADER GH ON GH.SPPB_NO = TFR.SPPB_NO INNER JOIN GON_DETAIL GD ON GH.GON_HEADER_ID = GD.GON_HEADER_ID AND GD.SPPB_BRANDPACK_ID = TFR.SPPB_BRANDPACK_ID " & vbCrLf & _
@@ -574,9 +657,9 @@ Namespace OrderAcceptance
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
                     " IF OBJECT_ID('TEMPDB..##T_GH_SPPB_" & Me.ComputerName & "') IS NOT NULL " & vbCrLf & _
                     " BEGIN DROP TABLE TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " END " & vbCrLf & _
-                    " SELECT GH1.GON_HEADER_ID,GH1.GON_ID_AREA,GH1.GT_ID,GH1.SPPB_NO,GH1.GON_NO,GH1.GON_DATE, GD.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY,GD.IsOpen,GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem INTO TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " FROM GON_HEADER GH1 INNER JOIN GON_DETAIL GD ON GD.GON_HEADER_ID = GH1.GON_HEADER_ID " & vbCrLf & _
+                    " SELECT GH1.GON_HEADER_ID,GH1.GON_ID_AREA,GH1.GT_ID,GH1.SPPB_NO,GH1.GON_NO,GH1.GON_DATE,GH1.WARHOUSE,GH1.POLICE_NO_TRANS,GH1.DRIVER_TRANS, GD.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY,GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsOpen,GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem INTO TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " FROM GON_HEADER GH1 INNER JOIN GON_DETAIL GD ON GD.GON_HEADER_ID = GH1.GON_HEADER_ID " & vbCrLf & _
                     " INNER JOIN TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR ON (TFR.SPPB_BRANDPACK_ID = GD.SPPB_BRANDPACK_ID AND GH1.SPPB_NO = TFR.SPPB_NO);" & vbCrLf & _
-                    " CREATE CLUSTERED INDEX IX_T_GH_SPPB_" & Me.ComputerName & " ON tempdb..##T_GH_SPPB_" & Me.ComputerName & "(SPPB_NO,SPPB_BRANDPACK_ID) ;"
+                    " --CREATE CLUSTERED INDEX IX_T_GH_SPPB_" & Me.ComputerName & " ON tempdb..##T_GH_SPPB_" & Me.ComputerName & "(SPPB_NO,SPPB_BRANDPACK_ID) ;"
                     ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                     AddParameter("@stmt", SqlDbType.NVarChar, Query)
                     SqlCom.ExecuteScalar() : ClearCommandParameters()
@@ -585,8 +668,8 @@ Namespace OrderAcceptance
                               "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_F_R_SPPB_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
                               " BEGIN " & vbCrLf & _
                              " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.BRANDPACK_ID,TFR.CLASS_NAME,TFR.BRAND_NAME,TFR.BRANDPACK_NAME,TFR.PO_ORIGINAL_QTY,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.SPPB_DATE,TFR.CREATE_DATE,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE, " & vbCrLf & _
-                             " GH.GON_NO,GH.GON_DATE, E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GH.GON_DETAIL_ID,GH.GON_QTY, " & vbCrLf & _
-                             "  SALES_QTY = CASE WHEN GH.GON_QTY IS NULL THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GH.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END, GH.IsOpen," & vbCrLf & _
+                             " GH.GON_NO,GH.GON_DATE, E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END,GT.GT_ID,GA.GON_ID_AREA, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GH.GON_DETAIL_ID,GH.GON_QTY, " & vbCrLf & _
+                             " SALES_QTY = CASE WHEN GH.GON_QTY IS NULL THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GH.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END,GH.BatchNo,GH.UNIT1,GH.VOL1,GH.UNIT2,GH.VOL2,GH.IsOpen,GH.WARHOUSE,GH.POLICE_NO_TRANS,GH.DRIVER_TRANS," & vbCrLf & _
                              " TOTAL_SALES_VALUE = (CASE WHEN (GH.GON_QTY IS NULL) THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GH.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END) * TFR.PRICE,IsCompleted = CONVERT(BIT,(CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN 1 ELSE 0 END))," & vbCrLf & _
                              " GRB.RETURNED_GON_DATE,GAP = CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN (DATEDIFF(DAY,GH.GON_DATE,GRB.RETURNED_GON_DATE)) ELSE NULL END, GH.CreatedBy,GH.CreatedDate,GH.IsUpdatedBySystem " & vbCrLf & _
                              " FROM TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR LEFT OUTER JOIN TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " GH ON (GH.SPPB_NO = TFR.SPPB_NO AND GH.SPPB_BRANDPACK_ID = TFR.SPPB_BRANDPACK_ID) " & vbCrLf & _
@@ -598,8 +681,9 @@ Namespace OrderAcceptance
                     Query = "SET NOCOUNT ON; SET ARITHABORT OFF; SET ANSI_WARNINGS OFF ; " & vbCrLf & _
                              "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_F_R_SPPB_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
                              " BEGIN " & vbCrLf & _
-                            " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.BRANDPACK_NAME,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE,GH.GON_NO,TFR.BRANDPACK_ID,GH.GON_DATE, E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY, " & vbCrLf & _
-                            " SALES_QTY = CASE WHEN (GD.GON_QTY IS NULL) THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END,GD.IsOpen," & vbCrLf & _
+                            " SELECT TFR.DISTRIBUTOR_NAME,GH.GON_HEADER_ID,TFR.PO_CATEGORY,TFR.PO_REF_NO,TFR.PO_REF_DATE,TFR.SHIP_TO_REGIONAL,TFR.SHIP_TO_TERRITORY,TFR.BRANDPACK_NAME,TFR.PRICE,TFR.CSE_REMARK,TFR.SPPB_NO,TFR.STATUS,TFR.SPPB_QTY,TFR.BALANCE,GH.GON_NO,TFR.BRANDPACK_ID," & vbCrLf & _
+                            " E_T_A = CASE WHEN GA.DAYS_RECEIPT IS NULL THEN NULL ELSE DATEADD(DAY,(1 + GA.DAYS_RECEIPT),GH.GON_DATE) END,GT.GT_ID,GA.GON_ID_AREA, GA.AREA,GT.TRANSPORTER_NAME,TFR.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY,GH.GON_DATE,GH.WARHOUSE,GH.POLICE_NO_TRANS,GH.DRIVER_TRANS, " & vbCrLf & _
+                            " SALES_QTY = CASE WHEN (GD.GON_QTY IS NULL) THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END,GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsOpen," & vbCrLf & _
                             " TOTAL_SALES_VALUE = (CASE WHEN (GD.GON_QTY IS NULL) THEN TFR.PO_ORIGINAL_QTY ELSE (ISNULL(GD.GON_QTY,0)/ISNULL(TFR.SPPB_QTY,0)) * TFR.PO_ORIGINAL_QTY END) * TFR.PRICE,IsCompleted = CONVERT(BIT,(CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN 1 ELSE 0 END))," & vbCrLf & _
                             " GRB.RETURNED_GON_DATE,GAP = CASE WHEN (GRB.GRB_ID IS NOT NULL) THEN (DATEDIFF(DAY,GH.GON_DATE,GRB.RETURNED_GON_DATE)) ELSE NULL END, GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem " & vbCrLf & _
                             " FROM TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR INNER JOIN GON_HEADER GH ON GH.SPPB_NO = TFR.SPPB_NO INNER JOIN GON_DETAIL GD ON GH.GON_HEADER_ID = GD.GON_HEADER_ID AND GD.SPPB_BRANDPACK_ID = TFR.SPPB_BRANDPACK_ID " & vbCrLf & _
@@ -609,7 +693,6 @@ Namespace OrderAcceptance
                             " END "
                     'don't close the connection until form is closed also
                 End If
-
                 CreateCommandSql("sp_executesql", "")
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Me.setDataAdapter(Me.SqlCom).Fill(tblGon) : Me.ClearCommandParameters()

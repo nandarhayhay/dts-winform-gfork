@@ -1,4 +1,5 @@
 Imports NufarmBussinesRules.common.Helper
+Imports System.Configuration
 Public Class SPPB
 
 #Region " Deklarasi "
@@ -13,6 +14,8 @@ Public Class SPPB
     Friend CMain As Main = Nothing
     Friend MustReloadData As Boolean = False
     Private m_clsSPPBGONEntry As NufarmBussinesRules.OrderAcceptance.SPPBEntryGON = Nothing
+    Private IsHOUser As Boolean = NufarmBussinesRules.SharedClass.IsUserHO
+    Private IsSystemAdmin = CBool(ConfigurationManager.AppSettings("SysA"))
 
     Private ReadOnly Property clsSPPBGONEntry() As NufarmBussinesRules.OrderAcceptance.SPPBEntryGON
         Get
@@ -57,7 +60,9 @@ Public Class SPPB
             If Not Me.btnNewSPPB.Visible And Not Me.btnGonAfterSignedByDistributor.Visible Then
                 Me.btnEditSPPB.Visible = False : Me.btnAddNew.Visible = False
             End If
+
         End If
+
     End Sub
     Private Sub AddControl(ByVal UControl As UserControl)
         For Each ctrl As Control In Me.xpgData.Controls
@@ -318,6 +323,21 @@ Public Class SPPB
         colIsOpen.AllowDBNull = False
         colIsOpen.DefaultValue = False
 
+        Dim colBatchNo As New DataColumn("BatchNo", Type.GetType("System.String"))
+        colBatchNo.AllowDBNull = True
+        colBatchNo.DefaultValue = DBNull.Value
+
+        Dim colUnit1 As New DataColumn("UNIT1", Type.GetType("System.String"))
+        'colUnit1.AllowDBNull = False
+
+        Dim colVO11 As New DataColumn("VOL1", Type.GetType("System.String"))
+        'colVO11.AllowDBNull = False
+
+        Dim colUnit2 As New DataColumn("UNIT2", Type.GetType("System.String"))
+        'colUnit2.AllowDBNull = False
+        Dim colVO12 As New DataColumn("VOL2", Type.GetType("System.String"))
+        'colVO12.AllowDBNull = False
+
         Dim colIsCompleted As New DataColumn("IsCompleted", Type.GetType("System.Boolean"))
         colIsCompleted.AllowDBNull = False
         colIsCompleted.DefaultValue = False
@@ -335,7 +355,7 @@ Public Class SPPB
         Dim ColModifiedBy As New DataColumn("ModifiedBy", Type.GetType("System.String"))
         Dim colModifiedDate As New DataColumn("ModifiedDate", Type.GetType("System.DateTime"))
         tblGON.Columns.AddRange(New DataColumn() {colGDID, colGONNO, colSPPBBrandpackID, colBRANDPACKID, colBrandPackName, colGOnQty, _
-        colIsOpen, colIsCompleted, colIsUpdatedBySystem, colCreatedBy, colCreatedDate, ColModifiedBy, colModifiedDate})
+        colIsOpen, colBatchNo, colUnit1, colVO11, colUnit2, colVO12, colIsCompleted, colIsUpdatedBySystem, colCreatedBy, colCreatedDate, ColModifiedBy, colModifiedDate})
 
         Dim Key(1) As DataColumn
         Key(0) = colGDID
@@ -385,25 +405,6 @@ Public Class SPPB
     End Sub
   
     Private Sub EditSPPB()
-        'Dim DISTRIBUTOR_ID As Object = Me.cmbDistributor.Value
-        'Dim isRowSelected As Boolean = False
-        'biar gak pusing coding
-        'semua properti di set di parent saja 
-        'set PO_REF_nO
-        'edit SPPB hanya mengedit tanggal tanggal SPPB tapi bila GON belum ada
-        ' min = PO_date
-        'btnAddnew hidupkan bila mungkin akan menambah gon
-        'Set DS
-        'bind data di form load
-
-        'save mode
-        'frmParent
-        'DataToEdit As EditData = EditData.None ''to define what data to edit
-        'GON_NO
-        'SPPB_NO
-        'OSPPBHeader As New Nufarm.Domain.SPPBHeader()
-        'OGONHeader As New Nufarm.Domain.GONHeader()
-        '    Friend Property tblMasterGON() As DataTable
         If IsNothing(Me.frmManager) Then : Return : End If
         If IsNothing(Me.GridEX1) Then : Return : End If
         If IsNothing(Me.GridEX1.DataSource) Then : Return : End If
@@ -458,9 +459,9 @@ Public Class SPPB
                     .txtGONNO.Text = .OGONHeader.GON_NO
                     .dtPicGONDate.Value = .OGONHeader.GON_DATE
                     .cmbStatusSPPB.Text = status
-                    .txtRemark.Text = .OGONHeader.DescriptionApp
-
-                    'getDVtransporter by GON_NO   
+                    .txtDriverTrans.Text = .OGONHeader.DriverTrans
+                    .txtPolice_no_Trans.Text = .OGONHeader.PoliceNoTrans
+                    '.DVMConversiProduct = Me.clsSPPBGONEntry.getProdConvertion(SaveMode.Update, True)
                     Dim TransporterName As Object = Nothing, GONArea As Object = Nothing, ListSPPBBrandPack As New List(Of String)
                     Dim DVGONManager As DataView = Nothing
                     Dim UCSPPBManager As SPPBManager = CType(Me.frmManager, SPPBManager)
@@ -469,14 +470,13 @@ Public Class SPPB
                         Dim OrowFilter As String = DVGONManager.RowFilter
                         DVGONManager.RowFilter = ""
                         Dim DVDummy As DataView = DVGONManager.ToTable().Copy().DefaultView()
-
                         DVDummy.Sort = "GON_NO DESC"
                         Dim Index As String = DVDummy.Find(.GON_NO)
                         If Index <> -1 Then
                             TransporterName = IIf((Not IsNothing(DVDummy(Index)("TRANSPORTER_NAME")) And Not IsDBNull(DVDummy(Index)("TRANSPORTER_NAME"))), DVDummy(Index)("TRANSPORTER_NAME").ToString(), "")
                             GONArea = IIf((Not IsNothing(DVDummy(Index)("AREA")) And Not IsDBNull(DVDummy(Index)("AREA"))), DVDummy(Index)("AREA").ToString(), "")
                         End If
-                        DVDummy.RowFilter = "GON_NO = '" & .GON_NO & "'"
+                        DVDummy.RowFilter = "SPPB_NO = '" & .SPPB_NO & "'"
                         'tblGOn.Rows.Clear() : tblGOn.AcceptChanges()
                         tblGOn = Me.CreateOrReCreateTblGON()
                         For i As Integer = 0 To DVDummy.Count - 1
@@ -489,6 +489,11 @@ Public Class SPPB
                             drv("BRANDPACK_ID") = DVDummy(i)("BRANDPACK_ID")
                             drv("BRANDPACK_NAME") = DVDummy(i)("BRANDPACK_NAME")
                             drv("GON_QTY") = DVDummy(i)("GON_QTY")
+                            drv("UNIT1") = DVDummy(i)("UNIT1")
+                            drv("VOL1") = DVDummy(i)("VOL1")
+                            drv("UNIT2") = DVDummy(i)("UNIT2")
+                            drv("VOL2") = DVDummy(i)("VOL2")
+                            drv("BatchNo") = DVDummy(i)("BatchNo")
                             drv("IsOPen") = True
                             drv("IsCompleted") = DVDummy(i)("IsCompleted")
                             drv("IsUpdatedBySystem") = False
@@ -524,7 +529,7 @@ Public Class SPPB
 
                     .DVTransporter = tblTrans.DefaultView()
                     tblArea = Me.clsSPPBGONEntry.getAreaGon(String.Empty, SaveMode.Insert, False)
-                  
+                    .cmdWarhouse.SelectedValue = .OGONHeader.WarhouseCode
                     .DVArea = tblArea.DefaultView()
                     ''get checkedProduct
                     .DVProduct = Me.clsSPPBGONEntry.GetProduct(.SPPB_NO, Nothing, tblSPPBrandPack, False)
@@ -537,18 +542,22 @@ Public Class SPPB
                     .dtPicGONDate.MinDate = .OSPPBHeader.SPPBDate
                     .TransporterName = IIf((Not IsNothing(TransporterName)), TransporterName.ToString(), "")
                     .AreaName = IIf((Not IsNothing(GONArea)), GONArea.ToString(), "")
+                    .mcbTransporter.Value = .OGONHeader.GT_ID
+                    .mcbGonArea.Value = .OGONHeader.GON_ID_AREA
                     .grdSPPB.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
                     .grdSPPB.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
-
                     .grdGon.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
                     .grdGon.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.True
+                    '.cmdWarhouse.SelectedValue = 
                 ElseIf ListGON.Count > 1 Then
                     .txtGONNO.Text = ""
                     .dtPicGONDate.Text = ""
                     .mcbTransporter.Text = ""
                     .mcbGonArea.Text = ""
                     .cmbStatusSPPB.Text = ""
-                    .txtRemark.Text = ""
+                    '.txtRemark.Text = ""
+                    .txtPolice_no_Trans.Text = ""
+                    .txtDriverTrans.Text = ""
                     .TransporterName = ""
                     .AreaName = ""
                     .dtPicGONDate.ReadOnly = True
@@ -572,7 +581,9 @@ Public Class SPPB
                 .mcbTransporter.Text = ""
                 .mcbGonArea.Text = ""
                 .cmbStatusSPPB.Text = ""
-                .txtRemark.Text = ""
+                '.txtRemark.Text = ""
+                .txtPolice_no_Trans.Text = ""
+                .txtDriverTrans.Text = ""
                 .TransporterName = ""
                 .AreaName = ""
                 .dtPicGONDate.ReadOnly = True
@@ -595,7 +606,7 @@ Public Class SPPB
             '.lblDistributor.Text = .OSPPBHeader.d
             .lblPODate.Text = String.Format("{0:dd MMMM yyyy}", Convert.ToDateTime(.OSPPBHeader.SPPBDate))
             .lblSalesPerson.Text = Me.clsSPPBGONEntry.getSalesPerson(.PO_REF_NO, False)
-
+            .lblDistributor.Text = Me.GridEX1.GetValue("DISTRIBUTOR_NAME")
             'set txtGON if exists
             .btnAddGon.Enabled = True
 
@@ -730,16 +741,25 @@ Public Class SPPB
         Dim PONumber As String = UCSPPBManager.grdDetail.GetValue("PO_REF_NO").ToString()
         Dim SGE As New SPPBEntryGON()
         Me.MustReloadData = False
-        Dim TransporterName As Object = Nothing, GONArea As Object = Nothing, ListSPPBBrandPack As New List(Of String)
+        Dim TransID As Object = Nothing, GONIDArea As Object = Nothing, ListSPPBBrandPack As New List(Of String)
         Dim DVGONManager As DataView = Nothing
-
+        Dim SPPBBrandPackID As Object = UCSPPBManager.grdDetail.GetValue("SPPB_BRANDPACK_ID")
         With SGE
             .frmParent = Me
             .Mode = SaveMode.Update
             .DataToEdit = SPPBEntryGON.EditData.GON
             .PO_REF_NO = PONumber
             .mcbOA_REF_NO.Value = PONumber
-            .dtPicSPPBDate.Value = Convert.ToDateTime(UCSPPBManager.grdDetail.GetValue("SPPB_DATE"))
+            Dim SPPBDate As Object = Nothing
+            If UCSPPBManager.grdDetail.RootTable.Columns.Contains("SPPB_DATE") Then
+                SPPBDate = Convert.ToDateTime(UCSPPBManager.grdDetail.GetValue("SPPB_DATE"))
+            Else
+                'get sppb_date
+                Dim DVDummySBManager As DataView = CType(UCSPPBManager.grdHeader.DataSource, DataView).ToTable().Copy().DefaultView()
+                DVDummySBManager.RowFilter = "SPPB_BRANDPACK_ID ='" & SPPBBrandPackID & "'"
+                SPPBDate = Convert.ToDateTime(DVDummySBManager(0)("SPPB_DATE"))
+            End If
+            .dtPicSPPBDate.Value = SPPBDate
             .SPPB_NO = UCSPPBManager.grdDetail.GetValue("SPPB_NO").ToString()
             .txtSPPBNO.Text = .SPPB_NO
             Dim DS As New DataSet("DSSPPB_GON") : DS.Clear()
@@ -748,10 +768,10 @@ Public Class SPPB
             .dvPO = tblPO.DefaultView()
             Dim tblSPPBrandPack As DataTable = Me.clsSPPBGONEntry.getSPPBBrandPack(.SPPB_NO, .PO_REF_NO, False, False)
             Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGOnData(.SPPB_NO, False)
-            Dim ObjSPPBHeader As New NuFarm.Domain.SPPBHeader()
+            Dim ObjSPPBHeader As New Nufarm.Domain.SPPBHeader()
             With ObjSPPBHeader
-                .SPPBNO = .SPPBNO
-                .SPPBDate = Convert.ToDateTime(Me.GridEX1.GetValue("SPPB_DATE"))
+                .SPPBNO = UCSPPBManager.grdDetail.GetValue("SPPB_NO").ToString()
+                .SPPBDate = SPPBDate
                 .PONumber = PONumber
             End With
             .OSPPBHeader = ObjSPPBHeader
@@ -767,7 +787,10 @@ Public Class SPPB
             .txtGONNO.Text = .OGONHeader.GON_NO
             .dtPicGONDate.Value = .OGONHeader.GON_DATE
             .cmbStatusSPPB.Text = status
-            .txtRemark.Text = .OGONHeader.DescriptionApp
+            .txtPolice_no_Trans.Text = .OGONHeader.PoliceNoTrans
+            .txtDriverTrans.Text = .OGONHeader.DriverTrans
+            .cmdWarhouse.SelectedValue = .OGONHeader.WarhouseCode
+            '.txtRemark.Text = .OGONHeader.DescriptionApp
 
             DVGONManager = CType(UCSPPBManager.grdDetail.DataSource, DataView)
             Dim OrowFilter As String = DVGONManager.RowFilter
@@ -777,8 +800,8 @@ Public Class SPPB
             DVDummy.Sort = "GON_NO DESC"
             Dim Index As String = DVDummy.Find(.GON_NO)
             If Index <> -1 Then
-                TransporterName = IIf((Not IsNothing(DVDummy(Index)("TRANSPORTER_NAME")) And Not IsDBNull(DVDummy(Index)("TRANSPORTER_NAME"))), DVDummy(Index)("TRANSPORTER_NAME").ToString(), "")
-                GONArea = IIf((Not IsNothing(DVDummy(Index)("AREA")) And Not IsDBNull(DVDummy(Index)("AREA"))), DVDummy(Index)("AREA").ToString(), "")
+                TransID = IIf((Not IsNothing(DVDummy(Index)("GT_ID")) And Not IsDBNull(DVDummy(Index)("GT_ID"))), DVDummy(Index)("GT_ID").ToString(), "")
+                GONIDArea = IIf((Not IsNothing(DVDummy(Index)("GON_ID_AREA")) And Not IsDBNull(DVDummy(Index)("GON_ID_AREA"))), DVDummy(Index)("GON_ID_AREA").ToString(), "")
             End If
             DVDummy.RowFilter = "GON_NO = '" & .GON_NO & "'"
             'tblGOn.Rows.Clear() : tblGOn.AcceptChanges()
@@ -794,6 +817,11 @@ Public Class SPPB
                 drv("BRANDPACK_NAME") = DVDummy(i)("BRANDPACK_NAME")
                 drv("GON_QTY") = DVDummy(i)("GON_QTY")
                 drv("IsOPen") = True
+                drv("BatchNo") = IIf(DVDummy.Table.Columns.Contains("BatchNo"), DVDummy(i)("BatchNo"), "")
+                drv("UNIT1") = IIf(DVDummy.Table.Columns.Contains("UNIT1"), DVDummy(i)("UNIT1"), "")
+                drv("VOL1") = IIf(DVDummy.Table.Columns.Contains("VOL1"), DVDummy(i)("VOL1"), "")
+                drv("UNIT2") = IIf(DVDummy.Table.Columns.Contains("UNIT2"), DVDummy(i)("UNIT2"), "")
+                drv("VOL2") = IIf(DVDummy.Table.Columns.Contains("VOL2"), DVDummy(i)("VOL2"), "")
                 drv("IsCompleted") = DVDummy(i)("IsCompleted")
                 drv("IsUpdatedBySystem") = False
                 drv("CreatedBy") = DVDummy(i)("CreatedBy")
@@ -822,12 +850,11 @@ Public Class SPPB
                 DVGONManager.RowFilter = OrowFilter
             End If
 
-
             Dim tblTrans As DataTable = Nothing, tblArea As DataTable = Nothing
-            tblTrans = Me.clsSPPBGONEntry.getTransporter(String.Empty, SaveMode.Insert, False)
+            tblTrans = Me.clsSPPBGONEntry.getTransporter(String.Empty, SaveMode.Update, False)
 
             .DVTransporter = tblTrans.DefaultView()
-            tblArea = Me.clsSPPBGONEntry.getAreaGon(String.Empty, SaveMode.Insert, False)
+            tblArea = Me.clsSPPBGONEntry.getAreaGon(String.Empty, SaveMode.Update, False)
 
             .DVArea = tblArea.DefaultView()
             ''get checkedProduct
@@ -839,19 +866,33 @@ Public Class SPPB
             'get min and max GON_Date
             .dtPicGONDate.MaxDate = .OGONHeader.GON_DATE
             .dtPicGONDate.MinDate = .OSPPBHeader.SPPBDate
-            .TransporterName = IIf((Not IsNothing(TransporterName)), TransporterName.ToString(), "")
-            .AreaName = IIf((Not IsNothing(GONArea)), GONArea.ToString(), "")
+            .TransporterName = IIf((Not IsNothing(TransID)), TransID.ToString(), "")
+            .AreaName = IIf((Not IsNothing(GONIDArea)), GONIDArea.ToString(), "")
             .grdSPPB.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
             .grdSPPB.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
 
             .grdGon.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
             .grdGon.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.True
-            '.lblDistributor.Text = .PO_REF_NO
             .lblPODate.Text = String.Format("{0:dd MMMM yyyy}", Convert.ToDateTime(.OSPPBHeader.SPPBDate))
             .lblSalesPerson.Text = Me.clsSPPBGONEntry.getSalesPerson(.PO_REF_NO, False)
-
-            'set txtGON if exists
+            .lblDistributor.Text = UCSPPBManager.grdDetail.GetValue("DISTRIBUTOR_NAME").ToString()
             .btnAddGon.Enabled = False
+            .mcbGonArea.Value = .OGONHeader.GON_ID_AREA
+            .mcbTransporter.Value = .OGONHeader.GT_ID
+
+            'If Not Me.IsHOUser And Not Me.IsSystemAdmin Then
+            '    Select Case ConfigurationManager.AppSettings("WarhouseCode").ToString()
+            '        Case "SRG"
+            '            Me.cmdWarhouse.SelectedIndex = 5
+            '        Case "SBY"
+            '            Me.cmdWarhouse.SelectedIndex = 3
+            '        Case "MRK"
+            '            Me.cmdWarhouse.SelectedIndex = 2
+            '        Case "TGR"
+            '            Me.cmdWarhouse.SelectedIndex = 3
+            '    End Select
+            '    Me.cmdWarhouse.ReadOnly = True
+            'End If
 
             'get DS
             DS.Tables.Add(tblSPPBrandPack)

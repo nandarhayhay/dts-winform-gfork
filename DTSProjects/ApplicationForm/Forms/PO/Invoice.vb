@@ -1,4 +1,6 @@
 Imports System.Threading
+Imports System
+Imports System.Configuration
 Public Class Invoice
     Private clsInvoice As New NufarmBussinesRules.PurchaseOrder.Invoice
     Private isLoadingCombo As Boolean = False
@@ -25,6 +27,8 @@ Public Class Invoice
     Private OtherUserProcessing As String = ""
     Private hasloadGrid As Boolean = False
     Private mustReload As Boolean = False
+    Private isHOUser As Boolean = CBool(ConfigurationManager.AppSettings("IsHO"))
+    Private ShowPrice As Boolean = CBool(ConfigurationManager.AppSettings("ShowPrice"))
     Private Class classT2
         Public IDApp As Integer
         Public PoBrandPackID As String
@@ -132,7 +136,7 @@ Public Class Invoice
             Me.GridEX1.RootTable.Columns("INV_PRICE").Visible = False
             Me.GridEX1.RootTable.Columns("INV_PRICE").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
             Me.GridEX1.RootTable.Columns("INV_PRICE").FormatString = "#,##0.00"
-
+ 
             Me.GridEX1.RootTable.Columns("INV_AMOUNT").Visible = False
             Me.GridEX1.RootTable.Columns("INV_AMOUNT").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
             Me.GridEX1.RootTable.Columns("INV_AMOUNT").FormatString = "#,##0.00"
@@ -140,7 +144,14 @@ Public Class Invoice
             Me.GridEX1.RootTable.Columns("TOTAL_SHIPMENT_AMOUNT").Visible = False
             Me.GridEX1.RootTable.Columns("TOTAL_SHIPMENT_AMOUNT").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
             Me.GridEX1.RootTable.Columns("TOTAL_SHIPMENT_AMOUNT").FormatString = "#,##0.00"
-
+            If Not Me.isHOUser Then
+                Me.GridEX1.RootTable.Columns("INV_PRICE").Visible = False
+                Me.GridEX1.RootTable.Columns("INV_PRICE").ShowInFieldChooser = False
+                Me.GridEX1.RootTable.Columns("INV_AMOUNT").Visible = False
+                Me.GridEX1.RootTable.Columns("INV_AMOUNT").ShowInFieldChooser = False
+                Me.GridEX1.RootTable.Columns("TOTAL_SHIPMENT_AMOUNT").Visible = False
+                Me.GridEX1.RootTable.Columns("TOTAL_SHIPMENT_AMOUNT").ShowInFieldChooser = False
+            End If
             Me.GridEX1.RootTable.Columns("REGIONAL_ID").Visible = False
             Me.GridEX1.RootTable.Columns("TERRITORY_ID").Visible = False
             Me.GridEX1.RootTable.Columns("BRAND_ID").Visible = False
@@ -150,6 +161,7 @@ Public Class Invoice
             Me.GridEX1.GroupMode = Janus.Windows.GridEX.GroupMode.Collapsed
             Me.GridEX1.GroupByBoxVisible = False
             Me.GridEX1.RootTable.Columns("IDApp").Visible = False : Me.GridEX1.RootTable.Columns("IDApp").ShowInFieldChooser = False
+
         End If
 
         If Me.GridEX1.RootTable.Columns.Contains("ChildOriginalPO") Then
@@ -159,6 +171,7 @@ Public Class Invoice
             GridEX1.RootTable.FormatConditions.Add(fc)
         End If
         Me.GridEX1.ExpandGroups()
+
         Me.hasloadGrid = True
     End Sub
     Private Sub BindMultiColumnCombo(ByVal DV As DataView, ByVal mcb As Janus.Windows.GridEX.EditControls.MultiColumnCombo, _

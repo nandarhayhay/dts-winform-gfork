@@ -468,7 +468,7 @@ Namespace Brandpack
                 'reset command text 
                 'ambil data price for drop down
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                         "SELECT BRANDPACK_ID,BRANDPACK_NAME FROM BRND_BRANDPACK WHERE IsActive = 1;"
+                         "SELECT BRANDPACK_ID,BRANDPACK_NAME FROM BRND_BRANDPACK WHERE IsActive = 1 AND(IsObsolete = 0 OR IsObsolete IS NULL);"
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Dim dtDropDownPrice As New DataTable("T_DropDownPrice")
                 dtDropDownPrice.Clear() : Me.SqlDat.Fill(dtDropDownPrice)
@@ -663,6 +663,169 @@ Namespace Brandpack
             End If
 
         End Sub
+        Public Function HasExistedProdCon(ByVal BrandPackID As String) As Boolean
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                "SELECT BRANDPACK_ID FROM BRND_PROD_CONV WHERE BRANDPACK_ID = @BRANDPACK_ID AND INACTIVE = 0;"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query) : End If
+                Me.AddParameter("@BRANDPACK_ID", SqlDbType.VarChar, BrandPackID)
+                Me.OpenConnection()
+                Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    Me.CloseConnection()
+                    Return True
+                End If
+                Me.CloseConnection()
+                Return False
+            Catch ex As Exception
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw ex
+            End Try
+        End Function
+        Public Function ProdConvHasRef(ByVal BrandPackID As String, ByVal CreatedDate As DateTime) As Boolean
+            Try
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                " SELECT ITEM FROM GON_SEPARATED_DETAIL WHERE ITEM = @ITEM AND CreatedDate >= @CreatedDate"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query) : End If
+                Me.AddParameter("@CreatedDate", SqlDbType.SmallDateTime, CreatedDate)
+                Me.AddParameter("@ITEM", SqlDbType.VarChar, BrandPackID)
+                Me.OpenConnection()
+                Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    Me.CloseConnection()
+                    Return True
+                End If
+                Me.CloseConnection()
+                Return False
+            Catch ex As Exception
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw ex
+            End Try
+        End Function
+        Public Function SaveBrandPackConvertion(ByRef dtConv As DataTable) As Boolean
+            Try
+                Me.OpenConnection()
+                Dim commandInsert As SqlCommand = Me.SqlConn.CreateCommand(), commandUpdate As SqlCommand = Me.SqlConn.CreateCommand(), _
+                commandDelete As SqlCommand = Me.SqlConn.CreateCommand()
+                If IsNothing(Me.SqlDat) Then : Me.SqlDat = New SqlDataAdapter() : End If
+                SqlTrans = Me.SqlConn.BeginTransaction()
+                Dim qryInsert As String = "SET NOCOUNT ON;" & vbCrLf & _
+                " IF NOT EXIST(SELECT BRANDPACK_ID FROM BRND_PROD_CONV WHERE BRANDPACK_ID = @BRANDPACK_ID AND INACTIVE = 0) " & vbCrLf & _
+                " BEGIN " & vbCrLf & _
+                " INSERT INTO BRND_PROD_CONV(BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE,CreatedDate,CreatedBy) " & vbCrLf & _
+                " VALUES(@BRANDPACK_ID,@UNIT1,@VOL1,@UNIT2,@VOL2,0,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy); " & vbCrLf & _
+                " END "
+                Dim qryUpdate As String = "SET NOCOUNT ON;" & vbCrLf & _
+                " UPDATE BRND_PROD_CONV SET BRANDPACK_ID = @BRANDPACK_ID,UNIT1 = @UNIT1,UNIT2=@UNIT2,VOL1=@VOL1,VOL2=@VOL2,INACTIVE = @INACTIVE,ModifiedBy = @ModifiedBy, " & vbCrLf & _
+                " ModifiedDate = CONVERT(VARCHAR(100),GETDATE(),101) WHERE IDApp = @IDApp ;"
+                Dim QryDelete As String = "SET NOCOUNT ON; " & vbCrLf & _
+                " DELETE FROM BRND_PROD_CONV WHERE IDApp = @IDApp ;"
+                Dim insertedRows() As DataRow = dtConv.Select("", "", DataViewRowState.Added)
+                Dim updatedRows() As DataRow = dtConv.Select("", "", DataViewRowState.ModifiedOriginal)
+                Dim deletedRows() As DataRow = dtConv.Select("", "", DataViewRowState.Deleted)
+                If insertedRows.Length > 0 Then
+                    With commandInsert
+                        .CommandType = CommandType.Text
+                        .CommandText = qryInsert
+                        .Transaction = SqlTrans
+                        .Parameters.Add("@BRANDPACK_ID", SqlDbType.VarChar, 14, "BRANDPACK_ID")
+                        .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
+                        .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
+                        .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")
+                        .Parameters.Add("@VOL2", SqlDbType.Decimal, 0, "VOL2")
+                        .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 50, "CreatedBy")
+                        SqlDat.InsertCommand = commandInsert
+                        SqlDat.Update(insertedRows)
+                        .Parameters.Clear()
+                    End With
+                End If
+                If updatedRows.Length > 0 Then
+                    With commandUpdate
+                        .CommandType = CommandType.Text
+                        .CommandText = qryUpdate
+                        .Transaction = SqlTrans
+                        .Parameters.Add("@IDApp", SqlDbType.Int, 0, "IDApp")
+                        .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
+                        .Parameters.Add("@BRANDPACK_ID", SqlDbType.VarChar, 14, "BRANDPACK_ID")
+                        .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
+                        .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
+                        .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")
+                        .Parameters.Add("@VOL2", SqlDbType.Decimal, 0, "VOL2")
+                        .Parameters.Add("@ModifiedBy", SqlDbType.VarChar, 50, "ModifiedBy")
+                        .Parameters.Add("@INACTIVE", SqlDbType.Bit, 0, "INACTIVE")
+                        SqlDat.UpdateCommand = commandUpdate
+                        SqlDat.Update(updatedRows)
+                        .Parameters.Clear()
+                    End With
+                End If
+                If deletedRows.Length > 0 Then
+                    With commandDelete
+                        .CommandType = CommandType.Text
+                        .CommandText = QryDelete
+                        .Transaction = SqlTrans
+                        .Parameters.Add("@IDApp", SqlDbType.Int, 0, "IDApp")
+                        .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
+                        SqlDat.DeleteCommand = commandDelete
+                        SqlDat.Update(deletedRows)
+                        .Parameters.Clear()
+                    End With
+                End If
+                Me.ClearCommandParameters()
+                Me.CommiteTransaction()
+                dtConv = Me.getProdConvertion(True)
+                Me.CloseConnection()
+                Return True
+            Catch ex As Exception
+                Me.RollbackTransaction()
+                Me.CloseConnection()
+                Throw ex
+            End Try
+            Return True
+        End Function
+        Public Function getProdConvertion(ByVal closeConnection As Boolean) As DataTable
+            Try
+       
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                "SELECT * FROM BRND_PROD_CONV;"
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Dim dtProdConvertion As New DataTable("T_ProdConvertion")
+                Me.OpenConnection()
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+                dtProdConvertion.Clear()
+                setDataAdapter(Me.SqlCom).Fill(dtProdConvertion)
+                Me.ClearCommandParameters()
+                If closeConnection Then : Me.CloseConnection() : End If
+                Return dtProdConvertion
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
+        Public Function getActiveBrandPack(ByVal mustCloseConnection As Boolean) As DataTable
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+             "SELECT BRANDPACK_ID,BRANDPACK_NAME FROM BRND_BRANDPACK WHERE IsActive = 1 AND(IsObsolete = 0 OR IsObsolete IS NULL);"
+
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql") : End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.OpenConnection()
+                Dim dt As New DataTable("T_ActiveBrandPack")
+                setDataAdapter(Me.SqlCom).Fill(dt)
+                Me.ClearCommandParameters()
+                If mustCloseConnection Then : Me.CloseConnection() : End If
+                Return dt
+            Catch ex As Exception
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw ex
+            End Try
+        End Function
         Public Overloads Sub SaveChanges(ByVal ds As DataSet)
             Try
                 MyBase.ParentCommandtext = "SELECT * FROM BRND_BRANDPACK"

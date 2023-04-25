@@ -1,5 +1,6 @@
 Namespace common
     Public Class CommonClass
+        Public Shared columnKey As String = ""
         Public Shared Function getNumericFromDate(ByVal dateobject As DateTime) As String
             Dim strDecDate = ""
             Dim strYear As String = CStr(Year(dateobject)), strMonth As String = CStr(Month(dateobject))
@@ -137,6 +138,21 @@ Namespace common
                         Case Else
                             Query = String.Format(" <> {0}", value)
                     End Select
+                Case Helper.CriteriaSearch.BetWeen
+                    Select Case dataType
+                        Case Helper.DataTypes.NChar, Helper.DataTypes.NText, Helper.DataTypes.NVarChar, Helper.DataTypes.Text, Helper.DataTypes.VarChar
+                            Throw New Exception("Invalid value format for this kind of datatype")
+                        Case Helper.DataTypes.DateTime
+                            'string[] Values = value.ToString().Split("-".ToCharArray());
+                            '          object startDate = Values[0];
+                            '          object endDate = Values[1];
+                            '          query = string.Format(" >= '{0}' AND  " + columnKey + " <= '{1}' ", startDate, endDate);
+                            '          break;
+                            Dim Values() As String = value.ToString().Split("-".ToCharArray())
+                            Dim startDate As Object = Values(0)
+                            Dim endDate As Object = Values(1)
+                            Query = String.Format(" >= '{0}' AND  " + columnKey + " <= '{1}' ", startDate, endDate)
+                    End Select
             End Select
             Return Query
         End Function
@@ -166,7 +182,7 @@ Namespace common
             End If
             Return ""
         End Function
-        
+
     End Class
 
     Public Class dataTManager
@@ -187,6 +203,7 @@ Namespace common
             [Like]
             [In]
             NotIn
+            BetWeen
         End Enum
         Public Enum DataTypes
             BigInt

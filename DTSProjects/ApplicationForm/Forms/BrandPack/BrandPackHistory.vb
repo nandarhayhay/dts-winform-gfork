@@ -1,3 +1,6 @@
+Imports System
+Imports System.Configuration
+
 Public Class BrandPackHistory
 
 #Region " Deklarasi "
@@ -9,6 +12,8 @@ Public Class BrandPackHistory
     Private WithEvents EP As EditPrice
     Private SetVal As SetValue = SetValue.None
     Friend CMain As Main = Nothing
+    Private isHOUser As Boolean = CBool(ConfigurationManager.AppSettings("IsHO"))
+    Private ShowPrice As Boolean = CBool(ConfigurationManager.AppSettings("ShowPrice"))
 #End Region
 
 #Region " Enum "
@@ -91,6 +96,9 @@ Public Class BrandPackHistory
         Me.SetVal = SetValue.Updating
         Grd.SetDataBinding(dtView, "")
         Me.SetVal = SetValue.None
+        If Not Me.isHOUser Then
+            Me.grpPH.Visible = False
+        End If
     End Sub
     Private Sub LoadData()
         Me.clsBPHistory = New NufarmBussinesRules.Brandpack.BrandPack()
@@ -526,7 +534,7 @@ Public Class BrandPackHistory
                             End Select
                             Me.GetStateChecked(Me.btnAllData)
                     End Select
-                
+
                 Case "btnPrint"
                     Select Case Me.GridSelect
                         Case Activegrid.grdBrandPack
@@ -850,7 +858,7 @@ Public Class BrandPackHistory
             Me.Cursor = Cursors.Default
         End Try
     End Sub
-    
+
     Private Sub grdBrandPack_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles grdBrandPack.Enter
         Try
             Me.Cursor = Cursors.WaitCursor
@@ -1214,7 +1222,7 @@ Public Class BrandPackHistory
             Me.Cursor = Cursors.Default
         End Try
     End Sub
-  
+
     Private Sub grdPriceHistory_Error(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.ErrorEventArgs) Handles grdPriceHistory.Error
         Try
             Me.ShowMessageInfo("Data Can not be Updated due to " & e.Exception.Message)

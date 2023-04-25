@@ -9,6 +9,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NufarmDataAccesLayer", "Nuf
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NufarmBussinesRules", "NufarmBussinesRules\NufarmBussinesRules.vbproj", "{701401FC-72AA-4FCA-AFFD-CBA3C9AB0CE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuFarm.Common", "..\..\NuFarm.DPRD\NuFarm.Common\NuFarm.Common.csproj", "{A6078795-F76E-464D-B60F-DFA70B9BDE7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -66,6 +68,14 @@ Global
 		{701401FC-72AA-4FCA-AFFD-CBA3C9AB0CE5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{701401FC-72AA-4FCA-AFFD-CBA3C9AB0CE5}.Release|x86.ActiveCfg = Release|Any CPU
 		{701401FC-72AA-4FCA-AFFD-CBA3C9AB0CE5}.Release|x86.Build.0 = Release|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Release|.NET.ActiveCfg = Release|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6078795-F76E-464D-B60F-DFA70B9BDE7A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

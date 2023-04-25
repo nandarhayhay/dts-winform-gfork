@@ -1,12 +1,46 @@
+Imports System.Configuration
 Public Class SharedClass
     Private Shared m_ServerDate As DateTime
     Private Shared m_GetDate As String
     Public Shared DBInvoiceTo As CurrentInvToUse = CurrentInvToUse.NI87
+    Private Shared m_tblPoliceTrans As DataTable
+    Private Shared m_tblDriverTrans As DataTable = Nothing
     Public Enum CurrentInvToUse
         NI87
         NI109
     End Enum
-
+    Public Shared ReadOnly Property IsUserHO() As Boolean
+        Get
+            Return ConfigurationManager.AppSettings("IsHO").ToString() = "True"
+        End Get
+    End Property
+    Public Shared ReadOnly Property ShowPrice() As Boolean
+        Get
+            Return ConfigurationManager.AppSettings("ShowPrice").ToString() = "True"
+        End Get
+    End Property
+    Public Shared Property tblDriverTrans() As DataTable
+        Get
+            If IsNothing(m_tblPoliceTrans) Then
+                m_tblPoliceTrans = New DataTable()
+            End If
+            Return m_tblPoliceTrans
+        End Get
+        Set(ByVal value As DataTable)
+            m_tblPoliceTrans = value
+        End Set
+    End Property
+    Public Shared Property tblPoliceNumber() As DataTable
+        Get
+            If m_tblDriverTrans Is Nothing Then
+                m_tblDriverTrans = New DataTable()
+            End If
+            Return m_tblDriverTrans
+        End Get
+        Set(ByVal value As DataTable)
+            m_tblDriverTrans = value
+        End Set
+    End Property
     Public Shared ReadOnly Property GetDate() As String 'formaT date with full time
         Get
             Dim mydate As String = "'" & m_ServerDate.Month & "/" & m_ServerDate.Day & "/" & m_ServerDate.Year & _

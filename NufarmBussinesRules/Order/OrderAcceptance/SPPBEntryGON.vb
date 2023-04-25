@@ -43,13 +43,47 @@ Namespace OrderAcceptance
                         .GON_DATE = Me.SqlRe.Item("GON_DATE")
                         .GON_ID_AREA = IIf((IsDBNull(Me.SqlRe.Item("GON_ID_AREA")) Or IsNothing(Me.SqlRe.Item("GON_ID_AREA"))), "", Me.SqlRe.Item("GON_ID_AREA").ToString())
                         .GON_NO = Me.SqlRe("GON_NO").ToString()
+
                         .GT_ID = IIf((IsDBNull(Me.SqlRe.Item("GT_ID")) Or IsNothing(Me.SqlRe.Item("GT_ID"))), "", Me.SqlRe.Item("GT_ID").ToString())
                         .ModifiedBy = IIf((IsDBNull(Me.SqlRe.Item("ModifiedBy")) Or IsNothing(Me.SqlRe.Item("ModifiedBy"))), "", Me.SqlRe.Item("ModifiedBy").ToString())
                         .ModifiedDate = Me.SqlRe.Item("ModifiedDate")
                         .SPPBNO = Me.SqlRe.Item("SPPB_NO").ToString()
-                        .CreatedBy = IIf((IsDBNull(Me.SqlRe.Item("CreatedBy")) Or IsNothing(Me.SqlRe.Item("CreatedBy"))), "", Me.SqlRe.Item("CreatedBy").ToString())
-                        .CreatedDate = Me.SqlRe.Item("CreatedDate")
-                        .DescriptionApp = IIf((IsDBNull(Me.SqlRe.Item("REMARK")) Or IsNothing(Me.SqlRe.Item("REMARK"))), "", Me.SqlRe.Item("REMARK").ToString())
+                        Dim oDriverTrans As Object = SqlRe("DRIVER_TRANS"), oPoliceNoTrans As Object = SqlRe("POLICE_NO_TRANS")
+                        Dim oCreatedBy As Object = SqlRe("CreatedBy"), oCreatedDate As Object = SqlRe("CreatedDate")
+                        Dim oDescpriptionApp As Object = SqlRe("REMARK")
+                        Dim oGTID As Object = SqlRe("GT_ID"), oModifiedBy As Object = SqlRe("ModifiedBy")
+                        Dim oModifiedDate As Object = SqlRe("ModifiedDate")
+                        Dim warhouseCode As Object = SqlRe("WARHOUSE")
+                        If Not IsNothing(oGTID) And Not IsDBNull(oGTID) Then
+                            .GT_ID = oGTID.ToString
+                        End If
+                        If Not IsNothing(oModifiedDate) And Not IsDBNull(oModifiedDate) Then
+                            .ModifiedDate = oModifiedDate
+                        End If
+                        If Not IsNothing(oModifiedBy) And Not IsDBNull(oModifiedBy) Then
+                            .ModifiedBy = oModifiedBy.ToString()
+                        End If
+                        If Not IsNothing(oDriverTrans) And Not IsDBNull(oDriverTrans) Then
+                            .DriverTrans = oDriverTrans.ToString()
+                        End If
+                        If Not IsNothing(oPoliceNoTrans) And Not IsDBNull(oPoliceNoTrans) Then
+                            .PoliceNoTrans = oPoliceNoTrans.ToString()
+                        End If
+                        '.DriverTrans = IIf(IsDBNull(SqlRe("DRIVER_TRANS") Or IsNothing(SqlRe("DRIVER_TRANS"))), "", SqlRe("DRIVER_TRANS").ToString())
+                        '.PoliceNoTrans = IIf(IsDBNull(SqlRe("POLICE_NO_TRANS")) Or IsNothing(SqlRe("POLICE_NO_TRANS")), "", SqlRe("POLICE_NO_TRANS").ToString())
+                        If Not IsNothing(oCreatedBy) And Not IsDBNull(oCreatedBy) Then
+                            .CreatedBy = oCreatedBy.ToString()
+                        End If
+                        If Not IsNothing(oCreatedDate) And Not IsDBNull(oCreatedDate) Then
+                            .CreatedDate = oCreatedDate
+                        End If
+                        If Not IsNothing(oDescpriptionApp) And Not IsDBNull(oDescpriptionApp) Then
+                            .DescriptionApp = oDescpriptionApp.ToString()
+                        End If
+                        If Not IsNothing(warhouseCode) And Not IsDBNull(warhouseCode) Then
+                            .WarhouseCode = warhouseCode.ToString()
+                        End If
+                        '.DescriptionApp = IIf((IsDBNull(Me.SqlRe.Item("REMARK")) Or IsNothing(Me.SqlRe.Item("REMARK"))), "", Me.SqlRe.Item("REMARK").ToString())
                     End With
                 End While : Me.SqlRe.Close()
                 ''get Status
@@ -138,6 +172,40 @@ Namespace OrderAcceptance
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
+
+        Public Sub SaveOrUpdateGON(ByVal domGON As GONHeader)
+            Query = "SET NOCOUNT ON; " & vbCrLf & _
+        "IF NOT EXISTS(SELECT GON_HEADER_ID FROM GON_HEADER WHERE GON_HEADER_ID = @GON_HEADER_ID) " & vbCrLf & _
+        " BEGIN " & vbCrLf & _
+        " INSERT INTO GON_HEADER(GON_HEADER_ID,GON_DATE,GT_ID,GON_ID_AREA,SPPB_NO,GON_NO,POLICE_NO_TRANS,DRIVER_TRANS,WARHOUSE,REMARK,CreatedBy,CreatedDate) " & vbCrLf & _
+        " VALUES(@GON_HEADER_ID,@GON_DATE,@GT_ID,@GON_ID_AREA,@SPPB_NO,@GON_NO,@POLICE_NO_TRANS,@DRIVER_TRANS,@WARHOUSE,@REMARK,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) ; " & vbCrLf & _
+        " END " & vbCrLf & _
+        " ELSE  " & vbCrLf & _
+        " BEGIN " & vbCrLf & _
+        " UPDATE GON_HEADER SET GON_ID_AREA = @GON_ID_AREA,GT_ID = @GT_ID,GON_DATE = @GON_DATE,POLICE_NO_TRANS=@POLICE_NO_TRANS," & vbCrLf & _
+        " DRIVER_TRANS=@DRIVER_TRANS,WARHOUSE=@WARHOUSE,REMARK = @REMARK,ModifiedBy = @ModifiedBy, " & vbCrLf & _
+        " ModifiedDate = CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101)) WHERE GON_HEADER_ID = @GON_HEADER_ID ; " & vbCrLf & _
+        " END "
+            If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+            Else : Me.ResetCommandText(CommandType.Text, Query)
+            End If
+            Me.AddParameter("@GON_HEADER_ID", SqlDbType.VarChar, domGON.CodeApp, 40)
+            Me.AddParameter("@GON_NO", SqlDbType.VarChar, domGON.GON_NO, 25)
+            Me.AddParameter("@GON_DATE", SqlDbType.SmallDateTime, domGON.GON_DATE)
+            Me.AddParameter("@GT_ID", SqlDbType.VarChar, domGON.GT_ID, 10)
+            Me.AddParameter("@GON_ID_AREA", SqlDbType.VarChar, domGON.GON_ID_AREA, 10)
+            Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, domGON.SPPBNO, 15)
+            Me.AddParameter("@REMARK", SqlDbType.VarChar, domGON.DescriptionApp, 200)
+            Me.AddParameter("@POLICE_NO_TRANS", SqlDbType.VarChar, domGON.PoliceNoTrans, 50)
+            Me.AddParameter("@DRIVER_TRANS", SqlDbType.VarChar, domGON.DriverTrans, 50)
+            Me.AddParameter("@WARHOUSE", SqlDbType.VarChar, domGON.WarhouseCode, 20)
+            Me.AddParameter("@CreatedBy", SqlDbType.VarChar, domGON.CreatedBy, 100)
+            Me.AddParameter("@ModifiedBy", SqlDbType.VarChar, IIf(String.IsNullOrEmpty(domGON.ModifiedBy), NufarmBussinesRules.User.UserLogin.UserName, domGON.ModifiedBy))
+            If IsNothing(Me.SqlCom.Transaction) Then : Me.SqlCom.Transaction = Me.SqlTrans : End If
+            Me.OpenConnection()
+            Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+
+        End Sub
         Public Function SaveDataSPPBGON(ByVal DS As DataSet, ByRef NewDS As DataSet, ByVal domSPPB As SPPBHeader, ByVal domGON As GONHeader, ByVal IsOnlyEditGON As Boolean, ByVal mustCloseConnection As Boolean) As Boolean
             Try
                 ''GON
@@ -182,31 +250,7 @@ Namespace OrderAcceptance
 
                 '====================INSERT / UPDATE GON HEADER==============================================
                 If Not IsNothing(domGON) Then
-                    Query = "SET NOCOUNT ON; " & vbCrLf & _
-                            "IF NOT EXISTS(SELECT GON_HEADER_ID FROM GON_HEADER WHERE GON_HEADER_ID = @GON_HEADER_ID) " & vbCrLf & _
-                            " BEGIN " & vbCrLf & _
-                            " INSERT INTO GON_HEADER(GON_HEADER_ID,GON_DATE,GT_ID,GON_ID_AREA,SPPB_NO,GON_NO,REMARK,CreatedBy,CreatedDate) " & vbCrLf & _
-                            " VALUES(@GON_HEADER_ID,@GON_DATE,@GT_ID,@GON_ID_AREA,@SPPB_NO,@GON_NO,@REMARK,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) ; " & vbCrLf & _
-                            " END " & vbCrLf & _
-                            " ELSE  " & vbCrLf & _
-                            " BEGIN " & vbCrLf & _
-                            " UPDATE GON_HEADER SET GON_ID_AREA = @GON_ID_AREA,GT_ID = @GT_ID,GON_DATE = @GON_DATE,REMARK = @REMARK,ModifiedBy = @ModifiedBy, " & vbCrLf & _
-                            " ModifiedDate = CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101)) WHERE GON_HEADER_ID = @GON_HEADER_ID ; " & vbCrLf & _
-                            " END "
-                    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
-                    Else : Me.ResetCommandText(CommandType.Text, Query)
-                    End If
-                    Me.AddParameter("@GON_HEADER_ID", SqlDbType.VarChar, domGON.CodeApp, 40)
-                    Me.AddParameter("@GON_NO", SqlDbType.VarChar, domGON.GON_NO, 25)
-                    Me.AddParameter("@GON_DATE", SqlDbType.SmallDateTime, domGON.GON_DATE)
-                    Me.AddParameter("@GT_ID", SqlDbType.VarChar, domGON.GT_ID, 10)
-                    Me.AddParameter("@GON_ID_AREA", SqlDbType.VarChar, domGON.GON_ID_AREA, 10)
-                    Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, domGON.SPPBNO, 15)
-                    Me.AddParameter("@REMARK", SqlDbType.VarChar, domGON.DescriptionApp, 200)
-                    Me.AddParameter("@CreatedBy", SqlDbType.VarChar, domGON.CreatedBy, 100)
-                    Me.AddParameter("@ModifiedBy", SqlDbType.VarChar, IIf(String.IsNullOrEmpty(domGON.ModifiedBy), NufarmBussinesRules.User.UserLogin.UserName, domGON.ModifiedBy))
-                    If IsNothing(Me.SqlCom.Transaction) Then : Me.SqlCom.Transaction = Me.SqlTrans : End If
-                    Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                    SaveOrUpdateGON(domGON)
                 End If
                 '================================================================================================================================
 
@@ -220,8 +264,8 @@ Namespace OrderAcceptance
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
                             " IF NOT EXISTS(SELECT GON_DETAIL_ID FROM GON_DETAIL WHERE GON_DETAIL_ID = @GON_DETAIL_ID) " & vbCrLf & _
                             " BEGIN " & vbCrLf & _
-                            " INSERT INTO GON_DETAIL(GON_DETAIL_ID,GON_HEADER_ID,SPPB_BRANDPACK_ID,BRANDPACK_ID,GON_QTY,IsCompleted,IsOpen,IsUpdatedBySystem,CreatedBy,CreatedDate) " & vbCrLf & _
-                            " VALUES(@GON_DETAIL_ID,@GON_HEADER_ID,@SPPB_BRANDPACK_ID,@BRANDPACK_ID,@GON_QTY,@IsCompleted,@IsOpen,@UBS,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) " & vbCrLf & _
+                            " INSERT INTO GON_DETAIL(GON_DETAIL_ID,GON_HEADER_ID,SPPB_BRANDPACK_ID,BRANDPACK_ID,GON_QTY,IsCompleted,IsOpen,BatchNo,UNIT1,VOL1,UNIT2,VOL2,IsUpdatedBySystem,CreatedBy,CreatedDate) " & vbCrLf & _
+                            " VALUES(@GON_DETAIL_ID,@GON_HEADER_ID,@SPPB_BRANDPACK_ID,@BRANDPACK_ID,@GON_QTY,@IsCompleted,@IsOpen,@BatchNo,@UNIT1,@VOL1,@UNIT2,@VOL2,@UBS,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) " & vbCrLf & _
                             " END "
                     CommandInsert.Transaction = Me.SqlTrans : CommandInsert.CommandType = CommandType.Text : CommandInsert.CommandText = Query
                     With CommandInsert
@@ -232,6 +276,12 @@ Namespace OrderAcceptance
                         .Parameters.Add("@GON_QTY", SqlDbType.Decimal, 0, "GON_QTY")
                         .Parameters.Add("@IsCompleted", SqlDbType.Bit, 0, "IsCompleted")
                         .Parameters.Add("@IsOpen", SqlDbType.Bit, 0, "IsOpen")
+                        .Parameters.Add("@BatchNo", SqlDbType.NVarChar, 50, "BatchNo")
+                        .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
+                        .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
+                        .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")
+                        .Parameters.Add("@VOL2", SqlDbType.Decimal, 0, "VOL2")
+
                         .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100, "CreatedBy")
                         .Parameters.Add("@UBS", SqlDbType.Bit, 0, "IsUpdatedBySystem")
                         Me.SqlDat.InsertCommand = CommandInsert
@@ -245,7 +295,8 @@ Namespace OrderAcceptance
                 If UpdatedGONRows.Length > 0 Then
                     CommandUpdate = Me.SqlConn.CreateCommand()
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    " UPDATE GON_DETAIL SET GON_QTY = @GON_QTY,IsCompleted = @IsCompleted,IsOpen = @IsOpen,IsUpdatedBySystem = @UBS,ModifiedBy = @ModifiedBy,ModifiedDate = CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101)) " & vbCrLf & _
+                    " UPDATE GON_DETAIL SET GON_QTY = @GON_QTY,IsCompleted = @IsCompleted,IsOpen = @IsOpen,BatchNo = @BatchNo," & vbCrLf & _
+                    " UNIT1 = @UNIT1,VOL1=@VOL1,UNIT2=@UNIT2,VOL2=@VOL2,IsUpdatedBySystem = @UBS,ModifiedBy = @ModifiedBy,ModifiedDate = CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101)) " & vbCrLf & _
                     " WHERE GON_DETAIL_ID = @GON_DETAIL_ID; "
                     With CommandUpdate
                         .CommandText = Query
@@ -254,6 +305,11 @@ Namespace OrderAcceptance
                         .Parameters.Add("@GON_QTY", SqlDbType.Decimal, 0, "GON_QTY")
                         .Parameters.Add("@IsCompleted", SqlDbType.Bit, 0, "IsCompleted")
                         .Parameters.Add("@IsOpen", SqlDbType.Bit, 0, "IsOpen")
+                        .Parameters.Add("@BatchNo", SqlDbType.NVarChar, 50, "BatchNo")
+                        .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
+                        .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
+                        .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")
+                        .Parameters.Add("@VOL2", SqlDbType.Decimal, 0, "VOL2")
                         .Parameters.Add("@UBS", SqlDbType.Bit, 0, "IsUpdatedBySystem")
                         .Parameters.Add("@GON_DETAIL_ID", SqlDbType.VarChar, 140, "GON_DETAIL_ID")
                         .Parameters.Add("@ModifiedBy", SqlDbType.VarChar, 100).Value = NufarmBussinesRules.User.UserLogin.UserName
@@ -300,7 +356,6 @@ Namespace OrderAcceptance
                     If IsNothing(CommandInsert) Then : CommandInsert = Me.SqlConn.CreateCommand() : End If
                     If IsNothing(CommandInsert.Transaction) Then : CommandInsert.Transaction = Me.SqlTrans : End If
                     CommandInsert.CommandType = CommandType.Text : CommandInsert.CommandText = Query
-
                     CommandInsert.Parameters.Add("@SPPB_BRANDPACK_ID", SqlDbType.VarChar, 90, "SPPB_BRANDPACK_ID")
                     CommandInsert.Parameters.Add("@SPPB_NO", SqlDbType.VarChar, 30, "SPPB_NO")
                     CommandInsert.Parameters.Add("@OA_BRANDPACK_ID", SqlDbType.VarChar, 75, "OA_BRANDPACK_ID")
@@ -354,22 +409,24 @@ Namespace OrderAcceptance
                 End If
                 '----------------------------------------------------------------------------------------------------------------------------------------
 
-                If IsNothing(domGON) Then
-                    'Me.CommiteTransaction() : Me.ClearCommandParameters()
-                ElseIf domGON.GON_NO = "" Or IsNothing(domGON.GON_DATE) Or IsNothing(domGON.SPPBNO) Then
-                    'Me.CommiteTransaction() : Me.ClearCommandParameters()
-                Else
-                    Query = "SET NOCOUNT ON ; " & vbCrLf & _
-                        "SELECT TransactionID FROM GON_SMS WHERE SPPB_NO = @SPPB_NO AND GON_NO = @GON_NO AND STATUS_SENT IS NULL ;"
-                    Me.ResetCommandText(CommandType.Text, Query)
-                    Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, domGON.SPPBNO, 15)
-                    Me.AddParameter("@GON_NO", SqlDbType.VarChar, domGON.GON_NO, 25)
-                    Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
-                    If IsNothing(retval) Or IsDBNull(retval) Then
-                        ''insert GON
-                        Me.InsertSMSSPPB(domSPPB.PONumber, domGON.SPPBNO, domGON)
-                    End If
-                End If
+                ''-==================MATIKAN SMS==========================
+                'If IsNothing(domGON) Then
+                '    'Me.CommiteTransaction() : Me.ClearCommandParameters()
+                'ElseIf domGON.GON_NO = "" Or IsNothing(domGON.GON_DATE) Or IsNothing(domGON.SPPBNO) Then
+                '    'Me.CommiteTransaction() : Me.ClearCommandParameters()
+                'Else
+                '    Query = "SET NOCOUNT ON ; " & vbCrLf & _
+                '        "SELECT TransactionID FROM GON_SMS WHERE SPPB_NO = @SPPB_NO AND GON_NO = @GON_NO AND STATUS_SENT IS NULL ;"
+                '    Me.ResetCommandText(CommandType.Text, Query)
+                '    Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, domGON.SPPBNO, 15)
+                '    Me.AddParameter("@GON_NO", SqlDbType.VarChar, domGON.GON_NO, 25)
+                '    Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                '    If IsNothing(retval) Or IsDBNull(retval) Then
+                '        ''insert GON
+                '        Me.InsertSMSSPPB(domSPPB.PONumber, domGON.SPPBNO, domGON)
+                '    End If
+                'End If
+                '-=================END MATIKAN SMS=========================
                 Me.CommiteTransaction() : Me.ClearCommandParameters()
                 Dim tblSPPBBrandPack As DataTable = Me.getSPPBBrandPack(domSPPB.SPPBNO, domSPPB.PONumber, False, False)
                 Dim tblGON As DataTable = Me.getGOnData(domSPPB.SPPBNO, True)
@@ -558,7 +615,6 @@ Namespace OrderAcceptance
                     End If
                 End If
 
-
                 ''CHECK ke database apakah sudah dibuatkan SPPB_Sebelumnya
                 Dim hasExistedGON As Boolean = False
                 Query = "SET NOCOUNT ON; " & vbCrLf & _
@@ -710,7 +766,7 @@ Namespace OrderAcceptance
                 'drv("ModifiedBy") = String.Empty
                 'drv("ModifiedDate") = NufarmBussinesRules.SharedClass.ServerDate
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                " SELECT GD.GON_DETAIL_ID,GD.GON_HEADER_ID,SB.SPPB_BRANDPACK_ID,GD.BRANDPACK_ID,BR.BRANDPACK_NAME,GD.GON_QTY,GD.IsOpen,GD.IsCompleted,GD.IsUpdatedBySystem," & vbCrLf & _
+                " SELECT GD.GON_DETAIL_ID,GD.GON_HEADER_ID,SB.SPPB_BRANDPACK_ID,GD.BRANDPACK_ID,BR.BRANDPACK_NAME,GD.GON_QTY,GD.IsOpen,GD.IsCompleted,GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsUpdatedBySystem," & vbCrLf & _
                 "GD.CreatedBy,GD.CreatedDate,GD.ModifiedBy,GD.ModifiedDate FROM GON_DETAIL GD INNER JOIN SPPB_BRANDPACK SB ON SB.SPPB_BRANDPACK_ID = GD.SPPB_BRANDPACK_ID " & vbCrLf & _
                 " INNER JOIN BRND_BRANDPACK BR ON BR.BRANDPACK_ID = GD.BRANDPACK_ID WHERE SB.SPPB_NO = @SPPB_NO ;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
@@ -893,7 +949,7 @@ Namespace OrderAcceptance
                             "SELECT TOP 200 GT_ID,TRANSPORTER_NAME FROM GON_TRANSPORTER WHERE TRANSPORTER_NAME LIKE '%'+@SearchTrans+'%';"
                 ElseIf mode = SaveMode.Update Then
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
-                            " SELECT TOP 1 GT_ID,TRANSPORTER_NAME FROM GON_TRANSPORTER WHERE TRANSPORTER_NAME = @SearchTrans ;"
+                            " SELECT GT_ID,TRANSPORTER_NAME FROM GON_TRANSPORTER ;"
                 End If
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
@@ -917,7 +973,7 @@ Namespace OrderAcceptance
                             "SELECT TOP 200 GON_ID_AREA,AREA FROM GON_AREA WHERE AREA LIKE '%'+@SearchArea+'%';"
                 ElseIf mode = SaveMode.Update Then
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
-                            "SELECT TOP 1 GON_ID_AREA,AREA FROM GON_AREA WHERE AREA = @SearchArea ;"
+                                "SELECT GON_ID_AREA,AREA FROM GON_AREA; "
                 End If
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
@@ -929,6 +985,32 @@ Namespace OrderAcceptance
                 Me.ClearCommandParameters()
                 If mustCloseConnection Then : Me.CloseConnection() : End If
                 Return tblGonArea
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
+        Public Function getProdConvertion(ByVal mode As SaveMode, ByVal closeConnection As Boolean) As DataView
+            Try
+                If mode = SaveMode.Insert Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2 FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
+                Else
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2 FROM BRND_PROD_CONV;"
+                End If
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Dim dtProdConvertion As New DataTable("T_ProdConvertion")
+                Me.OpenConnection()
+
+                dtProdConvertion.Clear()
+                setDataAdapter(Me.SqlCom).Fill(dtProdConvertion)
+                Me.ClearCommandParameters()
+                If closeConnection Then : Me.CloseConnection() : End If
+                Return dtProdConvertion.DefaultView
             Catch ex As Exception
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try

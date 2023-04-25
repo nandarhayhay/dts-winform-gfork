@@ -1,4 +1,5 @@
 Imports System.Threading
+Imports System.Configuration
 Public Class SPPBManager
     Friend WithEvents frmParentSPPB As SPPB = Nothing
     Friend WithEvents frmParentGrid As ReportGrid = Nothing
@@ -16,6 +17,8 @@ Public Class SPPBManager
     Private m_Grid As Janus.Windows.GridEX.GridEX = Me.grdHeader
     Private IsFirsLoad As Boolean = True
     Private CategoryType As String = "MasterCategory"
+    Private isHOUser As Boolean = CBool(ConfigurationManager.AppSettings("IsHO"))
+    Private ShowPrice As Boolean = CBool(ConfigurationManager.AppSettings("ShowPrice"))
     Public Property Grid() As Janus.Windows.GridEX.GridEX
         Get
             Return Me.m_Grid
@@ -57,6 +60,9 @@ Public Class SPPBManager
                     Me.grdHeader.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
                 End If
             End If
+        End If
+        If Not Me.isHOUser Then
+            Me.ContextMenuStrip1.Visible = False
         End If
     End Sub
     '====================================OLD PROCESS===============================================
@@ -189,141 +195,12 @@ Public Class SPPBManager
         ElseIf mustReload Then
             GridN.RetrieveStructure()
         End If
-        '=========================================OLD PROCESS==========================================================
-        'If Me.grdHeader.GetTotal(Me.grdHeader.RootTable.Columns("GON_6_QTY"), Janus.Windows.GridEX.AggregateFunction.Sum) <= 0 Then
-        '    Me.grdHeader.RootTable.Columns("GON_6_NO").Visible = False
-        '    Me.grdHeader.RootTable.Columns("GON_6_DATE").Visible = False
-        '    Me.grdHeader.RootTable.Columns("GON_6_QTY").Visible = False
-
-        '    Me.grdHeader.RootTable.Columns("GON_6_TRANSPORTER_NAME").Visible = False
-        'Else
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_6_NO").Visible = True
-        '        .Columns("GON_6_DATE").Visible = True
-        '        .Columns("GON_6_QTY").Visible = True
-
-        '        .Columns("GON_6_TRANSPORTER_NAME").Visible = True
-        '    End With
-        'End If
-
-        'If Me.grdHeader.GetTotal(Me.grdHeader.RootTable.Columns("GON_5_QTY"), Janus.Windows.GridEX.AggregateFunction.Sum) <= 0 Then
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_5_NO").Visible = False
-        '        .Columns("GON_5_DATE").Visible = False
-        '        .Columns("GON_5_QTY").Visible = False
-
-        '        .Columns("GON_5_TRANSPORTER_NAME").Visible = False
-        '    End With
-        'Else
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_5_NO").Visible = True
-        '        .Columns("GON_5_DATE").Visible = True
-        '        .Columns("GON_5_QTY").Visible = True
-
-        '        .Columns("GON_5_TRANSPORTER_NAME").Visible = True
-        '    End With
-        'End If
-        'If Me.grdHeader.GetTotal(Me.grdHeader.RootTable.Columns("GON_4_QTY"), Janus.Windows.GridEX.AggregateFunction.Sum) <= 0 Then
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_4_NO").Visible = False
-        '        .Columns("GON_4_DATE").Visible = False
-        '        .Columns("GON_4_QTY").Visible = False
-
-        '        .Columns("GON_4_TRANSPORTER_NAME").Visible = False
-        '    End With
-        'Else
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_4_NO").Visible = True
-        '        .Columns("GON_4_DATE").Visible = True
-        '        .Columns("GON_4_QTY").Visible = True
-
-        '        .Columns("GON_4_TRANSPORTER_NAME").Visible = True
-        '    End With
-        'End If
-        'If Me.grdHeader.GetTotal(Me.grdHeader.RootTable.Columns("GON_3_QTY"), Janus.Windows.GridEX.AggregateFunction.Sum) <= 0 Then
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_3_NO").Visible = False
-        '        .Columns("GON_3_DATE").Visible = False
-        '        .Columns("GON_3_QTY").Visible = False
-
-        '        .Columns("GON_3_TRANSPORTER_NAME").Visible = False
-        '    End With
-        'Else
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_3_NO").Visible = True
-        '        .Columns("GON_3_DATE").Visible = True
-        '        .Columns("GON_3_QTY").Visible = True
-
-        '        .Columns("GON_3_TRANSPORTER_NAME").Visible = True
-        '    End With
-        'End If
-        'If Me.grdHeader.GetTotal(Me.grdHeader.RootTable.Columns("GON_2_QTY"), Janus.Windows.GridEX.AggregateFunction.Sum) <= 0 Then
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_2_NO").Visible = False
-        '        .Columns("GON_2_DATE").Visible = False
-        '        .Columns("GON_2_QTY").Visible = False
-
-        '        .Columns("GON_2_TRANSPORTER_NAME").Visible = False
-
-        '    End With
-        'Else
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_2_NO").Visible = True
-        '        .Columns("GON_2_DATE").Visible = True
-        '        .Columns("GON_2_QTY").Visible = True
-
-        '        .Columns("GON_2_TRANSPORTER_NAME").Visible = True
-        '    End With
-        'End If
-        'If Me.grdHeader.GetTotal(Me.grdHeader.RootTable.Columns("GON_1_QTY"), Janus.Windows.GridEX.AggregateFunction.Sum) <= 0 Then
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_1_NO").Visible = False
-        '        .Columns("GON_1_DATE").Visible = False
-        '        .Columns("GON_1_QTY").Visible = False
-
-        '        .Columns("GON_1_TRANSPORTER_NAME").Visible = False
-        '    End With
-        'Else
-        '    With Me.grdHeader.RootTable
-        '        .Columns("GON_1_NO").Visible = True
-        '        .Columns("GON_1_DATE").Visible = True
-        '        .Columns("GON_1_QTY").Visible = True
-
-        '        .Columns("GON_1_TRANSPORTER_NAME").Visible = True
-        '    End With
-        'End If
-        'Me.grdHeader.RootTable.Columns("GON_1_GT_ID").Visible = False
-        'Me.grdHeader.RootTable.Columns("GON_2_GT_ID").Visible = False
-        'Me.grdHeader.RootTable.Columns("GON_3_GT_ID").Visible = False
-        'Me.grdHeader.RootTable.Columns("GON_4_GT_ID").Visible = False
-        'Me.grdHeader.RootTable.Columns("GON_5_GT_ID").Visible = False
-        'Me.grdHeader.RootTable.Columns("GON_6_GT_ID").Visible = False
-
-        'Me.grdHeader.RootTable.Columns("GON_1_GT_ID").ShowInFieldChooser = False
-        'Me.grdHeader.RootTable.Columns("GON_2_GT_ID").ShowInFieldChooser = False
-        'Me.grdHeader.RootTable.Columns("GON_3_GT_ID").ShowInFieldChooser = False
-        'Me.grdHeader.RootTable.Columns("GON_4_GT_ID").ShowInFieldChooser = False
-        'Me.grdHeader.RootTable.Columns("GON_5_GT_ID").ShowInFieldChooser = False
-        'Me.grdHeader.RootTable.Columns("GON_6_GT_ID").ShowInFieldChooser = False
-
-        'Me.grdHeader.RootTable.Columns("GON_1_TRANSPORTER_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-        'Me.grdHeader.RootTable.Columns("GON_2_TRANSPORTER_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-        'Me.grdHeader.RootTable.Columns("GON_3_TRANSPORTER_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-        'Me.grdHeader.RootTable.Columns("GON_4_TRANSPORTER_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-        'Me.grdHeader.RootTable.Columns("GON_5_TRANSPORTER_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-        'Me.grdHeader.RootTable.Columns("GON_6_TRANSPORTER_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-        '==================================================================================================
-
-        'Me.grdHeader.RootTable.Columns("STATUS").Visible = True
-        'Me.grdHeader.RootTable.Columns("BALANCE").Visible = True
-        'Me.grdHeader.RootTable.Columns("REMARK").Visible = True
-
-        'DISTRIBUTOR_ID()
-        'BRANDPACK_ID()
-        'OA_BRANDPACK_ID()
-        'SPPB_BRANDPACK_ID()
         For Each col As Janus.Windows.GridEX.GridEXColumn In GridN.RootTable.Columns
-            If col.DataMember = "PRICE" Then
+            If col.DataMember.Contains("PRICE") Then
+                If Not Me.isHOUser Then
+                    col.Visible = False
+                    col.ShowInFieldChooser = False
+                End If
                 col.FormatString = "#,##0.00"
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
                 col.HeaderAlignment = Janus.Windows.GridEX.TextAlignment.Center
@@ -337,6 +214,10 @@ Public Class SPPBManager
                 col.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
                 col.TotalFormatString = "#,##0.000"
             ElseIf col.DataMember = "TOTAL_SALES_VALUE" Then
+                If Not Me.isHOUser Then
+                    col.Visible = False
+                    col.ShowInFieldChooser = False
+                End If
                 col.FormatString = "#,##0.00"
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
                 col.HeaderAlignment = Janus.Windows.GridEX.TextAlignment.Center
@@ -366,16 +247,72 @@ Public Class SPPBManager
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
             End If
+            If col.Key = "BatchNo" Then
+                col.Caption = "BATCH_NO"
+            End If
+            'GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2
+            If col.Key = "UNIT1" Or col.Key = "VOL1" Or col.Key = "UNIT2" Or col.Key = "VOL2" Or col.Key = "IsOpen" Or col.Key = "IsCompleted" Or col.Key = "GT_ID" Or col.Key = "GON_ID_AREA" Then
+                col.Visible = False
+            End If
             If col.DataMember = "IsUpdatedBySystem" Then : col.Visible = False : col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CheckBox : col.EditType = Janus.Windows.GridEX.EditType.CheckBox : End If
-            col.AutoSize()
+            'col.AutoSize()
             col.EditType = Janus.Windows.GridEX.EditType.NoEdit
         Next
         'Me.IsLoadding = False
         If GridN.Name = "grdHeader" Then
             Me.AddConditionalFormatingGridSPPB() : Me.AddConditionalFormatingGridSPPB1() : Me.AddConditionalFormatingGridSPPB2()
+            If Not Me.isHOUser Then
+                With Me.grdHeader.RootTable
+                    .Columns("PO_CATEGORY").Visible = False
+                    .Columns("PO_CATEGORY").ShowInFieldChooser = False
+                    .Columns("CLASS_NAME").Visible = False
+                    .Columns("PO_ORIGINAL_QTY").Visible = False
+                    .Columns("PO_ORIGINAL_QTY").ShowInFieldChooser = False
+                    .Columns("PRICE").Visible = False
+                    .Columns("PRICE").ShowInFieldChooser = False
+                End With
+            End If
         ElseIf GridN.Name = "grdDetail" Then
             AddConditionalFormatingGridGON() : AddConditionalFormatingGridGON1()
+            If Not Me.isHOUser Then
+                With Me.grdDetail.RootTable
+                    If .Columns.Contains("PO_CATEGORY") Then
+                        .Columns("PO_CATEGORY").Visible = False
+                        .Columns("PO_CATEGORY").ShowInFieldChooser = False
+                    End If
+                    If .Columns.Contains("CLASS_NAME") Then
+                        .Columns("CLASS_NAME").Visible = False
+                    End If
+                    If .Columns.Contains("PO_ORIGINAL_QTY") Then
+                        .Columns("PO_ORIGINAL_QTY").Visible = False
+                        .Columns("PO_ORIGINAL_QTY").ShowInFieldChooser = False
+                    End If
+                    If .Columns.Contains("PRICE") Then
+                        .Columns("PRICE").Visible = False
+                        .Columns("PRICE").ShowInFieldChooser = False
+                    End If
+                    If .Columns.Contains("SALES_QTY") Then
+                        .Columns("SALES_QTY").Visible = False
+                        .Columns("SALES_QTY").ShowInFieldChooser = False
+                    End If
+                    If .Columns.Contains("TOTAL_SALES_VALUE") Then
+                        .Columns("TOTAL_SALES_VALUE").Visible = False
+                        .Columns("TOTAL_SALES_VALUE").ShowInFieldChooser = False
+                    End If
+                    .Columns("IsOpen").Visible = False
+                    .Columns("IsOpen").ShowInFieldChooser = False
+                    .Columns("IsCompleted").Visible = False
+                    .Columns("IsCompleted").ShowInFieldChooser = False
+                    If .Columns.Contains("RETURNED_GON_DATE") Then
+                        .Columns("RETURNED_GON_DATE").Visible = False
+                        .Columns("RETURNED_GON_DATE").ShowInFieldChooser = False
+                    End If
+                    .Columns("GAP").Visible = False
+                    .Columns("GAP").ShowInFieldChooser = False
+                End With
+            End If
         End If
+        GridN.AutoSizeColumns()
     End Sub
     Private Sub AddConditionalFormatingGridSPPB()
         Dim fc As New Janus.Windows.GridEX.GridEXFormatCondition(Me.grdHeader.RootTable.Columns("IsUpdatedBySystem"), Janus.Windows.GridEX.ConditionOperator.Equal, True)
@@ -513,7 +450,6 @@ Public Class SPPBManager
         End Try
     End Sub
     Private Sub ShowData()
-
 
         '=================UNCOMMENT THIS AFTER DEBUGGING========================
         Me.StatProg = StatusProgress.Processing
@@ -1120,7 +1056,7 @@ Public Class SPPBManager
     Private Sub ShowCustomCategory()
         Me.dtpicFrom.Visible = False : Me.dtPicUntil.Visible = False
         Me.dtpicFrom.Text = "" : Me.dtPicUntil.Text = ""
-        Me.lblFrom.Text = "Filter By" : Me.lblUntil.Visible = False : Me.txtFind.Visible = False
+        Me.lblFrom.Text = "Filter By" : Me.lblUntil.Visible = False : Me.txtFind.Visible = True
         Me.cmbFilterBy.Visible = True : Me.cmbFilterBy.Text = ""
         'Me.btnFilteDate.Location = New System.Drawing.Point(431, 4)
     End Sub

@@ -45,6 +45,7 @@ Partial Class Main
         Me.btnClasification = New DevComponents.DotNetBar.ButtonItem
         Me.btnProductClass = New DevComponents.DotNetBar.ButtonItem
         Me.btnAVGPrice = New DevComponents.DotNetBar.ButtonItem
+        Me.btnProdconv = New DevComponents.DotNetBar.ButtonItem
         Me.btnDistributor = New DevComponents.DotNetBar.ButtonItem
         Me.btnDistributorRegistering = New DevComponents.DotNetBar.ButtonItem
         Me.btnDistributorHistory = New DevComponents.DotNetBar.ButtonItem
@@ -63,10 +64,13 @@ Partial Class Main
         Me.btnOrderAcceptance = New DevComponents.DotNetBar.ButtonItem
         Me.btncancelPO = New DevComponents.DotNetBar.ButtonItem
         Me.btnPODO = New DevComponents.DotNetBar.ButtonItem
-        Me.btnSPPB = New DevComponents.DotNetBar.ButtonItem
         Me.btnInvoice = New DevComponents.DotNetBar.ButtonItem
-        Me.btnGONArea = New DevComponents.DotNetBar.ButtonItem
         Me.btnTransporter = New DevComponents.DotNetBar.ButtonItem
+        Me.btnSPPbAndGon = New DevComponents.DotNetBar.ButtonItem
+        Me.btnSPPB = New DevComponents.DotNetBar.ButtonItem
+        Me.btnGONArea = New DevComponents.DotNetBar.ButtonItem
+        Me.btnGONNonPODistributor = New DevComponents.DotNetBar.ButtonItem
+        Me.btnGonDetailData = New DevComponents.DotNetBar.ButtonItem
         Me.btnGenerate = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscMarketing = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscAgreement = New DevComponents.DotNetBar.ButtonItem
@@ -252,7 +256,7 @@ Partial Class Main
         Me.Bar1.BarType = DevComponents.DotNetBar.eBarType.MenuBar
         Me.Bar1.DockSide = DevComponents.DotNetBar.eDockSide.Top
         Me.Bar1.FadeEffect = True
-        Me.Bar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnFile, Me.btnBrandPack, Me.btnDistributor, Me.btnSales, Me.btnOrder, Me.btnGenerate, Me.btnReport, Me.btnUser, Me.btnSMS, Me.btnHelp, Me.btnSetting})
+        Me.Bar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnFile, Me.btnBrandPack, Me.btnDistributor, Me.btnSales, Me.btnOrder, Me.btnSPPbAndGon, Me.btnGenerate, Me.btnReport, Me.btnUser, Me.btnSMS, Me.btnHelp, Me.btnSetting})
         Me.Bar1.Location = New System.Drawing.Point(0, 0)
         Me.Bar1.MenuBar = True
         Me.Bar1.Name = "Bar1"
@@ -283,7 +287,7 @@ Partial Class Main
         '
         Me.btnBrandPack.Name = "btnBrandPack"
         Me.btnBrandPack.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftP)
-        Me.btnBrandPack.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPack, Me.btnBrand, Me.btnBrandPackItem, Me.btnPriceHistory, Me.btnPlantation, Me.btnCompareBrandPack, Me.btnClasification, Me.btnProductClass, Me.btnAVGPrice})
+        Me.btnBrandPack.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPack, Me.btnBrand, Me.btnBrandPackItem, Me.btnPriceHistory, Me.btnPlantation, Me.btnCompareBrandPack, Me.btnClasification, Me.btnProductClass, Me.btnAVGPrice, Me.btnProdconv})
         Me.btnBrandPack.Text = "BrandPack"
         '
         'btnPack
@@ -351,6 +355,11 @@ Partial Class Main
         Me.btnAVGPrice.Name = "btnAVGPrice"
         Me.btnAVGPrice.Text = "Brand Average Price "
         '
+        'btnProdconv
+        '
+        Me.btnProdconv.Name = "btnProdconv"
+        Me.btnProdconv.Text = "Product Convertion"
+        '
         'btnDistributor
         '
         Me.btnDistributor.Name = "btnDistributor"
@@ -409,7 +418,7 @@ Partial Class Main
         '
         Me.btnDistributorRegion.ImageIndex = 4
         Me.btnDistributorRegion.Name = "btnDistributorRegion"
-        Me.btnDistributorRegion.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftG)
+        Me.btnDistributorRegion.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftT)
         Me.btnDistributorRegion.Text = "RSM /TM"
         '
         'btnShipToTM
@@ -441,7 +450,7 @@ Partial Class Main
         '
         Me.btnOrder.Name = "btnOrder"
         Me.btnOrder.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftO)
-        Me.btnOrder.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPO, Me.btnOrderAcceptance, Me.btncancelPO, Me.btnPODO, Me.btnSPPB, Me.btnInvoice, Me.btnGONArea, Me.btnTransporter})
+        Me.btnOrder.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPO, Me.btnOrderAcceptance, Me.btncancelPO, Me.btnPODO, Me.btnInvoice})
         Me.btnOrder.Text = "Order"
         '
         'btnPO
@@ -472,19 +481,32 @@ Partial Class Main
         Me.btnPODO.Name = "btnPODO"
         Me.btnPODO.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlD)
         Me.btnPODO.Text = "PO/DO Third Party"
+        Me.btnPODO.Visible = False
+        '
+        'btnInvoice
+        '
+        Me.btnInvoice.ImageIndex = 30
+        Me.btnInvoice.Name = "btnInvoice"
+        Me.btnInvoice.Text = "Invoicing"
+        '
+        'btnTransporter
+        '
+        Me.btnTransporter.ImageIndex = 34
+        Me.btnTransporter.Name = "btnTransporter"
+        Me.btnTransporter.Text = "Transporter"
+        '
+        'btnSPPbAndGon
+        '
+        Me.btnSPPbAndGon.Name = "btnSPPbAndGon"
+        Me.btnSPPbAndGon.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnSPPB, Me.btnGONNonPODistributor, Me.btnGonDetailData, Me.btnTransporter, Me.btnGONArea})
+        Me.btnSPPbAndGon.Text = "SPPB And GON"
         '
         'btnSPPB
         '
         Me.btnSPPB.ImageIndex = 24
         Me.btnSPPB.Name = "btnSPPB"
         Me.btnSPPB.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
-        Me.btnSPPB.Text = "SPPB Entry"
-        '
-        'btnInvoice
-        '
-        Me.btnInvoice.ImageIndex = 30
-        Me.btnInvoice.Name = "btnInvoice"
-        Me.btnInvoice.Text = "Invoice"
+        Me.btnSPPB.Text = "SPPB GON Entry(Distributor)"
         '
         'btnGONArea
         '
@@ -492,11 +514,16 @@ Partial Class Main
         Me.btnGONArea.Name = "btnGONArea"
         Me.btnGONArea.Text = "G O N Area"
         '
-        'btnTransporter
+        'btnGONNonPODistributor
         '
-        Me.btnTransporter.ImageIndex = 34
-        Me.btnTransporter.Name = "btnTransporter"
-        Me.btnTransporter.Text = "Transporter"
+        Me.btnGONNonPODistributor.Name = "btnGONNonPODistributor"
+        Me.btnGONNonPODistributor.Text = "Entry GON(Others)"
+        '
+        'btnGonDetailData
+        '
+        Me.btnGonDetailData.Name = "btnGonDetailData"
+        Me.btnGonDetailData.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftG)
+        Me.btnGonDetailData.Text = "GON Detail Data"
         '
         'btnGenerate
         '
@@ -810,4 +837,8 @@ Partial Class Main
     Private WithEvents btnAjdustmentPKD As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnDiscDDAndDR As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnAchievementDPDR As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnGONNonPODistributor As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnProdconv As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnSPPbAndGon As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnGonDetailData As DevComponents.DotNetBar.ButtonItem
 End Class

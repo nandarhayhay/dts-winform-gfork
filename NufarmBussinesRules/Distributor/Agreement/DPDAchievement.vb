@@ -3850,7 +3850,7 @@ Namespace DistributorAgreement
                      "  WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND OPB.PO_ORIGINAL_QTY > 0 " & vbCrLf & _
                      "  AND PO.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO) " & vbCrLf & _
                      " )B ;" & vbCrLf & _
-                     " CREATE CLUSTERED INDEX IX_T_MASTER_PO ON ##T_MASTER_PO_" & Me.ComputerName & "(PO_REF_DATE,PO_REF_NO,RUN_NUMBER,DISTRIBUTOR_ID,BRANDPACK_ID) ;"
+                     " --CREATE CLUSTERED INDEX IX_T_MASTER_PO ON ##T_MASTER_PO_" & Me.ComputerName & "(PO_REF_DATE,PO_REF_NO,RUN_NUMBER,DISTRIBUTOR_ID,BRANDPACK_ID) ;"
             '============================= END UNCOMMENT THIS AFTER DEBUGGING =============================================================
             Me.ResetCommandText(CommandType.Text, Query)
             If StartDate.Year = 2020 Then
@@ -3886,7 +3886,7 @@ Namespace DistributorAgreement
                     "       AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                     "      )INV1   " & vbCrLf & _
                     " GROUP BY DISTRIBUTOR_ID,BRAND_ID ; " & vbCrLf & _
-                    " CREATE CLUSTERED INDEX IX_T_Agreement_Brand ON ##T_Agreement_Brand_" & Me.ComputerName & "(TOTAL_INVOICE,BRAND_ID) ;"
+                    " --CREATE CLUSTERED INDEX IX_T_Agreement_Brand ON ##T_Agreement_Brand_" & Me.ComputerName & "(TOTAL_INVOICE,BRAND_ID) ;"
             Me.ResetCommandText(CommandType.Text, Query) : Me.SqlCom.ExecuteScalar()
 
 

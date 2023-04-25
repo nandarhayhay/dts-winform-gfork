@@ -274,6 +274,22 @@ Namespace User
             NufarmBussinesRules.User.Privilege.ALLOW_DELETE.DiscDDorDR = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_INSERT.DiscPrice = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR = InitBool
+
+            NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GONWithoutPOMaster = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.GONWithoutPOMaster = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GONWithoutPOMaster = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_DELETE.GONWithoutPOMaster = InitBool
+
+            NufarmBussinesRules.User.Privilege.ALLOW_VIEW.ConvertionProduct = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.ConvertionProduct = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_INSERT.ConvertionProduct = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_DELETE.ConvertionProduct = InitBool
+
+            NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GonDetailData = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.GonDetailData = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GonDetailData = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_DELETE.GonDetailData = InitBool
+
         End Sub
 
         Private Sub SetPriviledge(ByVal tblPrivilege As DataTable)
@@ -528,6 +544,21 @@ Namespace User
                         NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR = CBool(tblPrivilege.Rows(i)("ALLOW_UPDATE"))
                         NufarmBussinesRules.User.Privilege.ALLOW_INSERT.DiscPrice = CBool(tblPrivilege.Rows(i)("ALLOW_INSERT"))
                         NufarmBussinesRules.User.Privilege.ALLOW_DELETE.DiscDDorDR = CBool(tblPrivilege.Rows(i)("ALLOW_DELETE"))
+                    Case "GONWithoutPOMaster"
+                        NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GONWithoutPOMaster = CBool(tblPrivilege.Rows(i)("ALLOW_VIEW"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.GONWithoutPOMaster = CBool(tblPrivilege.Rows(i)("ALLOW_UPDATE"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GONWithoutPOMaster = CBool(tblPrivilege.Rows(i)("ALLOW_INSERT"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_DELETE.GONWithoutPOMaster = CBool(tblPrivilege.Rows(i)("ALLOW_DELETE"))
+                    Case "ConvertionProduct"
+                        NufarmBussinesRules.User.Privilege.ALLOW_VIEW.ConvertionProduct = CBool(tblPrivilege.Rows(i)("ALLOW_VIEW"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.ConvertionProduct = CBool(tblPrivilege.Rows(i)("ALLOW_UPDATE"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_INSERT.ConvertionProduct = CBool(tblPrivilege.Rows(i)("ALLOW_INSERT"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_DELETE.ConvertionProduct = CBool(tblPrivilege.Rows(i)("ALLOW_DELETE"))
+                    Case "GonDetailData"
+                        NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GonDetailData = CBool(tblPrivilege.Rows(i)("ALLOW_VIEW"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.GonDetailData = CBool(tblPrivilege.Rows(i)("ALLOW_UPDATE"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GonDetailData = CBool(tblPrivilege.Rows(i)("ALLOW_INSERT"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_DELETE.GonDetailData = CBool(tblPrivilege.Rows(i)("ALLOW_DELETE"))
                 End Select
             Next
         End Sub
@@ -591,11 +622,16 @@ Namespace User
                 Me.SqlCom.CommandText = "Sp_Get_User_Privilege"
                 Me.AddParameter("@USER_ID", SqlDbType.VarChar, USER_ID, 30)
                 Dim tblPrivilege As New DataTable("PRIVILEGE")
-                tblPrivilege.Clear() : Me.FillDataTable(tblPrivilege)
+                tblPrivilege.Clear() : setDataAdapter(Me.SqlCom).Fill(tblPrivilege)
+                Me.ClearCommandParameters()
                 If tblPrivilege.Rows.Count <= 0 Then
                     Throw New System.Exception("Acces priviledge doesn't exist")
                 End If
                 Me.IntilializePriviledge(False) : Me.SetPriviledge(tblPrivilege)
+                If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.SPPBEntryGON Or NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GONWithoutPOMaster Then
+                    SettingConfig.filDataExpeditions(True)
+                End If
+                Me.CloseConnection()
             Catch ex As Exception
                 Me.CloseConnection()
                 Me.ClearCommandParameters()

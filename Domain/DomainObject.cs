@@ -17,6 +17,13 @@ namespace Nufarm.Domain
         string _CreatedBy = null ;
         object  _ModifiedDate = null ;
         string _ModifiedBy = "";
+        int _fkApp = 0;
+
+        public int FkApp
+        {
+            get { return _fkApp; }
+            set { _fkApp = value; }
+        }
         public string ModifiedBy
         {
             get { return _ModifiedBy; }

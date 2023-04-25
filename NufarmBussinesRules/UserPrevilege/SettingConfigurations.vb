@@ -11,7 +11,6 @@ Namespace common
         Public CreatedBy As String = ""
         Public CreatedDate As DateTime = Nothing
         Public IsChangedData As Boolean = False
-
     End Class
 End Namespace
 
