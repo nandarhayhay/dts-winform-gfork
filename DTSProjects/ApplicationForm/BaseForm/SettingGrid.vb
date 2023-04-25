@@ -209,14 +209,14 @@ Public Class SettingGrid
                 Me.chkOriginMargin.Checked = False
                 Me.chkRepeatHeader.Checked = False
                 Me.chkTranslate.Checked = False : Me.chkTranslate.Enabled = False
-                Me.txtFooterDistance.Text = Me.GridExPrintDock.FooterDistance
-                Me.txtHeaderDistance.Text = Me.GridExPrintDock.HeaderDistance
-                Me.txtPageFooterCenter.Text = Me.GridExPrintDock.PageFooterCenter
-                Me.txtPageFooterLeft.Text = Me.GridExPrintDock.PageFooterLeft
-                Me.txtPageFooterRight.Text = Me.GridExPrintDock.PageFooterRight
-                Me.txtPageHeaderCenter.Text = Me.GridExPrintDock.PageHeaderCenter
-                Me.txtPageHeaderLeft.Text = Me.GridExPrintDock.PageHeaderLeft
-                Me.txtPageHeaderRight.Text = Me.GridExPrintDock.PageHeaderRight
+                'Me.txtFooterDistance.Text = ""
+                'Me.txtHeaderDistance.Text = ""
+                'Me.txtPageFooterCenter.Text = ""
+                'Me.txtPageFooterLeft.Text = ""
+                'Me.txtPageFooterRight.Text = Me.GridExPrintDock.PageFooterRight
+                'Me.txtPageHeaderCenter.Text = Me.GridExPrintDock.PageHeaderCenter
+                'Me.txtPageHeaderLeft.Text = Me.GridExPrintDock.PageHeaderLeft
+                'Me.txtPageHeaderRight.Text = Me.GridExPrintDock.PageHeaderRight
                 Me.cmbFitColumns.SelectedIndex = CType(Me.GridExPrintDock.FitColumns, Object)
             End If
             Me.cmbGridLine.SelectedItem = CType(Me.Grid.GridLines, Object)

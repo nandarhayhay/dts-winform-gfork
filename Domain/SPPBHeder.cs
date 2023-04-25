@@ -18,6 +18,13 @@ namespace Nufarm.Domain
             get { return _PONumber; }
             set { _PONumber = value; }
         }
+        private object _PODate = DBNull.Value;
+
+        public object PODate
+        {
+            get { return _PODate; }
+            set { _PODate = value; }
+        } 
         private string _SPPBNO = "";
 
         public string SPPBNO

@@ -136,13 +136,25 @@
   <data name="NufarmLogo2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icon And Bitmap\NufarmLogo2.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="signin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icon And Bitmap\signin1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="NufarmLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icon And Bitmap\NufarmLogo.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NufarmLogoNew" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icon And Bitmap\NufarmLogoNew.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Splash" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icon And Bitmap\Splash.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CurrentView" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icon And Bitmap\CurrentView.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SignIn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icon And Bitmap\SignIn.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="processing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\processing.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

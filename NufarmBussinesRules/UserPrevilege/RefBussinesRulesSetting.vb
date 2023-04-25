@@ -1,4 +1,5 @@
 Imports System.Data.SqlClient
+Imports System.Configuration
 Namespace SettingDTS
 
     Public Class RefBussinesRulesSetting : Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
@@ -63,7 +64,6 @@ Namespace SettingDTS
             Next
             NufarmBussinesRules.SharedClass.ListSettings = ListSettings
 
-
             Me.ClearCommandParameters()
             ''setting Access Accpac Database apakah ke NI87 atau ke NI109 berdasarkan current user
             Query = "SET NOCOUNT ON;" & vbCrLf & _
@@ -99,7 +99,53 @@ Namespace SettingDTS
                     NufarmBussinesRules.SharedClass.DBInvoiceTo = SharedClass.CurrentInvToUse.NI109
                 End If
             End If
+
             Me.ClearCommandParameters()
+        End Sub
+        Public Sub filDataExpeditions(ByVal mustCloseconnection As Boolean)
+            Try
+                ''isi NO polisi
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                "SELECT POLICE_NO_TRANS FROM GON_HEADER WHERE POLICE_NO_TRANS IS NOT NULL AND POLICE_NO_TRANS != '' " & vbCrLf & _
+                "UNION" & vbCrLf & _
+                "SELECT POLICE_NO_TRANS FROM GON_SEPARATED_HEADER WHERE POLICE_NO_TRANS IS NOT NULL AND POLICE_NO_TRANS != '';"
+                If IsNothing(Me.SqlCom) Then
+                    Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                NufarmBussinesRules.SharedClass.tblPoliceNumber = New DataTable("Police_no_Trans")
+                setDataAdapter(Me.SqlCom).Fill(NufarmBussinesRules.SharedClass.tblPoliceNumber)
+                Me.ClearCommandParameters()
+                ''isi table supir
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " SELECT DRIVER_TRANS FROM GON_HEADER WHERE DRIVER_TRANS IS NOT NULL AND DRIVER_TRANS != ''" & vbCrLf & _
+                " UNION" & vbCrLf & _
+                " SELECT DRIVER_TRANS FROM GON_SEPARATED_HEADER WHERE DRIVER_TRANS IS NOT NULL AND DRIVER_TRANS != '' ;"
+                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                NufarmBussinesRules.SharedClass.tblDriverTrans = New DataTable("Driver_Trans")
+                setDataAdapter(Me.SqlCom).Fill(NufarmBussinesRules.SharedClass.tblDriverTrans)
+                Me.ClearCommandParameters()
+                If mustCloseconnection Then : Me.CloseConnection() : End If
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+            'Dim colPolTrans As New AutoCompleteStringCollection()
+            'For Each row As DataRow In NufarmBussinesRules.SharedClass.tblDriverTrans.Rows
+            '    colPolTrans.Add(row("POLICE_NO_TRANS"))
+            'Next
+            'Me.txtPolice_no_Trans.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+            'Me.txtPolice_no_Trans.AutoCompleteSource = AutoCompleteSource.CustomSource
+            'Me.txtPolice_no_Trans.AutoCompleteCustomSource = colPolTrans
+
+            'Dim colDriverTrans As New AutoCompleteStringCollection()
+            'For Each row As DataRow In NufarmBussinesRules.SharedClass.tblDriverTrans.Rows
+            '    colDriverTrans.Add(row("DRIVER_TRANS"))
+            'Next
+            'Me.txtDriverTrans.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+            'Me.txtPolice_no_Trans.AutoCompleteSource = AutoCompleteSource.CustomSource
+            'Me.txtPolice_no_Trans.AutoCompleteCustomSource = colDriverTrans
         End Sub
         ''' <summary>
         ''' Nanti lagi di kerjakan sesuda selesai inti program

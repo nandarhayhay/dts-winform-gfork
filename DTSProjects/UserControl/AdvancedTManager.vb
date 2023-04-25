@@ -36,7 +36,9 @@ Public Class AdvancedTManager
     Private Sub txtMaxRecord_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtMaxRecord.KeyDown
         RaiseEvent TetxBoxKeyDown(sender, e)
     End Sub
-
+    Private Sub txtSearch_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtSearch.KeyDown
+        RaiseEvent TetxBoxKeyDown(sender, e)
+    End Sub
     Private Sub cbCategory_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbCategory.SelectedIndexChanged
         RaiseEvent CmbSelectedIndexChanged(sender, e)
     End Sub

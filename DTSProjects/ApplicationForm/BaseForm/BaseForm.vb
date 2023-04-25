@@ -207,7 +207,7 @@ Public Class BaseForm
         MessageBox.Show(info, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
     Protected Sub ShowMessageError(ByVal ErrorInfo As String)
-        MessageBox.Show("Unhandled system Exception due to the folowing error " & vbCrLf & ErrorInfo, "logic Error / unhandled System Exception", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        MessageBox.Show("Unhandled system Exception due to the folowing error " & vbCrLf & vbCrLf & ErrorInfo, "logic Error / unhandled System Exception", MessageBoxButtons.OK, MessageBoxIcon.Error)
     End Sub
     Protected Function ShowConfirmedMessage(ByVal ConfirmedMessage As String) As DialogResult
         Return MessageBox.Show(ConfirmedMessage, "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)

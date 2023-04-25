@@ -28,6 +28,7 @@ Partial Class OA_BranPack
         Dim UiComboBoxItem2 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
         Dim UiComboBoxItem3 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
         Dim UiComboBoxItem4 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem5 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
         Dim ButtonBarGroup1 As Janus.Windows.ButtonBar.ButtonBarGroup = New Janus.Windows.ButtonBar.ButtonBarGroup
         Dim ButtonBarItem1 As Janus.Windows.ButtonBar.ButtonBarItem = New Janus.Windows.ButtonBar.ButtonBarItem
         Dim ButtonBarItem2 As Janus.Windows.ButtonBar.ButtonBarItem = New Janus.Windows.ButtonBar.ButtonBarItem
@@ -585,7 +586,11 @@ Partial Class OA_BranPack
         UiComboBoxItem4.IsSeparator = False
         UiComboBoxItem4.Text = "SACHET"
         UiComboBoxItem4.Value = "SACHET"
-        Me.cmbKiloLitre.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3, UiComboBoxItem4})
+        UiComboBoxItem5.FormatStyle.Alpha = 0
+        UiComboBoxItem5.IsSeparator = False
+        UiComboBoxItem5.Text = "TABLET"
+        UiComboBoxItem5.Value = "TABLET"
+        Me.cmbKiloLitre.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3, UiComboBoxItem4, UiComboBoxItem5})
         Me.cmbKiloLitre.ItemsFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.cmbKiloLitre.Location = New System.Drawing.Point(188, 208)
         Me.cmbKiloLitre.Name = "cmbKiloLitre"

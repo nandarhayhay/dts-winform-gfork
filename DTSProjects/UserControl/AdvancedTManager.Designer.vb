@@ -22,6 +22,10 @@ Partial Class AdvancedTManager
         Me.components = New System.ComponentModel.Container
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AdvancedTManager))
         Me.grdpSearch = New Janus.Windows.EditControls.UIGroupBox
+        Me.lblUntil = New System.Windows.Forms.Label
+        Me.lblFrom = New System.Windows.Forms.Label
+        Me.dtPicUntil = New System.Windows.Forms.DateTimePicker
+        Me.dtPicFrom = New System.Windows.Forms.DateTimePicker
         Me.btnCriteria = New Nufarm.Common.GUI.ToggleButton
         Me.txtMaxRecord = New System.Windows.Forms.TextBox
         Me.cbCategory = New System.Windows.Forms.ComboBox
@@ -49,6 +53,10 @@ Partial Class AdvancedTManager
         '
         'grdpSearch
         '
+        Me.grdpSearch.Controls.Add(Me.lblUntil)
+        Me.grdpSearch.Controls.Add(Me.lblFrom)
+        Me.grdpSearch.Controls.Add(Me.dtPicUntil)
+        Me.grdpSearch.Controls.Add(Me.dtPicFrom)
         Me.grdpSearch.Controls.Add(Me.btnCriteria)
         Me.grdpSearch.Controls.Add(Me.txtMaxRecord)
         Me.grdpSearch.Controls.Add(Me.cbCategory)
@@ -67,16 +75,57 @@ Partial Class AdvancedTManager
         Me.grdpSearch.Text = "Search Data"
         Me.grdpSearch.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
         '
+        'lblUntil
+        '
+        Me.lblUntil.AutoSize = True
+        Me.lblUntil.Location = New System.Drawing.Point(345, 54)
+        Me.lblUntil.Name = "lblUntil"
+        Me.lblUntil.Size = New System.Drawing.Size(16, 13)
+        Me.lblUntil.TabIndex = 42
+        Me.lblUntil.Text = "till"
+        Me.lblUntil.Visible = False
+        '
+        'lblFrom
+        '
+        Me.lblFrom.AutoSize = True
+        Me.lblFrom.Location = New System.Drawing.Point(137, 54)
+        Me.lblFrom.Name = "lblFrom"
+        Me.lblFrom.Size = New System.Drawing.Size(30, 13)
+        Me.lblFrom.TabIndex = 41
+        Me.lblFrom.Text = "From"
+        Me.lblFrom.Visible = False
+        '
+        'dtPicUntil
+        '
+        Me.dtPicUntil.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicUntil.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.dtPicUntil.Location = New System.Drawing.Point(379, 51)
+        Me.dtPicUntil.Name = "dtPicUntil"
+        Me.dtPicUntil.Size = New System.Drawing.Size(166, 20)
+        Me.dtPicUntil.TabIndex = 40
+        Me.dtPicUntil.Visible = False
+        '
+        'dtPicFrom
+        '
+        Me.dtPicFrom.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.dtPicFrom.Location = New System.Drawing.Point(180, 50)
+        Me.dtPicFrom.Name = "dtPicFrom"
+        Me.dtPicFrom.Size = New System.Drawing.Size(154, 20)
+        Me.dtPicFrom.TabIndex = 39
+        Me.dtPicFrom.Visible = False
+        '
         'btnCriteria
         '
         Me.btnCriteria.ClickedImage = "Clicked"
-        Me.btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+        Me.btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
         Me.btnCriteria.DisabledImage = "Disabled"
         Me.btnCriteria.FlatAppearance.BorderColor = System.Drawing.SystemColors.GradientActiveCaption
         Me.btnCriteria.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ButtonFace
         Me.btnCriteria.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.MenuHighlight
         Me.btnCriteria.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnCriteria.FocusedImage = "Focused"
+        Me.btnCriteria.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnCriteria.HoverImage = "Hover"
         Me.btnCriteria.ImageKey = "Normal"
         Me.btnCriteria.Location = New System.Drawing.Point(379, 23)
@@ -324,8 +373,12 @@ Partial Class AdvancedTManager
     Friend WithEvents btnNext As Janus.Windows.EditControls.UIButton
     Friend WithEvents btnGoPrevios As Janus.Windows.EditControls.UIButton
     Friend WithEvents btnGoFirst As Janus.Windows.EditControls.UIButton
-    Friend WithEvents btnCriteria As NuFarm.Common.GUI.ToggleButton
+    Friend WithEvents btnCriteria As Nufarm.Common.GUI.ToggleButton
     Friend WithEvents txtSearch As System.Windows.Forms.TextBox
     Friend WithEvents CHKSelectAll As System.Windows.Forms.CheckBox
+    Public WithEvents lblUntil As System.Windows.Forms.Label
+    Public WithEvents lblFrom As System.Windows.Forms.Label
+    Public WithEvents dtPicUntil As System.Windows.Forms.DateTimePicker
+    Public WithEvents dtPicFrom As System.Windows.Forms.DateTimePicker
 
 End Class

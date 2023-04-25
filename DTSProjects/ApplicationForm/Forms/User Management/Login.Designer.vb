@@ -26,19 +26,20 @@ Partial Class Login
         Me.XpLoginEntry2 = New SteepValley.Windows.Forms.XPLoginEntry
         Me.XpLinkedLabelIcon1 = New SteepValley.Windows.Forms.XPLinkedLabelIcon
         Me.XpLoginEntry1 = New SteepValley.Windows.Forms.XPLoginEntry
-        Me.XpWatermark1 = New SteepValley.Windows.Forms.XPWatermark
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox
         Me.XpLetterBox1.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'XpLetterBox1
         '
         Me.XpLetterBox1.BackColor = System.Drawing.Color.Transparent
+        Me.XpLetterBox1.Controls.Add(Me.PictureBox1)
         Me.XpLetterBox1.Controls.Add(Me.TextBox1)
         Me.XpLetterBox1.Controls.Add(Me.XpLoginEntry2)
         Me.XpLetterBox1.Controls.Add(Me.XpLinkedLabelIcon1)
         Me.XpLetterBox1.Controls.Add(Me.XpLoginEntry1)
-        Me.XpLetterBox1.Controls.Add(Me.XpWatermark1)
         Me.XpLetterBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.XpLetterBox1.DrawVerticalSplitLine = True
         Me.XpLetterBox1.HeaderText = "Please login to Server"
@@ -47,12 +48,13 @@ Partial Class Login
         Me.XpLetterBox1.Padding = New System.Windows.Forms.Padding(0, 48, 0, 48)
         Me.XpLetterBox1.Size = New System.Drawing.Size(463, 261)
         Me.XpLetterBox1.TabIndex = 0
-        Me.XpLetterBox1.ThemeFormat.BottomBodyColor = System.Drawing.Color.FromArgb(CType(CType(90, Byte), Integer), CType(CType(126, Byte), Integer), CType(CType(220, Byte), Integer))
-        Me.XpLetterBox1.ThemeFormat.FooterColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(51, Byte), Integer), CType(CType(153, Byte), Integer))
-        Me.XpLetterBox1.ThemeFormat.HeaderColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(51, Byte), Integer), CType(CType(153, Byte), Integer))
-        Me.XpLetterBox1.ThemeFormat.HeaderTextColor = System.Drawing.Color.FromArgb(CType(CType(214, Byte), Integer), CType(CType(223, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.XpLetterBox1.Theme = SteepValley.Windows.Forms.ThemedControls.ThemeStyle.HomeStead
+        Me.XpLetterBox1.ThemeFormat.BottomBodyColor = System.Drawing.Color.FromArgb(CType(CType(165, Byte), Integer), CType(CType(189, Byte), Integer), CType(CType(132, Byte), Integer))
+        Me.XpLetterBox1.ThemeFormat.FooterColor = System.Drawing.Color.FromArgb(CType(CType(150, Byte), Integer), CType(CType(168, Byte), Integer), CType(CType(103, Byte), Integer))
+        Me.XpLetterBox1.ThemeFormat.HeaderColor = System.Drawing.Color.FromArgb(CType(CType(150, Byte), Integer), CType(CType(168, Byte), Integer), CType(CType(103, Byte), Integer))
+        Me.XpLetterBox1.ThemeFormat.HeaderTextColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(184, Byte), Integer))
         Me.XpLetterBox1.ThemeFormat.HeaderTextFont = New System.Drawing.Font("Franklin Gothic Medium", 14.0!, System.Drawing.FontStyle.Bold)
-        Me.XpLetterBox1.ThemeFormat.TopBodyColor = System.Drawing.Color.FromArgb(CType(CType(85, Byte), Integer), CType(CType(130, Byte), Integer), CType(CType(210, Byte), Integer))
+        Me.XpLetterBox1.ThemeFormat.TopBodyColor = System.Drawing.Color.FromArgb(CType(CType(165, Byte), Integer), CType(CType(189, Byte), Integer), CType(CType(132, Byte), Integer))
         '
         'TextBox1
         '
@@ -100,22 +102,19 @@ Partial Class Login
         Me.XpLoginEntry1.Size = New System.Drawing.Size(223, 60)
         Me.XpLoginEntry1.TabIndex = 1
         '
-        'XpWatermark1
-        '
-        Me.XpWatermark1.BackColor = System.Drawing.Color.Transparent
-        Me.XpWatermark1.Gamma = 1.0!
-        Me.XpWatermark1.Image = CType(resources.GetObject("XpWatermark1.Image"), System.Drawing.Image)
-        Me.XpWatermark1.Location = New System.Drawing.Point(113, 110)
-        Me.XpWatermark1.Name = "XpWatermark1"
-        Me.XpWatermark1.Opacity = 0.5!
-        Me.XpWatermark1.Size = New System.Drawing.Size(80, 77)
-        Me.XpWatermark1.TabIndex = 0
-        Me.XpWatermark1.TransparentColor.High = System.Drawing.Color.Empty
-        Me.XpWatermark1.TransparentColor.Low = System.Drawing.Color.Empty
-        '
         'Timer1
         '
         Me.Timer1.Interval = 2000
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackgroundImage = Global.DTSProjects.My.Resources.Resources.signin1
+        Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox1.Location = New System.Drawing.Point(36, 61)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(116, 117)
+        Me.PictureBox1.TabIndex = 5
+        Me.PictureBox1.TabStop = False
         '
         'Login
         '
@@ -130,14 +129,15 @@ Partial Class Login
         Me.TopMost = True
         Me.XpLetterBox1.ResumeLayout(False)
         Me.XpLetterBox1.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
     Private WithEvents XpLetterBox1 As SteepValley.Windows.Forms.ThemedControls.XPLetterBox
     Private WithEvents XpLoginEntry1 As SteepValley.Windows.Forms.XPLoginEntry
-    Private WithEvents XpWatermark1 As SteepValley.Windows.Forms.XPWatermark
     Private WithEvents XpLinkedLabelIcon1 As SteepValley.Windows.Forms.XPLinkedLabelIcon
     Private WithEvents Timer1 As System.Windows.Forms.Timer
     Private WithEvents TextBox1 As System.Windows.Forms.TextBox
     Private WithEvents XpLoginEntry2 As SteepValley.Windows.Forms.XPLoginEntry
+    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
 End Class

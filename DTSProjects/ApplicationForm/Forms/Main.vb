@@ -2,9 +2,11 @@ Imports System.Diagnostics
 Imports System.Globalization
 Imports System.Threading
 Imports System.Configuration.Configuration
+Imports System.Configuration
 Public Class Main
-
 #Region "Deklarasi"
+    Private isHOUser As Boolean = CBool(ConfigurationManager.AppSettings("IsHO"))
+    Private ShowPrice As Boolean = CBool(ConfigurationManager.AppSettings("ShowPrice"))
     Private frmBrandPack As BrandPackHistory : Private frmDistributor As Distributor
     Private frmDHistory As DistributorHistory : Private FrmActive As System.Windows.Forms.Form
     Private HoldLoadForm As Int16 : Private frmPack As Pack : Private frmBrand As Brand
@@ -36,6 +38,9 @@ Public Class Main
     Private frmAdjustmentPKD As AjdustmentPKD
     Private frmDiscDDorDR As DiscountDDOrDR
     Private frmAchievementR As AchievementF
+    Private frmConfProd As ConvertionProduct
+    Private frmGonNonPO As GONWithoutPOMaster
+private frmGonDetailData as GonDetailData 
 #End Region
 
     Private ThreadProgress As Thread = Nothing
@@ -157,7 +162,9 @@ Public Class Main
             Case "CPDAuto" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.CPDAuto
             Case "AjdustmentPKD" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.AdjustmentPKD
             Case "DiscountDDorDR" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.DiscDDorDR
-
+            Case "GONWithoutPOMaster" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GONWithoutPOMaster
+            Case "ConvertionProduct" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.ConvertionProduct
+            Case "GonDetailData" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GonDetailData
         End Select
     End Function
 
@@ -200,6 +207,9 @@ Public Class Main
         Me.btnAjdustmentPKD.Visible = Me.IsHasPrivilege("AjdustmentPKD")
         Me.btnDiscDDAndDR.Visible = Me.IsHasPrivilege("DiscountDDorDR")
         Me.btnAchievementDPDR.Visible = Me.IsHasPrivilege("Achievement")
+        Me.btnProdconv.Visible = Me.IsHasPrivilege("ConvertionProduct")
+        Me.btnGONNonPODistributor.Visible = Me.IsHasPrivilege("GONWithoutPOMaster")
+        Me.btnGonDetailData.Visible = Me.IsHasPrivilege("GonDetailData")
         Me.btnCompareBrandPack.Visible = False
         Me.btnManageUser.Visible = False
     End Sub
@@ -238,6 +248,11 @@ Public Class Main
             Me.btnManageUser.Visible = False
             Me.btnDiscDDAndDR.Visible = True
             Me.btnAchievementDPDR.Visible = True
+            Me.btnGONNonPODistributor.Visible = True
+
+            Me.btnProdconv.Visible = True
+            Me.btnSPPbAndGon.Visible = True
+            Me.btnGonDetailData.Visible = True
         ElseIf NufarmBussinesRules.User.UserLogin.IsAdmin Then ' ITSupport
             Me.getCommonPriviledge()
             Me.btnSetting.Visible = True
@@ -246,6 +261,8 @@ Public Class Main
             Me.btnOptions.Visible = True
             Me.btnManageUser.Visible = True
             Me.btnDiscDDAndDR.Visible = True
+            Me.btnSPPbAndGon.Visible = True
+            Me.btnGonDetailData.Visible = True
         Else
             btnSetting.Visible = False : Me.btnLogIn.Visible = False
             Me.btnLogout.Visible = True
@@ -259,8 +276,17 @@ Public Class Main
         Me.btnGenerate.Visible = Not Me.btnGenerate.VisibleSubItems <= 0
         Me.btnReport.Visible = Not Me.btnReport.VisibleSubItems <= 0
         Me.btnSMS.Visible = Not Me.btnSMS.VisibleSubItems <= 0
+        Me.btnSPPbAndGon.Visible = Not Me.btnSPPbAndGon.VisibleSubItems <= 0
         If btnSetting.Visible Then
             Me.btnSetting.Visible = Not Me.btnSetting.VisibleSubItems <= 0
+        End If
+        If Not Me.isHOUser Then
+            Me.btnAVGPrice.Visible = False
+            btnPriceHistory.Visible = False
+            btnOrderAcceptance.Visible = False
+            btnReport.Visible = False
+            btnByGrid.Visible = False
+            btnBrandPackPlantation.Visible = False
         End If
     End Sub
 
@@ -1329,10 +1355,11 @@ Public Class Main
             End If
         End If
     End Sub
+
     Private _IsSystemAdministrator As Boolean = False
     Public Property IsSystemAdministrator() As Boolean
         Get
-            Return IIf(Configuration.ConfigurationManager.AppSettings("SysA") = "True", True, False)
+            Return IIf(ConfigurationManager.AppSettings("SysA") = "True", True, False)
         End Get
         Set(ByVal value As Boolean)
             _IsSystemAdministrator = value
@@ -1348,6 +1375,7 @@ Public Class Main
             _isITSupport = value
         End Set
     End Property
+
     Private Sub ShowAreaGON()
         If NufarmBussinesRules.User.UserLogin.HasLogin Then
             'Me.ShowThread()
@@ -1372,6 +1400,81 @@ Public Class Main
             End If
         End If
     End Sub
+    Private Sub ShowGonNonPODistr()
+        If NufarmBussinesRules.User.UserLogin.HasLogin Then
+            'Me.ShowThread()
+            If IsNothing(Me.frmGonNonPO) OrElse Me.frmGonNonPO.IsDisposed() Then
+                Me.FormLoading = StatusForm.Loading ' Me.tmrHoldShowForm.Enabled = True
+                Me.frmGonNonPO = New GONWithoutPOMaster()
+            End If
+            With Me.frmGonNonPO
+                .ShowInTaskbar = False : .MdiParent = Me
+                .CMain = Me
+                .Show() : Me.ReadAcces()
+            End With
+            Me.FrmActive = Me.frmGonNonPO
+        Else : Me.DOLogin()
+            If NufarmBussinesRules.User.UserLogin.HasLogin Then
+                Me.frmGonNonPO = New GONWithoutPOMaster()
+                With Me.frmGonNonPO
+                    .ShowInTaskbar = False : .MdiParent = Me
+                    .CMain = Me
+                End With
+                Me.Timer1.Enabled = True : Me.Timer1.Start()
+                Me.FrmActive = Me.frmGonNonPO
+            End If
+        End If
+    End Sub
+    Private Sub ShowGonDetailData()
+        If NufarmBussinesRules.User.UserLogin.HasLogin Then
+            'Me.ShowThread()
+            If IsNothing(Me.frmGonDetailData) OrElse Me.frmGonDetailData.IsDisposed() Then
+                Me.FormLoading = StatusForm.Loading ' Me.tmrHoldShowForm.Enabled = True
+                Me.frmGonDetailData = New GonDetailData()
+            End If
+            With Me.frmGonDetailData
+                .ShowInTaskbar = False : .MdiParent = Me
+                .Show() : Me.ReadAcces()
+            End With
+            Me.FrmActive = Me.frmGonDetailData
+        Else : Me.DOLogin()
+            If NufarmBussinesRules.User.UserLogin.HasLogin Then
+                Me.frmGonDetailData = New GonDetailData()
+                With Me.frmGonNonPO
+                    .ShowInTaskbar = False : .MdiParent = Me
+                End With
+                Me.Timer1.Enabled = True : Me.Timer1.Start()
+                Me.FrmActive = Me.frmGonDetailData
+            End If
+        End If
+    End Sub
+    Private Sub ShowConvertionProduct()
+        If NufarmBussinesRules.User.UserLogin.HasLogin Then
+            If IsNothing(Me.frmConfProd) OrElse Me.frmConfProd.IsDisposed() Then
+                Me.FormLoading = StatusForm.Loading
+                Me.frmConfProd = New ConvertionProduct()
+            End If
+            With Me.frmConfProd
+                .ShowInTaskbar = False
+                .CMain = Me
+                .ShowDialog(Me) : Me.ReadAcces()
+            End With
+            FrmActive = Me.frmConfProd
+        Else : Me.DOLogin()
+            If NufarmBussinesRules.User.UserLogin.HasLogin Then
+                Me.frmConfProd = New ConvertionProduct()
+                With Me.frmConfProd
+                    .ShowInTaskbar = False
+                    .CMain = Me
+                End With
+                Me.Timer1.Enabled = True : Me.Timer1.Start()
+                Me.FrmActive = Me.frmGonNonPO
+            End If
+            Me.Timer1.Enabled = True : Me.Timer1.Start()
+            Me.FrmActive = Me.frmConfProd
+        End If
+    End Sub
+
     Private Sub RenewObjectForm(ByVal OForm As Form)
         If Not IsNothing(OForm) Then
             If Not OForm.IsDisposed() Then
@@ -1380,6 +1483,7 @@ Public Class Main
             OForm = Nothing
         End If
     End Sub
+
     Private Sub Bar1_ItemClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Bar1.ItemClick
         Try
             Me.Cursor = Cursors.WaitCursor
@@ -1436,6 +1540,9 @@ Public Class Main
                 Case "btnAjdustmentPKD" : Me.ShowAddjustment()
                 Case "btnDiscDDAndDR" : Me.ShowDDorDR()
                 Case "btnAchievementDPDR" : Me.ShowAchievementRoundup()
+                Case "btnProdconv" : Me.ShowConvertionProduct()
+                Case "btnGONNonPODistributor" : Me.ShowGonNonPODistr()
+                Case "btnGonDetailData" : Me.ShowGonDetailData()
             End Select
         Catch ex As Exception
             Me.StatProg = StatusProgress.None : MessageBox.Show(ex.Message)
@@ -1510,6 +1617,7 @@ Public Class Main
                     Case "btnAjdustmentPKD" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmAdjustmentPKD.Show()
                     Case "btnDiscDDAndDR" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmDiscDDorDR.Show()
                     Case "btnAchievementDPDR" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmAchievementR.Show()
+                    Case "btnProdconv" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmConfProd.ShowDialog(Me)
                 End Select
             End If
             Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.HoldLoadForm = 0 : Me.ReadAcces()

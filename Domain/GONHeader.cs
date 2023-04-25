@@ -57,5 +57,47 @@ namespace Nufarm.Domain
             get { return _statusToBecome; }
             set { _statusToBecome = value; }
         }
+        private string _distributorID = "";
+
+        public string DistributorID
+        {
+            get { return _distributorID; }
+            set { _distributorID = value; }
+        }
+        private string _customerName = "";
+
+        public string CustomerName
+        {
+            get { return _customerName; }
+            set { _customerName = value; }
+        }
+        private string _customerAddress = "";
+
+        public string CustomerAddress
+        {
+            get { return _customerAddress; }
+            set { _customerAddress = value; }
+        }
+        private string _warhouseCode = "";
+
+        public string WarhouseCode
+        {
+            get { return _warhouseCode; }
+            set { _warhouseCode = value; }
+        }
+        private string _policeNoTrans = "";
+
+        public string PoliceNoTrans
+        {
+            get { return _policeNoTrans; }
+            set { _policeNoTrans = value; }
+        }
+        private string _driverTrans = "";
+
+        public string DriverTrans
+        {
+            get { return _driverTrans; }
+            set { _driverTrans = value; }
+        }
     }
 }

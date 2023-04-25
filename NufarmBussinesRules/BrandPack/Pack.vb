@@ -112,7 +112,7 @@ Namespace Brandpack
         Public Function CreateDataViewAllPack() As DataView
             Try
                 ''ambil pack yang ada di accpac,bila belum ada inputkan
-                Dim DBInvoiceTo As NufarmBussinesRules.SharedClass.CurrentInvToUse
+                'Dim DBInvoiceTo As NufarmBussinesRules.SharedClass.CurrentInvToUse
                 'If DBInvoiceTo = CurrentInvToUse.NI109 Then
 
                 'End If

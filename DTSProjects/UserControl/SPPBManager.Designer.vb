@@ -102,14 +102,14 @@ Partial Class SPPBManager
         Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCatPO, Me.btnCatSPPB, Me.btnCustom})
         Me.ItemPanel1.Location = New System.Drawing.Point(0, 0)
         Me.ItemPanel1.Name = "ItemPanel1"
-        Me.ItemPanel1.Size = New System.Drawing.Size(212, 28)
+        Me.ItemPanel1.Size = New System.Drawing.Size(226, 28)
         Me.ItemPanel1.TabIndex = 26
         Me.ItemPanel1.Text = "ItemPanel1"
         '
         'btnCatPO
         '
         Me.btnCatPO.Name = "btnCatPO"
-        Me.btnCatPO.Text = "Purchase Order"
+        Me.btnCatPO.Text = "Purchase Order Date"
         '
         'btnCatSPPB
         '
@@ -143,10 +143,11 @@ Partial Class SPPBManager
         '
         '
         Me.dtPicUntil.DropDownCalendar.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.dtPicUntil.DropDownCalendar.FirstMonth = New Date(2022, 12, 1, 0, 0, 0, 0)
         Me.dtPicUntil.DropDownCalendar.Name = ""
         Me.dtPicUntil.DropDownCalendar.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2007
         Me.dtPicUntil.HoverMode = Janus.Windows.CalendarCombo.HoverMode.Highlight
-        Me.dtPicUntil.Location = New System.Drawing.Point(477, 4)
+        Me.dtPicUntil.Location = New System.Drawing.Point(504, 4)
         Me.dtPicUntil.Name = "dtPicUntil"
         Me.dtPicUntil.ShowTodayButton = False
         Me.dtPicUntil.Size = New System.Drawing.Size(174, 20)
@@ -159,7 +160,7 @@ Partial Class SPPBManager
         Me.lblFrom.AutoSize = True
         Me.lblFrom.BackColor = System.Drawing.Color.Transparent
         Me.lblFrom.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblFrom.Location = New System.Drawing.Point(219, 7)
+        Me.lblFrom.Location = New System.Drawing.Point(233, 7)
         Me.lblFrom.Name = "lblFrom"
         Me.lblFrom.Size = New System.Drawing.Size(38, 14)
         Me.lblFrom.TabIndex = 1
@@ -174,10 +175,11 @@ Partial Class SPPBManager
         '
         '
         Me.dtpicFrom.DropDownCalendar.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.dtpicFrom.DropDownCalendar.FirstMonth = New Date(2022, 12, 1, 0, 0, 0, 0)
         Me.dtpicFrom.DropDownCalendar.Name = ""
         Me.dtpicFrom.DropDownCalendar.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2007
         Me.dtpicFrom.HoverMode = Janus.Windows.CalendarCombo.HoverMode.Highlight
-        Me.dtpicFrom.Location = New System.Drawing.Point(266, 4)
+        Me.dtpicFrom.Location = New System.Drawing.Point(293, 4)
         Me.dtpicFrom.Name = "dtpicFrom"
         Me.dtpicFrom.ShowTodayButton = False
         Me.dtpicFrom.Size = New System.Drawing.Size(157, 20)
@@ -189,7 +191,7 @@ Partial Class SPPBManager
         '
         Me.lblUntil.BackColor = System.Drawing.Color.Transparent
         Me.lblUntil.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblUntil.Location = New System.Drawing.Point(430, 7)
+        Me.lblUntil.Location = New System.Drawing.Point(457, 8)
         Me.lblUntil.Name = "lblUntil"
         Me.lblUntil.Size = New System.Drawing.Size(74, 14)
         Me.lblUntil.TabIndex = 3
@@ -216,7 +218,7 @@ Partial Class SPPBManager
         UiComboBoxItem4.Value = "GON_NUMBER"
         Me.cmbFilterBy.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3, UiComboBoxItem4})
         Me.cmbFilterBy.ItemsFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.cmbFilterBy.Location = New System.Drawing.Point(271, 4)
+        Me.cmbFilterBy.Location = New System.Drawing.Point(293, 4)
         Me.cmbFilterBy.Name = "cmbFilterBy"
         Me.cmbFilterBy.Size = New System.Drawing.Size(152, 20)
         Me.cmbFilterBy.StateStyles.FormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))

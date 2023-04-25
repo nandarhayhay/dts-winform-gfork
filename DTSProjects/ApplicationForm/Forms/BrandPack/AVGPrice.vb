@@ -217,7 +217,7 @@ Public Class AVGPrice
         Me.txtAVGpricePL.Value = 0
     End Sub
     Friend Sub GetData()
-        Dim SearchString As String = Me.TManager1.txtSearch.Text, SearchBy As String = Me.TManager1.cbCategory.Text
+        Dim SearchString As String = Me.TManager1.txtSearch.Text.Trim(), SearchBy As String = Me.TManager1.cbCategory.Text
         If (Me.TManager1.cbCategory.Text = "") Then
             SearchBy = "BRAND_NAME"
         ElseIf Me.TManager1.cbCategory.Text = "BRAND_NAME" Then : SearchBy = "BRAND_NAME"
@@ -237,24 +237,24 @@ Public Class AVGPrice
         If Me.TManager1.txtMaxRecord.Text <> "" Then
             MaxRecord = Convert.ToInt32(Me.TManager1.txtMaxRecord.Text.Trim())
         End If
-        Dim Ischanged As Boolean = False
-        If Me.OriginalData.SearchBy <> SearchBy Then
-            Ischanged = True
-        ElseIf Me.OriginalData.CriteriaSearch <> strCriteriaSearch Then
-            Ischanged = True
-        ElseIf Me.OriginalData.MaxRecord <> MaxRecord Then
-            Ischanged = True
-            'ElseIf Me.OriginalData.SearchValue <> RTrim(Me.TManager1.txtSearch.Text) Then
-            '    Ischanged = True
-        ElseIf Me.IsSavingData Then
-            Ischanged = True
-        End If
+        'Dim Ischanged As Boolean = False
+        'If Me.OriginalData.SearchBy <> SearchBy Then
+        '    Ischanged = True
+        'ElseIf Me.OriginalData.CriteriaSearch <> strCriteriaSearch Then
+        '    Ischanged = True
+        'ElseIf Me.OriginalData.MaxRecord <> MaxRecord Then
+        '    Ischanged = True
+        '    'ElseIf Me.OriginalData.SearchValue <> RTrim(Me.TManager1.txtSearch.Text) Then
+        '    '    Ischanged = True
+        'ElseIf Me.IsSavingData Then
+        '    Ischanged = True
+        'End If
         'set originaldata
         With Me.OriginalData
             .CriteriaSearch = strCriteriaSearch
             .MaxRecord = MaxRecord
             .SearchBy = SearchBy
-            .SearchValue = RTrim(Me.TManager1.txtSearch.Text)
+            .SearchValue = SearchString
             Me.RunQuery(.SearchValue, .SearchBy)
         End With
         If TManager1.txtMaxRecord.Text <> "" Then
@@ -384,69 +384,69 @@ Public Class AVGPrice
             Select Case Me.OriginalCriteria
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                     .btnCriteria.Text = "|*"
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                     .btnCriteria.Text = "*|"
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                     .btnCriteria.Text = "="
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                     .btnCriteria.Text = ">"
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                     .btnCriteria.Text = ">="
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.In
                     .btnCriteria.Text = "*|*"
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.In
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                     .btnCriteria.Text = "<"
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                     .btnCriteria.Text = "<="
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                     .btnCriteria.Text = "*.*"
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
                     .btnCriteria.Text = "<>"
-                    .btnCriteria.CompareOperators = Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
             End Select
         End With
         Me.isUndoingCriteria = False
     End Sub
     Private Sub SetOriginalCriteria()
-        Select Case Me.TManager1.btnCriteria.CompareOperators
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+        Select Case Me.TManager1.btnCriteria.CompOperator
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Equal
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Greater
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.In
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.In
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Less
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Like
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
         End Select
     End Sub
@@ -536,7 +536,7 @@ Public Class AVGPrice
             If Not IsloadedForm Then : Return : End If
             Me.Cursor = Cursors.WaitCursor
             If Me.isUndoingCriteria Then : Return : End If
-            Select Case Me.TManager1.btnCriteria.CompareOperators
+            Select Case Me.TManager1.btnCriteria.CompOperator
                 Case Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                 Case Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith

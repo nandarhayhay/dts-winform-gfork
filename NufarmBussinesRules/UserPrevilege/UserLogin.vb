@@ -84,6 +84,9 @@ Namespace User
             Public Options As Boolean
             Public User As Boolean
             Public DiscPrice As Boolean
+            Public GONWithoutPOMaster As Boolean
+            Public ConvertionProduct As Boolean
+            Public GonDetailData As Boolean
         End Structure
 
         Public Structure ALLOW_VIEW
@@ -141,6 +144,9 @@ Namespace User
             Public AdjustmentPKD As Boolean
             Public User As Boolean
             Public DiscDDorDR As Boolean
+            Public GONWithoutPOMaster As Boolean
+            Public ConvertionProduct As Boolean
+            Public GonDetailData As Boolean
         End Structure
 
         Public Structure ALLOW_UPDATE
@@ -195,6 +201,9 @@ Namespace User
             Public AdjustmentPKD As Boolean
             Public User As Boolean
             Public DiscDDorDR As Boolean
+            Public GONWithoutPOMaster As Boolean
+            Public ConvertionProduct As Boolean
+            Public GonDetailData As Boolean
         End Structure
 
         Public Structure ALLOW_DELETE
@@ -242,6 +251,9 @@ Namespace User
             Public Options As Boolean
             Public User As Boolean
             Public DiscDDorDR As Boolean
+            Public GONWithoutPOMaster As Boolean
+            Public ConvertionProduct As Boolean
+            Public GonDetailData As Boolean
         End Structure
     End Class
 
