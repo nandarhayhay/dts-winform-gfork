@@ -81,6 +81,9 @@ Public Class SPPBEntryGON
     ''' <remarks>only used for editing mode from grid manager</remarks>
     Friend OGONHeader As New Nufarm.Domain.GONHeader()
     Private isNewGON As Boolean = False
+    Private DefWarHouseCode As String = ConfigurationManager.AppSettings("WarHouseCode")
+    Private IsHOUser As Boolean = NufarmBussinesRules.SharedClass.IsUserHO
+    Private IsSystemAdmin = CBool(ConfigurationManager.AppSettings("SysA"))
 
     Private Sub DisposeAllObjects()
         If Not IsNothing(Me.DS) Then
@@ -114,7 +117,6 @@ Public Class SPPBEntryGON
         Me.lblSalesPerson.Text = ""
     End Sub
     'Private m_KodeGudang As String = "JKT"
-
     Private Sub ClearSPPBdata()
         Me.ClearText()
         Me.txtSPPBNO.Text = ""
@@ -150,6 +152,7 @@ Public Class SPPBEntryGON
         Me.btnAddGon.Enabled = False
         Me.txtPolice_no_Trans.Text = ""
         Me.txtDriverTrans.Text = ""
+        Me.txtShipTo.Text = ""
         ''get maximum gon date value
     End Sub
     Private Function isValidGON(ByVal CtrlToExclude As Control, ByVal IsAllToCheck As Boolean) As Boolean
@@ -247,6 +250,16 @@ Public Class SPPBEntryGON
             End If
         End If
         Return True
+        If Me.cmdWarhouse.SelectedIndex <= 0 Then
+            If Not IsNothing(CtrlToExclude) Then
+                If CtrlToExclude.Name <> "cmdWarhouse" Then
+                    Me.baseTooltip.Show("Invalid status", Me.cmdWarhouse, 2500) : Me.cmdWarhouse.Focus() : Return False
+                End If
+            Else
+                Me.baseTooltip.Show("Invalid status", Me.cmdWarhouse, 2500) : Me.cmdWarhouse.Focus() : Return False
+            End If
+        End If
+
     End Function
     Private m_TblGON As DataTable = Nothing
     Friend Property tblMasterGON() As DataTable
@@ -272,8 +285,8 @@ Public Class SPPBEntryGON
                 colIsOpen.AllowDBNull = False
                 colIsOpen.DefaultValue = False
                 Dim colBatchNo As New DataColumn("BatchNo", Type.GetType("System.String"))
-                colBatchNo.AllowDBNull = True
-                colBatchNo.DefaultValue = DBNull.Value
+                colBatchNo.AllowDBNull = False
+                colBatchNo.DefaultValue = ""
 
                 Dim colUnit1 As New DataColumn("UNIT1", Type.GetType("System.String"))
                 colUnit1.AllowDBNull = False
@@ -522,6 +535,7 @@ Public Class SPPBEntryGON
                     ElseIf col.DataMember = "BatchNo" Then
                         col.Caption = "BATCH_NO"
                         col.EditType = Janus.Windows.GridEX.EditType.TextBox
+                        col.MaxLength = 250
                     Else
                         col.EditType = Janus.Windows.GridEX.EditType.NoEdit
                     End If
@@ -647,7 +661,7 @@ Public Class SPPBEntryGON
             If Not IsNothing(Me.dvPO) Then
                 Me.BindMulticolumnCombo(Me.mcbOA_REF_NO, Me.dvPO, "PO_REF_NO", "PO_REF_NO")
                 Me.mcbOA_REF_NO.Value = Me.PO_REF_NO
-                Me.mcbOA_REF_NO.ReadOnly = True
+                'Me.mcbOA_REF_NO.ReadOnly = True
             Else
                 Me.ShowMessageInfo("Can not find PO record" & vbCrLf & "Please inform system administrator")
                 Me.GRPSPPB.Enabled = False
@@ -683,18 +697,20 @@ Public Class SPPBEntryGON
             'jus bind data to multicolumn combo and grid gon if object gon header has contained its property
             If Not IsNothing(Me.OGONHeader) Then
                 If Not String.IsNullOrEmpty(Me.OGONHeader.GON_NO) Then
-                    If Not IsNothing(Me.DVTransporter) Then
-                        Me.BindMulticolumnCombo(Me.mcbTransporter, Me.DVTransporter, "TRANSPORTER_NAME", "GT_ID")
-                        'set value
+                    With Me.OGONHeader
+                        If Not IsNothing(Me.DVTransporter) Then
+                            Me.BindMulticolumnCombo(Me.mcbTransporter, Me.DVTransporter, "TRANSPORTER_NAME", "GT_ID")
 
-                    End If
-                    If Not IsNothing(Me.DVArea) Then
-                        Me.BindMulticolumnCombo(Me.mcbGonArea, DVArea, "AREA", "GON_ID_AREA")
+                        End If
+                        If Not IsNothing(Me.DVArea) Then
+                            Me.BindMulticolumnCombo(Me.mcbGonArea, DVArea, "AREA", "GON_ID_AREA")
 
-                    End If
-                    If Not IsNothing(Me.DVProduct) Then
-                        Me.BindCheckedCombo() : Me.chkProduct.Values = Me.SppBrandPackValues
-                    End If
+                        End If
+                        If Not IsNothing(Me.DVProduct) Then
+                            Me.BindCheckedCombo() : Me.chkProduct.Values = Me.SppBrandPackValues
+                        End If
+                        ''bindWarhouseCode
+                    End With
                 End If
             End If
             'BIND GRID
@@ -718,29 +734,48 @@ Public Class SPPBEntryGON
             Me.InitializeData()
             If Me.Mode = SaveMode.Insert Then
                 Me.mcbOA_REF_NO.Focus()
+                If Not Me.IsHOUser And Not Me.IsSystemAdmin Then
+                    Select Case ConfigurationManager.AppSettings("WarhouseCode").ToString()
+                        Case "SRG"
+                            Me.cmdWarhouse.SelectedIndex = 5
+                        Case "SBY"
+                            Me.cmdWarhouse.SelectedIndex = 3
+                        Case "MRK"
+                            Me.cmdWarhouse.SelectedIndex = 2
+                        Case "TGR"
+                            Me.cmdWarhouse.SelectedIndex = 4
+                    End Select
+                    Me.cmdWarhouse.ReadOnly = True
+                End If
+                Me.DefWarHouseCode = "JKT"
             End If
             If Me.Mode = SaveMode.Update Then
-                Me.mcbTransporter.DisplayMember = "TRANSPORTER_NAME"
-                Me.mcbTransporter.ValueMember = "GT_ID"
-                Me.mcbGonArea.DisplayMember = "AREA"
-                Me.mcbGonArea.ValueMember = "GON_ID_AREA"
-                'Me.mcbTransporter.ReadOnly = True
+                'Me.mcbTransporter.DisplayMember = "TRANSPORTER_NAME"
+                'Me.mcbTransporter.ValueMember = "GT_ID"
+                'Me.mcbGonArea.DisplayMember = "AREA"
+                'Me.mcbGonArea.ValueMember = "GON_ID_AREA"
+                ''Me.mcbTransporter.ReadOnly = True
                 'Me.mcbGonArea.ReadOnly = True
                 'Me.mcbTransporter.Refresh()
                 'Me.mcbGonArea.Refresh()
                 If Not String.IsNullOrEmpty(Me.txtGONNO.Text) Then
-                    Me.mcbTransporter.Value = Me.OGONHeader.GT_ID
+                    'Me.mcbTransporter.Value = Me.OGONHeader.GT_ID
                     'Me.mcbTransporter.SelectedText = Me.OGONHeader.GT_ID
                     If Not String.IsNullOrEmpty(Me.TransporterName) Then
                         Me.mcbTransporter.Text = Me.TransporterName
                     End If
-                    Me.mcbGonArea.Value = Me.OGONHeader.GON_ID_AREA
+                    'Me.mcbGonArea.Value = Me.OGONHeader.GON_ID_AREA
                     If Not String.IsNullOrEmpty(Me.AreaName) Then
                         Me.mcbGonArea.Text = Me.AreaName
                     End If
-                    Me.mcbTransporter.SelectAll()
+                    Me.mcbGonArea.Focus()
+                    Me.mcbGonArea.Value = Me.OGONHeader.GON_ID_AREA
                     'Me.mcbGonArea.SelectedText = Me.OGONHeader.GON_ID_AREA
                     Me.mcbGonArea.SelectAll()
+                    'set value
+                    Me.mcbTransporter.Focus()
+                    Me.mcbTransporter.Value = Me.OGONHeader.GT_ID
+                    Me.mcbTransporter.SelectAll()
                 End If
             End If
             If IsNothing(NufarmBussinesRules.SharedClass.tblPoliceNumber) Then
@@ -1101,18 +1136,21 @@ Public Class SPPBEntryGON
             'CHECK dataset with table gon if there's been changed by user/system
             If Me.HasChangedGONData() Then
                 If Me.ShowConfirmedMessage(Me.MessageDataHasChanged) = Windows.Forms.DialogResult.Yes Then
-                    If Not Me.SaveData() Then : Return : End If
+                    If Not Me.SaveData() Then : Me.IsloadingRow = False : Return : End If
                 End If
             End If
+
             If DS.Tables.Contains("GON_DETAIL_INFO") Then
                 Me.DS.Tables("GON_DETAIL_INFO").RejectChanges()
             End If
+            Me.IsloadingRow = True
+            Me.Cursor = Cursors.WaitCursor
             Me.ClearGonData() : Me.btnAddGon.Enabled = True
             'Me.btnSave.Enabled = True
             If Not Me.isValidSPPB() Then : Return : End If
-            If Me.grdSPPB.DataSource Is Nothing Then : Me.ShowMessageInfo("Please enter SPPB before GON") : Return : End If
-            If Me.grdSPPB.RecordCount <= 0 Then : Me.ShowMessageInfo("Please enter SPPB before GON") : Return : End If
-            Me.IsloadingRow = True
+            If Me.grdSPPB.DataSource Is Nothing Then : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Me.ShowMessageInfo("Please enter SPPB before GON") : Return : End If
+            If Me.grdSPPB.RecordCount <= 0 Then : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Me.ShowMessageInfo("Please enter SPPB before GON") : Return : End If
+
             Me.UnabledEntryGON(False)
             ' set min date
             Dim SPPB_NO As String = Me.txtSPPBNO.Text.TrimStart().TrimEnd() ' CType(Me.grdSPPB.DataSource, DataView)(0)("SPPB_NO").ToString()
@@ -1132,17 +1170,16 @@ Public Class SPPBEntryGON
                 ObjMinDate = Convert.ToDateTime(Me.dtPicSPPBDate.Value.ToShortDateString())
             End If
             If IsNothing(ObjMinDate) Or IsDBNull(ObjMinDate) Then
-                Me.ShowMessageError("can not find SPPB or PONumber" & vbCrLf & "It must have been deleted by other user") : Return
+                Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Me.ShowMessageError("can not find SPPB or PONumber" & vbCrLf & "It must have been deleted by other user") : Return
             End If
             Me.dtPicGONDate.MinDate = Convert.ToDateTime(ObjMinDate)
-            Me.dtPicGONDate.MaxDate = NufarmBussinesRules.SharedClass.ServerDate.AddDays(3)
+            'Me.dtPicGONDate.MaxDate = NufarmBussinesRules.SharedClass.ServerDate.AddDays(3)
             ''get dvTransporter
             If IsNothing(Me.DVTransporter) Then
                 Me.DVTransporter = Me.clsSPPB.getTransporter("", SaveMode.Insert, False).DefaultView()
             ElseIf Me.DVTransporter.Count <= 0 Then
                 Me.DVTransporter = Me.clsSPPB.getTransporter("", SaveMode.Insert, False).DefaultView()
             End If
-
             ''BIND DvTransporter if not exists in MCB
             Me.BindMulticolumnCombo(Me.mcbTransporter, DVTransporter, "TRANSPORTER_NAME", "GT_ID")
 
@@ -1168,10 +1205,31 @@ Public Class SPPBEntryGON
             Me.DVProduct = Me.clsSPPB.GetProduct(SPPB_NO, tblGON, tblSPPB, False) : Me.BindCheckedCombo()
             ''BInd DVProduct if not exists in MCBProduct(SPPB_BRANDPACK_ID,BRANDPACK_NAME,LEFT_QTY) ''Display Member BRANDPACK_NAME,ValueMember SPPB_BRANDPACK_ID
             ''in mcbProduct
+            ''get default shipto
+            Dim IsReadOnly As Boolean = Me.mcbOA_REF_NO.ReadOnly
+            Me.mcbOA_REF_NO.ReadOnly = False
+            Me.mcbOA_REF_NO.Enabled = True
+            Me.mcbOA_REF_NO.Focus()
+            Me.mcbOA_REF_NO.DroppedDown = True
+            Dim Address As String = Me.mcbOA_REF_NO.DropDownList().GetValue("ADDRESS")
+            Me.txtShipTo.Text = Address
+            Me.mcbOA_REF_NO.DroppedDown = False
+            Me.mcbOA_REF_NO.ReadOnly = IsReadOnly
+            If Me.IsHOUser Or Me.IsSystemAdmin Then
+                Select Case ConfigurationManager.AppSettings("WarhouseCode").ToString()
+                    Case "SRG"
+                        Me.cmdWarhouse.SelectedIndex = 5
+                    Case "SBY"
+                        Me.cmdWarhouse.SelectedIndex = 3
+                    Case "MRK"
+                        Me.cmdWarhouse.SelectedIndex = 2
+                    Case "TGR"
+                        Me.cmdWarhouse.SelectedIndex = 4
+                End Select
+            End If
             Me.txtGONNO.Focus() : Me.txtGONNO.SelectAll()
             Me.isNewGON = True
             Me.IsloadingRow = False
-
             Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.Cursor = Cursors.Default
@@ -1246,7 +1304,7 @@ Public Class SPPBEntryGON
         MCB.ValueMember = ValueMember
         MCB.DroppedDown = True
         MCB.SelectAll()
-        System.Threading.Thread.Sleep(300)
+        System.Threading.Thread.Sleep(100)
         Application.DoEvents()
 
         MCB.DroppedDown = False
@@ -1332,6 +1390,8 @@ Public Class SPPBEntryGON
                 If .DriverTrans <> Me.txtDriverTrans.Text.Trim() Then
                     Return True
                 End If
+                If .ShipTo <> Me.txtShipTo.Text.Trim().Replace(vbCrLf, " ").ToUpper() Then
+                End If
             End If
         End With
         Return False
@@ -1348,9 +1408,10 @@ Public Class SPPBEntryGON
             '.DescriptionApp = Me.txtRemark.Text.TrimStart().TrimEnd()
             .CreatedBy = NufarmBussinesRules.User.UserLogin.UserName
             .ModifiedBy = NufarmBussinesRules.User.UserLogin.UserName
-            .PoliceNoTrans = Me.txtPolice_no_Trans.Text.Trim()
-            .DriverTrans = Me.txtDriverTrans.Text.Trim()
+            .PoliceNoTrans = Me.txtPolice_no_Trans.Text.Trim().ToUpper()
+            .DriverTrans = Me.txtDriverTrans.Text.Trim().ToUpper()
             .WarhouseCode = Me.cmdWarhouse.SelectedValue
+            .ShipTo = Me.txtShipTo.Text.Trim().Replace(vbCrLf, " ").ToUpper()
         End With
         Return ObjGONHeader
     End Function
@@ -1366,9 +1427,10 @@ Public Class SPPBEntryGON
             '.DescriptionApp = Me.txtRemark.Text.TrimStart().TrimEnd()
             .CreatedBy = NufarmBussinesRules.User.UserLogin.UserName
             .ModifiedBy = NufarmBussinesRules.User.UserLogin.UserName
-            .PoliceNoTrans = Me.txtPolice_no_Trans.Text.Trim()
-            .DriverTrans = Me.txtDriverTrans.Text.Trim()
+            .PoliceNoTrans = Me.txtPolice_no_Trans.Text.Trim().ToUpper()
+            .DriverTrans = Me.txtDriverTrans.Text.Trim().ToUpper()
             .WarhouseCode = Me.cmdWarhouse.SelectedValue
+            .ShipTo = Me.txtShipTo.Text.Trim().Replace(vbCrLf, " ").ToUpper()
         End With
         Return ObjGONHeader
     End Function
@@ -1404,16 +1466,13 @@ Public Class SPPBEntryGON
             End If
         End If
         If ChangedGON Or ChangedSPPB Then
-            If ChangedSPPB Then
-                ''SET SPPB Header
-                objSPPBHeader = New NuFarm.Domain.SPPBHeader()
-                With objSPPBHeader
-                    .SPPBNO = Me.txtSPPBNO.Text.TrimStart().TrimEnd()
-                    .PONumber = Me.mcbOA_REF_NO.Value.ToString()
-                    .SPPBDate = Convert.ToDateTime(Me.dtPicSPPBDate.Value.ToShortDateString())
-                    '.SppBReceived = Convert.ToDateTime(Me.dtPicSPPBReceived.Value.ToShortDateString())
-                End With
-            End If
+            objSPPBHeader = New NuFarm.Domain.SPPBHeader()
+            With objSPPBHeader
+                .SPPBNO = Me.txtSPPBNO.Text.TrimStart().TrimEnd()
+                .PONumber = Me.mcbOA_REF_NO.Value.ToString()
+                .SPPBDate = Convert.ToDateTime(Me.dtPicSPPBDate.Value.ToShortDateString())
+                .SPPBShipTo = Me.txtShipTo.Text.Trim().Replace(vbCrLf, " ")
+            End With
             If ChangedGON Then
                 ''SET GON_HEADER
                 If Me.isNewGON Then
@@ -1510,13 +1569,14 @@ Public Class SPPBEntryGON
                     .SPPBNO = Me.txtSPPBNO.Text.TrimStart().TrimEnd()
                     .PONumber = Me.mcbOA_REF_NO.Value.ToString()
                     .SPPBDate = Convert.ToDateTime(Me.dtPicSPPBDate.Value.ToShortDateString())
+                    .SPPBShipTo = Me.txtShipTo.Text.Trim().Replace(vbCrLf, " ")
                 End With
                 SuccessSaving = Me.clsSPPB.SaveDataSPPBGON(Me.DS, NewDS, objSPPBHeader, ObjGONHeader, (DataToEdit = EditData.GON), True)
             End If
         Else
             Me.Cursor = Cursors.Default : Return False
         End If
-        If SuccessSaving Then : Me.DS = NewDS : Me.frmParent.MustReloadData = True : Me.OGONHeader = ObjGONHeader : End If
+        If SuccessSaving Then : Me.DS = NewDS : Me.frmParent.MustReloadData = True : Me.OGONHeader = ObjGONHeader : Me.btnPrint.Enabled = False : End If
         Me.DS.AcceptChanges()
         Me.isNewGON = False
         Return True
@@ -1813,7 +1873,7 @@ Public Class SPPBEntryGON
         If Me.IsloadingRow Then : Return : End If
         If Not Me.HasLoadedForm Then : Return : End If
         If Me.isValidGON(CType(Me.cmbStatusSPPB, Control), False) = False Then
-            Me.IsloadingRow = True : Return
+            Me.IsloadingRow = False : Return
         End If
         Me.Cursor = Cursors.WaitCursor
         Me.IsloadingRow = True
@@ -2057,7 +2117,7 @@ Public Class SPPBEntryGON
             ''update data bila mungkin belum
             If Not Me.isValidSPPB() Then : Return : End If
             Me.Cursor = Cursors.WaitCursor
-            Me.IsloadingRow = True : If Not Me.SaveData() Then : Cursor = Cursors.Default : Return : End If
+            Me.IsloadingRow = True : If Not Me.SaveData() Then : Me.IsloadingRow = False : Cursor = Cursors.Default : Return : End If
             If Me.Mode = SaveMode.Update Then
                 Me.IsloadingRow = True : Me.Close() : Me.Cursor = Cursors.Default : Return
             End If
@@ -2083,7 +2143,7 @@ Public Class SPPBEntryGON
             Me.mcbOA_REF_NO.Text = PONUMber
             ''matikan combo refno
             'Me.mcbOA_REF_NO.Enabled = False
-
+            Me.btnPrint.Enabled = True
             Me.IsloadingRow = False
             Me.btnSave.Enabled = False
             Me.HasSavedSPPB = True
@@ -2285,7 +2345,7 @@ Public Class SPPBEntryGON
                                 drv("GON_QTY") = -1
 
                                 drv("IsOPen") = True
-                                drv("BatchNo") = DBNull.Value
+                                drv("BatchNo") = ""
                                 If DVMConversiProduct.Count > 0 Then
                                     Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                                     Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
@@ -2357,6 +2417,7 @@ Public Class SPPBEntryGON
             End If
             CType(Me.grdGon.DataSource, DataView).RowFilter = ""
             Me.HasSavedGON = (Me.grdGon.RecordCount <= 0)
+            Me.btnPrint.Enabled = (Me.grdGon.RecordCount > 0)
             Me.txtGONNO.ReadOnly = True
             'Me.chkProduct.ReadOnly = True
             Me.dtPicGONDate.ReadOnly = True
@@ -2426,7 +2487,7 @@ Public Class SPPBEntryGON
                     drv("UNIT2") = ""
                     drv("VOL2") = 0
                 End If
-                drv("BatchNo") = DBNull.Value
+                drv("BatchNo") = ""
                 drv("IsOPen") = True
                 drv("IsCompleted") = False
                 drv("IsUpdatedBySystem") = False
@@ -2687,7 +2748,7 @@ Public Class SPPBEntryGON
             ElseIf DeletedRows.Length > 0 Then : GChanged = True : End If
             If GChanged Then
                 If Not Me.isValidSPPB() Then : Me.Cursor = Cursors.Default : Return : End If
-                Me.IsloadingRow = True : If Not Me.SaveData() Then : Me.Cursor = Cursors.Default : Return : End If
+                Me.IsloadingRow = True : If Not Me.SaveData() Then : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return : End If
                 ''bind grid
                 Me.IsloadingRow = True
                 Me.BindGrid(Me.grdGon, Me.DS.Tables("GON_DETAIL_INFO").DefaultView)
@@ -2730,10 +2791,16 @@ Public Class SPPBEntryGON
             'Dim tblGon As DataTable = Me.DS.Tables("GON_DETAIL_INFO")
             Dim info As New CultureInfo("id-ID")
             ''masukan data conversi di gon_table columnya di hide saja
-            For i As Integer = 0 To tblGon.Rows.Count - 1
+            Me.mcbOA_REF_NO.Focus()
+            Me.mcbOA_REF_NO.DroppedDown = True
+            Dim Address As String = Me.mcbOA_REF_NO.DropDownList().GetValue("ADDRESS").ToString()
+            Dim DistributorName As String = Me.mcbOA_REF_NO.DropDownList.GetValue("DISTRIBUTOR_NAME").ToString()
+            If Me.txtShipTo.Text <> "" Then
+                Address = Me.txtShipTo.Text.Trim().Replace(vbCrLf, " ")
+            End If
+            Me.mcbOA_REF_NO.DroppedDown = False
+            For i As Integer = 0 To tblGON.Rows.Count - 1
                 Dim row As DataRow = tbl_ref_gon.NewRow()
-                Dim DistributorName As String = Me.mcbOA_REF_NO.DropDownList.GetValue("DISTRIBUTOR_NAME").ToString()
-                Dim Address As String = Me.mcbOA_REF_NO.DropDownList().GetValue("ADDRESS").ToString()
                 row("DISTRIBUTOR_NAME") = DistributorName
                 row("ADDRESS") = Address
                 row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, Address)
@@ -2757,10 +2824,10 @@ Public Class SPPBEntryGON
                 row("VAR_WARHOUSE") = String.Format("Gudang : {0}", Me.cmdWarhouse.SelectedValue)
                 Me.mcbTransporter.Focus()
                 row("TRANSPORTER_NAME") = Me.mcbTransporter.Text
-                Dim BrandPackName As String = tblGon.Rows(i)("BRANDPACK_NAME")
+                Dim BrandPackName As String = tblGON.Rows(i)("BRANDPACK_NAME")
                 row("BRANDPACK_NAME") = BrandPackName
-                Dim GonQty As Decimal = Convert.ToDecimal(tblGon.Rows(i)("GON_QTY"))
-                Dim oVol1 As Object = tblGon.Rows(i)("VOL1"), oVol2 As Object = tblGon.Rows(i)("VOL2")
+                Dim GonQty As Decimal = Convert.ToDecimal(tblGON.Rows(i)("GON_QTY"))
+                Dim oVol1 As Object = tblGON.Rows(i)("VOL1"), oVol2 As Object = tblGON.Rows(i)("VOL2")
                 Dim oUnit1 As Object = tblGON.Rows(i)("UNIT1"), oUnit2 As Object = tblGON.Rows(i)("UNIT2")
                 Dim ValidData As Boolean = True
                 If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then

@@ -4,7 +4,8 @@ Imports NufarmBussinesRules
 Imports NufarmBussinesRules.SharedClass
 Namespace DistributorAgreement
     Public Class DPDAchievementR
-        Inherits NufarmBussinesRules.DistributorAgreement.Target_Agreement
+        Inherits NufarmBussinesRules.DistributorAgreement.Target_Agreement : Implements IDisposable
+   
         Public Sub New()
             MyBase.New()
         End Sub
@@ -2341,10 +2342,58 @@ Namespace DistributorAgreement
             Next
             AchHeader.AcceptChanges()
         End Sub
+
+        Private disposedValue As Boolean = False        ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overloads Sub Dispose(ByVal disposing As Boolean)
+            If Not Me.disposedValue Then
+                If disposing Then
+                    ' TODO: free unmanaged resources when explicitly called
+                End If
+
+                ' TODO: free shared unmanaged resources
+                Me.DropTempTable()
+                Dispose(True)
+                GC.SuppressFinalize(Me)
+            End If
+            Me.disposedValue = True
+        End Sub
+        Private Sub DropTempTable()
+
+            '---------------UNCOMENT THIS AFTER DEBUGGIN -----------------------------
+            Query = "SET NOCOUNT ON ;" & vbCrLf & _
+                      "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN  DROP TABLE  tempdb..##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_MASTER_PO_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_MASTER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_Brand_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_Agreement_Brand_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_PO_Original_By_Distributor_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_PO_Original_By_Distributor_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_BrandPack_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_Agreement_BrandPacK_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN DROP TABLE Tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END "
+            Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+            Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+            Me.OpenConnection()
+            Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+        End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        'Public Overloads Sub Dispose(ByVal disposing As Boolean)
+        '    ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
+
+        '    Dispose(True)
+        '    GC.SuppressFinalize(Me)
+        'End Sub
+
     End Class
 
     Public Class DPDAchievementN
-        Inherits NufarmBussinesRules.DistributorAgreement.Target_Agreement
+        Inherits NufarmBussinesRules.DistributorAgreement.Target_Agreement : Implements IDisposable
+
         Public Sub New()
             MyBase.New()
         End Sub
@@ -4458,6 +4507,43 @@ Namespace DistributorAgreement
                 End If
             Next
             AchHeader.AcceptChanges()
+        End Sub
+        Private Sub DropTempTable()
+
+            '---------------UNCOMENT THIS AFTER DEBUGGIN -----------------------------
+            Query = "SET NOCOUNT ON ;" & vbCrLf & _
+                      "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN  DROP TABLE  tempdb..##T_START_DATE_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_MASTER_PO_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_MASTER_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_Brand_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_Agreement_Brand_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_PO_Original_By_Distributor_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_PO_Original_By_Distributor_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Agreement_BrandPack_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN DROP TABLE tempdb..##T_Agreement_BrandPacK_" & Me.ComputerName & " ; END " & vbCrLf & _
+                      " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
+                      " BEGIN DROP TABLE Tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ; END "
+            Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+            Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+            Me.OpenConnection()
+            Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+        End Sub
+        Private disposedValue As Boolean = False        ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overloads Sub Dispose(ByVal disposing As Boolean)
+            If Not Me.disposedValue Then
+                If disposing Then
+                    ' TODO: free unmanaged resources when explicitly called
+                End If
+
+                ' TODO: free shared unmanaged resources
+                Me.DropTempTable()
+                Dispose(True)
+                GC.SuppressFinalize(Me)
+            End If
+            Me.disposedValue = True
         End Sub
     End Class
 

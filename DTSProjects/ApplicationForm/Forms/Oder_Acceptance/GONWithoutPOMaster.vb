@@ -75,9 +75,13 @@ Public Class GONWithoutPOMaster
         If Not CMain.IsSystemAdministrator Then
             If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GONWithoutPOMaster Then
                 Me.btnAddNew.Visible = True
+            Else
+                Me.btnAddNew.Visible = False
             End If
             If NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.GONWithoutPOMaster Then
                 Me.btnEdit.Visible = True
+            Else
+                Me.btnEdit.Visible = False
             End If
             If NufarmBussinesRules.User.Privilege.ALLOW_DELETE.GONWithoutPOMaster Then
                 Me.AdvancedTManager1.GridEX1.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.True
@@ -93,7 +97,7 @@ Public Class GONWithoutPOMaster
     Friend Sub LoadData()
         Me.SFG = StateFillingGrid.Filling
 
-        Me.PageIndex = 1 : Me.PageSize = 500 : Me.AdvancedTManager1.cbPageSize.Text = "500"
+        Me.PageIndex = 1 : Me.PageSize = 1000 : Me.AdvancedTManager1.cbPageSize.Text = "1000"
 
         Me.AdvancedTManager1.cbCategory.Items.Clear() : Me.AdvancedTManager1.btnCriteria.Text = "*.*"
         Me.AdvancedTManager1.btnCriteria.Text = "*.*" : Me.m_DataType = NufarmBussinesRules.common.Helper.DataTypes.VarChar
@@ -267,12 +271,12 @@ Public Class GONWithoutPOMaster
                             Me.PullAndShowData(PONumber, "", StatusForm.Edit)
                         End If
                     Else
-                        If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
-                            Me.PullAndShowData("", gonNumber, StatusForm.Edit)
-                        Else
-                            Me.PullAndShowData(PONumber, "", StatusForm.Edit)
-                        End If
-                        'Me.PullAndShowData(PONumber, "", StatusForm.Edit)
+                        'If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
+                        '    Me.PullAndShowData("", gonNumber, StatusForm.Edit)
+                        'Else
+                        '    Me.PullAndShowData(PONumber, "", StatusForm.Edit)
+                        'End If
+                        Me.PullAndShowData(PONumber, "", StatusForm.Edit)
                     End If
                     If Me.MustReload Then
                         Me.ReloadOpener()
@@ -358,8 +362,8 @@ Public Class GONWithoutPOMaster
                 Me.AdvancedTManager1.GridEX1.SetDataBinding(Dv, "")
                 If Not Me.hasLoadGrid Then
                     Me.AdvancedTManager1.GridEX1.RetrieveStructure()
-                    Me.hasLoadGrid = True
                     Me.FormatDataGrid()
+                    Me.hasLoadGrid = True
                 Else
                     AdvancedTManager1.GridEX1.RootTable.Groups(1).Collapse()
                 End If
@@ -428,24 +432,19 @@ Public Class GONWithoutPOMaster
                 col.ShowInFieldChooser = False
             End If
             col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-            'col.EditType = Janus.Windows.GridEX.EditType.NoEdit
-            If col.Type Is Type.GetType("System.String") Or col.Type Is Type.GetType("System.Decimal") Then
-                col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-            ElseIf col.Type Is Type.GetType("System.DateTime") Then
+            If col.Type Is Type.GetType("System.DateTime") Then
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CalendarCombo
                 col.EditType = Janus.Windows.GridEX.EditType.TextBox
                 col.FormatString = "dd MMMM yyyy"
             End If
-            If col.Key = "BATCH_NO" Then
-                col.FormatString = "g"
-            ElseIf col.Key = "PO_ORIGINAL" Then
+            If col.Key = "PO_ORIGINAL" Then
                 col.Visible = True
             ElseIf col.Key = "QUANTITY" Then
                 col.Visible = False
                 col.ShowInFieldChooser = False
-                col.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
-                col.TotalFormatMode = Janus.Windows.GridEX.FormatMode.UseStringFormat
-                col.TotalFormatString = "Total Qty {0:#,##0.0000}"
+                'col.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
+                'col.TotalFormatMode = Janus.Windows.GridEX.FormatMode.UseStringFormat
+                'col.TotalFormatString = "Total Qty {0:#,##0.0000}"
             ElseIf col.Key = "QUANTITY_UNIT" Then
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
             End If
@@ -766,41 +765,52 @@ Public Class GONWithoutPOMaster
                 Dim IDAppPODetail As Integer = Me.AdvancedTManager1.GridEX1.GetValue("IDAppPODetail")
                 Dim rows() As DataRow = dummyT.Select("IDAppPODetail = " & IDAppPODetail & " AND IDApp <> 0 ")
                 If rows.Length > 0 Then
+                    Me.Cursor = Cursors.Default
                     Me.ShowMessageInfo("Please choose an SPPB which has GON")
                     e.Cancel = True
-                Else
-                    If Me.ShowConfirmedMessage(Me.ConfirmDeleteMessage & vbCrLf & "Operation can not be undone") = Windows.Forms.DialogResult.No Then
-                        e.Cancel = True
-                        Return
-                    End If
                 End If
+            End If
+            If Me.ShowConfirmedMessage(Me.ConfirmDeleteMessage & vbCrLf & "Operation can not be undone") = Windows.Forms.DialogResult.No Then
+                Me.Cursor = Cursors.Default
+                e.Cancel = True
+                Return
             End If
             Dim FKAppPodetail As Object = Me.AdvancedTManager1.GridEX1.GetValue("IDAppPODetail")
             Dim PO_NUMBER As String = Me.AdvancedTManager1.GridEX1.GetValue("PO_NUMBER")
             Dim GON_NUMBER As Object = Me.AdvancedTManager1.GridEX1.GetValue("GON_NUMBER")
-            Dim mustReload As Boolean = False
+            'Dim mustReload As Boolean = False
+
             Dim boolSucced As Boolean = Me.SGonManager.delete(IDApp, mustReload, FKAppPodetail, PO_NUMBER, GON_NUMBER, (Me.IsHOUser Or Me.IsSystemAdmin))
             If boolSucced Then : e.Cancel = False
             Else : e.Cancel = True
             End If
-            If mustReload Then
-                Me.ReloadOpener()
-            Else
-                'cek apakah ada IDApp detial di GON_SEPARATED_DETAIL
-                Me.AdvancedTManager1.GridEX1.UpdateData()
-                If (Me.AdvancedTManager1.GridEX1.RecordCount <= 0) Then
-                    If Me.TotalIndex > 1 Then
-                        If Me.PageIndex > 1 Then
-                            Me.PageIndex -= 1
-                        End If
+            'If mustReload Then
+            '    Me.ReloadOpener()
+            'Else
+            '    'cek apakah ada IDApp detial di GON_SEPARATED_DETAIL
+            '    Me.AdvancedTManager1.GridEX1.UpdateData()
+            '    If (Me.AdvancedTManager1.GridEX1.RecordCount <= 0) Then
+            '        If Me.TotalIndex > 1 Then
+            '            If Me.PageIndex > 1 Then
+            '                Me.PageIndex -= 1
+            '            End If
+            '        End If
+            '        Me.SetStatusRecord()
+            '        Me.SetButtonStatus()
+            '    End If
+            'End If
+            Me.AdvancedTManager1.GridEX1.UpdateData()
+            If (Me.AdvancedTManager1.GridEX1.RecordCount <= 0) Then
+                If Me.TotalIndex > 1 Then
+                    If Me.PageIndex > 1 Then
+                        Me.PageIndex -= 1
                     End If
-                    Me.SetStatusRecord()
-                    Me.SetButtonStatus()
                 End If
+                Me.SetStatusRecord()
+                Me.SetButtonStatus()
             End If
-
         Catch ex As Exception
-            e.Cancel = True : Me.ShowMessageInfo(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_AdvancedTManager1_DeleteGridRecord")
+            e.Cancel = True : Me.Cursor = Cursors.Default : Me.LogMyEvent(ex.Message, Me.Name + "_AdvancedTManager1_DeleteGridRecord")
         Finally
             Me.Cursor = Cursors.Default
         End Try
@@ -816,6 +826,7 @@ Public Class GONWithoutPOMaster
             End If
             ''check hak akses
             'get createdDate
+            Me.Cursor = Cursors.WaitCursor
             Me.btnEdit.Enabled = True
             Dim ocreatedDate As Object = Me.AdvancedTManager1.GridEX1.GetValue("CreatedDate")
             If Not IsNothing(ocreatedDate) And Not IsDBNull(ocreatedDate) Then
@@ -826,6 +837,7 @@ Public Class GONWithoutPOMaster
                     Me.btnEdit.Enabled = nDay < 3
                 End If
             End If
+            Me.Cursor = Cursors.Default
         Catch ex As Exception
             Cursor = Cursors.Default
             If Me.SFG = StateFillingGrid.Filling Then
@@ -879,12 +891,12 @@ Public Class GONWithoutPOMaster
                 End If
                 'Me.PullAndShowData("", gonNumber, StatusForm.Open)
             Else
-                If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
-                    Me.PullAndShowData("", gonNumber, StatusForm.Open)
-                Else
-                    Me.PullAndShowData(PONumber, "", StatusForm.Open)
-                End If
-                'Me.PullAndShowData(PONumber, "", StatusForm.Open)
+                'If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
+                '    Me.PullAndShowData("", gonNumber, StatusForm.Open)
+                'Else
+                '    Me.PullAndShowData(PONumber, "", StatusForm.Open)
+                'End If
+                Me.PullAndShowData(PONumber, "", StatusForm.Open)
             End If
 
             Me.Cursor = Cursors.Default

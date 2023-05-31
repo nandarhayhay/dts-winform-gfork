@@ -40,7 +40,13 @@ namespace Nufarm.Domain
             set { _SPPBDate = value; }
         }
         private object _sppBReceived = DBNull.Value;
+        private string _SPPBShipTo = "";
 
+        public string SPPBShipTo
+        {
+            get { return _SPPBShipTo; }
+            set { _SPPBShipTo = value; }
+        }
         //public object SppBReceived
         //{
         //    get { return _sppBReceived; }

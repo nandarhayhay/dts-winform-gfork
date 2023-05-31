@@ -50,7 +50,7 @@ Namespace OrderAcceptance
                         .SPPBNO = Me.SqlRe.Item("SPPB_NO").ToString()
                         Dim oDriverTrans As Object = SqlRe("DRIVER_TRANS"), oPoliceNoTrans As Object = SqlRe("POLICE_NO_TRANS")
                         Dim oCreatedBy As Object = SqlRe("CreatedBy"), oCreatedDate As Object = SqlRe("CreatedDate")
-                        Dim oDescpriptionApp As Object = SqlRe("REMARK")
+                        Dim oShipto As Object = SqlRe("SHIP_TO")
                         Dim oGTID As Object = SqlRe("GT_ID"), oModifiedBy As Object = SqlRe("ModifiedBy")
                         Dim oModifiedDate As Object = SqlRe("ModifiedDate")
                         Dim warhouseCode As Object = SqlRe("WARHOUSE")
@@ -77,13 +77,12 @@ Namespace OrderAcceptance
                         If Not IsNothing(oCreatedDate) And Not IsDBNull(oCreatedDate) Then
                             .CreatedDate = oCreatedDate
                         End If
-                        If Not IsNothing(oDescpriptionApp) And Not IsDBNull(oDescpriptionApp) Then
-                            .DescriptionApp = oDescpriptionApp.ToString()
+                        If Not IsNothing(oShipto) And Not IsDBNull(oShipto) Then
+                            .ShipTo = oShipto.ToString()
                         End If
                         If Not IsNothing(warhouseCode) And Not IsDBNull(warhouseCode) Then
                             .WarhouseCode = warhouseCode.ToString()
                         End If
-                        '.DescriptionApp = IIf((IsDBNull(Me.SqlRe.Item("REMARK")) Or IsNothing(Me.SqlRe.Item("REMARK"))), "", Me.SqlRe.Item("REMARK").ToString())
                     End With
                 End While : Me.SqlRe.Close()
                 ''get Status
@@ -177,13 +176,13 @@ Namespace OrderAcceptance
             Query = "SET NOCOUNT ON; " & vbCrLf & _
         "IF NOT EXISTS(SELECT GON_HEADER_ID FROM GON_HEADER WHERE GON_HEADER_ID = @GON_HEADER_ID) " & vbCrLf & _
         " BEGIN " & vbCrLf & _
-        " INSERT INTO GON_HEADER(GON_HEADER_ID,GON_DATE,GT_ID,GON_ID_AREA,SPPB_NO,GON_NO,POLICE_NO_TRANS,DRIVER_TRANS,WARHOUSE,REMARK,CreatedBy,CreatedDate) " & vbCrLf & _
-        " VALUES(@GON_HEADER_ID,@GON_DATE,@GT_ID,@GON_ID_AREA,@SPPB_NO,@GON_NO,@POLICE_NO_TRANS,@DRIVER_TRANS,@WARHOUSE,@REMARK,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) ; " & vbCrLf & _
+        " INSERT INTO GON_HEADER(GON_HEADER_ID,GON_DATE,GT_ID,GON_ID_AREA,SPPB_NO,GON_NO,POLICE_NO_TRANS,DRIVER_TRANS,WARHOUSE,SHIP_TO,CreatedBy,CreatedDate) " & vbCrLf & _
+        " VALUES(@GON_HEADER_ID,@GON_DATE,@GT_ID,@GON_ID_AREA,@SPPB_NO,@GON_NO,@POLICE_NO_TRANS,@DRIVER_TRANS,@WARHOUSE,@SHIP_TO,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) ; " & vbCrLf & _
         " END " & vbCrLf & _
         " ELSE  " & vbCrLf & _
         " BEGIN " & vbCrLf & _
         " UPDATE GON_HEADER SET GON_ID_AREA = @GON_ID_AREA,GT_ID = @GT_ID,GON_DATE = @GON_DATE,POLICE_NO_TRANS=@POLICE_NO_TRANS," & vbCrLf & _
-        " DRIVER_TRANS=@DRIVER_TRANS,WARHOUSE=@WARHOUSE,REMARK = @REMARK,ModifiedBy = @ModifiedBy, " & vbCrLf & _
+        " DRIVER_TRANS=@DRIVER_TRANS,WARHOUSE=@WARHOUSE,SHIP_TO = @SHIP_TO,ModifiedBy = @ModifiedBy, " & vbCrLf & _
         " ModifiedDate = CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101)) WHERE GON_HEADER_ID = @GON_HEADER_ID ; " & vbCrLf & _
         " END "
             If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
@@ -195,7 +194,7 @@ Namespace OrderAcceptance
             Me.AddParameter("@GT_ID", SqlDbType.VarChar, domGON.GT_ID, 10)
             Me.AddParameter("@GON_ID_AREA", SqlDbType.VarChar, domGON.GON_ID_AREA, 10)
             Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, domGON.SPPBNO, 15)
-            Me.AddParameter("@REMARK", SqlDbType.VarChar, domGON.DescriptionApp, 200)
+            Me.AddParameter("@SHIP_TO", SqlDbType.VarChar, domGON.ShipTo, 200)
             Me.AddParameter("@POLICE_NO_TRANS", SqlDbType.VarChar, domGON.PoliceNoTrans, 50)
             Me.AddParameter("@DRIVER_TRANS", SqlDbType.VarChar, domGON.DriverTrans, 50)
             Me.AddParameter("@WARHOUSE", SqlDbType.VarChar, domGON.WarhouseCode, 20)
@@ -427,8 +426,17 @@ Namespace OrderAcceptance
                 '    End If
                 'End If
                 '-=================END MATIKAN SMS=========================
+                Dim tblSPPBBrandPack As DataTable = Nothing
                 Me.CommiteTransaction() : Me.ClearCommandParameters()
-                Dim tblSPPBBrandPack As DataTable = Me.getSPPBBrandPack(domSPPB.SPPBNO, domSPPB.PONumber, False, False)
+                If Not IsNothing(domSPPB) Then
+                    tblSPPBBrandPack = Me.getSPPBBrandPack(domSPPB.SPPBNO, domSPPB.PONumber, False, False)
+                    'ElseIf Not IsNothing(domGON) Then
+                    'tblSPPBBrandPack = Me.getSPPBBrandPack(domGON.SPPBNO, domSPPB.PONumber, False, False)
+                Else
+                    DS.AcceptChanges()
+                    tblSPPBBrandPack = DS.Tables("SPPB_BRANDPACK_INFO").Copy()
+                End If
+
                 Dim tblGON As DataTable = Me.getGOnData(domSPPB.SPPBNO, True)
 
                 'UPDATE Balance

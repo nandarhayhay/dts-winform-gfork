@@ -101,6 +101,8 @@ Public Class GonNonPODist
     Private IsSystemAdmin = CBool(ConfigurationManager.AppSettings("SysA"))
     Private checkedVals As New List(Of String)
     Private mustCheckStatus As Boolean = False
+    Private SmallGonEntry As New System.Drawing.Size(776, 152)
+    Private NormalGonEntry As New System.Drawing.Size(776, 214)
     Private Property clsGonNonPO() As NufarmBussinesRules.OrderAcceptance.SeparatedGON
         Get
             If Me.m_clsGonNonPO Is Nothing Then
@@ -135,6 +137,7 @@ Public Class GonNonPODist
         Me.txtPolice_no_Trans.Enabled = isEnabled
         Me.txtDriverTrans.Enabled = isEnabled
         Me.grdGon.Enabled = isEnabled
+        Me.txtGonShipto.Enabled = isEnabled
         If includeGrid Then
             If isEnabled Then
                 Me.grdGon.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
@@ -150,6 +153,7 @@ Public Class GonNonPODist
         Me.dtPicPODate.Enabled = isEnabled
         Me.txtSPPBNo.Enabled = isEnabled
         Me.dtPicSPPBDate.Enabled = isEnabled
+        Me.txtDefShipto.Enabled = isEnabled
         If inCludeGrid Then
             If isEnabled Then
                 Me.GridEX1.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
@@ -238,6 +242,9 @@ Public Class GonNonPODist
         If Me.txtSPPBNo.Text.Trim() <> Me.OSPPBHeader.SPPBNO Then
             Return True
         End If
+        If Me.txtDefShipto.Text <> Me.OSPPBHeader.SPPBShipTo Then
+            Return True
+        End If
         If Not IsNothing(Me.OSPPBHeader.SPPBDate) Then
             If Me.dtPicSPPBDate.Value.ToShortDateString() <> Convert.ToDateTime(Me.OSPPBHeader.SPPBDate).ToShortDateString() Then
                 Return True
@@ -292,6 +299,9 @@ Public Class GonNonPODist
             Return True
         End If
         If Me.txtDriverTrans.Text.Trim() <> Me.OGONHeader.DriverTrans Then
+            Return True
+        End If
+        If Me.txtGonShipto.Text <> Me.OGONHeader.ShipTo Then
             Return True
         End If
         Return False
@@ -420,7 +430,6 @@ Public Class GonNonPODist
             Me.DVGonProduct = Me.clsGonNonPO.getPODetail(Me.OSPPBHeader.PONumber, False)
         End If
         Me.DVMConversiProduct = Me.clsGonNonPO.getProdConvertion(cSForm, True)
-
         'set MCB gudang langsung
         'JKT = 1
         'MRK = 2
@@ -436,7 +445,7 @@ Public Class GonNonPODist
                 Case "MRK"
                     Me.cmdWarhouse.SelectedIndex = 2
                 Case "TGR"
-                    Me.cmdWarhouse.SelectedIndex = 3
+                    Me.cmdWarhouse.SelectedIndex = 4
             End Select
             Me.cmdWarhouse.ReadOnly = True
         End If
@@ -467,9 +476,9 @@ Public Class GonNonPODist
             If col.Key = "QTY" Then
                 col.FormatString = "#,##0.0000"
             End If
-            If col.Key = "BATCH_NO" Then
-                col.FormatString = "g"
-            End If
+            'If col.Key = "BATCH_NO" Then
+            '    col.FormatString = "g"
+            'End If
             If col.Key = "QTY" Or col.Key = "BATCH_NO" Then
                 col.EditType = Janus.Windows.GridEX.EditType.TextBox
             Else
@@ -479,7 +488,13 @@ Public Class GonNonPODist
         Next
         Me.grdGon.FilterMode = Janus.Windows.GridEX.FilterMode.None
         grdGon.RootTable.Columns("BRANDPACK_NAME").Position = 0
-        grdGon.AutoSizeColumns()
+        Me.grdGon.RootTable.Columns("BATCH_NO").Width = 240
+        If Not IsNothing(Me.grdGon.DataSource) Then
+            If Me.grdGon.RecordCount > 0 Then
+                grdGon.AutoSizeColumns()
+            End If
+        End If
+
     End Sub
     'Private Sub ReadAccess()
     '    If NufarmBussinesRules.SharedClass.IsUserHO Then
@@ -507,7 +522,10 @@ Public Class GonNonPODist
         Me.chkProduct.UncheckAll()
         Me.txtDriverTrans.Text = ""
         Me.txtPolice_no_Trans.Text = ""
-
+        Me.ChkShiptoCustomer.Checked = False
+        Me.txtCustomerName.Text = ""
+        Me.txtCustomerAddress.Text = ""
+        Me.txtGonShipto.Text = ""
         If Not IsNothing(Me.grdGon.DataSource) Then
             CType(Me.grdGon.DataSource, DataTable).RejectChanges()
         End If
@@ -555,8 +573,10 @@ Public Class GonNonPODist
     Private Function SaveData() As Boolean
         Dim validData As Boolean = Me.ValidataHeader(True)
         If Not validData Then : Return False : End If
-        If Me.btnInsert.Text = "Save Gon" Then
-            validData = Me.ValidateGONHeader(True)
+        If Not IsNothing(Me.grdGon.DataSource) Then
+            If Me.grdGon.RecordCount > 0 Then
+                validData = Me.ValidateGONHeader(True)
+            End If
         End If
         If Not validData Then : Return False : End If
         Dim HasChangedHeaderPO As Boolean = Me.HasChangedHeaderPO(), HasChangedPODetail As Boolean = Me.HasChangedPODetail(), _
@@ -567,6 +587,7 @@ Public Class GonNonPODist
                 .PODate = Convert.ToDateTime(Me.dtPicPODate.Value.ToShortDateString())
                 .SPPBNO = Me.txtSPPBNo.Text.Trim()
                 .SPPBDate = Convert.ToDateTime(Me.dtPicSPPBDate.Value.ToShortDateString())
+                .SPPBShipTo = Me.txtDefShipto.Text.Trim.Replace(vbCrLf, " ")
                 If Me.SForm = StatusForm.Edit Then
                     .ModifiedBy = NufarmBussinesRules.User.UserLogin.UserName
                 Else : SForm = StatusForm.Insert
@@ -575,7 +596,7 @@ Public Class GonNonPODist
             End With
         End If
         Dim UserFrom = ConfigurationManager.AppSettings("WarhouseCode")
-        If HasChangedGONHeader And Me.btnInsert.Text = "Save Gon" Then
+        If HasChangedGONHeader Then
             With Me.OGONHeader
                 .GON_DATE = Convert.ToDateTime(Me.dtPicGONDate.Value.ToShortDateString())
                 If Not IsNothing(Me.mcbGonArea.Value) Then
@@ -594,6 +615,7 @@ Public Class GonNonPODist
                 .DistributorID = IIf((Me.ChkShiptoCustomer.Checked And Not IsNothing(Me.mcbCustomer.Value)), Me.mcbCustomer.Value, "")
                 .CustomerName = IIf((Me.ChkShiptoCustomer.Checked = False), Me.txtCustomerName.Text.Trim(), "")
                 .CustomerAddress = IIf((Me.ChkShiptoCustomer.Checked = False), Me.txtCustomerAddress.Text.Trim(), "")
+                .ShipTo = Me.txtGonShipto.Text.Trim().Replace(vbCrLf, " ")
                 If Me.SForm = StatusForm.Edit Then
                     .ModifiedBy = NufarmBussinesRules.User.UserLogin.UserName
                 Else : SForm = StatusForm.Insert
@@ -642,17 +664,14 @@ Public Class GonNonPODist
             'Me.txtCustomerName.AutoCompleteMode = AutoCompleteMode.SuggestAppend
             'bind gridPOdetail
             Me.btnPrint.Enabled = False
-            Me.btnInsert.Text = "Save Data"
+            'Me.btnInsert.Text = "Save Data"
             If Me.SForm = StatusForm.Edit Or Me.SForm = StatusForm.Open Then
                 Me.txtPORefNo.Text = OSPPBHeader.PONumber
                 Me.dtPicPODate.Value = OSPPBHeader.PODate
                 Me.txtSPPBNo.Text = OSPPBHeader.SPPBNO
                 Me.dtPicSPPBDate.Value = OSPPBHeader.SPPBDate
+                Me.txtDefShipto.Text = OSPPBHeader.SPPBShipTo
                 Me.BindGridEx1(dtGonPODetail)
-
-                'Me.GridEX1.SetDataBinding(Me.dtGonPODetail, "")
-                'Me.GridEX1.DropDowns(0).SetDataBinding(Me.DVProduct, "")
-
                 Me.chkProduct.SetDataBinding(Me.DVGonProduct, "")
                 Dim checkedVals(dtGonDetail.Rows.Count) As Object
                 For i As Integer = 0 To dtGonDetail.Rows.Count - 1
@@ -661,7 +680,6 @@ Public Class GonNonPODist
                 ''checklist brandpack mana saja yang ada po detail
                 Me.chkProduct.Focus()
                 Me.chkProduct.CheckedValues = checkedVals
-
                 'Me.BindGridEx1(dtGonPODetail)
                 Me.grdGon.SetDataBinding(Me.dtGonDetail, "")
                 If Not Me.HasBoundGridGon Then
@@ -678,12 +696,18 @@ Public Class GonNonPODist
                     Me.btnFindDistributor.Visible = True
                     Me.txtCustomerName.Visible = False
                     Me.txtCustomerAddress.Visible = False
+                    Me.txtGonShipto.Visible = True
+                    Me.grpGonEntry.Size = Me.NormalGonEntry
                 Else
                     Me.ChkShiptoCustomer.Checked = False
                     Me.mcbCustomer.Visible = False
                     Me.btnFindDistributor.Visible = False
+                    Me.lblCustomerName.Visible = True
+                    Me.lblAddress.Visible = True
                     Me.txtCustomerName.Visible = True
                     Me.txtCustomerAddress.Visible = True
+                    Me.txtGonShipto.Visible = False
+                    Me.grpGonEntry.Size = Me.SmallGonEntry
                 End If
                 With Me.OGONHeader
                     ''set distributor
@@ -696,19 +720,17 @@ Public Class GonNonPODist
                     If Not String.IsNullOrEmpty(.GON_NO) Then
                         Me.dtPicGONDate.Value = .GON_DATE
                         Me.mcbGonArea.Value = .GON_ID_AREA
-                        Me.cmdWarhouse.SelectedValue = .WarhouseCode
                     Else
                         Me.dtPicGONDate.Value = Me.dtPicSPPBDate.Value
                         Me.dtPicGONDate.MinDate = Me.dtPicSPPBDate.Value
                         Me.mcbGonArea.Value = ""
-                        If Me.IsHOUser Then
-                            Me.cmdWarhouse.SelectedValue = ""
-                        End If
                     End If
+                    Me.cmdWarhouse.SelectedValue = .WarhouseCode
                     ''set textnya
                     Me.mcbTransporter.Value = .GT_ID
                     Me.txtPolice_no_Trans.Text = .PoliceNoTrans
                     Me.txtDriverTrans.Text = .DriverTrans
+                    Me.txtGonShipto.Text = .ShipTo
                 End With
                 'Me.setEnabledPOEntry(Not (Me.grdGon.RecordCount > 0), True)
                 If Me.SForm = StatusForm.Open Then
@@ -719,10 +741,11 @@ Public Class GonNonPODist
                 Else
                     Me.setEnabledPOEntry(Not (Me.grdGon.RecordCount > 0), True)
                     Me.GridEX1.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
-                    Me.btnInsert.Text = "Save Gon"
                 End If
                 If Not IsNothing(Me.grdGon.DataSource) Then
                     Me.btnPrint.Enabled = Me.grdGon.RecordCount > 0
+                Else
+                    Me.btnPrint.Enabled = False
                 End If
             End If
             'Me.ReadAccess()
@@ -1178,12 +1201,15 @@ Public Class GonNonPODist
             Me.frmLookUp = New LookUp()
             Dim dvDummyProd As DataView = Me.DVProduct.ToTable().Copy().DefaultView
             dvDummyProd.Sort = "BRANDPACK_ID"
-            Dim BrandPackID As String = Me.GridEX1.GetValue(e.Column)
-            Dim TotalGOnQty As Decimal = Me.clsGonNonPO.getTotalGon(Me.txtPORefNo.Text.Trim(), BrandPackID, True)
-            If TotalGOnQty > 0 Then
-                Me.ShowMessageError("can not edit data" & vbCrLf & "GON has already been proceeded")
-                Me.Cursor = Cursors.Default
-                Return
+            Dim BrandPackID As String = ""
+            If Me.GridEX1.GetRow.RowType = Janus.Windows.GridEX.RowType.Record Then
+                BrandPackID = Me.GridEX1.GetValue("BRANDPACK_ID")
+                Dim TotalGOnQty As Decimal = Me.clsGonNonPO.getTotalGon(Me.txtPORefNo.Text.Trim(), BrandPackID, True)
+                If TotalGOnQty > 0 Then
+                    Me.ShowMessageError("can not edit data" & vbCrLf & "GON has already been proceeded")
+                    Me.Cursor = Cursors.Default
+                    Return
+                End If
             End If
             For Each row As Janus.Windows.GridEX.GridEXRow In Me.GridEX1.GetRows
                 BrandPackID = row.Cells("BRANDPACK_ID").Value.ToString()
@@ -1730,7 +1756,6 @@ Public Class GonNonPODist
         End If
         If Not Me.HasLoadedForm Then : Return : End If
         Try
-            
             ''prepare data for binding grid
             Me.Cursor = Cursors.WaitCursor
             'Dim dtGon As DataTable = Nothing
@@ -2032,7 +2057,7 @@ Public Class GonNonPODist
             ''reset object gon
             Me.OGONHeader = New Nufarm.Domain.GONHeader()
             Me.SForm = StatusForm.Insert
-            Me.btnInsert.Text = "Save Gon"
+            'Me.btnInsert.Text = "Save Gon"
             Me.btnInsert.Enabled = True
             Me.btnPrint.Enabled = False
             Me.IsloadingRow = False
@@ -2117,21 +2142,40 @@ Public Class GonNonPODist
     Private Sub ChkShiptoCustomer_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ChkShiptoCustomer.CheckedChanged
         If Me.IsloadingRow Then : Return : End If
         If Not Me.HasLoadedForm Then : Return : End If
-        If Me.ChkShiptoCustomer.Checked Then
+        If Me.ChkShiptoCustomer.Checked Then 'distributor
             Me.mcbCustomer.Visible = True
             Me.btnFindDistributor.Visible = True
+            Me.lblCustomerName.Visible = False
+            Me.lblAddress.Visible = False
             Me.txtCustomerName.Visible = False
             Me.txtCustomerAddress.Visible = False
-            'Me.mcbCustomer.BringToFront()
+            Me.txtCustomerName.Text = ""
+            Me.txtCustomerAddress.Text = ""
+            Me.grpGonEntry.Size = Me.NormalGonEntry
+            Dim address As String = ""
+            If Me.mcbCustomer.Text <> "" Then
+                Me.mcbCustomer.Focus()
+                If Not IsNothing(Me.mcbCustomer.Value) Then
+                    address = Me.mcbCustomer.DropDownList.GetValue("ADDRESS")
+                End If
+            End If
+            Me.txtGonShipto.Visible = True
+            Me.txtGonShipto.Text = address
         Else
+            Me.grpGonEntry.Size = Me.SmallGonEntry
             Me.mcbCustomer.Visible = False
+            Me.mcbCustomer.Value = Nothing
             Me.btnFindDistributor.Visible = False
+            If Me.txtDefShipto.Text <> "" Then
+                Me.txtCustomerAddress.Text = Me.txtDefShipto.Text
+            End If
             Me.lblCustomerName.Visible = True
-            Me.txtCustomerAddress.Visible = True
-            Me.lblAddress.Visible = True
             Me.txtCustomerName.Visible = True
+            Me.lblAddress.Visible = True
+            Me.txtCustomerAddress.Visible = True
+            Me.txtGonShipto.Visible = False
+            Me.txtGonShipto.Text = ""
             Me.txtCustomerName.Focus()
-            'Me.mcbCustomer.SendToBack()
         End If
     End Sub
 
@@ -2356,20 +2400,19 @@ Public Class GonNonPODist
             'Me.UnabledEntryGON(False)
             Dim tblGon As DataTable = CType(Me.grdGon.DataSource, DataTable)
             Dim info As New CultureInfo("id-ID")
+            Dim CustomerName As String = "", Address As String = ""
+            If Me.ChkShiptoCustomer.Checked Then
+                CustomerName = Me.mcbCustomer.Text
+                Me.mcbCustomer.Focus()
+                Address = Me.mcbCustomer.DropDownList().GetValue("ADDRESS")
+            Else
+                CustomerName = Me.txtCustomerName.Text.Trim()
+                Address = Me.txtCustomerAddress.Text.Trim()
+            End If
             ''masukan data conversi di gon_table columnya di hide saja
             For i As Integer = 0 To tblGon.Rows.Count - 1
                 Dim row As DataRow = tbl_ref_gon.NewRow()
-                Dim CustomerName As String = "", Address As String = ""
-                If Me.ChkShiptoCustomer.Checked Then
-                    CustomerName = Me.mcbCustomer.Text
-                    Me.mcbCustomer.Focus()
-                    Address = Me.mcbCustomer.DropDownList().GetValue("ADDRESS")
-                Else
-                    CustomerName = Me.txtCustomerName.Text.Trim()
-                    Address = Me.txtCustomerAddress.Text.Trim()
-                End If
                 Dim BrandPackID As String = tblGon.Rows(i)("ITEM").ToString()
-
                 'Address As String = Me.mcbOA_REF_NO.DropDownList().GetValue("ADDRESS").ToString()
                 row("DISTRIBUTOR_NAME") = CustomerName
 
@@ -2519,5 +2562,24 @@ Public Class GonNonPODist
             Me.txtGONNO.Focus()
             Return
         End If
+    End Sub
+
+    Private Sub mcbCustomer_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mcbCustomer.ValueChanged
+        Try
+            If Me.IsloadingRow Then : Return : End If
+            If Me.IsloadingMCB Then : Return : End If
+            If Not Me.HasLoadedForm Then : Return : End If
+            If IsNothing(Me.mcbCustomer.Value) Or Me.mcbCustomer.Text = "" Then
+                Return
+            End If
+            Dim OAddress As Object = Me.mcbCustomer.DropDownList.GetValue("ADDRESS")
+            If IsNothing(OAddress) Or IsDBNull(OAddress) Then
+                Me.txtGonShipto.Text = ""
+            Else
+                Me.txtGonShipto.Text = OAddress.ToString()
+            End If
+        Catch ex As Exception
+
+        End Try
     End Sub
 End Class

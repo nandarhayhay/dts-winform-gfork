@@ -193,7 +193,7 @@ Partial Class SPPBManager
         Me.lblUntil.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblUntil.Location = New System.Drawing.Point(457, 8)
         Me.lblUntil.Name = "lblUntil"
-        Me.lblUntil.Size = New System.Drawing.Size(74, 14)
+        Me.lblUntil.Size = New System.Drawing.Size(41, 16)
         Me.lblUntil.TabIndex = 3
         Me.lblUntil.Text = "UNTIL"
         '

@@ -8,6 +8,7 @@ Public Class ConvertionProduct
     Private IsLoadingRow As Boolean = False
     Friend CMain As Main = Nothing
     Private IsHOUser As Boolean = NufarmBussinesRules.SharedClass.IsUserHO
+    Private HasLoadForm As Boolean = False
     Private ReadOnly Property clsBrandPack() As NufarmBussinesRules.Brandpack.BrandPack
         Get
             If IsNothing(Me.m_clsBrandPack) Then
@@ -164,11 +165,17 @@ Public Class ConvertionProduct
 
     Private Sub GridEX1_CellUpdated(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.ColumnActionEventArgs) Handles GridEX1.CellUpdated
         If Me.IsLoadingRow Then : Return : End If
+
         Try
             'check di server GON table dan GON Separated
-            If Me.GridEX1.GetRow.RowType = Janus.Windows.GridEX.RowType.NewRecord Then
+            If Me.GridEX1.GetRow.RowType = Janus.Windows.GridEX.RowType.Record Then
                 Dim BrandPackID As String = Me.GridEX1.GetValue("BRANDPACK_ID").ToString()
-                If CType(Me.GridEX1.GetValue("INACTIVE"), Boolean) = False Then
+                Dim oINActive As Boolean = Me.GridEX1.GetValue("INACTIVE")
+                Dim INActive As Boolean = False
+                If Not IsNothing(oINActive) And Not IsDBNull(oINActive) Then
+                    INActive = CBool(oINActive)
+                End If
+                If Not INActive Then
                     If Me.clsBrandPack.ProdConvHasRef(BrandPackID, Convert.ToDateTime(Me.GridEX1.GetValue("CreatedDate"))) Then
                         Me.ShowMessageError(Me.MessageDataCantChanged & vbCrLf & "Data has been used in GON non PO distributor")
                         Me.GridEX1.CancelCurrentEdit()
@@ -235,6 +242,11 @@ Public Class ConvertionProduct
                 Cursor = Cursors.Default
                 Me.ShowMessageError(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_GridEX1_KeyDown")
             End Try
+        ElseIf e.KeyCode = Keys.Delete Then
+            Me.IsLoadingRow = True
+            GridEX1.CancelCurrentEdit()
+            Me.GridEX1.Delete()
+            Me.IsLoadingRow = False
         End If
     End Sub
 
@@ -306,6 +318,8 @@ Public Class ConvertionProduct
         If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.ConvertionProduct Then
             Me.GridEX1.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.True
             Me.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.None
+            Me.GridEX1.MoveToNewRecord()
+            Me.GridEX1.Focus()
         Else
             Me.ShowMessageInfo("Sorry you have no priviledge to do such operation")
         End If
@@ -348,6 +362,7 @@ Public Class ConvertionProduct
     End Sub
 
     Private Sub RefreshToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RefreshToolStripMenuItem.Click
+        Me.Cursor = Cursors.Default
         If Me.HasChangedData Then
             If Me.ShowConfirmedMessage(Me.MessageDataHasChanged) = Windows.Forms.DialogResult.Yes Then
                 Try
@@ -355,7 +370,6 @@ Public Class ConvertionProduct
                     Me.saveChanges()
                     Me.IsLoadingRow = True
                     Me.Close()
-                    Me.Cursor = Cursors.Default
                 Catch ex As Exception
                     Cursor = Cursors.Default
                     Me.ShowMessageError(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_btnClose_Click")
@@ -369,4 +383,22 @@ Public Class ConvertionProduct
             Me.GridEX1.DropDowns(0).AutoSizeColumns()
         End If
     End Sub
+
+    'Private Sub GridEX1_CurrentCellChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GridEX1.CurrentCellChanged
+    '    If Me.IsLoadingRow Then : Return : End If
+    '    If Not Me.HasLoadForm Then : Return : End If
+
+    '    If Me.GridEX1.GetRow().RowType <> Janus.Windows.GridEX.RowType.Record Then
+    '        If Me.GridEX1.GetRow.RowType = Janus.Windows.GridEX.RowType.NewRecord Then
+
+    '        End If
+    '    Else
+    '        Dim oINActive As Boolean = Me.GridEX1.GetValue("INACTIVE")
+    '        Dim INActive As Boolean = False
+    '        If Not IsNothing(oINActive) And Not IsDBNull(oINActive) Then
+    '            INActive = CBool(oINActive)
+    '        End If
+
+    '    End If
+    'End Sub
 End Class

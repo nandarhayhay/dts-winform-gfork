@@ -25,12 +25,12 @@ Partial Class GonNonPODist
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim GridEX1_DesignTimeLayout_Reference_0 As Janus.Windows.Common.Layouts.JanusLayoutReference = New Janus.Windows.Common.Layouts.JanusLayoutReference("GridEXLayoutData.RootTable.Columns.Column2.ButtonImage")
         Dim grdGon_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
-        Dim UiComboBoxItem1 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem2 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem3 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem4 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem5 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem6 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem7 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem8 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem9 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem10 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem11 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem12 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
         Dim chkProduct_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbGonArea_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbTransporter_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
@@ -47,6 +47,8 @@ Partial Class GonNonPODist
         Me.Label10 = New System.Windows.Forms.Label
         Me.txtSPPBNo = New System.Windows.Forms.TextBox
         Me.UiGroupBox1 = New Janus.Windows.EditControls.UIGroupBox
+        Me.Label7 = New System.Windows.Forms.Label
+        Me.txtDefShipto = New System.Windows.Forms.TextBox
         Me.grpItemDetail = New Janus.Windows.EditControls.UIGroupBox
         Me.GridEX1 = New Janus.Windows.GridEX.GridEX
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
@@ -60,6 +62,8 @@ Partial Class GonNonPODist
         Me.btnAddNew = New Janus.Windows.EditControls.UIButton
         Me.btnClose = New Janus.Windows.EditControls.UIButton
         Me.grpGonEntry = New Janus.Windows.EditControls.UIGroupBox
+        Me.Label8 = New System.Windows.Forms.Label
+        Me.txtGonShipto = New System.Windows.Forms.TextBox
         Me.Label4 = New System.Windows.Forms.Label
         Me.txtCustomerAddress = New System.Windows.Forms.TextBox
         Me.lblAddress = New System.Windows.Forms.Label
@@ -122,6 +126,7 @@ Partial Class GonNonPODist
         'txtPORefNo
         '
         Me.txtPORefNo.Location = New System.Drawing.Point(112, 12)
+        Me.txtPORefNo.MaxLength = 50
         Me.txtPORefNo.Name = "txtPORefNo"
         Me.txtPORefNo.Size = New System.Drawing.Size(208, 20)
         Me.txtPORefNo.TabIndex = 14
@@ -154,7 +159,7 @@ Partial Class GonNonPODist
         'btnFindDistributor
         '
         Me.btnFindDistributor.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnFindDistributor.Location = New System.Drawing.Point(717, 20)
+        Me.btnFindDistributor.Location = New System.Drawing.Point(715, 20)
         Me.btnFindDistributor.Name = "btnFindDistributor"
         Me.btnFindDistributor.Size = New System.Drawing.Size(17, 18)
         Me.btnFindDistributor.TabIndex = 15
@@ -213,6 +218,7 @@ Partial Class GonNonPODist
         'txtSPPBNo
         '
         Me.txtSPPBNo.Location = New System.Drawing.Point(112, 12)
+        Me.txtSPPBNo.MaxLength = 50
         Me.txtSPPBNo.Name = "txtSPPBNo"
         Me.txtSPPBNo.Size = New System.Drawing.Size(208, 20)
         Me.txtSPPBNo.TabIndex = 0
@@ -220,23 +226,43 @@ Partial Class GonNonPODist
         'UiGroupBox1
         '
         Me.UiGroupBox1.BackColor = System.Drawing.Color.Transparent
+        Me.UiGroupBox1.Controls.Add(Me.Label7)
+        Me.UiGroupBox1.Controls.Add(Me.txtDefShipto)
         Me.UiGroupBox1.Controls.Add(Me.grpItemDetail)
         Me.UiGroupBox1.Controls.Add(Me.grpSPPBInfo)
         Me.UiGroupBox1.Controls.Add(Me.grpDetail)
         Me.UiGroupBox1.Dock = System.Windows.Forms.DockStyle.Top
         Me.UiGroupBox1.Location = New System.Drawing.Point(0, 0)
         Me.UiGroupBox1.Name = "UiGroupBox1"
-        Me.UiGroupBox1.Size = New System.Drawing.Size(782, 160)
+        Me.UiGroupBox1.Size = New System.Drawing.Size(780, 215)
         Me.UiGroupBox1.TabIndex = 4
         Me.UiGroupBox1.Text = "PO  SPPB HEADER"
         Me.UiGroupBox1.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(9, 162)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(77, 13)
+        Me.Label7.TabIndex = 18
+        Me.Label7.Text = "SPPB Ship TO"
+        '
+        'txtDefShipto
+        '
+        Me.txtDefShipto.Location = New System.Drawing.Point(6, 178)
+        Me.txtDefShipto.MaxLength = 250
+        Me.txtDefShipto.Multiline = True
+        Me.txtDefShipto.Name = "txtDefShipto"
+        Me.txtDefShipto.Size = New System.Drawing.Size(770, 31)
+        Me.txtDefShipto.TabIndex = 6
         '
         'grpItemDetail
         '
         Me.grpItemDetail.Controls.Add(Me.GridEX1)
         Me.grpItemDetail.Location = New System.Drawing.Point(348, 12)
         Me.grpItemDetail.Name = "grpItemDetail"
-        Me.grpItemDetail.Size = New System.Drawing.Size(430, 142)
+        Me.grpItemDetail.Size = New System.Drawing.Size(430, 163)
         Me.grpItemDetail.TabIndex = 5
         Me.grpItemDetail.Text = "Item Detail"
         Me.grpItemDetail.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
@@ -261,7 +287,7 @@ Partial Class GonNonPODist
         Me.GridEX1.Name = "GridEX1"
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
-        Me.GridEX1.Size = New System.Drawing.Size(424, 123)
+        Me.GridEX1.Size = New System.Drawing.Size(424, 144)
         Me.GridEX1.TabIndex = 1
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.GridEX1.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
@@ -302,9 +328,9 @@ Partial Class GonNonPODist
         Me.ExpandableSplitter1.HotGripDarkColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.ExpandableSplitter1.HotGripLightColor = System.Drawing.Color.FromArgb(CType(CType(227, Byte), Integer), CType(CType(239, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.ExpandableSplitter1.HotGripLightColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.ExpandableSplitter1.Location = New System.Drawing.Point(0, 160)
+        Me.ExpandableSplitter1.Location = New System.Drawing.Point(0, 215)
         Me.ExpandableSplitter1.Name = "ExpandableSplitter1"
-        Me.ExpandableSplitter1.Size = New System.Drawing.Size(782, 5)
+        Me.ExpandableSplitter1.Size = New System.Drawing.Size(780, 5)
         Me.ExpandableSplitter1.Style = DevComponents.DotNetBar.eSplitterStyle.Office2007
         Me.ExpandableSplitter1.TabIndex = 16
         Me.ExpandableSplitter1.TabStop = False
@@ -314,9 +340,9 @@ Partial Class GonNonPODist
         Me.grpGON.Controls.Add(Me.grpGonDetail)
         Me.grpGON.Controls.Add(Me.grpGonEntry)
         Me.grpGON.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grpGON.Location = New System.Drawing.Point(0, 165)
+        Me.grpGON.Location = New System.Drawing.Point(0, 220)
         Me.grpGON.Name = "grpGON"
-        Me.grpGON.Size = New System.Drawing.Size(782, 495)
+        Me.grpGON.Size = New System.Drawing.Size(780, 411)
         Me.grpGON.TabIndex = 19
         Me.grpGON.Text = "G O N"
         Me.grpGON.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
@@ -326,9 +352,9 @@ Partial Class GonNonPODist
         Me.grpGonDetail.Controls.Add(Me.grdGon)
         Me.grpGonDetail.Controls.Add(Me.PanelEx1)
         Me.grpGonDetail.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grpGonDetail.Location = New System.Drawing.Point(3, 170)
+        Me.grpGonDetail.Location = New System.Drawing.Point(3, 230)
         Me.grpGonDetail.Name = "grpGonDetail"
-        Me.grpGonDetail.Size = New System.Drawing.Size(776, 322)
+        Me.grpGonDetail.Size = New System.Drawing.Size(774, 178)
         Me.grpGonDetail.TabIndex = 17
         Me.grpGonDetail.Text = "GON Detail"
         Me.grpGonDetail.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
@@ -352,7 +378,7 @@ Partial Class GonNonPODist
         Me.grdGon.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.grdGon.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
         Me.grdGon.SelectedInactiveFormatStyle.BackColor = System.Drawing.SystemColors.Window
-        Me.grdGon.Size = New System.Drawing.Size(770, 269)
+        Me.grdGon.Size = New System.Drawing.Size(768, 125)
         Me.grdGon.TabIndex = 0
         Me.grdGon.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.grdGon.WatermarkImage.Image = CType(resources.GetObject("grdGon.WatermarkImage.Image"), System.Drawing.Image)
@@ -367,9 +393,9 @@ Partial Class GonNonPODist
         Me.PanelEx1.Controls.Add(Me.btnAddNew)
         Me.PanelEx1.Controls.Add(Me.btnClose)
         Me.PanelEx1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.PanelEx1.Location = New System.Drawing.Point(3, 285)
+        Me.PanelEx1.Location = New System.Drawing.Point(3, 141)
         Me.PanelEx1.Name = "PanelEx1"
-        Me.PanelEx1.Size = New System.Drawing.Size(770, 34)
+        Me.PanelEx1.Size = New System.Drawing.Size(768, 34)
         Me.PanelEx1.Style.Alignment = System.Drawing.StringAlignment.Center
         Me.PanelEx1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
         Me.PanelEx1.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
@@ -406,7 +432,7 @@ Partial Class GonNonPODist
         Me.btnInsert.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnInsert.ImageIndex = 1
         Me.btnInsert.ImageList = Me.ImageList1
-        Me.btnInsert.Location = New System.Drawing.Point(584, 4)
+        Me.btnInsert.Location = New System.Drawing.Point(582, 4)
         Me.btnInsert.Name = "btnInsert"
         Me.btnInsert.Size = New System.Drawing.Size(81, 27)
         Me.btnInsert.TabIndex = 1
@@ -429,7 +455,7 @@ Partial Class GonNonPODist
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.ImageIndex = 2
         Me.btnClose.ImageList = Me.ImageList1
-        Me.btnClose.Location = New System.Drawing.Point(686, 4)
+        Me.btnClose.Location = New System.Drawing.Point(684, 4)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(81, 27)
         Me.btnClose.TabIndex = 2
@@ -438,6 +464,8 @@ Partial Class GonNonPODist
         '
         'grpGonEntry
         '
+        Me.grpGonEntry.Controls.Add(Me.Label8)
+        Me.grpGonEntry.Controls.Add(Me.txtGonShipto)
         Me.grpGonEntry.Controls.Add(Me.Label4)
         Me.grpGonEntry.Controls.Add(Me.btnFindDistributor)
         Me.grpGonEntry.Controls.Add(Me.mcbCustomer)
@@ -466,10 +494,28 @@ Partial Class GonNonPODist
         Me.grpGonEntry.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpGonEntry.Location = New System.Drawing.Point(3, 16)
         Me.grpGonEntry.Name = "grpGonEntry"
-        Me.grpGonEntry.Size = New System.Drawing.Size(776, 154)
+        Me.grpGonEntry.Size = New System.Drawing.Size(774, 214)
         Me.grpGonEntry.TabIndex = 16
         Me.grpGonEntry.Text = "GON Header"
         Me.grpGonEntry.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(11, 156)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(73, 13)
+        Me.Label8.TabIndex = 39
+        Me.Label8.Text = "GON Ship TO"
+        '
+        'txtGonShipto
+        '
+        Me.txtGonShipto.Location = New System.Drawing.Point(13, 174)
+        Me.txtGonShipto.MaxLength = 250
+        Me.txtGonShipto.Multiline = True
+        Me.txtGonShipto.Name = "txtGonShipto"
+        Me.txtGonShipto.Size = New System.Drawing.Size(723, 35)
+        Me.txtGonShipto.TabIndex = 38
         '
         'Label4
         '
@@ -483,6 +529,7 @@ Partial Class GonNonPODist
         'txtCustomerAddress
         '
         Me.txtCustomerAddress.Location = New System.Drawing.Point(352, 19)
+        Me.txtCustomerAddress.MaxLength = 150
         Me.txtCustomerAddress.Name = "txtCustomerAddress"
         Me.txtCustomerAddress.Size = New System.Drawing.Size(384, 20)
         Me.txtCustomerAddress.TabIndex = 34
@@ -546,31 +593,31 @@ Partial Class GonNonPODist
         'cmdWarhouse
         '
         Me.cmdWarhouse.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        UiComboBoxItem1.FormatStyle.Alpha = 0
-        UiComboBoxItem1.IsSeparator = False
-        UiComboBoxItem1.Text = "---Select---"
-        UiComboBoxItem1.Value = "UnSelect"
-        UiComboBoxItem2.FormatStyle.Alpha = 0
-        UiComboBoxItem2.IsSeparator = False
-        UiComboBoxItem2.Text = "JAKARTA"
-        UiComboBoxItem2.Value = "JKT"
-        UiComboBoxItem3.FormatStyle.Alpha = 0
-        UiComboBoxItem3.IsSeparator = False
-        UiComboBoxItem3.Text = "MERAK"
-        UiComboBoxItem3.Value = "MRK"
-        UiComboBoxItem4.FormatStyle.Alpha = 0
-        UiComboBoxItem4.IsSeparator = False
-        UiComboBoxItem4.Text = "SURABAYA"
-        UiComboBoxItem4.Value = "SBY"
-        UiComboBoxItem5.FormatStyle.Alpha = 0
-        UiComboBoxItem5.IsSeparator = False
-        UiComboBoxItem5.Text = "TANGERANG"
-        UiComboBoxItem5.Value = "TGR"
-        UiComboBoxItem6.FormatStyle.Alpha = 0
-        UiComboBoxItem6.IsSeparator = False
-        UiComboBoxItem6.Text = "SERANG"
-        UiComboBoxItem6.Value = "SRG"
-        Me.cmdWarhouse.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3, UiComboBoxItem4, UiComboBoxItem5, UiComboBoxItem6})
+        UiComboBoxItem7.FormatStyle.Alpha = 0
+        UiComboBoxItem7.IsSeparator = False
+        UiComboBoxItem7.Text = "---Select---"
+        UiComboBoxItem7.Value = "UnSelect"
+        UiComboBoxItem8.FormatStyle.Alpha = 0
+        UiComboBoxItem8.IsSeparator = False
+        UiComboBoxItem8.Text = "JAKARTA"
+        UiComboBoxItem8.Value = "JKT"
+        UiComboBoxItem9.FormatStyle.Alpha = 0
+        UiComboBoxItem9.IsSeparator = False
+        UiComboBoxItem9.Text = "MERAK"
+        UiComboBoxItem9.Value = "MRK"
+        UiComboBoxItem10.FormatStyle.Alpha = 0
+        UiComboBoxItem10.IsSeparator = False
+        UiComboBoxItem10.Text = "SURABAYA"
+        UiComboBoxItem10.Value = "SBY"
+        UiComboBoxItem11.FormatStyle.Alpha = 0
+        UiComboBoxItem11.IsSeparator = False
+        UiComboBoxItem11.Text = "TANGERANG"
+        UiComboBoxItem11.Value = "TGR"
+        UiComboBoxItem12.FormatStyle.Alpha = 0
+        UiComboBoxItem12.IsSeparator = False
+        UiComboBoxItem12.Text = "SERANG"
+        UiComboBoxItem12.Value = "SRG"
+        Me.cmdWarhouse.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem7, UiComboBoxItem8, UiComboBoxItem9, UiComboBoxItem10, UiComboBoxItem11, UiComboBoxItem12})
         Me.cmdWarhouse.ItemsFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.cmdWarhouse.Location = New System.Drawing.Point(466, 76)
         Me.cmdWarhouse.Name = "cmdWarhouse"
@@ -673,8 +720,9 @@ Partial Class GonNonPODist
         'txtGONNO
         '
         Me.txtGONNO.Location = New System.Drawing.Point(118, 47)
+        Me.txtGONNO.MaxLength = 50
         Me.txtGONNO.Name = "txtGONNO"
-        Me.txtGONNO.Size = New System.Drawing.Size(102, 20)
+        Me.txtGONNO.Size = New System.Drawing.Size(205, 20)
         Me.txtGONNO.TabIndex = 0
         '
         'dtPicGONDate
@@ -728,6 +776,7 @@ Partial Class GonNonPODist
         'txtCustomerName
         '
         Me.txtCustomerName.Location = New System.Drawing.Point(197, 19)
+        Me.txtCustomerName.MaxLength = 50
         Me.txtCustomerName.Name = "txtCustomerName"
         Me.txtCustomerName.Size = New System.Drawing.Size(102, 20)
         Me.txtCustomerName.TabIndex = 37
@@ -735,7 +784,7 @@ Partial Class GonNonPODist
         'GonNonPODist
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.ClientSize = New System.Drawing.Size(782, 660)
+        Me.ClientSize = New System.Drawing.Size(780, 631)
         Me.Controls.Add(Me.grpGON)
         Me.Controls.Add(Me.ExpandableSplitter1)
         Me.Controls.Add(Me.UiGroupBox1)
@@ -749,6 +798,7 @@ Partial Class GonNonPODist
         Me.grpSPPBInfo.PerformLayout()
         CType(Me.UiGroupBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.UiGroupBox1.ResumeLayout(False)
+        Me.UiGroupBox1.PerformLayout()
         CType(Me.grpItemDetail, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpItemDetail.ResumeLayout(False)
         CType(Me.GridEX1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -815,5 +865,9 @@ Partial Class GonNonPODist
     Friend WithEvents txtCustomerName As System.Windows.Forms.TextBox
     Friend WithEvents btnPrint As Janus.Windows.EditControls.UIButton
     Friend WithEvents btnFindDistributor As DTSProjects.ButtonSearch
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents txtDefShipto As System.Windows.Forms.TextBox
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents txtGonShipto As System.Windows.Forms.TextBox
 
 End Class

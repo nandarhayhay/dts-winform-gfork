@@ -99,5 +99,12 @@ namespace Nufarm.Domain
             get { return _driverTrans; }
             set { _driverTrans = value; }
         }
+        private string _shipTo = "";
+
+        public string ShipTo
+        {
+            get { return _shipTo; }
+            set { _shipTo = value; }
+        }
     }
 }

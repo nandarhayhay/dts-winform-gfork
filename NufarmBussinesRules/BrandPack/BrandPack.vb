@@ -687,7 +687,8 @@ Namespace Brandpack
         Public Function ProdConvHasRef(ByVal BrandPackID As String, ByVal CreatedDate As DateTime) As Boolean
             Try
                 Query = "SET NOCOUNT ON; " & vbCrLf & _
-                " SELECT ITEM FROM GON_SEPARATED_DETAIL WHERE ITEM = @ITEM AND CreatedDate >= @CreatedDate"
+                " SELECT 1 WHERE EXISTS(SELECT ITEM FROM GON_SEPARATED_DETAIL WHERE ITEM = @ITEM AND CreatedDate >= @CreatedDate) " & vbCrLf & _
+                "           OR EXISTS(SELECT BRANDPACK_ID FROM SPPB_BRANDPACK WHERE BRANDPACK_ID = @ITEM AND CreatedDate >= @CreatedDate)"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query) : End If
                 Me.AddParameter("@CreatedDate", SqlDbType.SmallDateTime, CreatedDate)
@@ -714,7 +715,7 @@ Namespace Brandpack
                 If IsNothing(Me.SqlDat) Then : Me.SqlDat = New SqlDataAdapter() : End If
                 SqlTrans = Me.SqlConn.BeginTransaction()
                 Dim qryInsert As String = "SET NOCOUNT ON;" & vbCrLf & _
-                " IF NOT EXIST(SELECT BRANDPACK_ID FROM BRND_PROD_CONV WHERE BRANDPACK_ID = @BRANDPACK_ID AND INACTIVE = 0) " & vbCrLf & _
+                " IF NOT EXISTS(SELECT BRANDPACK_ID FROM BRND_PROD_CONV WHERE BRANDPACK_ID = @BRANDPACK_ID AND INACTIVE = 0) " & vbCrLf & _
                 " BEGIN " & vbCrLf & _
                 " INSERT INTO BRND_PROD_CONV(BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE,CreatedDate,CreatedBy) " & vbCrLf & _
                 " VALUES(@BRANDPACK_ID,@UNIT1,@VOL1,@UNIT2,@VOL2,0,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy); " & vbCrLf & _
@@ -788,7 +789,6 @@ Namespace Brandpack
         End Function
         Public Function getProdConvertion(ByVal closeConnection As Boolean) As DataTable
             Try
-       
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                 "SELECT * FROM BRND_PROD_CONV;"
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)

@@ -195,6 +195,7 @@ Namespace OrderAcceptance
                         .PONumber = SqlRe("PO_NUMBER")
                         .SPPBDate = SqlRe("SPPB_DATE")
                         .SPPBNO = SqlRe("SPPB_NUMBER")
+                        .SPPBShipTo = SqlRe("SHIP_TO")
                     End With
                 End While : Me.SqlRe.Close() : Me.ClearCommandParameters()
                 If mustCloseConnection Then
@@ -249,6 +250,7 @@ Namespace OrderAcceptance
                         .FkApp = SqlRe("FKApp")
                         .CreatedBy = SqlRe("CreatedBy")
                         .CreatedDate = SqlRe("CreatedDate")
+                        .ShipTo = SqlRe("GON_SHIP_TO")
                     End With
                 End While : SqlRe.Close()
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
@@ -262,6 +264,7 @@ Namespace OrderAcceptance
                         .PODate = SqlRe("PO_DATE")
                         .SPPBNO = SqlRe("SPPB_NUMBER")
                         .SPPBDate = SqlRe("SPPB_DATE")
+                        .SPPBShipTo = SqlRe("SHIP_TO")
                         .CreatedBy = SqlRe("CreatedBy")
                         .CreatedDate = SqlRe("CreatedDate")
                     End With
@@ -339,8 +342,8 @@ Namespace OrderAcceptance
                         " SET @V_MESSAGE = CONCAT('PO NUMBER ' , @PO_NUMBER , ' Has already existed');" & vbCrLf & _
                         " IF EXISTS(SELECT PO_NUMBER FROM GON_SEPARATED_PO_HEADER WHERE PO_NUMBER = @PO_NUMBER) " & vbCrLf & _
                         " BEGIN RAISERROR(@V_MESSAGE,16,1);RETURN; END" & vbCrLf & _
-                        "INSERT INTO GON_SEPARATED_PO_HEADER(PO_NUMBER,PO_DATE,SPPB_NUMBER,SPPB_DATE,CreatedBy,CreatedDate) " & vbCrLf & _
-                        " VALUES(@PO_NUMBER,@PO_DATE,@SPPB_NUMBER,@SPPB_DATE,@CreatedBy,CONVERT(VARCHAR(100),GETDATE(),101)); " & vbCrLf & _
+                        "INSERT INTO GON_SEPARATED_PO_HEADER(PO_NUMBER,PO_DATE,SPPB_NUMBER,SPPB_DATE,SHIP_TO,CreatedBy,CreatedDate) " & vbCrLf & _
+                        " VALUES(@PO_NUMBER,@PO_DATE,@SPPB_NUMBER,@SPPB_DATE,@SHIP_TO,@CreatedBy,CONVERT(VARCHAR(100),GETDATE(),101)); " & vbCrLf & _
                         "SELECT @@IDENTITY;"
                         QryGonPODetail = "SET NOCOUNT ON;" & vbCrLf & _
                         " INSERT INTO GON_SEPARATED_PO_DETAIL(FKApp,BRANDPACK_ID,QUANTITY,STATUS,CreatedBy,CreatedDate) " & vbCrLf & _
@@ -352,21 +355,21 @@ Namespace OrderAcceptance
                         " SET @V_MESSAGE = CONCAT('GON NUMBER ' , @GON_NUMBER , ' Has already existed');" & vbCrLf & _
                         " IF EXISTS(SELECT GON_NUMBER FROM GON_SEPARATED_HEADER WHERE GON_NUMBER = @GON_NUMBER) " & vbCrLf & _
                         " BEGIN  RAISERROR(@V_MESSAGE,16,1);RETURN; END" & vbCrLf & _
-                        " INSERT INTO GON_SEPARATED_HEADER(FKApp,GON_NUMBER,GON_DATE,WARHOUSE,SHIP_TO,SHIP_TO_CUST,SHIP_TO_ADDRESS,TRANSPORTER,POLICE_NO_TRANS,DRIVER_TRANS,REMARK,GON_AREA,CreatedDate,CreatedBy) " & vbCrLf & _
-                        " VALUES (@FKApp,@GON_NUMBER,@GON_DATE,@WARHOUSE,@SHIP_TO,@SHIP_TO_CUST,@SHIP_TO_ADDRESS,@TRANSPORTER,@POLICE_NO_TRANS,@DRIVER_TRANS,'',@GON_AREA,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy) ;" & vbCrLf & _
+                        " INSERT INTO GON_SEPARATED_HEADER(FKApp,GON_NUMBER,GON_DATE,WARHOUSE,SHIP_TO,SHIP_TO_CUST,SHIP_TO_ADDRESS,TRANSPORTER,POLICE_NO_TRANS,DRIVER_TRANS,REMARK,GON_AREA,GON_SHIP_TO,CreatedDate,CreatedBy) " & vbCrLf & _
+                        " VALUES (@FKApp,@GON_NUMBER,@GON_DATE,@WARHOUSE,@SHIP_TO,@SHIP_TO_CUST,@SHIP_TO_ADDRESS,@TRANSPORTER,@POLICE_NO_TRANS,@DRIVER_TRANS,'',@GON_AREA,@GON_SHIP_TO,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy) ;" & vbCrLf & _
                         " SELECT @@IDENTITY;"
                         QryGonDetail = "SET NOCOUNT ON;" & vbCrLf & _
                         " INSERT INTO GON_SEPARATED_DETAIL(FKAppGonHeader,FKAppPODetail,ITEM,QTY,COLLY_BOX,COLLY_PACKSIZE,BATCH_NO,CreatedBy,CreatedDate) " & vbCrLf & _
                         " VALUES(@FKAppGonHeader,@FKAppPODetail,@ITEM,@QTY,@COLLY_BOX,@COLLY_PACKSIZE,@BATCH_NO,@CreatedBy,CONVERT(VARCHAR(100),GETDATE(),101)) ;"
                     Case SaveMode.Update
                         QryGonPOHeader = "SET NOCOUNT ON;" & vbCrLf & _
-                        "UPDATE GON_SEPARATED_PO_HEADER SET PO_DATE = @PO_DATE,SPPB_NUMBER = @SPPB_NUMBER,SPPB_DATE = @SPPB_DATE,ModifiedDate = CONVERT(VARCHAR(100),GETDATE(),101),ModifiedBy = @ModifiedBy " & vbCrLf & _
+                        "UPDATE GON_SEPARATED_PO_HEADER SET PO_DATE = @PO_DATE,SPPB_NUMBER = @SPPB_NUMBER,SPPB_DATE = @SPPB_DATE,SHIP_TO=@SHIP_TO,ModifiedDate = CONVERT(VARCHAR(100),GETDATE(),101),ModifiedBy = @ModifiedBy " & vbCrLf & _
                         " WHERE PO_NUMBER = @PO_NUMBER ;"
                         QryGonPODetail = "SET NOCOUNT ON;" & vbCrLf & _
                         " UPDATE GON_SEPARATED_PO_DETAIL SET BRANDPACK_ID = @BRANDPACK_ID,QUANTITY = @QUANTITY,STATUS=@STATUS,ModifiedBy = @Modifiedby,ModifiedDate = CONVERT(VARCHAR(100),GETDATE(),101) WHERE IDApp=@IDApp ;"
                         QryGONHeader = "SET NOCOUNT ON;" & vbCrLf & _
                         " UPDATE GON_SEPARATED_HEADER SET GON_NUMBER = @GON_NUMBER,GON_DATE = @GON_DATE,WARHOUSE = @WARHOUSE,SHIP_TO = @SHIP_TO,SHIP_TO_CUST = @SHIP_TO_CUST,SHIP_TO_ADDRESS=@SHIP_TO_ADDRESS, " & vbCrLf & _
-                        "TRANSPORTER = @TRANSPORTER,POLICE_NO_TRANS=@POLICE_NO_TRANS,DRIVER_TRANS=@DRIVER_TRANS,ModifiedBy = @ModifiedBy,ModifiedDate = CONVERT(VARCHAR(100),GETDATE(),101) WHERE IDApp = @IDApp;"
+                        "TRANSPORTER = @TRANSPORTER,POLICE_NO_TRANS=@POLICE_NO_TRANS,DRIVER_TRANS=@DRIVER_TRANS,GON_AREA = @GON_AREA,GON_SHIP_TO=@GON_SHIP_TO,ModifiedBy = @ModifiedBy,ModifiedDate = CONVERT(VARCHAR(100),GETDATE(),101) WHERE IDApp = @IDApp;"
                         QryGonDetail = "SET NOCOUNT ON;" & vbCrLf & _
                         " UPDATE GON_SEPARATED_DETAIL SET ITEM=@ITEM,QTY = @QTY,COLLY_BOX=@COLLY_BOX,COLLY_PACKSIZE=@COLLY_PACKSIZE,BATCH_NO=@BATCH_NO,ModifiedBy=@ModifiedBy,ModifiedDate=CONVERT(VARCHAR(100),GETDATE(),101) " & vbCrLf & _
                         " WHERE IDApp = @IDApp ;"
@@ -383,6 +386,7 @@ Namespace OrderAcceptance
                             .Parameters.Add("@PO_DATE", SqlDbType.DateTime, 0).Value = OSPPBHeader.PODate
                             .Parameters.Add("@SPPB_NUMBER", SqlDbType.VarChar, 50).Value = OSPPBHeader.SPPBNO
                             .Parameters.Add("@SPPB_DATE", SqlDbType.DateTime, 0).Value = OSPPBHeader.SPPBDate
+                            .Parameters.Add("@SHIP_TO", SqlDbType.VarChar, 250).Value = OSPPBHeader.SPPBShipTo
                             .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100).Value = OSPPBHeader.CreatedBy     'GET IDApp
                             OIDAppSPPHeader = .ExecuteScalar()
                             .Parameters.Clear()
@@ -414,6 +418,7 @@ Namespace OrderAcceptance
                                 .Parameters.Add("@POLICE_NO_TRANS", SqlDbType.VarChar, 50).Value = OGonHeader.PoliceNoTrans
                                 .Parameters.Add("@DRIVER_TRANS", SqlDbType.VarChar, 50).Value = OGonHeader.DriverTrans
                                 .Parameters.Add("@GON_AREA", SqlDbType.VarChar, 20).Value = IIf(OGonHeader.GON_ID_AREA <> "", OGonHeader.GON_ID_AREA, DBNull.Value)
+                                .Parameters.Add("@GON_SHIP_TO", SqlDbType.VarChar, 250).Value = OGonHeader.ShipTo
                                 .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100).Value = OGonHeader.CreatedBy
                                 If .Transaction Is Nothing Then
                                     .Transaction = SqlTrans
@@ -469,7 +474,7 @@ Namespace OrderAcceptance
                                             .Parameters.Add("@QTY", SqlDbType.Decimal, 0).Value = foundRows(0)("QTY")
                                             .Parameters.Add("@COLLY_BOX", SqlDbType.VarChar, 50).Value = foundRows(0)("COLLY_BOX")
                                             .Parameters.Add("@COLLY_PACKSIZE", SqlDbType.VarChar, 50).Value = foundRows(0)("COLLY_PACKSIZE")
-                                            .Parameters.Add("@BATCH_NO", SqlDbType.VarChar).Value = foundRows(0)("BATCH_NO")
+                                            .Parameters.Add("@BATCH_NO", SqlDbType.NVarChar).Value = foundRows(0)("BATCH_NO")
                                             .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 50).Value = OGonHeader.CreatedBy
                                             .ExecuteScalar()
                                             If Not listBrandPackID.Contains(BrandPackID) Then
@@ -519,7 +524,7 @@ Namespace OrderAcceptance
                                 SqlDat.DeleteCommand = Nothing
                             End If
                         End If
-                        Dim strBrandPackIDS As String = "BRANDPACK_ID NOT IN("
+                        Dim strBrandPackIDS As String = "ITEM NOT IN("
                         If listBrandPackID.Count > 0 Then
                             For i As Integer = 0 To listBrandPackID.Count - 1
                                 strBrandPackIDS &= "'"
@@ -542,7 +547,7 @@ Namespace OrderAcceptance
                                 .Parameters.Add("@QTY", SqlDbType.Decimal, 0, "QTY")
                                 .Parameters.Add("@COLLY_BOX", SqlDbType.VarChar, 50, "COLLY_BOX")
                                 .Parameters.Add("@COLLY_PACKSIZE", SqlDbType.VarChar, 50, "COLLY_PACKSIZE")
-                                .Parameters.Add("@BATCH_NO", SqlDbType.VarChar, 18, "BATCH_NO")
+                                .Parameters.Add("@BATCH_NO", SqlDbType.NVarChar, 50, "BATCH_NO")
                                 .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 50, "CreatedBy")
                                 If .Transaction Is Nothing Then
                                     .Transaction = SqlTrans
@@ -568,7 +573,7 @@ Namespace OrderAcceptance
                                     .Parameters.Add("@QTY", SqlDbType.Decimal, 0, "QTY") '.Value = foundRows(0)("QTY")
                                     .Parameters.Add("@COLLY_BOX", SqlDbType.VarChar, 50, "COLLY_BOX") '.Value = foundRows(0)("COLLY_BOX")
                                     .Parameters.Add("@COLLY_PACKSIZE", SqlDbType.VarChar, 50, "COLLY_PACKSIZE") '.Value = foundRows(0)("COLLY_PACKSIZE")
-                                    .Parameters.Add("@BATCH_NO", SqlDbType.VarChar, 18, "BATCH_NO") '.Value = foundRows(0)("BATCH_NO")
+                                    .Parameters.Add("@BATCH_NO", SqlDbType.NVarChar, 50, "BATCH_NO") '.Value = foundRows(0)("BATCH_NO")
                                     .Parameters.Add("@ModifiedBy", SqlDbType.VarChar, 50, "ModifiedBy") '.Value = OGonHeader.CreatedBy
                                     SqlDat.UpdateCommand = commandUpdate
                                     SqlDat.Update(ModifiedRows) : SaveGonDetail = True
@@ -605,6 +610,7 @@ Namespace OrderAcceptance
                             .Parameters.Add("@SPPB_NUMBER", SqlDbType.VarChar, 50).Value = OSPPBHeader.SPPBNO
                             .Parameters.Add("@SPPB_DATE", SqlDbType.DateTime, 0).Value = OSPPBHeader.SPPBDate
                             .Parameters.Add("@ModifiedBy", SqlDbType.VarChar, 50).Value = OSPPBHeader.ModifiedBy
+                            .Parameters.Add("@SHIP_TO", SqlDbType.VarChar, 250).Value = OSPPBHeader.SPPBShipTo
                             .ExecuteScalar()
                             .Parameters.Clear()
                         End With
@@ -708,6 +714,7 @@ Namespace OrderAcceptance
                                 .Parameters.Add("@POLICE_NO_TRANS", SqlDbType.VarChar, 50).Value = OGonHeader.PoliceNoTrans
                                 .Parameters.Add("@DRIVER_TRANS", SqlDbType.VarChar, 50).Value = OGonHeader.DriverTrans
                                 .Parameters.Add("@GON_AREA", SqlDbType.VarChar, 20).Value = IIf(OGonHeader.GON_ID_AREA <> "", OGonHeader.GON_ID_AREA, DBNull.Value)
+                                .Parameters.Add("@GON_SHIP_TO", SqlDbType.VarChar, 250).Value = OGonHeader.ShipTo
                                 .Parameters.Add("@ModifiedBy", SqlDbType.VarChar, 100).Value = OGonHeader.ModifiedBy
                                 .ExecuteScalar()
                                 .Parameters.Clear()
@@ -715,8 +722,8 @@ Namespace OrderAcceptance
                         Else
                             With commandInsert
                                 .CommandText = " SET NOCOUNT ON;" & vbCrLf & _
-                                " INSERT INTO GON_SEPARATED_HEADER(FKApp,GON_NUMBER,GON_DATE,WARHOUSE,SHIP_TO,SHIP_TO_CUST,SHIP_TO_ADDRESS,TRANSPORTER,POLICE_NO_TRANS,DRIVER_TRANS,REMARK,GON_AREA,CreatedDate,CreatedBy) " & vbCrLf & _
-                                " VALUES (@FKApp,@GON_NUMBER,@GON_DATE,@WARHOUSE,@SHIP_TO,@SHIP_TO_CUST,@SHIP_TO_ADDRESS,@TRANSPORTER,@POLICE_NO_TRANS,@DRIVER_TRANS,'',@GON_AREA,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy) ;" & vbCrLf & _
+                                " INSERT INTO GON_SEPARATED_HEADER(FKApp,GON_NUMBER,GON_DATE,WARHOUSE,SHIP_TO,SHIP_TO_CUST,SHIP_TO_ADDRESS,TRANSPORTER,POLICE_NO_TRANS,DRIVER_TRANS,REMARK,GON_AREA,GON_SHIP_TO,CreatedDate,CreatedBy) " & vbCrLf & _
+                                " VALUES (@FKApp,@GON_NUMBER,@GON_DATE,@WARHOUSE,@SHIP_TO,@SHIP_TO_CUST,@SHIP_TO_ADDRESS,@TRANSPORTER,@POLICE_NO_TRANS,@DRIVER_TRANS,'',@GON_AREA,@GON_SHIP_TO,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy) ;" & vbCrLf & _
                                 " SELECT @@IDENTITY;"
                                 .CommandType = CommandType.Text
                                 If IsNothing(.Transaction) Then
@@ -733,6 +740,7 @@ Namespace OrderAcceptance
                                 .Parameters.Add("@POLICE_NO_TRANS", SqlDbType.VarChar, 50).Value = OGonHeader.PoliceNoTrans
                                 .Parameters.Add("@DRIVER_TRANS", SqlDbType.VarChar, 50).Value = OGonHeader.DriverTrans
                                 .Parameters.Add("@GON_AREA", SqlDbType.VarChar, 20).Value = IIf(OGonHeader.GON_ID_AREA <> "", OGonHeader.GON_ID_AREA, DBNull.Value)
+                                .Parameters.Add("@GON_SHIP_TO", SqlDbType.VarChar, 250).Value = OGonHeader.ShipTo
                                 .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100).Value = OGonHeader.ModifiedBy
                                 res = .ExecuteScalar()
                                 .Parameters.Clear()
@@ -767,7 +775,7 @@ Namespace OrderAcceptance
                                 .Parameters.Add("@QTY", SqlDbType.Decimal, 0, "QTY")
                                 .Parameters.Add("@COLLY_BOX", SqlDbType.VarChar, 50, "COLLY_BOX")
                                 .Parameters.Add("@COLLY_PACKSIZE", SqlDbType.VarChar, 50, "COLLY_PACKSIZE")
-                                .Parameters.Add("@BATCH_NO", SqlDbType.VarChar, 50, "BATCH_NO")
+                                .Parameters.Add("@BATCH_NO", SqlDbType.NVarChar, 50, "BATCH_NO")
                                 .Parameters.Add("PO_NUMBER", SqlDbType.VarChar, 50).Value = OSPPBHeader.PONumber
                                 .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 50).Value = OGonHeader.ModifiedBy
                                 If IsNothing(.Transaction) Then
@@ -793,7 +801,7 @@ Namespace OrderAcceptance
                                 .Parameters.Add("@QTY", SqlDbType.Decimal, 0, "QTY") '.Value = foundRows(0)("QTY")
                                 .Parameters.Add("@COLLY_BOX", SqlDbType.VarChar, 50, "COLLY_BOX") '.Value = foundRows(0)("COLLY_BOX")
                                 .Parameters.Add("@COLLY_PACKSIZE", SqlDbType.VarChar, 50, "COLLY_PACKSIZE") '.Value = foundRows(0)("COLLY_PACKSIZE")
-                                .Parameters.Add("@BATCH_NO", SqlDbType.VarChar, 18, "BATCh_NO") '.Value = foundRows(0)("BATCH_NO")
+                                .Parameters.Add("@BATCH_NO", SqlDbType.NVarChar, 50, "BATCh_NO") '.Value = foundRows(0)("BATCH_NO")
                                 .Parameters.Add("@ModifiedBy", SqlDbType.VarChar, 50, "ModifiedBy") '.Value = OGonHeader.CreatedBy
                                 SqlDat.UpdateCommand = commandUpdate
                                 SqlDat.Update(UpdatedRows) : SaveGonDetail = True

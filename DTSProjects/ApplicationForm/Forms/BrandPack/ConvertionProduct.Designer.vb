@@ -157,19 +157,19 @@ Partial Class ConvertionProduct
         'FilterToolStripMenuItem
         '
         Me.FilterToolStripMenuItem.Name = "FilterToolStripMenuItem"
-        Me.FilterToolStripMenuItem.Size = New System.Drawing.Size(113, 22)
+        Me.FilterToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.FilterToolStripMenuItem.Text = "Filter"
         '
         'ExportToolStripMenuItem
         '
         Me.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem"
-        Me.ExportToolStripMenuItem.Size = New System.Drawing.Size(113, 22)
+        Me.ExportToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.ExportToolStripMenuItem.Text = "Export"
         '
         'RefreshToolStripMenuItem
         '
         Me.RefreshToolStripMenuItem.Name = "RefreshToolStripMenuItem"
-        Me.RefreshToolStripMenuItem.Size = New System.Drawing.Size(113, 22)
+        Me.RefreshToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.RefreshToolStripMenuItem.Text = "Refresh"
         '
         'ConvertionProduct

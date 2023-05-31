@@ -312,6 +312,7 @@ Public Class SPPBManager
                 End With
             End If
         End If
+        GridN.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
         GridN.AutoSizeColumns()
     End Sub
     Private Sub AddConditionalFormatingGridSPPB()
@@ -1333,5 +1334,11 @@ Public Class SPPBManager
                 Me.frmParentGrid.LogMyEvent(ex.Message, Me.Name + "_btnFilteDate_Click")
             End If
         End Try
+    End Sub
+
+    Private Sub txtFind_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtFind.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            Me.btnFilteDate_Click(Me.btnFilteDate, New EventArgs())
+        End If
     End Sub
 End Class

@@ -2,7 +2,7 @@ Imports System.Data.SqlClient
 Imports NufarmBussinesRules.SharedClass
 Namespace PurchaseOrder
     Public Class Invoice
-        Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet
+        Inherits NufarmDataAccesLayer.DataAccesLayer.ADODotNet : Implements IDisposable
         Private Query As String = ""
         Public Sub New()
             MyBase.New()
@@ -352,18 +352,18 @@ Namespace PurchaseOrder
 
                 '===================UNCOMMENT THIS AFTER DEBUGGING========================
                 'drop table invoice
-                Query = "SET NOCOUNT ON ;" & vbCrLf & _
-                        "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
-                        " BEGIN DROP TABLE ##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
-                        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_INVOICE_2_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
-                        " BEGIN DROP TABLE ##T_INVOICE_2_" & Me.ComputerName & " ; END " & vbCrLf & _
-                        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Invoce_PO_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
-                        " BEGIN DROP TABLE ##T_Invoce_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
-                        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
-                        " BEGIN DROP TABLE ##T_START_DATE_" & Me.ComputerName & " ; END "
-                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                Me.SqlCom.ExecuteScalar()
+                'Query = "SET NOCOUNT ON ;" & vbCrLf & _
+                '        "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                '        " BEGIN DROP TABLE ##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
+                '        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_INVOICE_2_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                '        " BEGIN DROP TABLE ##T_INVOICE_2_" & Me.ComputerName & " ; END " & vbCrLf & _
+                '        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Invoce_PO_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                '        " BEGIN DROP TABLE ##T_Invoce_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
+                '        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                '        " BEGIN DROP TABLE ##T_START_DATE_" & Me.ComputerName & " ; END "
+                'Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                'Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                'Me.SqlCom.ExecuteScalar()
 
                 '===============================================================================
                 Me.ClearCommandParameters()
@@ -405,28 +405,44 @@ Namespace PurchaseOrder
         End Function
         Public Sub DisposeTempDB()
             Try
-                If Not Me.hasReservedInvoice(NufarmBussinesRules.User.UserLogin.UserName) Then
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                            "IF OBJECT_ID('tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & "') IS NOT NULL" & vbCrLf & _
-                           " BEGIN " & vbCrLf & _
-                           " DROP TABLE tempdb..##T_SELECT_INVOICE_" & Me.ComputerName & " ;" & vbCrLf & _
-                            "END"
-                    If IsNothing(Me.SqlCom) Then
-                        Me.CreateCommandSql("sp_executesql", "")
-                    Else
-                        Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                    End If
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                    Me.ExecuteScalar() : Me.ClearCommandParameters() : Me.CloseConnection()
+                'If Not Me.hasReservedInvoice(NufarmBussinesRules.User.UserLogin.UserName) Then
+                'End If
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                        "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_SELECT_INVOICE_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                        " BEGIN DROP TABLE ##T_SELECT_INVOICE_" & Me.ComputerName & " ; END " & vbCrLf & _
+                        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_INVOICE_2_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                        " BEGIN DROP TABLE ##T_INVOICE_2_" & Me.ComputerName & " ; END " & vbCrLf & _
+                        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Invoce_PO_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                        " BEGIN DROP TABLE ##T_Invoce_PO_" & Me.ComputerName & " ; END " & vbCrLf & _
+                        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_START_DATE_" & Me.ComputerName & "' AND Type = 'U') " & vbCrLf & _
+                        " BEGIN DROP TABLE ##T_START_DATE_" & Me.ComputerName & " ; END "
+                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.SqlCom.ExecuteScalar()
+                If IsNothing(Me.SqlCom) Then
+                    Me.CreateCommandSql("sp_executesql", "")
+                Else
+                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If
-
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.ExecuteScalar() : Me.ClearCommandParameters() : Me.CloseConnection()
             Catch ex As Exception
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Sub
+        Private disposedValue As Boolean = False        ' To detect redundant calls
         Public Overloads Sub Dispose(ByVal disposing As Boolean)
-            Me.DisposeTempDB()
-            MyBase.Dispose(disposing)
+            If Not Me.disposedValue Then
+                If disposing Then
+                    ' TODO: free unmanaged resources when explicitly called
+                End If
+
+                ' TODO: free shared unmanaged resources
+                Me.DisposeTempDB()
+                Dispose(True)
+                GC.SuppressFinalize(Me)
+            End If
+            Me.disposedValue = True
         End Sub
     End Class
 End Namespace

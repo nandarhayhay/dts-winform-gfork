@@ -428,6 +428,7 @@ Public Class SPPB
             'fiil tblPO
             Dim tblPO As DataTable = Me.clsSPPBGONEntry.getPO(.PO_REF_NO, SaveMode.Update, False)
             .dvPO = tblPO.DefaultView()
+            .dtPicSPPBDate.MinDate = tblPO.Rows(0)("PO_DATE")
             Dim tblSPPBrandPack As DataTable = Me.clsSPPBGONEntry.getSPPBBrandPack(.SPPB_NO, .PO_REF_NO, False, False)
             Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGOnData(.SPPB_NO, False)
             Dim ObjSPPBHeader As New Nufarm.Domain.SPPBHeader()
@@ -462,6 +463,7 @@ Public Class SPPB
                     .txtDriverTrans.Text = .OGONHeader.DriverTrans
                     .txtPolice_no_Trans.Text = .OGONHeader.PoliceNoTrans
                     '.DVMConversiProduct = Me.clsSPPBGONEntry.getProdConvertion(SaveMode.Update, True)
+                    .txtShipTo.Text = .OGONHeader.ShipTo
                     Dim TransporterName As Object = Nothing, GONArea As Object = Nothing, ListSPPBBrandPack As New List(Of String)
                     Dim DVGONManager As DataView = Nothing
                     Dim UCSPPBManager As SPPBManager = CType(Me.frmManager, SPPBManager)
@@ -538,12 +540,13 @@ Public Class SPPB
                     .chkProduct.ReadOnly = True
                     .cmbStatusSPPB.ReadOnly = True
                     'get min and max GON_Date
-                    .dtPicGONDate.MaxDate = .OGONHeader.GON_DATE
+                    '.dtPicGONDate.MaxDate = .OGONHeader.GON_DATE
                     .dtPicGONDate.MinDate = .OSPPBHeader.SPPBDate
+                    .dtPicSPPBDate.MaxDate = .OGONHeader.GON_DATE
                     .TransporterName = IIf((Not IsNothing(TransporterName)), TransporterName.ToString(), "")
                     .AreaName = IIf((Not IsNothing(GONArea)), GONArea.ToString(), "")
-                    .mcbTransporter.Value = .OGONHeader.GT_ID
-                    .mcbGonArea.Value = .OGONHeader.GON_ID_AREA
+                    '.mcbTransporter.Value = .OGONHeader.GT_ID
+                    '.mcbGonArea.Value = .OGONHeader.GON_ID_AREA
                     .grdSPPB.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
                     .grdSPPB.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
                     .grdGon.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
@@ -760,12 +763,15 @@ Public Class SPPB
                 SPPBDate = Convert.ToDateTime(DVDummySBManager(0)("SPPB_DATE"))
             End If
             .dtPicSPPBDate.Value = SPPBDate
+
             .SPPB_NO = UCSPPBManager.grdDetail.GetValue("SPPB_NO").ToString()
             .txtSPPBNO.Text = .SPPB_NO
             Dim DS As New DataSet("DSSPPB_GON") : DS.Clear()
             'fiil tblPO
             Dim tblPO As DataTable = Me.clsSPPBGONEntry.getPO(.PO_REF_NO, SaveMode.Update, False)
             .dvPO = tblPO.DefaultView()
+            .dtPicSPPBDate.MinDate = tblPO.Rows(0)("PO_DATE")
+
             Dim tblSPPBrandPack As DataTable = Me.clsSPPBGONEntry.getSPPBBrandPack(.SPPB_NO, .PO_REF_NO, False, False)
             Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGOnData(.SPPB_NO, False)
             Dim ObjSPPBHeader As New Nufarm.Domain.SPPBHeader()
@@ -791,7 +797,7 @@ Public Class SPPB
             .txtDriverTrans.Text = .OGONHeader.DriverTrans
             .cmdWarhouse.SelectedValue = .OGONHeader.WarhouseCode
             '.txtRemark.Text = .OGONHeader.DescriptionApp
-
+            .txtShipTo.Text = .OGONHeader.ShipTo
             DVGONManager = CType(UCSPPBManager.grdDetail.DataSource, DataView)
             Dim OrowFilter As String = DVGONManager.RowFilter
             DVGONManager.RowFilter = ""
@@ -864,8 +870,9 @@ Public Class SPPB
             .chkProduct.ReadOnly = True
             .cmbStatusSPPB.ReadOnly = False
             'get min and max GON_Date
-            .dtPicGONDate.MaxDate = .OGONHeader.GON_DATE
+            '.dtPicGONDate.MaxDate = .OGONHeader.GON_DATE
             .dtPicGONDate.MinDate = .OSPPBHeader.SPPBDate
+            .dtPicSPPBDate.MaxDate = .OGONHeader.GON_DATE
             .TransporterName = IIf((Not IsNothing(TransID)), TransID.ToString(), "")
             .AreaName = IIf((Not IsNothing(GONIDArea)), GONIDArea.ToString(), "")
             .grdSPPB.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
@@ -877,8 +884,8 @@ Public Class SPPB
             .lblSalesPerson.Text = Me.clsSPPBGONEntry.getSalesPerson(.PO_REF_NO, False)
             .lblDistributor.Text = UCSPPBManager.grdDetail.GetValue("DISTRIBUTOR_NAME").ToString()
             .btnAddGon.Enabled = False
-            .mcbGonArea.Value = .OGONHeader.GON_ID_AREA
-            .mcbTransporter.Value = .OGONHeader.GT_ID
+            '.mcbGonArea.Value = .OGONHeader.GON_ID_AREA
+            '.mcbTransporter.Value = .OGONHeader.GT_ID
 
             'If Not Me.IsHOUser And Not Me.IsSystemAdmin Then
             '    Select Case ConfigurationManager.AppSettings("WarhouseCode").ToString()

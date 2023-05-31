@@ -217,7 +217,7 @@ private frmGonDetailData as GonDetailData
         'header menu
         Me.btnBrandPack.Visible = True : Me.btnDistributor.Visible = True : Me.btnSales.Visible = True
         Me.btnOrder.Visible = True : Me.btnGenerate.Visible = True : Me.btnReport.Visible = True
-        Me.btnSetting.Visible = True
+        Me.btnSetting.Visible = True : Me.btnSPPbAndGon.Visible = True
         Me.btnChangePassword.Visible = True
         If Me.IsSystemAdministrator Then
             Me.btnSetting.Visible = True
@@ -269,16 +269,18 @@ private frmGonDetailData as GonDetailData
             Me.getCommonPriviledge()
         End If
         Me.btnByCrystalReport.Visible = False
-        Me.btnBrandPack.Visible = Not Me.btnBrandPack.VisibleSubItems <= 0
-        Me.btnDistributor.Visible = Not Me.btnDistributor.VisibleSubItems <= 0
-        Me.btnSales.Visible = Not Me.btnSales.VisibleSubItems <= 0
-        Me.btnOrder.Visible = Not Me.btnOrder.VisibleSubItems <= 0
-        Me.btnGenerate.Visible = Not Me.btnGenerate.VisibleSubItems <= 0
-        Me.btnReport.Visible = Not Me.btnReport.VisibleSubItems <= 0
-        Me.btnSMS.Visible = Not Me.btnSMS.VisibleSubItems <= 0
-        Me.btnSPPbAndGon.Visible = Not Me.btnSPPbAndGon.VisibleSubItems <= 0
+        Me.btnPlantation.Visible = Me.btnPlantation.VisibleSubItems > 0
+
+        Me.btnDistributor.Visible = Me.btnDistributor.VisibleSubItems > 0
+        Me.btnSales.Visible = Me.btnSales.VisibleSubItems > 0
+        Me.btnOrder.Visible = Me.btnOrder.VisibleSubItems > 0
+        Me.btnGenerate.Visible = Me.btnGenerate.VisibleSubItems > 0
+        Me.btnReport.Visible = Me.btnReport.VisibleSubItems > 0
+        Me.btnSMS.Visible = Me.btnSMS.VisibleSubItems > 0
+        Me.btnSPPbAndGon.Visible = Me.btnSPPbAndGon.VisibleSubItems > 0
+        Me.btnBrandPack.Visible = Me.btnBrandPack.VisibleSubItems > 0
         If btnSetting.Visible Then
-            Me.btnSetting.Visible = Not Me.btnSetting.VisibleSubItems <= 0
+            Me.btnSetting.Visible = Me.btnSetting.VisibleSubItems > 0
         End If
         If Not Me.isHOUser Then
             Me.btnAVGPrice.Visible = False
@@ -287,6 +289,7 @@ private frmGonDetailData as GonDetailData
             btnReport.Visible = False
             btnByGrid.Visible = False
             btnBrandPackPlantation.Visible = False
+            Me.btnBrandPackItem.Text = "Product"
         End If
     End Sub
 
