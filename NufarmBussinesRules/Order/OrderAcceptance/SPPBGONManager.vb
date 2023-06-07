@@ -563,8 +563,14 @@ Namespace OrderAcceptance
                 "BEGIN " & vbCrLf & _
                 " DROP TABLE TEMPDB..##T_SALES_REPORT_" & Me.ComputerName & " ;" & vbCrLf & _
                 " END "
-                ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+
+
+                'ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.OpenConnection()
                 SqlCom.ExecuteScalar() : ClearCommandParameters()
 
                 If Not IsForEntrySPPB Then
@@ -660,8 +666,13 @@ Namespace OrderAcceptance
                     " SELECT GH1.GON_HEADER_ID,GH1.GON_ID_AREA,GH1.GT_ID,GH1.SPPB_NO,GH1.GON_NO,GH1.GON_DATE,GH1.WARHOUSE,GH1.POLICE_NO_TRANS,GH1.DRIVER_TRANS, GD.SPPB_BRANDPACK_ID,GD.GON_DETAIL_ID,GD.GON_QTY,GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsOpen,GD.CreatedBy,GD.CreatedDate,GD.IsUpdatedBySystem INTO TEMPDB..##T_GH_SPPB_" & Me.ComputerName & " FROM GON_HEADER GH1 INNER JOIN GON_DETAIL GD ON GD.GON_HEADER_ID = GH1.GON_HEADER_ID " & vbCrLf & _
                     " INNER JOIN TEMPDB..##T_F_R_SPPB_" & Me.ComputerName & " TFR ON (TFR.SPPB_BRANDPACK_ID = GD.SPPB_BRANDPACK_ID AND GH1.SPPB_NO = TFR.SPPB_NO);" & vbCrLf & _
                     " --CREATE CLUSTERED INDEX IX_T_GH_SPPB_" & Me.ComputerName & " ON tempdb..##T_GH_SPPB_" & Me.ComputerName & "(SPPB_NO,SPPB_BRANDPACK_ID) ;"
-                    ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                    Else : ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                    End If
+
+                    'ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                     AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                    Me.OpenConnection()
                     SqlCom.ExecuteScalar() : ClearCommandParameters()
 
                     Query = "SET NOCOUNT ON; SET ARITHABORT OFF; SET ANSI_WARNINGS OFF ;  " & vbCrLf & _

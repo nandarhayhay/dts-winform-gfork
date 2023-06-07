@@ -132,7 +132,9 @@ Public Class GonNonPODist
         Me.mcbGonArea.ReadOnly = Not isEnabled
         Me.mcbTransporter.ReadOnly = Not isEnabled
         Me.chkProduct.ReadOnly = Not isEnabled
-        Me.cmdWarhouse.ReadOnly = Not isEnabled
+        If IsHOUser Or Me.IsSystemAdmin Then
+            Me.cmdWarhouse.ReadOnly = Not isEnabled
+        End If
         Me.mcbCustomer.ReadOnly = Not isEnabled
         Me.txtPolice_no_Trans.Enabled = isEnabled
         Me.txtDriverTrans.Enabled = isEnabled
@@ -725,7 +727,9 @@ Public Class GonNonPODist
                         Me.dtPicGONDate.MinDate = Me.dtPicSPPBDate.Value
                         Me.mcbGonArea.Value = ""
                     End If
-                    Me.cmdWarhouse.SelectedValue = .WarhouseCode
+                    If Not String.IsNullOrEmpty(.GON_NO) Then
+                        Me.cmdWarhouse.SelectedValue = .WarhouseCode
+                    End If
                     ''set textnya
                     Me.mcbTransporter.Value = .GT_ID
                     Me.txtPolice_no_Trans.Text = .PoliceNoTrans
@@ -2056,6 +2060,23 @@ Public Class GonNonPODist
             Me.chkProduct.SetDataBinding(DVGonProduct, "")
             ''reset object gon
             Me.OGONHeader = New Nufarm.Domain.GONHeader()
+            If Not Me.IsHOUser And Not Me.IsSystemAdmin Then
+                Me.cmdWarhouse.ReadOnly = False
+                Me.cmdWarhouse.Focus()
+                Select Case ConfigurationManager.AppSettings("WarhouseCode").ToString()
+                    Case "SRG"
+                        Me.cmdWarhouse.SelectedIndex = 5
+                    Case "SBY"
+                        Me.cmdWarhouse.SelectedIndex = 3
+                    Case "MRK"
+                        Me.cmdWarhouse.SelectedIndex = 2
+                    Case "TGR"
+                        Me.cmdWarhouse.SelectedIndex = 4
+                End Select
+                Me.cmdWarhouse.ReadOnly = True
+            Else
+                Me.cmdWarhouse.ReadOnly = False
+            End If
             Me.SForm = StatusForm.Insert
             'Me.btnInsert.Text = "Save Gon"
             Me.btnInsert.Enabled = True

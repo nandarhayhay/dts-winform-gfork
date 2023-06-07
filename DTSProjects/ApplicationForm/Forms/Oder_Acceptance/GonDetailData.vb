@@ -464,6 +464,7 @@ Public Class GonDetailData
         ElseIf mustReload Then
             GridN.RetrieveStructure()
         End If
+        GridN.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
         For Each col As Janus.Windows.GridEX.GridEXColumn In GridN.RootTable.Columns
             If col.DataMember.Contains("PRICE") Then
                 If Not Me.isHOUser Then

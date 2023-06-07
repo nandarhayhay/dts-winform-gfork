@@ -62,7 +62,7 @@ Public Class SPPBManager
             End If
         End If
         If Not Me.isHOUser Then
-            Me.ContextMenuStrip1.Visible = False
+            Me.SalesReportSummaryToolStripMenuItem.Visible = False
         End If
     End Sub
     '====================================OLD PROCESS===============================================
@@ -1216,6 +1216,11 @@ Public Class SPPBManager
 
     Private Sub SalesReportToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SalesReportToolStripMenuItem.Click
         Try
+            If IsNothing(Me.frmParentSPPB.GridEX1.DataSource) Then
+                Return
+            ElseIf Me.frmParentSPPB.GridEX1.RecordCount <= 0 Then
+                Return
+            End If
             Me.Cursor = Cursors.WaitCursor
             Me.StatProg = StatusProgress.Processing
             Me.ThreadProgress = New Thread(AddressOf Me.ShowProceed)
@@ -1248,6 +1253,11 @@ Public Class SPPBManager
     End Sub
 
     Private Sub SPPBEntryToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SPPBEntryToolStripMenuItem.Click
+        If IsNothing(Me.frmParentSPPB.GridEX1.DataSource) Then
+            Return
+        ElseIf Me.frmParentSPPB.GridEX1.RecordCount <= 0 Then
+            Return
+        End If
         Try
             Me.Cursor = Cursors.WaitCursor
             Me.StatProg = StatusProgress.Processing
@@ -1300,6 +1310,11 @@ Public Class SPPBManager
     End Sub
 
     Private Sub SalesReportSummaryToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SalesReportSummaryToolStripMenuItem.Click
+        If IsNothing(Me.frmParentSPPB.GridEX1.DataSource) Then
+            Return
+        ElseIf Me.frmParentSPPB.GridEX1.RecordCount <= 0 Then
+            Return
+        End If
         Try
             Cursor = Cursors.WaitCursor
             Me.Cursor = Cursors.WaitCursor

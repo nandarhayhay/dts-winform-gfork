@@ -194,7 +194,7 @@ Namespace OrderAcceptance
             Me.AddParameter("@GT_ID", SqlDbType.VarChar, domGON.GT_ID, 10)
             Me.AddParameter("@GON_ID_AREA", SqlDbType.VarChar, domGON.GON_ID_AREA, 10)
             Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, domGON.SPPBNO, 15)
-            Me.AddParameter("@SHIP_TO", SqlDbType.VarChar, domGON.ShipTo, 200)
+            Me.AddParameter("@SHIP_TO", SqlDbType.VarChar, domGON.ShipTo, 250)
             Me.AddParameter("@POLICE_NO_TRANS", SqlDbType.VarChar, domGON.PoliceNoTrans, 50)
             Me.AddParameter("@DRIVER_TRANS", SqlDbType.VarChar, domGON.DriverTrans, 50)
             Me.AddParameter("@WARHOUSE", SqlDbType.VarChar, domGON.WarhouseCode, 20)
