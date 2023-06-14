@@ -1205,13 +1205,19 @@ Public Class SPPBEntryGON
             Me.DVProduct = Me.clsSPPB.GetProduct(SPPB_NO, tblGON, tblSPPB, False) : Me.BindCheckedCombo()
             ''BInd DVProduct if not exists in MCBProduct(SPPB_BRANDPACK_ID,BRANDPACK_NAME,LEFT_QTY) ''Display Member BRANDPACK_NAME,ValueMember SPPB_BRANDPACK_ID
             ''in mcbProduct
+            ''check SHIP to terakhir by SPPB no
+            Dim lastShipTo As String = Me.clsSPPB.getLastShipTO(SPPB_NO, True)
             ''get default shipto
+
             Dim IsReadOnly As Boolean = Me.mcbOA_REF_NO.ReadOnly
             Me.mcbOA_REF_NO.ReadOnly = False
             Me.mcbOA_REF_NO.Enabled = True
             Me.mcbOA_REF_NO.Focus()
             Me.mcbOA_REF_NO.DroppedDown = True
             Dim Address As String = Me.mcbOA_REF_NO.DropDownList().GetValue("ADDRESS")
+            If Not String.IsNullOrEmpty(lastShipTo) Then
+                Address = lastShipTo
+            End If
             Me.txtShipTo.Text = Address
             Me.mcbOA_REF_NO.DroppedDown = False
             Me.mcbOA_REF_NO.ReadOnly = IsReadOnly

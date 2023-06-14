@@ -792,7 +792,8 @@ Public Class GONWithoutPOMaster
             '    If (Me.AdvancedTManager1.GridEX1.RecordCount <= 0) Then
             '        If Me.TotalIndex > 1 Then
             '            If Me.PageIndex > 1 Then
-            '                Me.PageIndex -= 1
+            '                Me.PageIndex -= 
+
             '            End If
             '        End If
             '        Me.SetStatusRecord()

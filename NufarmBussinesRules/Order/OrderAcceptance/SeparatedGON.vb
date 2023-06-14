@@ -992,6 +992,74 @@ Namespace OrderAcceptance
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
+        Public Function getLastShipTO(ByVal SPPB_NO As String, ByRef GON_SHIP_TO As String, ByRef ShipToAddress As String, ByVal mustCloseConnection As Boolean) As String
+            Try
+                'If Not String.IsNullOrEmpty(GON_SHIP_TO) Then
+                '    Query = "SET NOCOUNT ON; " & vbCrLf & _
+                '            "SELECT TOP 1 GSH.GON_SHIP_TO FROM GON_SEPARATED_HEADER GSH INNER JOIN GON_SEPARATED_PO_HEADER GSPH ON GSH.FKApp = GSPH.IDApp " & vbCrLf & _
+                '            " WHERE GSPH.SPPB_NUMBER = @SPPB_NO ORDER BY GSH.GON_DATE DESC ; "
+                '    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                '    Else : Me.ResetCommandText(CommandType.Text, Query)
+                '    End If
+                '    Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPB_NO, 30)
+                '    Me.OpenConnection()
+                '    Dim retval As Object = Me.SqlCom.ExecuteScalar()
+                '    If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                '        Return retval.ToString()
+                '    End If
+                '    Return ""
+
+                'ElseIf Not String.IsNullOrEmpty(ShipToAddress) Then
+                '    Query = "SET NOCOUNT ON; " & vbCrLf & _
+                '            "SELECT TOP 1 GSH.SHIP_TO_ADDRESS FROM GON_SEPARATED_HEADER GSH INNER JOIN GON_SEPARATED_PO_HEADER GSPH ON GSH.FKApp = GSPH.IDApp " & vbCrLf & _
+                '            " WHERE GSPH.SPPB_NUMBER = @SPPB_NO ORDER BY GSH.GON_DATE DESC ; "
+                '    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                '    Else : Me.ResetCommandText(CommandType.Text, Query)
+                '    End If
+                '    Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPB_NO, 30)
+                '    Me.OpenConnection()
+                '    Dim retval As Object = Me.SqlCom.ExecuteScalar()
+                '    If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                '        Return retval.ToString()
+                '    End If
+                '    Return ""
+                'Else
+
+                'End If
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT TOP 1 GSH.SHIP_TO_ADDRESS,GSH.GON_SHIP_TO FROM GON_SEPARATED_HEADER GSH INNER JOIN GON_SEPARATED_PO_HEADER GSPH ON GSH.FKApp = GSPH.IDApp " & vbCrLf & _
+                        " WHERE GSPH.SPPB_NUMBER = @SPPB_NO ORDER BY GSH.GON_DATE DESC ; "
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPB_NO, 30)
+                Me.OpenConnection()
+                Dim ShipToAdd = Nothing, GonShipTo As Object = Nothing
+                Me.SqlRe = Me.SqlCom.ExecuteReader()
+                While Me.SqlRe.Read()
+                    ShipToAdd = SqlRe(0)
+                    If Not IsDBNull(ShipToAdd) And Not IsNothing(ShipToAdd) Then
+                        If Not String.IsNullOrEmpty(ShipToAdd) Then
+                            ShipToAddress = ShipToAdd
+                        End If
+                    End If
+                    GonShipTo = SqlRe(1)
+                    If Not IsDBNull(GonShipTo) And Not IsNothing(GonShipTo) Then
+                        If Not String.IsNullOrEmpty(GonShipTo) Then
+                            GON_SHIP_TO = GonShipTo
+                        End If
+                    End If
+                End While : Me.SqlRe.Close()
+                Me.ClearCommandParameters()
+                If ShipToAdd = "" And GonShipTo = "" Then
+                    Return ""
+                End If
+                Return IIf(ShipToAdd <> "", ShipToAdd, GON_SHIP_TO)
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
+
         Public Function GetDistributor(ByVal SearchString As String, ByVal closeConnection As Boolean) As DataView
             Try
                 If (String.IsNullOrEmpty(SearchString)) Then

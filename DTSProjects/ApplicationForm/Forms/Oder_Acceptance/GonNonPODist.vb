@@ -520,6 +520,7 @@ Public Class GonNonPODist
         Me.mcbGonArea.Value = Nothing
         Me.mcbTransporter.Text = ""
         Me.mcbTransporter.Value = Nothing
+        Me.mcbCustomer.Value = Nothing
         Me.chkProduct.Text = ""
         Me.chkProduct.UncheckAll()
         Me.txtDriverTrans.Text = ""
@@ -575,12 +576,7 @@ Public Class GonNonPODist
     Private Function SaveData() As Boolean
         Dim validData As Boolean = Me.ValidataHeader(True)
         If Not validData Then : Return False : End If
-        If Not IsNothing(Me.grdGon.DataSource) Then
-            If Me.grdGon.RecordCount > 0 Then
-                validData = Me.ValidateGONHeader(True)
-            End If
-        End If
-        If Not validData Then : Return False : End If
+
         Dim HasChangedHeaderPO As Boolean = Me.HasChangedHeaderPO(), HasChangedPODetail As Boolean = Me.HasChangedPODetail(), _
         HasChangedGONHeader As Boolean = Me.HasChangedGONHeader(), HasChangeGonDetail As Boolean = Me.HasChangeGonDetail()
         If HasChangedHeaderPO Then
@@ -599,6 +595,14 @@ Public Class GonNonPODist
         End If
         Dim UserFrom = ConfigurationManager.AppSettings("WarhouseCode")
         If HasChangedGONHeader Then
+            If Not IsNothing(Me.grdGon.DataSource) Then
+                If Me.grdGon.RecordCount > 0 Then
+                    validData = Me.ValidateGONHeader(True)
+                    If Not validData Then : Return False : End If
+                End If
+            End If
+            validData = Me.ValidateGONHeader(False)
+            If Not validData Then : Return False : End If
             With Me.OGONHeader
                 .GON_DATE = Convert.ToDateTime(Me.dtPicGONDate.Value.ToShortDateString())
                 If Not IsNothing(Me.mcbGonArea.Value) Then
@@ -2181,15 +2185,33 @@ Public Class GonNonPODist
                 End If
             End If
             Me.txtGonShipto.Visible = True
-            Me.txtGonShipto.Text = address
+            'check last ship to 
+            Dim GonShipto As String = "", ShiptoAdd As String = ""
+            Dim LastShipTo As String = Me.clsGonNonPO.getLastShipTO(Me.txtSPPBNo.Text, GonShipto, ShiptoAdd, True)
+            If Not String.IsNullOrEmpty(GonShipto) Then
+                address = GonShipto.ToString()
+            End If
+            If Not String.IsNullOrEmpty(address) Then
+                Me.txtGonShipto.Text = address
+            Else
+                Me.txtGonShipto.Text = Me.txtDefShipto.Text
+            End If
         Else
             Me.grpGonEntry.Size = Me.SmallGonEntry
             Me.mcbCustomer.Visible = False
             Me.mcbCustomer.Value = Nothing
             Me.btnFindDistributor.Visible = False
-            If Me.txtDefShipto.Text <> "" Then
-                Me.txtCustomerAddress.Text = Me.txtDefShipto.Text
+            Dim GonShipto As String = "", ShiptoAdd As String = "", ShipTo As String = ""
+            Dim LastShipTo As String = Me.clsGonNonPO.getLastShipTO(Me.txtSPPBNo.Text, GonShipto, ShiptoAdd, True)
+            If Not String.IsNullOrEmpty(ShiptoAdd) Then
+                ShipTo = ShiptoAdd.ToString()
+            Else
+                If Me.txtDefShipto.Text <> "" Then
+                    ShipTo = Me.txtDefShipto.Text
+                End If
             End If
+            Me.txtCustomerAddress.Text = ShipTo
+
             Me.lblCustomerName.Visible = True
             Me.txtCustomerName.Visible = True
             Me.lblAddress.Visible = True

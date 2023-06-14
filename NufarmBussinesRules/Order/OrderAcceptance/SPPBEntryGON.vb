@@ -590,6 +590,24 @@ Namespace OrderAcceptance
             Me.SqlCom.ExecuteScalar() : Me.CommiteTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
 
         End Function
+        Public Function getLastShipTO(ByVal SPPB_NO As String, ByVal mustCloseConnection As Boolean) As String
+            Try
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT TOP 1 SHIP_TO FROM GON_HEADER WHERE SPPB_NO = @SPPB_NO ORDER BY GON_DATE DESC ; "
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPB_NO, 30)
+                Me.OpenConnection()
+                Dim retval As Object = Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    Return retval.ToString()
+                End If
+                Return ""
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
         Public Function GetProduct(ByVal SPPB_NO As String, ByVal TblGonToIncludeInCalculation As DataTable, ByVal tblSPPB As DataTable, ByVal mustCloseConnection As Boolean) As DataView
             Try
                 Dim tblProduct As New DataTable("T_Product") : tblProduct.Clear()
