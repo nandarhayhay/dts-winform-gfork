@@ -296,7 +296,6 @@ Partial Class GonDetailData
         '
         'grdHeader
         '
-        Me.grdHeader.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.grdHeader.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
         Me.grdHeader.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.grdHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))

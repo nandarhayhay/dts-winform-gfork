@@ -1019,14 +1019,15 @@ Namespace OrderAcceptance
             Try
                 If mode = SaveMode.Insert Then
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2 FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
+                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
                 Else
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2 FROM BRND_PROD_CONV;"
+                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV ;"
                 End If
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If
+
 
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Dim dtProdConvertion As New DataTable("T_ProdConvertion")

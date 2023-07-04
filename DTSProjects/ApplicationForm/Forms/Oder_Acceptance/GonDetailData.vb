@@ -30,8 +30,12 @@ Public Class GonDetailData
     Private Sub GonDetailData_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
             Me.ShowCustomCategory()
+            Me.FilterEditor1.Visible = False
             Me.cmbFilterBy.SelectedValue = "GON_NUMBER"
             Me.txtFind.Visible = True
+            If NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.GonDetailData Or NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GonDetailData Then
+                Me.grdHeader.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
+            End If
         Catch ex As Exception
 
         End Try
@@ -389,8 +393,23 @@ Public Class GonDetailData
                 DevQty = row("DEVIDED_QUANTITY") : GonQty = row("GON_QTY") : SPPBqty = row("SPPB_QTY") : TotalDisc = row("TOTAL_DISC")
                 POOriginal = row("PO_ORIGINAL_QTY") : totalGon = row("TOTAL_GON")
                 row.BeginEdit()
-                row("GON_PO") = GonQty
-                row("GON_DISC_INC") = 0
+                If TotalDisc > 0 Then
+                    If GonQty = SPPBqty Then
+                        row("GON_PO") = POOriginal
+                        row("GON_DISC_INC") = TotalDisc
+                    ElseIf GonQty < SPPBqty Then
+                        XSize = GonQty / DevQty
+                        PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                        PODIsc = PODIsc * DevQty
+                        GONDisc = Decimal.Round((TotalDisc * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                        GONDisc = GONDisc * DevQty
+                        row("GON_PO") = PODIsc
+                        row("GON_DISC_INC") = GONDisc
+                    End If
+                Else
+                    row("GON_PO") = GonQty
+                    row("GON_DISC_INC") = 0
+                End If
                 row.EndEdit()
             End If
         Next
@@ -535,7 +554,7 @@ Public Class GonDetailData
                 col.Visible = False
             End If
             'col.AutoSize()
-            col.EditType = Janus.Windows.GridEX.EditType.NoEdit
+            'col.EditType = Janus.Windows.GridEX.EditType.NoEdit
         Next
         grdHeader.AutoSizeColumns()
     End Sub
@@ -643,5 +662,11 @@ Public Class GonDetailData
             Me.IsLoadding = False
             Cursor = Cursors.Default
         End Try
+    End Sub
+
+    Private Sub txtFind_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtFind.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            Me.btnFilteDate_Click(Me.btnFilteDate, New EventArgs())
+        End If
     End Sub
 End Class

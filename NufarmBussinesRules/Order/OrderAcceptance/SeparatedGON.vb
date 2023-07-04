@@ -1064,10 +1064,10 @@ Namespace OrderAcceptance
             Try
                 If (String.IsNullOrEmpty(SearchString)) Then
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                           " SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME,ADDRESS FROM DIST_DISTRIBUTOR DR "
+                           " SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME,ISNULL(ADDRESS,'UNKNOW ADDRESS')AS ADDRESS FROM DIST_DISTRIBUTOR "
                 Else
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                           " SELECT DR.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,DR.ADDRESS FROM DIST_DISTRIBUTOR DR " & vbCrLf & _
+                           " SELECT DR.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ISNULL(DR.ADDRESS,'UNKNOW ADDRESS')AS ADDRESS FROM DIST_DISTRIBUTOR DR " & vbCrLf & _
                            " WHERE DR.DISTRIBUTOR_NAME LIKE '%" & SearchString & "%';"
                 End If
 
