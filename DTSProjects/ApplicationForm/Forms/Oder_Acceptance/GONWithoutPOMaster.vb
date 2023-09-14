@@ -2,6 +2,8 @@ Imports System.Threading
 Imports System
 Imports Nufarm.Domain
 Imports DTSProjects.GonNonPODist
+Imports System.Configuration
+Imports System.Globalization
 Public Class GONWithoutPOMaster
     Private SFm As StateFillingMCB
     Private SFG As StateFillingGrid
@@ -22,6 +24,10 @@ Public Class GONWithoutPOMaster
     Private hasLoadGrid As Boolean = False
     Private hasLoadForm As Boolean = False
     Private FData As FilterData = FilterData.GonOnly
+    Private WithEvents frmSPPBrep As FrmSPPBReport
+    Private listSPPB As New List(Of String)
+    Private OriginalWaterMarkText As String
+    Private isLoadingRow As Boolean = False
     Private ReadOnly Property SGonManager() As NufarmBussinesRules.OrderAcceptance.SeparatedGONManager
         Get
             If m_SGonManager Is Nothing Then
@@ -284,13 +290,229 @@ Public Class GONWithoutPOMaster
                 End If
             Case "btnRefresh"
                 Me.ReloadOpener()
+            Case "btnCurrentSelection"
+                If Me.AdvancedTManager1.GridEX1.DataSource Is Nothing Then
+                    Return
+                End If
+                If Me.AdvancedTManager1.GridEX1.RecordCount <= 0 Then
+                    Return
+                End If
+                If Me.AdvancedTManager1.GridEX1.SelectedItems Is Nothing Then
+                    Return
+                End If
+                If Me.AdvancedTManager1.GridEX1.SelectedItems.Count <= 0 Then
+                    Return
+                End If
+                Dim sppbNo As String = ""
+                'check selecttion
+                If Not IsNothing(Me.AdvancedTManager1.GridEX1.GetRow.Group) Then
+                    If Me.AdvancedTManager1.GridEX1.GetRow.Group.Column.Key.Contains("SPPB") Then
+                        sppbNo = Me.AdvancedTManager1.GridEX1.GetRow.GroupValue
+                    ElseIf Me.AdvancedTManager1.GridEX1.GetRow.Group.Column.Key.Contains("GON_NUMBER") Then
+                        'GonNumber = Me.AdvancedTManager1.GridEX1.GetRow.GroupValue
+                        Me.AdvancedTManager1.GridEX1.MoveNext()
+                        sppbNo = Me.AdvancedTManager1.GridEX1.GetValue("SPPB_NUMBER")
+                    Else
+                        sppbNo = Me.AdvancedTManager1.GridEX1.GetValue("SPPB_NUMBER")
+                    End If
+                Else
+                    sppbNo = Me.AdvancedTManager1.GridEX1.GetValue("SPPB_NUMBER")
+                End If
+                ''get data for printing by SPPB number
+                Me.PrintCurrentSelSPPB(sppbNo)
+            Case "btnPrintcustoms"
+                PrintCustomSPPB()
         End Select
         Me.StatProg = StatusProgress.None
         Me.SFm = StateFillingMCB.HasFilled : Me.SFG = StateFillingGrid.HasFilled
         Me.MustReload = False
         Me.Cursor = Cursors.Default
     End Sub
+    Private Sub PrintCustomSPPB()
+        Me.frmSPPBrep = New FrmSPPBReport()
+        With frmSPPBrep
+            'get data SPPB Header
+            .isSingleReport = False
+            .ShowInTaskbar = False
+            Me.OriginalWaterMarkText = frmSPPBrep.txtSearch.WaterMarkText
+            .StartPosition = FormStartPosition.CenterScreen
+            Dim tblHeader As New DataTable("T_HEADER")
+            Dim tblDetail As New DataTable("Ref_Other_SPPB")
+            Me.SGonManager.getSPPBReportData("", False, tblHeader, tblDetail)
+            .GridEX1.SetDataBinding(tblHeader, "")
+            .GridEX1.UnCheckAllRecords()
+            .hasLoadForm = True
+            .ShowDialog(Me)
+            Me.isLoadingRow = False
+        End With
+    End Sub
+    Private Sub DisplayData(ByVal dt As DataTable)
+        With Me.frmSPPBrep
+            .ReportDoc = Nothing
+            Application.DoEvents()
+            Dim rptSPPB As New SPPBOther()
+            .ReportDoc = rptSPPB
+            .ReportDoc.SetDataSource(dt)
+            .crvSPPB.ReportSource = .ReportDoc
+        End With
+        Application.DoEvents()
+    End Sub
+    Private Sub Grid_RowCheckStateChanged(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.RowCheckStateChangeEventArgs) Handles frmSPPBrep.Grid_RowCheckStateChanged
+        Try
+            If Me.isLoadingRow Then : Return : End If
+            If Not Me.frmSPPBrep.hasLoadForm Then : Return : End If
+            Cursor = Cursors.WaitCursor
+            Me.isLoadingRow = True
+            Dim SPPBNO As String = ""
+            If e.CheckState = Janus.Windows.GridEX.RowCheckState.Checked Then
+                SPPBNO = e.Row.Cells("SPPB_NUMBER").Value
+                If Not listSPPB.Contains(SPPBNO) Then
+                    listSPPB.Add(SPPBNO)
+                End If
+            End If
+            Dim dt As DataTable = Me.SGonManager.getSPPBReportData(listSPPB)
+            Me.DisplayData(dt)
+            Me.isLoadingRow = False
+            Cursor = Cursors.Default
+        Catch ex As Exception
+            Me.isLoadingRow = False
+            Cursor = Cursors.Default
+            e.Row.CheckState = e.OldCheckState
+            MessageBox.Show(ex.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+    End Sub
+    Private Sub Grid_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles frmSPPBrep.Grid_KeyDown
+        If e.KeyCode = Keys.F7 Then
+            Cursor = Cursors.WaitCursor
+            Try
+                Dim FE As New Janus.Windows.GridEX.Export.GridEXExporter()
+                Me.Cursor = Cursors.WaitCursor
+                FE.IncludeHeaders = True
+                FE.SheetName = "SPPB_HEADER_DATA"
+                FE.IncludeFormatStyle = False
+                FE.IncludeExcelProcessingInstruction = True
+                FE.ExportMode = Janus.Windows.GridEX.ExportMode.AllRows
+                Dim SD As New SaveFileDialog()
+                SD.OverwritePrompt = True
+                SD.DefaultExt = ".xls"
+                SD.Filter = "All Files|*.*"
+                SD.RestoreDirectory = True
+                SD.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                If SD.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+                    Using FS As New System.IO.FileStream(SD.FileName, IO.FileMode.Create)
+                        FE.GridEX = Me.frmSPPBrep.GridEX1
+                        FE.Export(FS)
+                        FS.Close()
+                        MessageBox.Show("Data Exported to " & SD.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End Using
+                End If
+                Me.Cursor = Cursors.Default
+            Catch ex As Exception
+                Cursor = Cursors.Default
+                Me.ShowMessageError(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_Grid_KeyDown")
+            End Try
+        End If
+        Cursor = Cursors.Default
+    End Sub
+    Private Sub Search_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSPPBrep.Search_Enter
+        'If (this.txtSearchKios.WaterMarkText.Equals(this.OriginalWaterMarkText)) Then
+        '    { this.txtSearchKios.Text = string.Empty; this.txtSearchKios.WaterMarkText = string.Empty; }
+        If Me.frmSPPBrep.txtSearch.WaterMarkText.Equals(Me.OriginalWaterMarkText) Then
+            Me.frmSPPBrep.txtSearch.Text = String.Empty
+            Me.frmSPPBrep.txtSearch.WaterMarkText = String.Empty
+        End If
+    End Sub
+    Private Sub Search_Leave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSPPBrep.Search_Leave
+        'if (this.txtSearchKios.Text == string.Empty) { this.txtSearchKios.WaterMarkText = this.OriginalWaterMarkText; }
+        If Me.frmSPPBrep.txtSearch.Text = String.Empty Then
+            Me.frmSPPBrep.txtSearch.WaterMarkText = Me.OriginalWaterMarkText
+        End If
+    End Sub
+    Private Sub Search_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles frmSPPBrep.Search_KeyDown
 
+        If e.KeyCode = Keys.Enter Then
+            Try
+                Me.Cursor = Cursors.WaitCursor
+                Me.isLoadingRow = True
+                'get sppb data
+                Dim SearchSPPB As String = Me.frmSPPBrep.txtSearch.Text.Trim()
+                Dim tblHeader As DataTable = Me.SGonManager.getSPPBData(SearchSPPB)
+                frmSPPBrep.GridEX1.SetDataBinding(tblHeader, "")
+                For Each row As Janus.Windows.GridEX.GridEXRow In frmSPPBrep.GridEX1.GetRows()
+                    Dim SPPBNO As String = row.Cells("SPPB_NUMBER").Value
+                    If Me.listSPPB.Contains(SPPBNO) Then
+                        row.CheckState = Janus.Windows.GridEX.RowCheckState.Checked
+                    Else
+                        row.CheckState = Janus.Windows.GridEX.RowCheckState.Unchecked
+                    End If
+                Next
+                Me.isLoadingRow = False
+                Me.Cursor = Cursors.Default
+            Catch ex As Exception
+                Me.isLoadingRow = False
+                Cursor = Cursors.Default
+                Me.ShowMessageError(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_Search_KeyDown")
+            End Try
+        End If
+    End Sub
+
+    Private Sub PrintCurrentSelSPPB(ByVal SPPBNo As String)
+        Dim dtTable As New DataTable("Ref_Other_SPPB")
+        With dtTable
+            .Columns.Add("FKApp", Type.GetType("System.Int32"))
+            .Columns.Add("PO_NUMBER", Type.GetType("System.String"))
+            .Columns.Add("SPPB_NUMBER", Type.GetType("System.String"))
+            .Columns.Add("SPPB_DATE", Type.GetType("System.DateTime"))
+            .Columns.Add("PO_DATE", Type.GetType("System.DateTime"))
+            .Columns.Add("ITEM", Type.GetType("System.String"))
+            .Columns.Add("PO_ORIGINAL", Type.GetType("System.Decimal"))
+            .Columns("PO_ORIGINAL").DefaultValue = 0
+            .Columns.Add("STATUS", Type.GetType("System.String"))
+            .Columns.Add("SHIP_TO_CUSTOMER", Type.GetType("System.String"))
+            .Columns.Add("QUANTITY", Type.GetType("System.String"))
+            .Columns.Add("SHIP_TO_WARHOUSE", Type.GetType("System.String"))
+            .Columns("SHIP_TO_WARHOUSE").DefaultValue = "Plant Merak" 'di isi dan di perbaiki nantinya
+        End With
+        Dim tblDummy As New DataTable("Ref_Other_SPPB")
+        Me.SGonManager.getSPPBReportData(SPPBNo, True, Nothing, tblDummy)
+        Dim info As New CultureInfo("id-ID")
+        For i As Integer = 0 To tblDummy.Rows.Count - 1
+            Dim POOriginal As Decimal = 0
+            Dim row As DataRow = tblDummy.Rows(i)
+            Dim newRow As DataRow = dtTable.NewRow()
+            newRow.BeginEdit()
+            newRow("PO_NUMBER") = row("PO_NUMBER")
+            newRow("SPPB_NUMBER") = row("SPPB_NUMBER")
+            newRow("SPPB_DATE") = row("SPPB_DATE")
+            newRow("PO_DATE") = row("PO_DATE")
+            newRow("ITEM") = row("ITEM")
+            If Not IsNothing(row("PO_ORIGINAL")) And Not IsDBNull(row("PO_ORIGINAL")) Then
+                POOriginal = row("PO_ORIGINAL")
+            End If
+            newRow("PO_ORIGINAL") = POOriginal
+            newRow("STATUS") = row("STATUS")
+            newRow("SHIP_TO_CUSTOMER") = row("SHIP_TO_CUSTOMER")
+            Dim UnitOfMeasure = row("UnitOfMeasure").ToString()
+            newRow("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", POOriginal, UnitOfMeasure.ToString())
+            newRow.EndEdit()
+            dtTable.Rows.Add(newRow)
+        Next
+        dtTable.AcceptChanges()
+        Me.frmSPPBrep = New FrmSPPBReport()
+        With frmSPPBrep
+            .ShowInTaskbar = False
+            .StartPosition = FormStartPosition.CenterScreen
+            .isSingleReport = True
+            Dim rptSPPB As New SPPBOther()
+            rptSPPB.SetDataSource(dtTable)
+            .ReportDoc = rptSPPB
+            .crvSPPB.ReportSource = .ReportDoc
+            .crvSPPB.DisplayGroupTree = False
+            Me.isLoadingRow = True
+            .ShowDialog(Me)
+        End With
+        Me.isLoadingRow = False
+    End Sub
     Private Sub setVisibleDateControl(ByVal isVisible As Boolean)
         AdvancedTManager1.lblFrom.Visible = isVisible
         AdvancedTManager1.lblUntil.Visible = isVisible
@@ -566,47 +788,47 @@ Public Class GONWithoutPOMaster
             Select Case Me.OriginalCriteria
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                     .btnCriteria.Text = "|*"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                     .btnCriteria.Text = "*|"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                     .btnCriteria.Text = "="
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                     .btnCriteria.Text = ">"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                     .btnCriteria.Text = ">="
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.In
                     .btnCriteria.Text = "*|*"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.In
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                     .btnCriteria.Text = "<"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                     .btnCriteria.Text = "<="
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                     .btnCriteria.Text = "*.*"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
                     .btnCriteria.Text = "<>"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
                     .btnCriteria.Text = "<>"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Between
+                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Between
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
             End Select
         End With
@@ -614,27 +836,27 @@ Public Class GONWithoutPOMaster
     End Sub
     Private Sub SetOriginalCriteria()
         Select Case Me.AdvancedTManager1.btnCriteria.CompOperator
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.EndWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Equal
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Greater
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.In
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.In
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Less
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Like
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Between
+            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Between
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
         End Select
     End Sub
@@ -692,27 +914,27 @@ Public Class GONWithoutPOMaster
             Me.AdvancedTManager1.txtSearch.Enabled = True
             If Me.isUndoingCriteria Then : Return : End If
             Select Case Me.AdvancedTManager1.btnCriteria.CompOperator
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.In
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Between
+                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Between
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
                     Me.AdvancedTManager1.txtSearch.Text = ""
                     Me.AdvancedTManager1.txtSearch.Enabled = False
@@ -780,7 +1002,7 @@ Public Class GONWithoutPOMaster
             Dim GON_NUMBER As Object = Me.AdvancedTManager1.GridEX1.GetValue("GON_NUMBER")
             'Dim mustReload As Boolean = False
 
-            Dim boolSucced As Boolean = Me.SGonManager.delete(IDApp, mustReload, FKAppPodetail, PO_NUMBER, GON_NUMBER, (Me.IsHOUser Or Me.IsSystemAdmin))
+            Dim boolSucced As Boolean = Me.SGonManager.delete(IDApp, MustReload, FKAppPodetail, PO_NUMBER, GON_NUMBER, (Me.IsHOUser Or Me.IsSystemAdmin))
             If boolSucced Then : e.Cancel = False
             Else : e.Cancel = True
             End If

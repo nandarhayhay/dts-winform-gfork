@@ -688,7 +688,7 @@ Namespace Brandpack
             Try
                 Query = "SET NOCOUNT ON; " & vbCrLf & _
                 " SELECT 1 WHERE EXISTS(SELECT ITEM FROM GON_SEPARATED_DETAIL WHERE ITEM = @ITEM AND CreatedDate >= @CreatedDate) " & vbCrLf & _
-                "           OR EXISTS(SELECT BRANDPACK_ID FROM SPPB_BRANDPACK WHERE BRANDPACK_ID = @ITEM AND CreatedDate >= @CreatedDate)"
+                "           OR EXISTS(SELECT BRANDPACK_ID FROM SPPB_BRANDPACK WHERE BRANDPACK_ID = @ITEM AND CREATE_DATE >= @CreatedDate)"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query) : End If
                 Me.AddParameter("@CreatedDate", SqlDbType.SmallDateTime, CreatedDate)
@@ -717,11 +717,11 @@ Namespace Brandpack
                 Dim qryInsert As String = "SET NOCOUNT ON;" & vbCrLf & _
                 " IF NOT EXISTS(SELECT BRANDPACK_ID FROM BRND_PROD_CONV WHERE BRANDPACK_ID = @BRANDPACK_ID AND INACTIVE = 0) " & vbCrLf & _
                 " BEGIN " & vbCrLf & _
-                " INSERT INTO BRND_PROD_CONV(BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE,CreatedDate,CreatedBy) " & vbCrLf & _
-                " VALUES(@BRANDPACK_ID,@UNIT1,@VOL1,@UNIT2,@VOL2,0,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy); " & vbCrLf & _
+                " INSERT INTO BRND_PROD_CONV(BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE,CreatedDate,CreatedBy) " & vbCrLf & _
+                " VALUES(@BRANDPACK_ID,@UnitOfMeasure,@UNIT1,@VOL1,@UNIT2,@VOL2,0,CONVERT(VARCHAR(100),GETDATE(),101),@CreatedBy); " & vbCrLf & _
                 " END "
                 Dim qryUpdate As String = "SET NOCOUNT ON;" & vbCrLf & _
-                " UPDATE BRND_PROD_CONV SET BRANDPACK_ID = @BRANDPACK_ID,UNIT1 = @UNIT1,UNIT2=@UNIT2,VOL1=@VOL1,VOL2=@VOL2,INACTIVE = @INACTIVE,ModifiedBy = @ModifiedBy, " & vbCrLf & _
+                " UPDATE BRND_PROD_CONV SET BRANDPACK_ID = @BRANDPACK_ID,UnitOfMeasure=@UnitOfMeasure,UNIT1 = @UNIT1,UNIT2=@UNIT2,VOL1=@VOL1,VOL2=@VOL2,INACTIVE = @INACTIVE,ModifiedBy = @ModifiedBy, " & vbCrLf & _
                 " ModifiedDate = CONVERT(VARCHAR(100),GETDATE(),101) WHERE IDApp = @IDApp ;"
                 Dim QryDelete As String = "SET NOCOUNT ON; " & vbCrLf & _
                 " DELETE FROM BRND_PROD_CONV WHERE IDApp = @IDApp ;"
@@ -734,6 +734,7 @@ Namespace Brandpack
                         .CommandText = qryInsert
                         .Transaction = SqlTrans
                         .Parameters.Add("@BRANDPACK_ID", SqlDbType.VarChar, 14, "BRANDPACK_ID")
+                        .Parameters.Add("@UnitOfMeasure", SqlDbType.VarChar, 10, "UnitOfMeasure")
                         .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
                         .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
                         .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")
@@ -752,6 +753,7 @@ Namespace Brandpack
                         .Parameters.Add("@IDApp", SqlDbType.Int, 0, "IDApp")
                         .Parameters("@IDApp").SourceVersion = DataRowVersion.Original
                         .Parameters.Add("@BRANDPACK_ID", SqlDbType.VarChar, 14, "BRANDPACK_ID")
+                        .Parameters.Add("@UnitOfMeasure", SqlDbType.VarChar, 10, "UnitOfMeasure")
                         .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
                         .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
                         .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")

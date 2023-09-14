@@ -305,6 +305,119 @@ Namespace OrderAcceptance
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
+        ''' <summary>
+        ''' procedure searching sppnumber di database
+        ''' </summary>
+        ''' <param name="SPPB_NO"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getSPPBData(ByVal SPPB_NO As String) As DataTable
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                        " SELECT TOP 500 GSPH.IDApp,GSPH.PO_NUMBER, GSPH.SPPB_NUMBER, GSPH.PO_DATE, GSPH.SPPB_DATE " & vbCrLf & _
+                        " FROM GON_SEPARATED_PO_HEADER GSPH WHERE GSPH.SPPB_NUMBER LIKE '%'+@SPPB_NUMBER+'%' ;"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@SPPB_NUMBER", SqlDbType.VarChar, SPPB_NO)
+                Dim dtHeader As New DataTable("T_HEADER")
+                setDataAdapter(Me.SqlCom).Fill(dtHeader)
+                Me.ClearCommandParameters()
+                Me.CloseConnection()
+                Return dtHeader
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
+        ''' <summary>
+        ''' display report data by list SPPBNO
+        ''' </summary>
+        ''' <param name="ListSPPB"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getSPPBReportData(ByVal ListSPPB As List(Of String)) As DataTable
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                       "SELECT GSPD.FKApp, GSPH.PO_NUMBER, GSPH.SPPB_NUMBER, GSPH.PO_DATE, GSPH.SPPB_DATE, BP.BRANDPACK_NAME AS ITEM, CONVERT(VARCHAR(150),GSPD.QUANTITY) + ' ' + ISNULL(BPC.UnitOfMeasure,'?') AS QUANTITY, " & vbCrLf & _
+                       "STATUS = CASE WHEN GSPD.STATUS = 'PENDING' THEN 'PENDING GON' ELSE GSPD.STATUS END, GSPH.SHIP_TO AS SHIP_TO_CUSTOMER,ISNULL(BPC.UnitOfMeasure,'?') AS UnitOfMeasure " & vbCrLf & _
+                       "FROM GON_SEPARATED_PO_HEADER AS GSPH INNER JOIN " & vbCrLf & _
+                       " GON_SEPARATED_PO_DETAIL AS GSPD ON GSPD.FKApp = GSPH.IDApp INNER JOIN " & vbCrLf & _
+                       " BRND_BRANDPACK AS BP ON BP.BRANDPACK_ID = GSPD.BRANDPACK_ID " & vbCrLf & _
+                       " LEFT OUTER JOIN BRND_PROD_CONV BPC ON BPC.BRANDPACK_ID = BP.BRANDPACK_ID " & vbCrLf & _
+                       " WHERE GSPH.SPPB_NUMBER "
+                Dim strSPPBNos As String = " IN('"
+                For i As Integer = 0 To ListSPPB.Count - 1
+                    strSPPBNos &= ListSPPB(i)
+                    If i < ListSPPB.Count - 1 Then
+                        strSPPBNos &= "','"
+                    Else
+                        strSPPBNos &= "'"
+                    End If
+                Next
+                If ListSPPB.Count <= 0 Then
+                    strSPPBNos &= "')"
+                Else
+                    strSPPBNos &= ")"
+                End If
+
+                Query &= strSPPBNos
+                Dim tbl As New DataTable("Ref_Other_SPPB")
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                setDataAdapter(Me.SqlCom).Fill(tbl)
+                Me.ClearCommandParameters()
+                Me.CloseConnection()
+                Return tbl
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
+        ''' <summary>
+        ''' Get Report Data buat print SPPB Report Crystal Report
+        ''' </summary>
+        ''' <param name="SPPB_NO"></param>
+        ''' <param name="isSingleData"></param> 
+        ''' <param name="dtHeader">reference data untuk custom DataGrid</param>
+        ''' <param name="dtDetail">Data buat Printing report</param>
+        ''' <remarks></remarks>
+        Public Sub getSPPBReportData(ByVal SPPB_NO As String, ByVal isSingleData As Boolean, ByRef dtHeader As DataTable, ByRef dtDetail As DataTable)
+            Try
+                Me.OpenConnection()
+                If Not isSingleData Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            " SELECT TOP 500 GSPH.IDApp,GSPH.PO_NUMBER, GSPH.SPPB_NUMBER, GSPH.PO_DATE, GSPH.SPPB_DATE " & vbCrLf & _
+                            " FROM GON_SEPARATED_PO_HEADER GSPH WHERE GSPH.SPPB_NUMBER LIKE '%'+@SPPB_NUMBER+'%' ;"
+                    If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                    Else : Me.ResetCommandText(CommandType.Text, Query)
+                    End If
+                    Me.AddParameter("@SPPB_NUMBER", SqlDbType.VarChar, SPPB_NO)
+                    dtHeader = New DataTable("T_HEADER")
+                    setDataAdapter(Me.SqlCom).Fill(dtHeader)
+                    Me.ClearCommandParameters()
+                End If
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                               "SELECT GSPD.FKApp, GSPH.PO_NUMBER, GSPH.SPPB_NUMBER, GSPH.PO_DATE, GSPH.SPPB_DATE, BP.BRANDPACK_NAME AS ITEM, GSPD.QUANTITY AS PO_ORIGINAL, " & vbCrLf & _
+                               "STATUS = CASE WHEN GSPD.STATUS = 'PENDING' THEN 'PENDING GON' ELSE GSPD.STATUS END, GSPH.SHIP_TO AS SHIP_TO_CUSTOMER,ISNULL(BPC.UnitOfMeasure,'?') AS UnitOfMeasure " & vbCrLf & _
+                               "FROM GON_SEPARATED_PO_HEADER AS GSPH INNER JOIN " & vbCrLf & _
+                               " GON_SEPARATED_PO_DETAIL AS GSPD ON GSPD.FKApp = GSPH.IDApp INNER JOIN " & vbCrLf & _
+                               " BRND_BRANDPACK AS BP ON BP.BRANDPACK_ID = GSPD.BRANDPACK_ID " & vbCrLf & _
+                               " LEFT OUTER JOIN BRND_PROD_CONV BPC ON BPC.BRANDPACK_ID = BP.BRANDPACK_ID " & vbCrLf & _
+                               " WHERE GSPH.SPPB_NUMBER LIKE '%'+@SPPB_NUMBER+'%' ;"
+
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@SPPB_NUMBER", SqlDbType.VarChar, SPPB_NO)
+                dtDetail = New DataTable("Ref_Other_SPPB")
+                setDataAdapter(Me.SqlCom).Fill(dtDetail)
+                Me.ClearCommandParameters()
+                Me.CloseConnection()
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Sub
     End Class
 End Namespace
 

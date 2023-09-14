@@ -28,6 +28,7 @@ Namespace OrderAcceptance
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
+
         Public Function getGONDescriptionBySPPB(ByVal SPPB_NO As String, ByRef status As String, ByVal mustCloseConnection As Boolean) As GONHeader
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
@@ -263,8 +264,8 @@ Namespace OrderAcceptance
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
                             " IF NOT EXISTS(SELECT GON_DETAIL_ID FROM GON_DETAIL WHERE GON_DETAIL_ID = @GON_DETAIL_ID) " & vbCrLf & _
                             " BEGIN " & vbCrLf & _
-                            " INSERT INTO GON_DETAIL(GON_DETAIL_ID,GON_HEADER_ID,SPPB_BRANDPACK_ID,BRANDPACK_ID,GON_QTY,IsCompleted,IsOpen,BatchNo,UNIT1,VOL1,UNIT2,VOL2,IsUpdatedBySystem,CreatedBy,CreatedDate) " & vbCrLf & _
-                            " VALUES(@GON_DETAIL_ID,@GON_HEADER_ID,@SPPB_BRANDPACK_ID,@BRANDPACK_ID,@GON_QTY,@IsCompleted,@IsOpen,@BatchNo,@UNIT1,@VOL1,@UNIT2,@VOL2,@UBS,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) " & vbCrLf & _
+                            " INSERT INTO GON_DETAIL(GON_DETAIL_ID,GON_HEADER_ID,SPPB_BRANDPACK_ID,BRANDPACK_ID,GON_QTY,IsCompleted,IsOpen,BatchNo,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,IsUpdatedBySystem,CreatedBy,CreatedDate) " & vbCrLf & _
+                            " VALUES(@GON_DETAIL_ID,@GON_HEADER_ID,@SPPB_BRANDPACK_ID,@BRANDPACK_ID,@GON_QTY,@IsCompleted,@IsOpen,@BatchNo,@UnitOfMeasure,@UNIT1,@VOL1,@UNIT2,@VOL2,@UBS,@CreatedBy,CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101))) " & vbCrLf & _
                             " END "
                     CommandInsert.Transaction = Me.SqlTrans : CommandInsert.CommandType = CommandType.Text : CommandInsert.CommandText = Query
                     With CommandInsert
@@ -276,6 +277,7 @@ Namespace OrderAcceptance
                         .Parameters.Add("@IsCompleted", SqlDbType.Bit, 0, "IsCompleted")
                         .Parameters.Add("@IsOpen", SqlDbType.Bit, 0, "IsOpen")
                         .Parameters.Add("@BatchNo", SqlDbType.NVarChar, 50, "BatchNo")
+                        .Parameters.Add("@UnitOfMeasure", SqlDbType.VarChar, 10, "UnitOfMeasure")
                         .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
                         .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
                         .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")
@@ -295,7 +297,7 @@ Namespace OrderAcceptance
                     CommandUpdate = Me.SqlConn.CreateCommand()
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
                     " UPDATE GON_DETAIL SET GON_QTY = @GON_QTY,IsCompleted = @IsCompleted,IsOpen = @IsOpen,BatchNo = @BatchNo," & vbCrLf & _
-                    " UNIT1 = @UNIT1,VOL1=@VOL1,UNIT2=@UNIT2,VOL2=@VOL2,IsUpdatedBySystem = @UBS,ModifiedBy = @ModifiedBy,ModifiedDate = CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101)) " & vbCrLf & _
+                    " UnitOfMeasure=@UnitOfMeasure, UNIT1 = @UNIT1,VOL1=@VOL1,UNIT2=@UNIT2,VOL2=@VOL2,IsUpdatedBySystem = @UBS,ModifiedBy = @ModifiedBy,ModifiedDate = CONVERT(SMALLDATETIME,CONVERT(VARCHAR(100), GETDATE(),101)) " & vbCrLf & _
                     " WHERE GON_DETAIL_ID = @GON_DETAIL_ID; "
                     With CommandUpdate
                         .CommandText = Query
@@ -305,6 +307,7 @@ Namespace OrderAcceptance
                         .Parameters.Add("@IsCompleted", SqlDbType.Bit, 0, "IsCompleted")
                         .Parameters.Add("@IsOpen", SqlDbType.Bit, 0, "IsOpen")
                         .Parameters.Add("@BatchNo", SqlDbType.NVarChar, 50, "BatchNo")
+                        .Parameters.Add("@UnitOfMeasure", SqlDbType.VarChar, 10, "UnitOfMeasure")
                         .Parameters.Add("@UNIT1", SqlDbType.VarChar, 30, "UNIT1")
                         .Parameters.Add("@VOL1", SqlDbType.Decimal, 0, "VOL1")
                         .Parameters.Add("@UNIT2", SqlDbType.VarChar, 30, "UNIT2")
@@ -792,7 +795,7 @@ Namespace OrderAcceptance
                 'drv("ModifiedBy") = String.Empty
                 'drv("ModifiedDate") = NufarmBussinesRules.SharedClass.ServerDate
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                " SELECT GD.GON_DETAIL_ID,GD.GON_HEADER_ID,SB.SPPB_BRANDPACK_ID,GD.BRANDPACK_ID,BR.BRANDPACK_NAME,GD.GON_QTY,GD.IsOpen,GD.IsCompleted,GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsUpdatedBySystem," & vbCrLf & _
+                " SELECT GD.GON_DETAIL_ID,GD.GON_HEADER_ID,SB.SPPB_BRANDPACK_ID,GD.BRANDPACK_ID,BR.BRANDPACK_NAME,GD.GON_QTY,GD.IsOpen,GD.IsCompleted,GD.BatchNo,GD.UnitOfMeasure,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsUpdatedBySystem," & vbCrLf & _
                 "GD.CreatedBy,GD.CreatedDate,GD.ModifiedBy,GD.ModifiedDate FROM GON_DETAIL GD INNER JOIN SPPB_BRANDPACK SB ON SB.SPPB_BRANDPACK_ID = GD.SPPB_BRANDPACK_ID " & vbCrLf & _
                 " INNER JOIN BRND_BRANDPACK BR ON BR.BRANDPACK_ID = GD.BRANDPACK_ID WHERE SB.SPPB_NO = @SPPB_NO ;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
@@ -809,7 +812,48 @@ Namespace OrderAcceptance
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
-
+        Public Function getSPPBBrandPack(ByVal SPPBNumber As String, ByVal StartDate As Object, ByVal EndDate As Object) As DataTable
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                         "SELECT SB.SPPB_BRANDPACK_ID,PB.BRANDPACK_ID,SB.SPPB_NO,BP.BRANDPACK_NAME,SB.SPPB_QTY,TOTAL_GON_QTY = ISNULL(GON.TOTAL_GON_QTY,0),SB.OA_BRANDPACK_ID,SB.STATUS " & vbCrLf & _
+                         " FROM SPPB_BRANDPACK SB INNER JOIN ORDR_OA_BRANDPACK OOA ON OOA.OA_BRANDPACK_ID = SB.OA_BRANDPACK_ID INNER JOIN ORDR_PO_BRANDPACK PB ON PB.PO_BRANDPACK_ID = OOA.PO_BRANDPACK_ID " & vbCrLf & _
+                               "INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = PB.BRANDPACK_ID " & vbCrLf & _
+                            " LEFT OUTER JOIN(" & vbCrLf & _
+                            "                 SELECT SPPB_BRANDPACK_ID,ISNULL(SUM(GON_QTY),0)AS TOTAL_GON_QTY FROM GON_DETAIL WHERE SPPB_BRANDPACK_ID = ANY(SELECT SPPB_BRANDPACK_ID FROM SPPB_BRANDPACK " & vbCrLf & _
+                            "                 WHERE SPPB_NO = @SPPB_NO) GROUP BY SPPB_BRANDPACK_ID " & vbCrLf & _
+                            "                 )GON ON GON.SPPB_BRANDPACK_ID = SB.SPPB_BRANDPACK_ID "
+                If Not String.IsNullOrEmpty(SPPBNumber) Or (Not IsNothing(StartDate) And Not IsNothing(EndDate)) Then
+                    Query = Query & " WHERE "
+                End If
+                If Not String.IsNullOrEmpty(SPPBNumber) Then
+                    Query = Query & vbCrLf
+                    Query = Query & " SB.SPPB_NO LIKE %'%+@SPPB_NO+%'% "
+                End If
+                If Not IsNothing(StartDate) And Not IsNothing(EndDate) Then
+                    Query = Query & vbCrLf
+                    Query = Query & " AND SB.START_DATE >= @START_DATE AND SB.END_DATE <= @END_DATE"
+                End If
+                Query += ";"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                If Not String.IsNullOrEmpty(SPPBNumber) Then
+                    Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPBNumber)
+                End If
+                If Not IsNothing(StartDate) And Not IsNothing(EndDate) Then
+                    Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
+                    Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDate)
+                End If
+                Me.OpenConnection()
+                Dim dt As New DataTable("tblSPPBNumber")
+                setDataAdapter(Me.SqlCom).Fill(dt)
+                Me.ClearCommandParameters()
+                Me.CloseConnection()
+                Return dt
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
         Public Function getSPPBBrandPack(ByVal SPPBNumber As String, ByVal PONumber As String, ByVal IsReload As Boolean, ByVal mustCloseConnection As Boolean) As DataTable
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
@@ -1019,10 +1063,10 @@ Namespace OrderAcceptance
             Try
                 If mode = SaveMode.Insert Then
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
+                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
                 Else
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV ;"
+                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV ;"
                 End If
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")

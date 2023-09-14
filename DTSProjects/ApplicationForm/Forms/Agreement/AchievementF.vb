@@ -200,6 +200,11 @@ Public Class AchievementF
             Case StatusProgress.LoadingAchiement
                 If (Not IsNothing(Me.mcbDistributor.Value)) And (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
                     If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            If Not ListAgreementNo.Contains(Me.chkDistributors.CheckedValues.GetValue(i).ToString()) Then
+                                ListAgreementNo.Add(Me.chkDistributors.CheckedValues.GetValue(i).ToString())
+                            End If
+                        Next
                         Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString(), ListAgreementNo)
                     Else
                         Me.DS = Me.clsDPD.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())
@@ -280,6 +285,11 @@ Public Class AchievementF
             Case StatusProgress.LoadingAchiement
                 If (Not IsNothing(Me.mcbDistributor.Value)) And (Not IsNothing(Me.chkDistributors.CheckedValues)) Then
                     If Me.chkDistributors.CheckedValues.Length > 0 Then
+                        For i As Integer = 0 To Me.chkDistributors.CheckedValues.Length - 1
+                            If Not ListAgreementNo.Contains(Me.chkDistributors.CheckedValues.GetValue(i).ToString()) Then
+                                ListAgreementNo.Add(Me.chkDistributors.CheckedValues.GetValue(i).ToString())
+                            End If
+                        Next
                         Me.DS = Me.clsDPDN.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString(), ListAgreementNo)
                     Else
                         Me.DS = Me.clsDPDN.getAchievement(Me.Flag, Me.mcbDistributor.Value.ToString())

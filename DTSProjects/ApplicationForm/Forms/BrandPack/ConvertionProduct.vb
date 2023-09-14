@@ -87,8 +87,20 @@ Public Class ConvertionProduct
             'check UNIT1,VOL1,UNIT2,VOL2
             Me.Cursor = Cursors.WaitCursor
             Dim unit1 As Object = Me.GridEX1.GetValue("UNIT1"), unit2 As Object = Me.GridEX1.GetValue("UNIT2")
+            Dim UnitOfMeasure As Object = Me.GridEX1.GetValue("UnitOfMeasure")
             Dim Vol1 As Object = Me.GridEX1.GetValue("VOL1"), Vol2 As Object = Me.GridEX1.GetValue("VOL2")
             Dim BrandPackID As Object = Me.GridEX1.GetValue("BRANDPACK_ID")
+            If Not IsNothing(UnitOfMeasure) And Not IsDBNull(UnitOfMeasure) Then
+                If CStr(UnitOfMeasure) = "" Then
+                    Me.ShowMessageError("Please enter UnitOfMeasure(UOM)")
+                    e.Cancel = True
+                    Me.GridEX1.MoveToNewRecord() : Me.GridEX1.Focus()
+                End If
+            Else
+                Me.ShowMessageError("Please enter enter UnitOfMeasure(UOM)")
+                e.Cancel = True
+                Me.GridEX1.MoveToNewRecord() : Me.GridEX1.Focus()
+            End If
             If Not IsNothing(unit1) And Not IsDBNull(unit1) Then
                 If CStr(unit1) = "" Then
                     Me.ShowMessageError("Please enter Unit 1")
@@ -170,22 +182,21 @@ Public Class ConvertionProduct
             'check di server GON table dan GON Separated
             If Me.GridEX1.GetRow.RowType = Janus.Windows.GridEX.RowType.Record Then
                 Dim BrandPackID As String = Me.GridEX1.GetValue("BRANDPACK_ID").ToString()
-                Dim oINActive As Boolean = Me.GridEX1.GetValue("INACTIVE")
-                Dim INActive As Boolean = False
-                If Not IsNothing(oINActive) And Not IsDBNull(oINActive) Then
-                    INActive = CBool(oINActive)
-                End If
-                If Not INActive Then
-                    If Me.clsBrandPack.ProdConvHasRef(BrandPackID, Convert.ToDateTime(Me.GridEX1.GetValue("CreatedDate"))) Then
-                        Me.ShowMessageError(Me.MessageDataCantChanged & vbCrLf & "Data has been used in GON non PO distributor")
-                        Me.GridEX1.CancelCurrentEdit()
-                        Return
+                If e.Column.Key = "INACTIVE" Then
+                    Dim oINActive As Boolean = Me.GridEX1.GetValue("INACTIVE")
+                    Dim INActive As Boolean = False
+                    If Not IsNothing(oINActive) And Not IsDBNull(oINActive) Then
+                        INActive = CBool(oINActive)
                     End If
-                Else
-                    Me.ShowMessageError(Me.MessageDataCantChanged & vbCrLf & "Data has been inactive")
-                    Me.GridEX1.CancelCurrentEdit()
-                    Return
+                    If Not INActive Then
+                        If Me.clsBrandPack.ProdConvHasRef(BrandPackID, Convert.ToDateTime(Me.GridEX1.GetValue("CreatedDate"))) Then
+                            Me.ShowMessageError(Me.MessageDataCantChanged & vbCrLf & "Data has been used in GON OR SPPB")
+                            Me.GridEX1.CancelCurrentEdit()
+                            Return
+                        End If
+                    End If
                 End If
+                GridEX1.UpdateData()
             End If
         Catch ex As Exception
             Cursor = Cursors.Default

@@ -87,6 +87,7 @@ Partial Class GonNonPODist
         Me.Label5 = New System.Windows.Forms.Label
         Me.lblCustomerName = New System.Windows.Forms.Label
         Me.txtCustomerName = New System.Windows.Forms.TextBox
+        Me.btnPrintPrevSPPB = New Janus.Windows.EditControls.UIButton
         CType(Me.grpDetail, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpDetail.SuspendLayout()
         CType(Me.mcbCustomer, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -116,7 +117,7 @@ Partial Class GonNonPODist
         Me.grpDetail.Controls.Add(Me.dtPicPODate)
         Me.grpDetail.Controls.Add(Me.Label1)
         Me.grpDetail.Controls.Add(Me.lblPO_Date)
-        Me.grpDetail.Location = New System.Drawing.Point(6, 16)
+        Me.grpDetail.Location = New System.Drawing.Point(6, 12)
         Me.grpDetail.Name = "grpDetail"
         Me.grpDetail.Size = New System.Drawing.Size(336, 65)
         Me.grpDetail.TabIndex = 2
@@ -183,7 +184,7 @@ Partial Class GonNonPODist
         Me.grpSPPBInfo.Controls.Add(Me.Label9)
         Me.grpSPPBInfo.Controls.Add(Me.Label10)
         Me.grpSPPBInfo.Controls.Add(Me.txtSPPBNo)
-        Me.grpSPPBInfo.Location = New System.Drawing.Point(6, 87)
+        Me.grpSPPBInfo.Location = New System.Drawing.Point(6, 80)
         Me.grpSPPBInfo.Name = "grpSPPBInfo"
         Me.grpSPPBInfo.Size = New System.Drawing.Size(336, 66)
         Me.grpSPPBInfo.TabIndex = 3
@@ -226,6 +227,7 @@ Partial Class GonNonPODist
         'UiGroupBox1
         '
         Me.UiGroupBox1.BackColor = System.Drawing.Color.Transparent
+        Me.UiGroupBox1.Controls.Add(Me.btnPrintPrevSPPB)
         Me.UiGroupBox1.Controls.Add(Me.Label7)
         Me.UiGroupBox1.Controls.Add(Me.txtDefShipto)
         Me.UiGroupBox1.Controls.Add(Me.grpItemDetail)
@@ -420,7 +422,7 @@ Partial Class GonNonPODist
         Me.btnPrint.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
         Me.btnPrint.ImageIndex = 3
         Me.btnPrint.ImageList = Me.ImageList1
-        Me.btnPrint.Location = New System.Drawing.Point(108, 7)
+        Me.btnPrint.Location = New System.Drawing.Point(108, 6)
         Me.btnPrint.Name = "btnPrint"
         Me.btnPrint.Size = New System.Drawing.Size(123, 23)
         Me.btnPrint.TabIndex = 3
@@ -781,6 +783,18 @@ Partial Class GonNonPODist
         Me.txtCustomerName.Size = New System.Drawing.Size(102, 20)
         Me.txtCustomerName.TabIndex = 37
         '
+        'btnPrintPrevSPPB
+        '
+        Me.btnPrintPrevSPPB.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
+        Me.btnPrintPrevSPPB.ImageIndex = 3
+        Me.btnPrintPrevSPPB.ImageList = Me.ImageList1
+        Me.btnPrintPrevSPPB.Location = New System.Drawing.Point(219, 150)
+        Me.btnPrintPrevSPPB.Name = "btnPrintPrevSPPB"
+        Me.btnPrintPrevSPPB.Size = New System.Drawing.Size(123, 23)
+        Me.btnPrintPrevSPPB.TabIndex = 19
+        Me.btnPrintPrevSPPB.Text = "Print Preview SPPB"
+        Me.btnPrintPrevSPPB.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
         'GonNonPODist
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -869,5 +883,6 @@ Partial Class GonNonPODist
     Friend WithEvents txtDefShipto As System.Windows.Forms.TextBox
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents txtGonShipto As System.Windows.Forms.TextBox
+    Friend WithEvents btnPrintPrevSPPB As Janus.Windows.EditControls.UIButton
 
 End Class

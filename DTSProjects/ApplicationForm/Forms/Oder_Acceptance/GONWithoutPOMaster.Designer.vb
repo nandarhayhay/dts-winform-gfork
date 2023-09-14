@@ -26,6 +26,8 @@ Partial Class GONWithoutPOMaster
         Me.ShowDataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.OnlyWinGonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.AllToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.PendingGONToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.POStatusCompletedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.Bar2 = New DevComponents.DotNetBar.Bar
         Me.btnGrid = New DevComponents.DotNetBar.ButtonItem
@@ -48,8 +50,9 @@ Partial Class GONWithoutPOMaster
         Me.FilterEditor1 = New Janus.Windows.FilterEditor.FilterEditor
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.GridEXExporter1 = New Janus.Windows.GridEX.Export.GridEXExporter(Me.components)
-        Me.PendingGONToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.POStatusCompletedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.btnPrintSPPB = New DevComponents.DotNetBar.ButtonItem
+        Me.btnCurrentSelection = New DevComponents.DotNetBar.ButtonItem
+        Me.btnPrintcustoms = New DevComponents.DotNetBar.ButtonItem
         Me.ContextMenuStrip1.SuspendLayout()
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -67,13 +70,13 @@ Partial Class GONWithoutPOMaster
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ShowDataToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(153, 48)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(131, 26)
         '
         'ShowDataToolStripMenuItem
         '
         Me.ShowDataToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OnlyWinGonToolStripMenuItem, Me.AllToolStripMenuItem, Me.PendingGONToolStripMenuItem, Me.POStatusCompletedToolStripMenuItem})
         Me.ShowDataToolStripMenuItem.Name = "ShowDataToolStripMenuItem"
-        Me.ShowDataToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ShowDataToolStripMenuItem.Size = New System.Drawing.Size(130, 22)
         Me.ShowDataToolStripMenuItem.Text = "Show Data"
         '
         'OnlyWinGonToolStripMenuItem
@@ -89,6 +92,18 @@ Partial Class GONWithoutPOMaster
         Me.AllToolStripMenuItem.Name = "AllToolStripMenuItem"
         Me.AllToolStripMenuItem.Size = New System.Drawing.Size(187, 22)
         Me.AllToolStripMenuItem.Text = "All"
+        '
+        'PendingGONToolStripMenuItem
+        '
+        Me.PendingGONToolStripMenuItem.Name = "PendingGONToolStripMenuItem"
+        Me.PendingGONToolStripMenuItem.Size = New System.Drawing.Size(187, 22)
+        Me.PendingGONToolStripMenuItem.Text = "Pending GON"
+        '
+        'POStatusCompletedToolStripMenuItem
+        '
+        Me.POStatusCompletedToolStripMenuItem.Name = "POStatusCompletedToolStripMenuItem"
+        Me.POStatusCompletedToolStripMenuItem.Size = New System.Drawing.Size(187, 22)
+        Me.POStatusCompletedToolStripMenuItem.Text = "PO Status Completed"
         '
         'ImageList1
         '
@@ -122,7 +137,7 @@ Partial Class GONWithoutPOMaster
         Me.Bar2.Dock = System.Windows.Forms.DockStyle.Top
         Me.Bar2.FadeEffect = True
         Me.Bar2.Images = Me.ImageList1
-        Me.Bar2.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnGrid, Me.btnFilter, Me.btnExport, Me.btnRefresh, Me.btnAddNew, Me.btnEdit})
+        Me.Bar2.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnGrid, Me.btnFilter, Me.btnExport, Me.btnRefresh, Me.btnAddNew, Me.btnEdit, Me.btnPrintSPPB})
         Me.Bar2.Location = New System.Drawing.Point(0, 0)
         Me.Bar2.Name = "Bar2"
         Me.Bar2.Size = New System.Drawing.Size(1024, 25)
@@ -278,17 +293,23 @@ Partial Class GONWithoutPOMaster
         '
         Me.GridEXExporter1.IncludeFormatStyle = False
         '
-        'PendingGONToolStripMenuItem
+        'btnPrintSPPB
         '
-        Me.PendingGONToolStripMenuItem.Name = "PendingGONToolStripMenuItem"
-        Me.PendingGONToolStripMenuItem.Size = New System.Drawing.Size(187, 22)
-        Me.PendingGONToolStripMenuItem.Text = "Pending GON"
+        Me.btnPrintSPPB.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
+        Me.btnPrintSPPB.ImageIndex = 9
+        Me.btnPrintSPPB.Name = "btnPrintSPPB"
+        Me.btnPrintSPPB.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCurrentSelection, Me.btnPrintcustoms})
+        Me.btnPrintSPPB.Text = "Printing SPPB"
         '
-        'POStatusCompletedToolStripMenuItem
+        'btnCurrentSelection
         '
-        Me.POStatusCompletedToolStripMenuItem.Name = "POStatusCompletedToolStripMenuItem"
-        Me.POStatusCompletedToolStripMenuItem.Size = New System.Drawing.Size(187, 22)
-        Me.POStatusCompletedToolStripMenuItem.Text = "PO Status Completed"
+        Me.btnCurrentSelection.Name = "btnCurrentSelection"
+        Me.btnCurrentSelection.Text = "Current Sell"
+        '
+        'btnPrintcustoms
+        '
+        Me.btnPrintcustoms.Name = "btnPrintcustoms"
+        Me.btnPrintcustoms.Text = "Customs"
         '
         'GONWithoutPOMaster
         '
@@ -333,5 +354,8 @@ Partial Class GONWithoutPOMaster
     Friend WithEvents AllToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents PendingGONToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents POStatusCompletedToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents btnPrintSPPB As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnCurrentSelection As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnPrintcustoms As DevComponents.DotNetBar.ButtonItem
 
 End Class

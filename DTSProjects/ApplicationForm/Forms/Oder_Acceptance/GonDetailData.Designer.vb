@@ -298,8 +298,10 @@ Partial Class GonDetailData
         '
         Me.grdHeader.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
         Me.grdHeader.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
+        Me.grdHeader.AutoEdit = True
         Me.grdHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.grdHeader.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
+        Me.grdHeader.CellSelectionMode = Janus.Windows.GridEX.CellSelectionMode.SingleCell
         grdHeader_DesignTimeLayout.LayoutString = "<GridEXLayoutData><RootTable><GroupCondition /></RootTable></GridEXLayoutData>"
         Me.grdHeader.DesignTimeLayout = grdHeader_DesignTimeLayout
         Me.grdHeader.Dock = System.Windows.Forms.DockStyle.Fill

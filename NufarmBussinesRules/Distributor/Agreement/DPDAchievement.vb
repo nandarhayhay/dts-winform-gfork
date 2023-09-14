@@ -1089,6 +1089,41 @@ Namespace DistributorAgreement
                 End If
             Next
         End Sub
+        Private Function hasTotalPrevPeriod(ByVal rowsSelect() As DataRow, ByVal CurFlag As String) As Boolean
+            Select Case curFlag
+                Case "F1"
+                    For i As Integer = 0 To rowsSelect.Length - 1
+                        Dim Qty As Object = rowsSelect(i)("PBF3_DIST")
+                        If Not IsNothing(Qty) Then
+                            If CDec(Qty) > 0 Then
+                                Return True
+                            End If
+                        End If
+                        'Qty = rowsSelect(i)("CPQ4_DIST")
+                    Next
+                Case "F2"
+                    For i As Integer = 0 To rowsSelect.Length - 1
+                        Dim Qty As Object = rowsSelect(i)("CPF1_DIST")
+                        If Not IsNothing(Qty) Then
+                            If CDec(Qty) > 0 Then
+                                Return True
+                            End If
+                        End If
+                        'Qty = rowsSelect(i)("CPQ4_DIST")
+                    Next
+                Case "F3"
+                    For i As Integer = 0 To rowsSelect.Length - 1
+                        Dim Qty As Object = rowsSelect(i)("CPF2_DIST")
+                        If Not IsNothing(Qty) Then
+                            If CDec(Qty) > 0 Then
+                                Return True
+                            End If
+                        End If
+                        'Qty = rowsSelect(i)("CPQ4_DIST")
+                    Next
+            End Select
+            Return False
+        End Function
         Private Sub CalculateHeaderRoundup(ByVal AgreementNO As String, ByVal FLAG As String, ByRef tblAchHeader As DataTable)
             Dim RowsSelect() As DataRow = Nothing, _
             TTargetSPSG_RPM As Decimal = 0, TTargetBPSG_RPM As Decimal = 0, Percentage_SPSG_RPM As Decimal = 0, Percentage_BPSG_RPM As Decimal = 0, _
@@ -1153,12 +1188,14 @@ Namespace DistributorAgreement
                 Percentage_BPSG_BIO = common.CommonClass.GetPercentage(100, TPO_BPSG_BIO, TTargetBPSG_BIO)
             End If
             Description = ""
+
             'hitung packsize group kecil
-            If Percentage_SPSG_BIO > 0 Or TTargetBPSG_BIO > 0 Then
+            Dispro = getDispro(Percentage_SPSG_BIO, "ROUNDUP BIOSORB", "S", FLAG)
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('00601','0060200','00604')")
+            If Percentage_SPSG_BIO > 0 Or TTargetBPSG_BIO > 0 Or hasTotalPrevPeriod(RowsSelect, FLAG) Then
                 'hitung Dispro
-                Dispro = getDispro(Percentage_SPSG_BIO, "ROUNDUP BIOSORB", "S", FLAG)
                 ''only update that has changed
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('00601','0060200','00604')")
+                'RowsSelect = tblAchHeader.Select("BRAND_ID IN('00601','0060200','00604')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
                     Description = ""
@@ -1187,7 +1224,8 @@ Namespace DistributorAgreement
                 Next
             End If
 
-            If Percentage_BPSG_BIO > 0 Or TTargetBPSG_BIO > 0 Then
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('006020')")
+            If Percentage_BPSG_BIO > 0 Or TTargetBPSG_BIO > 0 Or hasTotalPrevPeriod(RowsSelect, FLAG) Then
                 'hitung Dispro
                 Dispro = 0
                 DiscDist = 0
@@ -1195,7 +1233,6 @@ Namespace DistributorAgreement
                 BonusQty = 0
                 Balance = 0
                 Dispro = getDispro(Percentage_BPSG_BIO, "ROUNDUP BIOSORB", "B", FLAG)
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('006020')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
                     Description = ""
@@ -1241,8 +1278,10 @@ Namespace DistributorAgreement
                 getTotalForCertainBrands(RowsSelect, TTargetBPSG_TR, TPO_BPSG_TR)
                 Percentage_BPSG_TR = common.CommonClass.GetPercentage(100, TPO_BPSG_TR, TTargetBPSG_TR)
             End If
+
             'hitung packsize group kecil
-            If Percentage_SPSG_TR > 0 Or TTargetSPSG_TR > 0 Then
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
+            If Percentage_SPSG_TR > 0 Or TTargetSPSG_TR > 0 Or hasTotalPrevPeriod(RowsSelect, FLAG) Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1251,7 +1290,7 @@ Namespace DistributorAgreement
                 'hitung Dispro
                 Dispro = getDispro(Percentage_SPSG_TR, "ROUNDUP TRANSORB", "S", FLAG)
                 ''only update that has changed
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
+                'RowsSelect = tblAchHeader.Select("BRAND_ID IN('007801','007804','0078200')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
                     Description = ""
@@ -1279,7 +1318,9 @@ Namespace DistributorAgreement
                     Row.EndEdit()
                 Next
             End If
-            If Percentage_BPSG_TR > 0 Or TTargetBPSG_TR > 0 Then
+
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('007820')")
+            If Percentage_BPSG_TR > 0 Or TTargetBPSG_TR > 0 Or hasTotalPrevPeriod(RowsSelect, FLAG) Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1287,8 +1328,6 @@ Namespace DistributorAgreement
                 Balance = 0
                 'hitung Dispro
                 Dispro = getDispro(Percentage_BPSG_TR, "ROUNDUP TRANSORB", "B", FLAG)
-
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('007820')")
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
                     Description = ""
@@ -1337,7 +1376,8 @@ Namespace DistributorAgreement
             End If
 
             'hitung packsize group kecil
-            If Percentage_SPSG_RPM > 0 Or TTargetSPSG_RPM > 0 Then
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('00681','00684')")
+            If Percentage_SPSG_RPM > 0 Or TTargetSPSG_RPM > 0 Or hasTotalPrevPeriod(RowsSelect, FLAG) Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1346,7 +1386,7 @@ Namespace DistributorAgreement
                 'hitung Dispro
                 Dispro = getDispro(Percentage_SPSG_RPM, "ROUNDUP POWERMAX", "S", FLAG)
                 ''only update that has changed
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('00681','00684')")
+
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
                     Description = ""
@@ -1374,7 +1414,9 @@ Namespace DistributorAgreement
                     Row.EndEdit()
                 Next
             End If
-            If Percentage_BPSG_RPM > 0 Or TTargetBPSG_RPM > 0 Then
+
+            RowsSelect = tblAchHeader.Select("BRAND_ID IN('006820')")
+            If Percentage_BPSG_RPM > 0 Or TTargetBPSG_RPM > 0 Or hasTotalPrevPeriod(RowsSelect, FLAG) Then
                 Dispro = 0
                 DiscDist = 0
                 Description = ""
@@ -1382,7 +1424,7 @@ Namespace DistributorAgreement
                 Balance = 0
                 'hitung Dispro
                 Dispro = getDispro(Percentage_BPSG_RPM, "ROUNDUP POWERMAX", "B", FLAG)
-                RowsSelect = tblAchHeader.Select("BRAND_ID IN('006820')")
+
                 For i As Integer = 0 To RowsSelect.Length - 1
                     Row = RowsSelect(i)
                     Description = ""
@@ -2062,7 +2104,7 @@ Namespace DistributorAgreement
             CPEQ2 As Object = Nothing, CPEQ3 As Object = Nothing, CPQ1 As Object = Nothing, CPEQ1 As Object = Nothing
             Select Case Flag
                 Case "F2"
-                    CPEF1 = StartDate
+                    CPEF1 = StartDate.AddDays(-1)
                     CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
                     'strFlag
                 Case "F3"
@@ -2092,7 +2134,7 @@ Namespace DistributorAgreement
                         CPEF2 = StartDate.AddDays(-1)
                         CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
                         CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
-                        CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(2)
+                        CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
                     End If
 
             End Select
@@ -4254,7 +4296,7 @@ Namespace DistributorAgreement
                     CPEF2 = StartDate.AddDays(-1)
                     CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
                     CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
-                    CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(2)
+                    CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
 
             End Select
             Dim tblTemp As New DataTable("T_TEMP") : tblTemp.Clear()
@@ -4317,7 +4359,7 @@ Namespace DistributorAgreement
                         PBEndDate = Convert.ToDateTime(tblStartDate.Rows(0)("END_DATE"))
                         'PBFlag = tblStartDate.Rows(0)("QS_TREATMENT_FLAG").ToString()
                         If PBFlag = "S" Then
-                            Dim PBS2 As Object = Convert.ToDateTime(PBStartDate).AddMonths(6).AddDays(-1) 'tambah 2 bulan lagi karena ada transisi
+                            Dim PBS2 As Object = Convert.ToDateTime(PBStartDate).AddMonths(-6).AddDays(-1) 'tambah 2 bulan lagi karena ada transisi
 
                             Dim PBSES2 = PBEndDate
                             'If NufarmBussinesRules.SharedClass.ServerDate.Year = 2021 Then 'agustus september di hitung jadi F1
@@ -4369,7 +4411,7 @@ Namespace DistributorAgreement
                         PBEndDate = Convert.ToDateTime(tblStartDate.Rows(0)("END_DATE"))
                         Dim PBFlag As String = tblStartDate.Rows(0)("QS_TREATMENT_FLAG").ToString()
                         If PBFlag = "S" Then
-                            Dim PBS2 As Object = Convert.ToDateTime(PBEndDate) 'ambil cuma 6 bulan startdate hanya agustus dan enddate po sampai 
+                            Dim PBS2 As Object = Convert.ToDateTime(PBEndDate).AddMonths(-6).AddDays(-1) 'ambil cuma 6 bulan startdate hanya agustus dan enddate po sampai 
 
                             Dim PBSES2 = PBEndDate
                             'If NufarmBussinesRules.SharedClass.ServerDate.Year = 2021 Then 'ambil masa transisi 2 bulan dan F1 (4 bulan) total jadi 6 bulan

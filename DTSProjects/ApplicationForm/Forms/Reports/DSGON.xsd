@@ -18,35 +18,76 @@
         <xs:element name="tbl_rep_gon" msprop:Generator_UserTableName="tbl_rep_gon" msprop:Generator_RowDeletedName="tbl_rep_gonRowDeleted" msprop:Generator_RowChangedName="tbl_rep_gonRowChanged" msprop:Generator_RowClassName="tbl_rep_gonRow" msprop:Generator_RowChangingName="tbl_rep_gonRowChanging" msprop:Generator_RowEvArgName="tbl_rep_gonRowChangeEvent" msprop:Generator_RowEvHandlerName="tbl_rep_gonRowChangeEventHandler" msprop:Generator_TableClassName="tbl_rep_gonDataTable" msprop:Generator_TableVarName="tabletbl_rep_gon" msprop:Generator_RowDeletingName="tbl_rep_gonRowDeleting" msprop:Generator_TablePropName="tbl_rep_gon">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="DISTRIBUTOR_NAME" msprop:Generator_UserColumnName="DISTRIBUTOR_NAME" msprop:Generator_ColumnVarNameInTable="columnDISTRIBUTOR_NAME" msprop:Generator_ColumnPropNameInRow="DISTRIBUTOR_NAME" msprop:Generator_ColumnPropNameInTable="DISTRIBUTOR_NAMEColumn" type="xs:string" />
-              <xs:element name="ADDRESS" msprop:Generator_UserColumnName="ADDRESS" msprop:Generator_ColumnVarNameInTable="columnADDRESS" msprop:Generator_ColumnPropNameInRow="ADDRESS" msprop:Generator_ColumnPropNameInTable="ADDRESSColumn" type="xs:string" default="-" />
-              <xs:element name="PO_REF_NO" msprop:Generator_UserColumnName="PO_REF_NO" msprop:Generator_ColumnVarNameInTable="columnPO_REF_NO" msprop:Generator_ColumnPropNameInRow="PO_REF_NO" msprop:Generator_ColumnPropNameInTable="PO_REF_NOColumn" type="xs:string" />
-              <xs:element name="PO_REF_DATE" msprop:Generator_UserColumnName="PO_REF_DATE" msprop:Generator_ColumnVarNameInTable="columnPO_REF_DATE" msprop:Generator_ColumnPropNameInRow="PO_REF_DATE" msprop:Generator_ColumnPropNameInTable="PO_REF_DATEColumn" type="xs:dateTime" />
-              <xs:element name="SPPB_NO" msprop:Generator_UserColumnName="SPPB_NO" msprop:Generator_ColumnVarNameInTable="columnSPPB_NO" msprop:Generator_ColumnPropNameInRow="SPPB_NO" msprop:Generator_ColumnPropNameInTable="SPPB_NOColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="SPPB_DATE" msprop:Generator_UserColumnName="SPPB_DATE" msprop:Generator_ColumnVarNameInTable="columnSPPB_DATE" msprop:Generator_ColumnPropNameInRow="SPPB_DATE" msprop:Generator_ColumnPropNameInTable="SPPB_DATEColumn" type="xs:dateTime" minOccurs="0" />
-              <xs:element name="GON_NO" msprop:Generator_UserColumnName="GON_NO" msprop:Generator_ColumnVarNameInTable="columnGON_NO" msprop:Generator_ColumnPropNameInRow="GON_NO" msprop:Generator_ColumnPropNameInTable="GON_NOColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="VAR_GON_NO" msprop:Generator_UserColumnName="VAR_GON_NO" msprop:Generator_ColumnPropNameInRow="VAR_GON_NO" msprop:Generator_ColumnVarNameInTable="columnVAR_GON_NO" msprop:Generator_ColumnPropNameInTable="VAR_GON_NOColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="GON_DATE" msprop:Generator_UserColumnName="GON_DATE" msprop:Generator_ColumnVarNameInTable="columnGON_DATE" msprop:Generator_ColumnPropNameInRow="GON_DATE" msprop:Generator_ColumnPropNameInTable="GON_DATEColumn" type="xs:dateTime" minOccurs="0" />
-              <xs:element name="WARHOUSE" msprop:Generator_UserColumnName="WARHOUSE" msprop:Generator_ColumnVarNameInTable="columnWARHOUSE" msprop:Generator_ColumnPropNameInRow="WARHOUSE" msprop:Generator_ColumnPropNameInTable="WARHOUSEColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="TRANSPORTER_NAME" msprop:Generator_UserColumnName="TRANSPORTER_NAME" msprop:Generator_ColumnVarNameInTable="columnTRANSPORTER_NAME" msprop:Generator_ColumnPropNameInRow="TRANSPORTER_NAME" msprop:Generator_ColumnPropNameInTable="TRANSPORTER_NAMEColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="BRANDPACK_NAME" msprop:Generator_UserColumnName="BRANDPACK_NAME" msprop:Generator_ColumnVarNameInTable="columnBRANDPACK_NAME" msprop:Generator_ColumnPropNameInRow="BRANDPACK_NAME" msprop:Generator_ColumnPropNameInTable="BRANDPACK_NAMEColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="QUANTITY" msprop:Generator_UserColumnName="QUANTITY" msprop:Generator_ColumnVarNameInTable="columnQUANTITY" msprop:Generator_ColumnPropNameInRow="QUANTITY" msprop:Generator_ColumnPropNameInTable="QUANTITYColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="COLLY_BOX" msprop:Generator_UserColumnName="COLLY_BOX" msprop:Generator_ColumnVarNameInTable="columnCOLLY_BOX" msprop:Generator_ColumnPropNameInRow="COLLY_BOX" msprop:Generator_ColumnPropNameInTable="COLLY_BOXColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="COLLY_PACKSIZE" msprop:Generator_UserColumnName="COLLY_PACKSIZE" msprop:Generator_ColumnVarNameInTable="columnCOLLY_PACKSIZE" msprop:Generator_ColumnPropNameInRow="COLLY_PACKSIZE" msprop:Generator_ColumnPropNameInTable="COLLY_PACKSIZEColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="BATCH_NO" msprop:Generator_UserColumnName="BATCH_NO" msprop:Generator_ColumnVarNameInTable="columnBATCH_NO" msprop:Generator_ColumnPropNameInRow="BATCH_NO" msprop:Generator_ColumnPropNameInTable="BATCH_NOColumn" minOccurs="0">
+              <xs:element name="DISTRIBUTOR_NAME" msprop:Generator_UserColumnName="DISTRIBUTOR_NAME" msprop:Generator_ColumnPropNameInRow="DISTRIBUTOR_NAME" msprop:Generator_ColumnVarNameInTable="columnDISTRIBUTOR_NAME" msprop:Generator_ColumnPropNameInTable="DISTRIBUTOR_NAMEColumn" type="xs:string" />
+              <xs:element name="ADDRESS" msprop:Generator_UserColumnName="ADDRESS" msprop:Generator_ColumnPropNameInRow="ADDRESS" msprop:Generator_ColumnVarNameInTable="columnADDRESS" msprop:Generator_ColumnPropNameInTable="ADDRESSColumn" type="xs:string" default="-" />
+              <xs:element name="PO_REF_NO" msprop:Generator_UserColumnName="PO_REF_NO" msprop:Generator_ColumnPropNameInRow="PO_REF_NO" msprop:Generator_ColumnVarNameInTable="columnPO_REF_NO" msprop:Generator_ColumnPropNameInTable="PO_REF_NOColumn" type="xs:string" />
+              <xs:element name="PO_REF_DATE" msprop:Generator_UserColumnName="PO_REF_DATE" msprop:Generator_ColumnPropNameInRow="PO_REF_DATE" msprop:Generator_ColumnVarNameInTable="columnPO_REF_DATE" msprop:Generator_ColumnPropNameInTable="PO_REF_DATEColumn" type="xs:dateTime" />
+              <xs:element name="SPPB_NO" msprop:Generator_UserColumnName="SPPB_NO" msprop:Generator_ColumnPropNameInRow="SPPB_NO" msprop:Generator_ColumnVarNameInTable="columnSPPB_NO" msprop:Generator_ColumnPropNameInTable="SPPB_NOColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="SPPB_DATE" msprop:Generator_UserColumnName="SPPB_DATE" msprop:Generator_ColumnPropNameInRow="SPPB_DATE" msprop:Generator_ColumnVarNameInTable="columnSPPB_DATE" msprop:Generator_ColumnPropNameInTable="SPPB_DATEColumn" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="GON_NO" msprop:Generator_UserColumnName="GON_NO" msprop:Generator_ColumnPropNameInRow="GON_NO" msprop:Generator_ColumnVarNameInTable="columnGON_NO" msprop:Generator_ColumnPropNameInTable="GON_NOColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="VAR_GON_NO" msprop:Generator_UserColumnName="VAR_GON_NO" msprop:Generator_ColumnVarNameInTable="columnVAR_GON_NO" msprop:Generator_ColumnPropNameInRow="VAR_GON_NO" msprop:Generator_ColumnPropNameInTable="VAR_GON_NOColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="GON_DATE" msprop:Generator_UserColumnName="GON_DATE" msprop:Generator_ColumnPropNameInRow="GON_DATE" msprop:Generator_ColumnVarNameInTable="columnGON_DATE" msprop:Generator_ColumnPropNameInTable="GON_DATEColumn" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="WARHOUSE" msprop:Generator_UserColumnName="WARHOUSE" msprop:Generator_ColumnPropNameInRow="WARHOUSE" msprop:Generator_ColumnVarNameInTable="columnWARHOUSE" msprop:Generator_ColumnPropNameInTable="WARHOUSEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="TRANSPORTER_NAME" msprop:Generator_UserColumnName="TRANSPORTER_NAME" msprop:Generator_ColumnPropNameInRow="TRANSPORTER_NAME" msprop:Generator_ColumnVarNameInTable="columnTRANSPORTER_NAME" msprop:Generator_ColumnPropNameInTable="TRANSPORTER_NAMEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="BRANDPACK_NAME" msprop:Generator_UserColumnName="BRANDPACK_NAME" msprop:Generator_ColumnPropNameInRow="BRANDPACK_NAME" msprop:Generator_ColumnVarNameInTable="columnBRANDPACK_NAME" msprop:Generator_ColumnPropNameInTable="BRANDPACK_NAMEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="QUANTITY" msprop:Generator_UserColumnName="QUANTITY" msprop:Generator_ColumnPropNameInRow="QUANTITY" msprop:Generator_ColumnVarNameInTable="columnQUANTITY" msprop:Generator_ColumnPropNameInTable="QUANTITYColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="COLLY_BOX" msprop:Generator_UserColumnName="COLLY_BOX" msprop:Generator_ColumnPropNameInRow="COLLY_BOX" msprop:Generator_ColumnVarNameInTable="columnCOLLY_BOX" msprop:Generator_ColumnPropNameInTable="COLLY_BOXColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="COLLY_PACKSIZE" msprop:Generator_UserColumnName="COLLY_PACKSIZE" msprop:Generator_ColumnPropNameInRow="COLLY_PACKSIZE" msprop:Generator_ColumnVarNameInTable="columnCOLLY_PACKSIZE" msprop:Generator_ColumnPropNameInTable="COLLY_PACKSIZEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="BATCH_NO" msprop:Generator_UserColumnName="BATCH_NO" msprop:Generator_ColumnPropNameInRow="BATCH_NO" msprop:Generator_ColumnVarNameInTable="columnBATCH_NO" msprop:Generator_ColumnPropNameInTable="BATCH_NOColumn" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="250" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="VAR_DIST_ADDRESS" msprop:Generator_UserColumnName="VAR_DIST_ADDRESS" msprop:Generator_ColumnVarNameInTable="columnVAR_DIST_ADDRESS" msprop:Generator_ColumnPropNameInRow="VAR_DIST_ADDRESS" msprop:Generator_ColumnPropNameInTable="VAR_DIST_ADDRESSColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="POREF_NO_AND_DATE" msprop:Generator_UserColumnName="POREF_NO_AND_DATE" msprop:Generator_ColumnVarNameInTable="columnPOREF_NO_AND_DATE" msprop:Generator_ColumnPropNameInRow="POREF_NO_AND_DATE" msprop:Generator_ColumnPropNameInTable="POREF_NO_AND_DATEColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="SPPB_NO_AND_DATE" msprop:Generator_UserColumnName="SPPB_NO_AND_DATE" msprop:Generator_ColumnVarNameInTable="columnSPPB_NO_AND_DATE" msprop:Generator_ColumnPropNameInRow="SPPB_NO_AND_DATE" msprop:Generator_ColumnPropNameInTable="SPPB_NO_AND_DATEColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="VAR_GON_DATE_STR" msprop:Generator_UserColumnName="VAR_GON_DATE_STR" msprop:Generator_ColumnVarNameInTable="columnVAR_GON_DATE_STR" msprop:Generator_ColumnPropNameInRow="VAR_GON_DATE_STR" msprop:Generator_ColumnPropNameInTable="VAR_GON_DATE_STRColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="POLICE_NO_TRANS" msprop:Generator_UserColumnName="POLICE_NO_TRANS" msprop:Generator_ColumnVarNameInTable="columnPOLICE_NO_TRANS" msprop:Generator_ColumnPropNameInRow="POLICE_NO_TRANS" msprop:Generator_ColumnPropNameInTable="POLICE_NO_TRANSColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="DRIVER_TRANS" msprop:Generator_UserColumnName="DRIVER_TRANS" msprop:Generator_ColumnVarNameInTable="columnDRIVER_TRANS" msprop:Generator_ColumnPropNameInRow="DRIVER_TRANS" msprop:Generator_ColumnPropNameInTable="DRIVER_TRANSColumn" type="xs:string" minOccurs="0" />
-              <xs:element name="VAR_WARHOUSE" msprop:Generator_UserColumnName="VAR_WARHOUSE" msprop:Generator_ColumnVarNameInTable="columnVAR_WARHOUSE" msprop:Generator_ColumnPropNameInRow="VAR_WARHOUSE" msprop:Generator_ColumnPropNameInTable="VAR_WARHOUSEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="VAR_DIST_ADDRESS" msprop:Generator_UserColumnName="VAR_DIST_ADDRESS" msprop:Generator_ColumnPropNameInRow="VAR_DIST_ADDRESS" msprop:Generator_ColumnVarNameInTable="columnVAR_DIST_ADDRESS" msprop:Generator_ColumnPropNameInTable="VAR_DIST_ADDRESSColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="POREF_NO_AND_DATE" msprop:Generator_UserColumnName="POREF_NO_AND_DATE" msprop:Generator_ColumnPropNameInRow="POREF_NO_AND_DATE" msprop:Generator_ColumnVarNameInTable="columnPOREF_NO_AND_DATE" msprop:Generator_ColumnPropNameInTable="POREF_NO_AND_DATEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="SPPB_NO_AND_DATE" msprop:Generator_UserColumnName="SPPB_NO_AND_DATE" msprop:Generator_ColumnPropNameInRow="SPPB_NO_AND_DATE" msprop:Generator_ColumnVarNameInTable="columnSPPB_NO_AND_DATE" msprop:Generator_ColumnPropNameInTable="SPPB_NO_AND_DATEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="VAR_GON_DATE_STR" msprop:Generator_UserColumnName="VAR_GON_DATE_STR" msprop:Generator_ColumnPropNameInRow="VAR_GON_DATE_STR" msprop:Generator_ColumnVarNameInTable="columnVAR_GON_DATE_STR" msprop:Generator_ColumnPropNameInTable="VAR_GON_DATE_STRColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="POLICE_NO_TRANS" msprop:Generator_UserColumnName="POLICE_NO_TRANS" msprop:Generator_ColumnPropNameInRow="POLICE_NO_TRANS" msprop:Generator_ColumnVarNameInTable="columnPOLICE_NO_TRANS" msprop:Generator_ColumnPropNameInTable="POLICE_NO_TRANSColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="DRIVER_TRANS" msprop:Generator_UserColumnName="DRIVER_TRANS" msprop:Generator_ColumnPropNameInRow="DRIVER_TRANS" msprop:Generator_ColumnVarNameInTable="columnDRIVER_TRANS" msprop:Generator_ColumnPropNameInTable="DRIVER_TRANSColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="VAR_WARHOUSE" msprop:Generator_UserColumnName="VAR_WARHOUSE" msprop:Generator_ColumnPropNameInRow="VAR_WARHOUSE" msprop:Generator_ColumnVarNameInTable="columnVAR_WARHOUSE" msprop:Generator_ColumnPropNameInTable="VAR_WARHOUSEColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Ref_Other_SPPB" msprop:Generator_UserTableName="Ref_Other_SPPB" msprop:Generator_RowDeletedName="Ref_Other_SPPBRowDeleted" msprop:Generator_RowChangedName="Ref_Other_SPPBRowChanged" msprop:Generator_RowClassName="Ref_Other_SPPBRow" msprop:Generator_RowChangingName="Ref_Other_SPPBRowChanging" msprop:Generator_RowEvArgName="Ref_Other_SPPBRowChangeEvent" msprop:Generator_RowEvHandlerName="Ref_Other_SPPBRowChangeEventHandler" msprop:Generator_TableClassName="Ref_Other_SPPBDataTable" msprop:Generator_TableVarName="tableRef_Other_SPPB" msprop:Generator_RowDeletingName="Ref_Other_SPPBRowDeleting" msprop:Generator_TablePropName="Ref_Other_SPPB">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FKApp" msprop:Generator_UserColumnName="FKApp" msprop:Generator_ColumnPropNameInRow="FKApp" msprop:Generator_ColumnVarNameInTable="columnFKApp" msprop:Generator_ColumnPropNameInTable="FKAppColumn" type="xs:int" />
+              <xs:element name="PO_NUMBER" msprop:Generator_UserColumnName="PO_NUMBER" msprop:Generator_ColumnPropNameInRow="PO_NUMBER" msprop:Generator_ColumnVarNameInTable="columnPO_NUMBER" msprop:Generator_ColumnPropNameInTable="PO_NUMBERColumn" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SPPB_NUMBER" msprop:Generator_UserColumnName="SPPB_NUMBER" msprop:Generator_ColumnPropNameInRow="SPPB_NUMBER" msprop:Generator_ColumnVarNameInTable="columnSPPB_NUMBER" msprop:Generator_ColumnPropNameInTable="SPPB_NUMBERColumn" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SPPB_DATE" msprop:Generator_UserColumnName="SPPB_DATE" msprop:Generator_ColumnPropNameInRow="SPPB_DATE" msprop:Generator_ColumnVarNameInTable="columnSPPB_DATE" msprop:Generator_ColumnPropNameInTable="SPPB_DATEColumn" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="PO_DATE" msprop:Generator_UserColumnName="PO_DATE" msprop:Generator_ColumnPropNameInRow="PO_DATE" msprop:Generator_ColumnVarNameInTable="columnPO_DATE" msprop:Generator_ColumnPropNameInTable="PO_DATEColumn" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ITEM" msprop:Generator_UserColumnName="ITEM" msprop:Generator_ColumnPropNameInRow="ITEM" msprop:Generator_ColumnVarNameInTable="columnITEM" msprop:Generator_ColumnPropNameInTable="ITEMColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="PO_ORIGINAL" msprop:Generator_UserColumnName="PO_ORIGINAL" msprop:Generator_ColumnPropNameInRow="PO_ORIGINAL" msprop:Generator_ColumnVarNameInTable="columnPO_ORIGINAL" msprop:Generator_ColumnPropNameInTable="PO_ORIGINALColumn" type="xs:decimal" default="0" minOccurs="0" />
+              <xs:element name="STATUS" msprop:Generator_UserColumnName="STATUS" msprop:Generator_ColumnPropNameInRow="STATUS" msprop:Generator_ColumnVarNameInTable="columnSTATUS" msprop:Generator_ColumnPropNameInTable="STATUSColumn" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SHIP_TO_CUSTOMER" msprop:Generator_UserColumnName="SHIP_TO_CUSTOMER" msprop:Generator_ColumnPropNameInRow="SHIP_TO_CUSTOMER" msprop:Generator_ColumnVarNameInTable="columnSHIP_TO_CUSTOMER" msprop:Generator_ColumnPropNameInTable="SHIP_TO_CUSTOMERColumn" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="QUANTITY" msprop:Generator_UserColumnName="QUANTITY" msprop:Generator_ColumnVarNameInTable="columnQUANTITY" msprop:Generator_ColumnPropNameInRow="QUANTITY" msprop:Generator_ColumnPropNameInTable="QUANTITYColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="SHIP_TO_WARHOUSE" msprop:Generator_UserColumnName="SHIP_TO_WARHOUSE" msprop:Generator_ColumnPropNameInRow="SHIP_TO_WARHOUSE" msprop:Generator_ColumnVarNameInTable="columnSHIP_TO_WARHOUSE" msprop:Generator_ColumnPropNameInTable="SHIP_TO_WARHOUSEColumn" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

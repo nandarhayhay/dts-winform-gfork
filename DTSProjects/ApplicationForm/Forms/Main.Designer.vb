@@ -65,12 +65,12 @@ Partial Class Main
         Me.btncancelPO = New DevComponents.DotNetBar.ButtonItem
         Me.btnPODO = New DevComponents.DotNetBar.ButtonItem
         Me.btnInvoice = New DevComponents.DotNetBar.ButtonItem
-        Me.btnTransporter = New DevComponents.DotNetBar.ButtonItem
         Me.btnSPPbAndGon = New DevComponents.DotNetBar.ButtonItem
         Me.btnSPPB = New DevComponents.DotNetBar.ButtonItem
-        Me.btnGONArea = New DevComponents.DotNetBar.ButtonItem
         Me.btnGONNonPODistributor = New DevComponents.DotNetBar.ButtonItem
         Me.btnGonDetailData = New DevComponents.DotNetBar.ButtonItem
+        Me.btnTransporter = New DevComponents.DotNetBar.ButtonItem
+        Me.btnGONArea = New DevComponents.DotNetBar.ButtonItem
         Me.btnGenerate = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscMarketing = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscAgreement = New DevComponents.DotNetBar.ButtonItem
@@ -489,12 +489,6 @@ Partial Class Main
         Me.btnInvoice.Name = "btnInvoice"
         Me.btnInvoice.Text = "Invoicing"
         '
-        'btnTransporter
-        '
-        Me.btnTransporter.ImageIndex = 34
-        Me.btnTransporter.Name = "btnTransporter"
-        Me.btnTransporter.Text = "Transporter"
-        '
         'btnSPPbAndGon
         '
         Me.btnSPPbAndGon.Name = "btnSPPbAndGon"
@@ -508,12 +502,6 @@ Partial Class Main
         Me.btnSPPB.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
         Me.btnSPPB.Text = "SPPB GON Entry(Distributor)"
         '
-        'btnGONArea
-        '
-        Me.btnGONArea.ImageIndex = 33
-        Me.btnGONArea.Name = "btnGONArea"
-        Me.btnGONArea.Text = "G O N Area"
-        '
         'btnGONNonPODistributor
         '
         Me.btnGONNonPODistributor.Name = "btnGONNonPODistributor"
@@ -524,6 +512,18 @@ Partial Class Main
         Me.btnGonDetailData.Name = "btnGonDetailData"
         Me.btnGonDetailData.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftG)
         Me.btnGonDetailData.Text = "GON Detail Data"
+        '
+        'btnTransporter
+        '
+        Me.btnTransporter.ImageIndex = 34
+        Me.btnTransporter.Name = "btnTransporter"
+        Me.btnTransporter.Text = "Transporter"
+        '
+        'btnGONArea
+        '
+        Me.btnGONArea.ImageIndex = 33
+        Me.btnGONArea.Name = "btnGONArea"
+        Me.btnGONArea.Text = "G O N Area"
         '
         'btnGenerate
         '

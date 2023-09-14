@@ -7,6 +7,7 @@ Public Class GonNonPODist
     Dim WithEvents frmLookUp As New LookUp()
     Friend Opener As GONWithoutPOMaster = Nothing
     Private HasBoundGridGon As Boolean = False
+    Private WithEvents frmSPPBrep As FrmSPPBReport
     Public Event SaveGON(ByVal sender As System.Object, ByVal e As System.EventArgs)
     ''' <summary>
     ''' only used for editing mode for checked combo product
@@ -880,9 +881,14 @@ Public Class GonNonPODist
                 ''cek apakah yang di input bisa di bagi kemasan
                 Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
                 If Me.DVMConversiProduct.Count > 0 Then
+                    Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                     Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                     Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
-                    If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+                    If oUOM Is Nothing Or oUOM Is DBNull.Value Then
+                        Me.ShowMessageError(BrandPackName & ", Unit of Measure has not been set yet")
+                        Me.GridEX1.CancelCurrentEdit()
+                        Return False
+                    ElseIf oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
                         Me.ShowMessageError(BrandPackName & ", colly for Volume 1 has not been set yet")
                         Me.GridEX1.CancelCurrentEdit()
                         Return False
@@ -957,6 +963,7 @@ Public Class GonNonPODist
                                 Me.GridEX1.CancelCurrentEdit()
                                 Return False
                             End If
+                            Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                             Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                             Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
                             Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
@@ -966,7 +973,7 @@ Public Class GonNonPODist
                             'Dim newRow As DataRow = CType(Me.grdGon.DataSource, DataTable).NewRow()
                             If QTY >= Dvol1 Then
                                 col1 = Convert.ToInt32(Decimal.Truncate(QTY / Dvol1))
-                                collyBox = IIf(col1 <= 0, "", String.Format("{0:g} BOX", col1))
+                                collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
                                 Dim lqty As Decimal = QTY Mod Dvol1
                                 Dim ilqty As Integer = 0
                                 If lqty >= 1 Then
@@ -981,7 +988,7 @@ Public Class GonNonPODist
                                 collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
                             End If
                             foundRows(0)("QTY") = QTY
-                            foundRows(0)("QTY_UNIT") = String.Format(info, "{0:#,##0.000} {1}", QTY, strUnit1)
+                            foundRows(0)("QTY_UNIT") = String.Format(info, "{0:#,##0.000} {1}", QTY, oUOM.ToString())
                             foundRows(0)("COLLY_BOX") = collyBox
                             foundRows(0)("COLLY_PACKSIZE") = collyPackSize
                             'newRow("BATCH_NO") = 
@@ -1115,9 +1122,13 @@ Public Class GonNonPODist
                 ''cek apakah yang di input bisa di bagi kemasan
                 Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
                 If Me.DVMConversiProduct.Count > 0 Then
+                    Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                     Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                     Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
-                    If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+                    If oUOM Is Nothing Or oUOM Is DBNull.Value Then
+                        Me.ShowMessageError(BrandPackName & ", UnitOfMeasure(UOM) has not been set yet")
+                        e.Cancel = True
+                    ElseIf oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
                         Me.ShowMessageError(BrandPackName & ", colly for Volume 1 has not been set yet")
                         e.Cancel = True
                     ElseIf oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
@@ -1507,10 +1518,10 @@ Public Class GonNonPODist
             Me.IsloadingRow = False
             Return
         End If
-        If Not Me.ValidateGONHeader(False) Then
-            Me.IsloadingRow = False
-            Return
-        End If
+        'If Not Me.ValidateGONHeader(False) Then
+        '    Me.IsloadingRow = False
+        '    Return
+        'End If
         Try
             Me.Cursor = Cursors.WaitCursor
             Dim cSForm As NufarmBussinesRules.common.Helper.SaveMode = SaveMode.Insert
@@ -1547,10 +1558,10 @@ Public Class GonNonPODist
             Me.IsloadingRow = False
             Return
         End If
-        If Not Me.ValidateGONHeader(False) Then
-            Me.IsloadingRow = False
-            Return
-        End If
+        'If Not Me.ValidateGONHeader(False) Then
+        '    Me.IsloadingRow = False
+        '    Return
+        'End If
         Try
             Me.Cursor = Cursors.WaitCursor
             Dim cSForm As NufarmBussinesRules.common.Helper.SaveMode = SaveMode.Insert
@@ -1788,6 +1799,7 @@ Public Class GonNonPODist
                 Dim BrandPackID As String = rowChk.Cells("BRANDPACK_ID").Value.ToString()
                 Dim FoundRow() As DataRow = dtGonDetail.Select("ITEM = '" & BrandPackID & "'")
                 Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
+                Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                 Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                 Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
                 Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
@@ -1799,7 +1811,7 @@ Public Class GonNonPODist
                 Else
                     If GonQty >= Dvol1 Then
                         col1 = Convert.ToInt32(Decimal.Truncate(GonQty / Dvol1))
-                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} BOX", col1))
+                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
                         Dim lqty As Decimal = GonQty Mod Dvol1
                         Dim ilqty As Integer = 0
                         If lqty >= 1 Then
@@ -1826,7 +1838,7 @@ Public Class GonNonPODist
                         newRow("ITEM") = BrandPackID
                         newRow("BRANDPACK_NAME") = rowChk.Cells("BRANDPACK_NAME").Value
                         newRow("QTY") = GonQty
-                        newRow("QTY_UNIT") = String.Format(info, "{0:#,##0.000} {1}", GonQty, strUnit1)
+                        newRow("QTY_UNIT") = String.Format(info, "{0:#,##0.000} {1}", GonQty, oUOM.ToString())
                         newRow("COLLY_BOX") = collyBox
                         newRow("COLLY_PACKSIZE") = collyPackSize
                         'newRow("BATCH_NO") = 
@@ -1844,7 +1856,7 @@ Public Class GonNonPODist
                             'UPDATE data
                             FoundRow(0).BeginEdit()
                             FoundRow(0)("QTY") = GonQty
-                            FoundRow(0)("QTY_UNIT") = String.Format(info, "{0:#,##0.000} {1}", GonQty, strUnit1)
+                            FoundRow(0)("QTY_UNIT") = String.Format(info, "{0:#,##0.000} {1}", GonQty, oUOM.ToString())
                             FoundRow(0)("COLLY_BOX") = collyBox
                             FoundRow(0)("COLLY_PACKSIZE") = collyPackSize
                             'newRow("BATCH_NO") = 
@@ -1924,6 +1936,7 @@ Public Class GonNonPODist
                 End If
                 Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
                 Dim QTY As Decimal = Convert.ToDecimal(Me.grdGon.GetValue("QTY"))
+                Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                 Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                 Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
                 Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
@@ -1933,7 +1946,7 @@ Public Class GonNonPODist
                 'Dim newRow As DataRow = CType(Me.grdGon.DataSource, DataTable).NewRow()
                 If QTY >= Dvol1 Then
                     col1 = Convert.ToInt32(Decimal.Truncate(QTY / Dvol1))
-                    collyBox = IIf(col1 <= 0, "", String.Format("{0:g} BOX", col1))
+                    collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
                     Dim lqty As Decimal = QTY Mod Dvol1
                     Dim ilqty As Integer = 0
                     If lqty >= 1 Then
@@ -1950,7 +1963,7 @@ Public Class GonNonPODist
                 End If
                 'foundRows(0)("QTY") = QTY
                 Me.IsloadingRow = True
-                Me.grdGon.SetValue("QTY_UNIT", String.Format(info, "{0:#,##0.000} {1}", QTY, strUnit1))
+                Me.grdGon.SetValue("QTY_UNIT", String.Format(info, "{0:#,##0.000} {1}", QTY, oUOM.ToString()))
                 Me.grdGon.SetValue("COLLY_BOX", collyBox)
                 Me.grdGon.SetValue("COLLY_PACKSIZE", collyPackSize)
                 ''newRow("BATCH_NO") = 
@@ -2489,6 +2502,7 @@ Public Class GonNonPODist
                 Me.DVMConversiProduct.Sort = "BRANDPACK_ID ASC"
                 Dim index As Integer = DVMConversiProduct.Find(BrandPackID)
                 If index <> -1 Then
+                    Dim oUOM As Object = DVMConversiProduct(index)("UnitOfMeasure")
                     Dim oVol1 As Object = DVMConversiProduct(index)("VOL1"), oVol2 As Object = DVMConversiProduct(index)("VOL2")
                     Dim oUnit1 As Object = DVMConversiProduct(index)("UNIT1"), oUnit2 As Object = DVMConversiProduct(index)("UNIT2")
                     Dim ValidData As Boolean = True
@@ -2512,7 +2526,7 @@ Public Class GonNonPODist
                     Dim collyBox As String = "", collyPackSize As String = ""
                     If GonQty >= Dvol1 Then
                         col1 = Convert.ToInt32(Decimal.Truncate(GonQty / Dvol1))
-                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} BOX", col1))
+                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
                         Dim lqty As Decimal = GonQty Mod Dvol1
                         Dim ilqty As Integer = 0
                         If lqty >= 1 Then
@@ -2527,7 +2541,7 @@ Public Class GonNonPODist
                         Dim ilqty As Integer = Convert.ToInt32((GonQty / Dvol1) * DVol2)
                         collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
                     End If
-                    row("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", GonQty, oUnit1.ToString())
+                    row("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", GonQty, oUOM.ToString())
                     row("COLLY_BOX") = collyBox
                     row("COLLY_PACKSIZE") = collyPackSize
                     row("BATCH_NO") = tblGon.Rows(i)("BATCH_NO")
@@ -2623,6 +2637,89 @@ Public Class GonNonPODist
             End If
         Catch ex As Exception
 
+        End Try
+    End Sub
+
+    Private Sub btnPrintPrevSPPB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPrintPrevSPPB.Click
+        Try
+            If Not Me.ValidataHeader(True) Then
+                Return
+            End If
+            Dim BChanged As Boolean = Me.HasChangedHeaderPO()
+            If Not BChanged Then
+                BChanged = Me.HasChangedPODetail()
+            End If
+            Me.Cursor = Cursors.WaitCursor
+            If BChanged Then
+                If Me.ShowConfirmedMessage(Me.MessageDataHasChanged & "Before printing you must save data ?") = Windows.Forms.DialogResult.Yes Then
+                    Me.Cursor = Cursors.WaitCursor : Me.SaveData() : Me.Opener.MustReload = True
+                Else
+                    Me.Cursor = Cursors.Default : Return
+                End If
+            End If
+            Dim dtTable As New DataTable("Ref_Other_SPPB")
+            With dtTable
+                .Columns.Add("FKApp", Type.GetType("System.Int32"))
+                .Columns.Add("PO_NUMBER", Type.GetType("System.String"))
+                .Columns.Add("SPPB_NUMBER", Type.GetType("System.String"))
+                .Columns.Add("SPPB_DATE", Type.GetType("System.DateTime"))
+                .Columns.Add("PO_DATE", Type.GetType("System.DateTime"))
+                .Columns.Add("ITEM", Type.GetType("System.String"))
+                .Columns.Add("PO_ORIGINAL", Type.GetType("System.Decimal"))
+                .Columns("PO_ORIGINAL").DefaultValue = 0
+                .Columns.Add("STATUS", Type.GetType("System.String"))
+                .Columns.Add("SHIP_TO_CUSTOMER", Type.GetType("System.String"))
+                .Columns.Add("QUANTITY", Type.GetType("System.String"))
+                .Columns.Add("SHIP_TO_WARHOUSE", Type.GetType("System.String"))
+                .Columns("SHIP_TO_WARHOUSE").DefaultValue = "Plant Merak" 'di isi dan di perbaiki nantinya
+            End With
+            Dim tblDummy As DataTable = CType(Me.GridEX1.DataSource, DataTable)
+            Me.DVMConversiProduct.Sort = "BRANDPACK_ID"
+            Dim info As New CultureInfo("id-ID")
+            For i As Integer = 0 To tblDummy.Rows.Count - 1
+                Dim POOriginal As Decimal = 0
+                Dim row As DataRow = tblDummy.Rows(i)
+                Dim newRow As DataRow = dtTable.NewRow()
+                newRow.BeginEdit()
+                newRow("PO_NUMBER") = Me.txtPORefNo.Text.Trim()
+                newRow("SPPB_NUMBER") = Me.txtSPPBNo.Text.Trim()
+                newRow("SPPB_DATE") = Me.dtPicSPPBDate.Value
+                newRow("PO_DATE") = Me.dtPicPODate.Value
+                newRow("ITEM") = row("BRANDPACK_ID")
+                If Not IsNothing(row("QUANTITY")) And Not IsDBNull(row("QUANTITY")) Then
+                    POOriginal = row("QUANTITY")
+                End If
+                newRow("PO_ORIGINAL") = POOriginal
+                newRow("STATUS") = row("STATUS")
+                newRow("SHIP_TO_CUSTOMER") = Me.txtDefShipto.Text.Trim()
+                Dim BrandPackID As String = row("BRANDPACK_ID")
+                Dim Index As Integer = Me.DVMConversiProduct.Find(BrandPackID)
+                Dim UnitOfMeasure = " ? "
+                If Index <> -1 Then
+                    UnitOfMeasure = Me.DVMConversiProduct(Index)("UnitOfMeasure")
+                End If
+                newRow("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", POOriginal, UnitOfMeasure.ToString())
+                newRow.EndEdit()
+                dtTable.Rows.Add(newRow)
+            Next
+            dtTable.AcceptChanges()
+            Me.frmSPPBrep = New FrmSPPBReport()
+            With frmSPPBrep
+                .ShowInTaskbar = False
+                .StartPosition = FormStartPosition.CenterScreen
+                .isSingleReport = True
+                Dim rptSPPB As New SPPBOther()
+                rptSPPB.SetDataSource(dtTable)
+                .ReportDoc = rptSPPB
+                .crvSPPB.ReportSource = .ReportDoc
+                .crvSPPB.DisplayGroupTree = False
+                .ShowDialog(Me)
+            End With
+            Me.Cursor = Cursors.Default
+        Catch ex As Exception
+            Me.IsloadingRow = False
+            Me.Cursor = Cursors.Default
+            Me.ShowMessageError(ex.Message)
         End Try
     End Sub
 End Class

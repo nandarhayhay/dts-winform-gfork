@@ -251,7 +251,7 @@ Public Class SPPBManager
                 col.Caption = "BATCH_NO"
             End If
             'GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2
-            If col.Key = "UNIT1" Or col.Key = "VOL1" Or col.Key = "UNIT2" Or col.Key = "VOL2" Or col.Key = "IsOpen" Or col.Key = "IsCompleted" Or col.Key = "GT_ID" Or col.Key = "GON_ID_AREA" Then
+            If col.Key = "UnitOfMeasure" Or col.Key = "UNIT1" Or col.Key = "VOL1" Or col.Key = "UNIT2" Or col.Key = "VOL2" Or col.Key = "IsOpen" Or col.Key = "IsCompleted" Or col.Key = "GT_ID" Or col.Key = "GON_ID_AREA" Then
                 col.Visible = False
             End If
             If col.DataMember = "IsUpdatedBySystem" Then : col.Visible = False : col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CheckBox : col.EditType = Janus.Windows.GridEX.EditType.CheckBox : End If
@@ -371,7 +371,7 @@ Public Class SPPBManager
         fc.AllowMerge = True
         grdHeader.RootTable.FormatConditions.Add(fc)
     End Sub
-    Private Sub MustReloadSPPB()
+    Private Sub MustReloadSPPB(ByVal ShowProgress As Boolean)
 
         If Me.IsLoadding Then : Return : End If
         Try
@@ -410,7 +410,7 @@ Public Class SPPBManager
             If Me.frmParentSPPB.cmbDistributor.Value Is Nothing Then : Return : End If
             If Me.cmbFilterBy.Text <> "DISTRIBUTOR" Then : Return : End If
             Me.Cursor = Cursors.WaitCursor
-            Me.ShowData()
+            Me.ShowData(True)
             Me.IsLoadding = False
         Catch ex As Exception
             Me.IsLoadding = False
@@ -450,13 +450,16 @@ Public Class SPPBManager
             Me.Cursor = Cursors.Default
         End Try
     End Sub
-    Private Sub ShowData()
+    Public Sub ShowData(ByVal ShowProgress As Boolean)
 
-        '=================UNCOMMENT THIS AFTER DEBUGGING========================
-        Me.StatProg = StatusProgress.Processing
-        Me.ThreadProgress = New Thread(AddressOf Me.ShowProceed)
-        Me.ThreadProgress.Start()
-        '====================================================================
+
+        If ShowProgress Then
+            '=================UNCOMMENT THIS AFTER DEBUGGING========================
+            Me.StatProg = StatusProgress.Processing
+            Me.ThreadProgress = New Thread(AddressOf Me.ShowProceed)
+            Me.ThreadProgress.Start()
+            '====================================================================
+        End If
 
         Dim DistributorID As Object = Nothing
         If Not IsNothing(Me.frmParentSPPB) Then
@@ -661,7 +664,7 @@ Public Class SPPBManager
             End With
 
             Me.IsLoadding = True
-            Me.ShowData()
+            Me.ShowData(True)
             If Not IsNothing(Me.frmParentSPPB) Then
                 Me.frmParentSPPB.MustReloadData = False
                 Me.frmParentSPPB.cmbDistributor.Enabled = (Me.cmbFilterBy.Visible = True And Me.cmbFilterBy.Text = "DISTRIBUTOR")
@@ -848,6 +851,7 @@ Public Class SPPBManager
             If TypeOf (Me.frmParentSPPB) Is SPPB Then
                 frmParentSPPB.btnEditSPPB.Enabled = False
                 Me.InitializeBaseToolTip("Please define distributor")
+
                 AddHandler frmParentSPPB.ShowSPPBData, AddressOf MustReloadSPPB
                 If Not IsSySA Then
                     If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.SPPB Then
@@ -1157,7 +1161,6 @@ Public Class SPPBManager
         Me.grdHeader.FilterRowFormatStyle.BackColor = Color.FromArgb(158, 190, 245)
         Me.grdHeader.SelectedFormatStyle.BackColor = System.Drawing.SystemColors.Highlight
         Me.grdHeader.SelectedFormatStyle.ForeColor = System.Drawing.SystemColors.HighlightText
-
 
         Me.grdDetail.BackColor = Color.FromArgb(194, 217, 247)
         Me.grdDetail.RowFormatStyle.BackColor = Color.FromArgb(194, 217, 247)

@@ -27,6 +27,9 @@ Public Class GonDetailData
             End If
         Next
     End Sub
+    Private Sub ReadAccess()
+
+    End Sub
     Private Sub GonDetailData_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
             Me.ShowCustomCategory()
@@ -352,22 +355,42 @@ Public Class GonDetailData
             End If
         Next
         dtGon.AcceptChanges()
+        'uncoment this after debugging
+        'Dim const_sppbno As String = "23003824", CONST_BRANDPACK_ID As String = "00010400MD" 'limndomin 400ML
+        'Dim SPPBNo As String = "", BrandpackID As String = ""
         For i As Integer = 0 To listID.Count - 1
             Dim DevQty As Object = Nothing, GonQty As Decimal = Nothing, SPPBqty As Decimal = Nothing, TotalDisc As Decimal = Nothing, _
             POOriginal = Nothing, totalGon As Decimal = Nothing, PODIsc As Decimal = 0, GONDisc As Decimal = 0, XSize As Decimal = 0, _
-            TotalGONPO As Decimal = 0, TotalGONDisc As Decimal = 0
+            TotalGONPO As Decimal = 0, TotalGONDisc As Decimal = 0, Price As Decimal = 0, status As String = ""
             rows = dtGon.Select("ID = '" & listID(i) & "'")
             If CInt(rows(0)("TOTAL_GON")) > 1 Then
                 TotalGONPO = 0
                 For i1 As Integer = 0 To rows.Length - 1
                     row = rows(i1)
+                    'BrandpackID = rows(i1)("BRANDPACK_ID")
+                    'SPPBNo = rows(i1)("SPPB_NO")
+                    'If SPPBNo = const_sppbno And BrandpackID = CONST_BRANDPACK_ID Then
+                    '    Stop
+                    'End If
                     DevQty = row("DEVIDED_QUANTITY") : GonQty = row("GON_QTY") : SPPBqty = row("SPPB_QTY") : TotalDisc = row("TOTAL_DISC")
-                    POOriginal = row("PO_ORIGINAL_QTY") : totalGon = row("TOTAL_GON")
+                    POOriginal = row("PO_ORIGINAL_QTY") : totalGon = row("TOTAL_GON") : Price = row("PRICE")
+                    status = row("STATUS")
+
                     row.BeginEdit()
 
                     If i1 = rows.Length - 1 Then ''yang terakhir
-                        PODIsc = POOriginal - TotalGONPO
-                        GONDisc = TotalDisc - TotalGONDisc
+                        If status = "SHIPPED" Then
+                            PODIsc = POOriginal - TotalGONPO
+                            GONDisc = TotalDisc - TotalGONDisc
+                        Else
+                            XSize = GonQty / DevQty
+                            PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                            PODIsc = PODIsc * DevQty
+
+                            GONDisc = Decimal.Round((TotalDisc * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                            GONDisc = GONDisc * DevQty
+                        End If
+
                     Else
                         XSize = GonQty / DevQty
                         PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
@@ -381,9 +404,13 @@ Public Class GonDetailData
                     If TotalDisc <= 0 Then
                         row("GON_PO") = GonQty
                         row("GON_DISC_INC") = 0
+                        row("GON_PO_AMOUNT") = GonQty * Price
+                        row("GON_DISC_INC_AMOUNT") = 0
                     Else
                         row("GON_PO") = PODIsc
+                        row("GON_PO_AMOUNT") = PODIsc * Price
                         row("GON_DISC_INC") = GONDisc
+                        row("GON_DISC_INC_AMOUNT") = GONDisc * Price
                     End If
 
                     row.EndEdit()
@@ -391,12 +418,14 @@ Public Class GonDetailData
             Else
                 row = rows(0)
                 DevQty = row("DEVIDED_QUANTITY") : GonQty = row("GON_QTY") : SPPBqty = row("SPPB_QTY") : TotalDisc = row("TOTAL_DISC")
-                POOriginal = row("PO_ORIGINAL_QTY") : totalGon = row("TOTAL_GON")
+                POOriginal = row("PO_ORIGINAL_QTY") : totalGon = row("TOTAL_GON") : Price = row("PRICE") : status = row("STATUS")
                 row.BeginEdit()
                 If TotalDisc > 0 Then
                     If GonQty = SPPBqty Then
                         row("GON_PO") = POOriginal
                         row("GON_DISC_INC") = TotalDisc
+                        row("GON_PO_AMOUNT") = POOriginal * Price
+                        row("GON_DISC_INC_AMOUNT") = TotalDisc * Price
                     ElseIf GonQty < SPPBqty Then
                         XSize = GonQty / DevQty
                         PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
@@ -405,10 +434,14 @@ Public Class GonDetailData
                         GONDisc = GONDisc * DevQty
                         row("GON_PO") = PODIsc
                         row("GON_DISC_INC") = GONDisc
+                        row("GON_PO_AMOUNT") = PODIsc * Price
+                        row("GON_DISC_INC_AMOUNT") = GONDisc * Price
                     End If
                 Else
                     row("GON_PO") = GonQty
                     row("GON_DISC_INC") = 0
+                    row("GON_PO_AMOUNT") = GonQty * Price
+                    row("GON_DISC_INC_AMOUNT") = 0
                 End If
                 row.EndEdit()
             End If
@@ -480,8 +513,8 @@ Public Class GonDetailData
 
         If Not HasLoadDataBefore Then
             GridN.RetrieveStructure()
-        ElseIf mustReload Then
-            GridN.RetrieveStructure()
+            'ElseIf mustReload Then
+            '    GridN.RetrieveStructure()
         End If
         GridN.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
         For Each col As Janus.Windows.GridEX.GridEXColumn In GridN.RootTable.Columns
@@ -502,7 +535,7 @@ Public Class GonDetailData
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
                 col.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
                 col.TotalFormatString = "#,##0.000"
-            ElseIf col.DataMember = "TOTAL_SALES_VALUE" Then
+            ElseIf col.DataMember = "TOTAL_SALES_VALUE" Or col.DataMember.Contains("AMOUNT") Then
                 If Not Me.isHOUser Then
                     col.Visible = False
                     col.ShowInFieldChooser = False
@@ -542,15 +575,16 @@ Public Class GonDetailData
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
             End If
-
             If col.Key = "BatchNo" Then
                 col.Caption = "BATCH_NO"
             End If
             'GD.BatchNo,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2
-            If col.Key = "UNIT1" Or col.Key = "VOL1" Or col.Key = "UNIT2" Or col.Key = "VOL2" Or col.Key = "IsOpen" Or col.Key = "IsCompleted" Or col.Key = "GT_ID" Or col.Key = "GON_ID_AREA" _
+            If col.Key = "UnitOfMeasure" Or col.Key = "UNIT1" Or col.Key = "VOL1" Or col.Key = "UNIT2" Or col.Key = "VOL2" Or col.Key = "IsOpen" Or col.Key = "IsCompleted" Or col.Key = "GT_ID" Or col.Key = "GON_ID_AREA" _
              Or col.Key = "DISTRIBUTOR_NAME" Or col.Key = "PO_CATEGORY" Or col.Key = "PO_REF_NO" Or col.Key = "PO_REF_DATE" _
              Or col.Key = "SHIP_TO_REGIONAL" Or col.Key = "SHIP_TO_TERRITORY" Or col.Key = "PRICE" Or col.Key = "CSE_REMARK" Or col.Key = "SALES_QTY" Or col.Key = "DEVIDED_QUANTITY" _
-             Or col.Key = "BALANCE" Or col.Key = "TOTAL_GON" Or col.Key = "ID" Then
+             Or col.Key = "BALANCE" Or col.Key = "TOTAL_GON" Or col.Key = "ID" Or col.Key = "PO_ORIGINAL_AMOUNT" Or col.Key = "PO_REF_DATE" _
+             Or col.Key = "PO_REF_NO" Or col.Key = "POLICE_NO_TRANS" Or col.Key = "PRICE" Or col.Key = "TOTAL_GON" Or col.Key = "TRANSPORTER_NAME" Or col.Key = "WARHOUSE" _
+             Or col.Key = "GON_PO_AMOUNT" Or col.Key = "E_T_A" Or col.Key.Contains("AREA") Or col.Key = "DRIVER_TRANS" Or col.Key = "BatchNo" Or col.Key = "STATUS" Then
                 col.Visible = False
             End If
             'col.AutoSize()

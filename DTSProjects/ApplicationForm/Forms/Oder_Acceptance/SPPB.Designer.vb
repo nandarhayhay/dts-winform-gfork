@@ -24,6 +24,7 @@ Partial Class SPPB
         Dim cmbDistributor_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.Bar2 = New DevComponents.DotNetBar.Bar
+        Me.btnSearchDistributor = New DTSProjects.ButtonSearch
         Me.cmbDistributor = New Janus.Windows.GridEX.EditControls.MultiColumnCombo
         Me.btnGrid = New DevComponents.DotNetBar.ButtonItem
         Me.btnColumn = New DevComponents.DotNetBar.ButtonItem
@@ -52,7 +53,6 @@ Partial Class SPPB
         Me.PrintPreviewDialog1 = New System.Windows.Forms.PrintPreviewDialog
         Me.Bar1 = New DevComponents.DotNetBar.Bar
         Me.xpgData = New SteepValley.Windows.Forms.XPGradientPanel
-        Me.btnSearchDistributor = New DTSProjects.ButtonSearch
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Bar2.SuspendLayout()
         CType(Me.cmbDistributor, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -107,6 +107,14 @@ Partial Class SPPB
         Me.Bar2.TabStop = False
         Me.Bar2.Text = "Bar2"
         '
+        'btnSearchDistributor
+        '
+        Me.btnSearchDistributor.BackColor = System.Drawing.Color.Transparent
+        Me.btnSearchDistributor.Location = New System.Drawing.Point(784, 2)
+        Me.btnSearchDistributor.Name = "btnSearchDistributor"
+        Me.btnSearchDistributor.Size = New System.Drawing.Size(17, 18)
+        Me.btnSearchDistributor.TabIndex = 2
+        '
         'cmbDistributor
         '
         Me.cmbDistributor.AutoComplete = False
@@ -115,11 +123,11 @@ Partial Class SPPB
         Me.cmbDistributor.DesignTimeLayout = cmbDistributor_DesignTimeLayout
         Me.cmbDistributor.DisplayMember = "DISTRIBUTOR_NAME"
         Me.cmbDistributor.HoverMode = Janus.Windows.GridEX.HoverMode.Highlight
-        Me.cmbDistributor.Location = New System.Drawing.Point(581, 2)
+        Me.cmbDistributor.Location = New System.Drawing.Point(576, 0)
         Me.cmbDistributor.Name = "cmbDistributor"
         Me.cmbDistributor.SelectedIndex = -1
         Me.cmbDistributor.SelectedItem = Nothing
-        Me.cmbDistributor.Size = New System.Drawing.Size(202, 21)
+        Me.cmbDistributor.Size = New System.Drawing.Size(202, 23)
         Me.cmbDistributor.TabIndex = 0
         Me.cmbDistributor.ValueMember = "DISTRIBUTOR_ID"
         Me.cmbDistributor.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
@@ -325,14 +333,6 @@ Partial Class SPPB
         Me.xpgData.StartColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.xpgData.TabIndex = 28
         Me.xpgData.Watermark = Global.DTSProjects.My.Resources.Resources.Splash
-        '
-        'btnSearchDistributor
-        '
-        Me.btnSearchDistributor.BackColor = System.Drawing.Color.Transparent
-        Me.btnSearchDistributor.Location = New System.Drawing.Point(790, 3)
-        Me.btnSearchDistributor.Name = "btnSearchDistributor"
-        Me.btnSearchDistributor.Size = New System.Drawing.Size(17, 18)
-        Me.btnSearchDistributor.TabIndex = 2
         '
         'SPPB
         '

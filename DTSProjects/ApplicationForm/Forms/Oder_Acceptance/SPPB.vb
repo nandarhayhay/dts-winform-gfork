@@ -1,7 +1,7 @@
 Imports NufarmBussinesRules.common.Helper
 Imports System.Configuration
 Public Class SPPB
-
+    Private NumberClick As Integer = 0
 #Region " Deklarasi "
     'Private m_clsSPPBDetail As NufarmBussinesRules.OrderAcceptance.SPPB_Detail
     Private SFM As StateFillingMCB
@@ -10,12 +10,14 @@ Public Class SPPB
     Private IsLoadding As Boolean
     Friend WithEvents GridEX1 As Janus.Windows.GridEX.GridEX = Nothing
     Public Event ComboboxValue_Changed(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event ShowSPPBData()
+    Public Event ShowSPPBData(ByVal ShowProgress As Boolean)
     Friend CMain As Main = Nothing
     Friend MustReloadData As Boolean = False
     Private m_clsSPPBGONEntry As NufarmBussinesRules.OrderAcceptance.SPPBEntryGON = Nothing
     Private IsHOUser As Boolean = NufarmBussinesRules.SharedClass.IsUserHO
     Private IsSystemAdmin = CBool(ConfigurationManager.AppSettings("SysA"))
+    'Private WithEvents flUp As New LookUp()
+    Private listCheckSPPB As New List(Of String)
 
     Private ReadOnly Property clsSPPBGONEntry() As NufarmBussinesRules.OrderAcceptance.SPPBEntryGON
         Get
@@ -278,7 +280,7 @@ Public Class SPPB
                                 'Else
                                 '    RaiseEvent ComboboxValue_Changed(Me.cmbDistributor, New EventArgs())
                                 'End If
-                                RaiseEvent ShowSPPBData()
+                                RaiseEvent ShowSPPBData(True)
                             Else
                                 'If Me.MustReloadData Then
                                 RaiseEvent ComboboxValue_Changed(Me.cmbDistributor, New EventArgs())
@@ -292,6 +294,16 @@ Public Class SPPB
                         Case "GonReturnedBackManager"
                             Me.EditGONReturn()
                     End Select
+                Case "btnCurrentSelection"
+                    If Me.GridEX1.Name = "grdHeader" Then
+                        If Me.GridEX1.GetRow.RowType <> Janus.Windows.GridEX.RowType.Record Then
+                            Me.ShowMessageInfo("Please select SPPB Data")
+                        Else
+                            'show crystal report print SPPB
+                        End If
+                    End If
+                Case "btnPrintcustoms"
+
             End Select
             Me.MustReloadData = False
         Catch ex As Exception
@@ -327,6 +339,9 @@ Public Class SPPB
         colBatchNo.AllowDBNull = True
         colBatchNo.DefaultValue = DBNull.Value
 
+        Dim colUOfMeasure As New DataColumn("UnitOfMeasure", Type.GetType("System.String"))
+        colUOfMeasure.DefaultValue = ""
+
         Dim colUnit1 As New DataColumn("UNIT1", Type.GetType("System.String"))
         'colUnit1.AllowDBNull = False
 
@@ -355,7 +370,7 @@ Public Class SPPB
         Dim ColModifiedBy As New DataColumn("ModifiedBy", Type.GetType("System.String"))
         Dim colModifiedDate As New DataColumn("ModifiedDate", Type.GetType("System.DateTime"))
         tblGON.Columns.AddRange(New DataColumn() {colGDID, colGONNO, colSPPBBrandpackID, colBRANDPACKID, colBrandPackName, colGOnQty, _
-        colIsOpen, colBatchNo, colUnit1, colVO11, colUnit2, colVO12, colIsCompleted, colIsUpdatedBySystem, colCreatedBy, colCreatedDate, ColModifiedBy, colModifiedDate})
+        colIsOpen, colBatchNo, colUOfMeasure, colUnit1, colVO11, colUnit2, colVO12, colIsCompleted, colIsUpdatedBySystem, colCreatedBy, colCreatedDate, ColModifiedBy, colModifiedDate})
 
         Dim Key(1) As DataColumn
         Key(0) = colGDID
@@ -412,11 +427,13 @@ Public Class SPPB
         If IsNothing(Me.GridEX1.SelectedItems) Then : Return : End If
         If Me.GridEX1.GetRow().RowType <> Janus.Windows.GridEX.RowType.Record Then : Return : End If
         If Not TypeOf (Me.frmManager) Is SPPBManager Then : Return : End If
+        Dim UCSPPBManager As SPPBManager = CType(Me.frmManager, SPPBManager)
         Dim PONumber As String = Me.GridEX1.GetValue("PO_REF_NO")
         Dim SGE As New SPPBEntryGON()
         Me.MustReloadData = False
         With SGE
             .frmParent = Me
+            .OpenerManager = Me.frmManager
             .Mode = SaveMode.Update
             .DataToEdit = SPPBEntryGON.EditData.SPPB
             .PO_REF_NO = PONumber
@@ -450,6 +467,7 @@ Public Class SPPB
                 Next
                 If ListGON.Count > 0 And ListGON.Count <= 1 Then
                     .GON_NO = ListGON(0)
+
                     'chek GON_NO IF There is only one row
                     'if only one row set the value of txtgon no,area,,gon_date,transporter,product,
                     ''status if all status in sppbBrandPack is equal
@@ -458,6 +476,7 @@ Public Class SPPB
                     Dim status As String = ""
                     .OGONHeader = Me.clsSPPBGONEntry.getGONDescriptionBySPPB(.SPPB_NO, status, False)
                     .txtGONNO.Text = .OGONHeader.GON_NO
+                    .Text = "SPPB " & .SPPB_NO & ", GON " & .OGONHeader.GON_NO
                     .dtPicGONDate.Value = .OGONHeader.GON_DATE
                     .cmbStatusSPPB.Text = status
                     .txtDriverTrans.Text = .OGONHeader.DriverTrans
@@ -466,7 +485,7 @@ Public Class SPPB
                     .txtShipTo.Text = .OGONHeader.ShipTo
                     Dim TransporterName As Object = Nothing, GONArea As Object = Nothing, ListSPPBBrandPack As New List(Of String)
                     Dim DVGONManager As DataView = Nothing
-                    Dim UCSPPBManager As SPPBManager = CType(Me.frmManager, SPPBManager)
+
                     If Not IsNothing(UCSPPBManager.grdDetail.DataSource) Then
                         DVGONManager = CType(UCSPPBManager.grdDetail.DataSource, DataView)
                         Dim OrowFilter As String = DVGONManager.RowFilter
@@ -491,6 +510,7 @@ Public Class SPPB
                             drv("BRANDPACK_ID") = DVDummy(i)("BRANDPACK_ID")
                             drv("BRANDPACK_NAME") = DVDummy(i)("BRANDPACK_NAME")
                             drv("GON_QTY") = DVDummy(i)("GON_QTY")
+                            drv("UnitOfMeasure") = DVDummy(i)("UnitOfMeasure")
                             drv("UNIT1") = DVDummy(i)("UNIT1")
                             drv("VOL1") = DVDummy(i)("VOL1")
                             drv("UNIT2") = DVDummy(i)("UNIT2")
@@ -618,14 +638,16 @@ Public Class SPPB
             DS.Tables.Add(tblGOn)
             DS.AcceptChanges()
             .DS = DS
-            .ShowDialog()
-            If Me.MustReloadData Then
-                If Not IsNothing(Me.frmManager) Then
-                    If TypeOf (frmManager) Is SPPBManager Then
-                        RaiseEvent ShowSPPBData()
-                    End If
-                End If
-            End If
+            .OpenerManager = UCSPPBManager
+            .Show()
+            '.ShowDialog()
+            'If Me.MustReloadData Then
+            '    If Not IsNothing(Me.frmManager) Then
+            '        If TypeOf (frmManager) Is SPPBManager Then
+            '            RaiseEvent ShowSPPBData(True)
+            '        End If
+            '    End If
+            'End If
         End With
         '============================OLD PROCESS==============================================================
         'If Not IsNothing(Me.frmManager) Then
@@ -749,6 +771,7 @@ Public Class SPPB
         Dim SPPBBrandPackID As Object = UCSPPBManager.grdDetail.GetValue("SPPB_BRANDPACK_ID")
         With SGE
             .frmParent = Me
+            .OpenerManager = UCSPPBManager
             .Mode = SaveMode.Update
             .DataToEdit = SPPBEntryGON.EditData.GON
             .PO_REF_NO = PONumber
@@ -771,7 +794,6 @@ Public Class SPPB
             Dim tblPO As DataTable = Me.clsSPPBGONEntry.getPO(.PO_REF_NO, SaveMode.Update, False)
             .dvPO = tblPO.DefaultView()
             .dtPicSPPBDate.MinDate = tblPO.Rows(0)("PO_DATE")
-
             Dim tblSPPBrandPack As DataTable = Me.clsSPPBGONEntry.getSPPBBrandPack(.SPPB_NO, .PO_REF_NO, False, False)
             Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGOnData(.SPPB_NO, False)
             Dim ObjSPPBHeader As New Nufarm.Domain.SPPBHeader()
@@ -781,8 +803,8 @@ Public Class SPPB
                 .PONumber = PONumber
             End With
             .OSPPBHeader = ObjSPPBHeader
-
             .GON_NO = GONNO
+            .Text = "SPPB " & .SPPB_NO & ", GON " & .GON_NO
             'chek GON_NO IF There is only one row
             'if only one row set the value of txtgon no,area,,gon_date,transporter,product,
             ''status if all status in sppbBrandPack is equal
@@ -824,6 +846,7 @@ Public Class SPPB
                 drv("GON_QTY") = DVDummy(i)("GON_QTY")
                 drv("IsOPen") = True
                 drv("BatchNo") = IIf(DVDummy.Table.Columns.Contains("BatchNo"), DVDummy(i)("BatchNo"), "")
+                drv("UnitOfMeasure") = IIf(DVDummy.Table.Columns.Contains("UnitOfMeasure"), DVDummy(i)("UnitOfMeasure"), "") ' DVDummy(i)("UnitOfMeasure")
                 drv("UNIT1") = IIf(DVDummy.Table.Columns.Contains("UNIT1"), DVDummy(i)("UNIT1"), "")
                 drv("VOL1") = IIf(DVDummy.Table.Columns.Contains("VOL1"), DVDummy(i)("VOL1"), "")
                 drv("UNIT2") = IIf(DVDummy.Table.Columns.Contains("UNIT2"), DVDummy(i)("UNIT2"), "")
@@ -884,53 +907,51 @@ Public Class SPPB
             .lblSalesPerson.Text = Me.clsSPPBGONEntry.getSalesPerson(.PO_REF_NO, False)
             .lblDistributor.Text = UCSPPBManager.grdDetail.GetValue("DISTRIBUTOR_NAME").ToString()
             .btnAddGon.Enabled = False
-            '.mcbGonArea.Value = .OGONHeader.GON_ID_AREA
-            '.mcbTransporter.Value = .OGONHeader.GT_ID
-
-            'If Not Me.IsHOUser And Not Me.IsSystemAdmin Then
-            '    Select Case ConfigurationManager.AppSettings("WarhouseCode").ToString()
-            '        Case "SRG"
-            '            Me.cmdWarhouse.SelectedIndex = 5
-            '        Case "SBY"
-            '            Me.cmdWarhouse.SelectedIndex = 3
-            '        Case "MRK"
-            '            Me.cmdWarhouse.SelectedIndex = 2
-            '        Case "TGR"
-            '            Me.cmdWarhouse.SelectedIndex = 3
-            '    End Select
-            '    Me.cmdWarhouse.ReadOnly = True
-            'End If
-
             'get DS
             DS.Tables.Add(tblSPPBrandPack)
             DS.Tables.Add(tblGOn)
             DS.AcceptChanges()
             .DS = DS
-            .ShowDialog()
-            If Me.MustReloadData Then
-                If Not IsNothing(Me.frmManager) Then
-                    If TypeOf (frmManager) Is SPPBManager Then
-                        RaiseEvent ShowSPPBData()
-                    End If
-                End If
-            End If
+            .OpenerManager = UCSPPBManager
+            .Show()
+            '.ShowDialog()
+            'If Me.MustReloadData Then
+            '    If Not IsNothing(Me.frmManager) Then
+            '        If TypeOf (frmManager) Is SPPBManager Then
+            '            RaiseEvent ShowSPPBData(True)
+            '        End If
+            '    End If
+            'End If
 
         End With
     End Sub
     Private Sub showSPPBEntry()
         Dim frmSPPBEntryGON As New SPPBEntryGON()
+        Dim UCSPPBManager As SPPBManager = CType(Me.frmManager, SPPBManager)
         With frmSPPBEntryGON
             .frmParent = Me
             .Mode = NufarmBussinesRules.common.Helper.SaveMode.Insert
-            .ShowDialog()
-            If Me.MustReloadData Then
-                If Not IsNothing(Me.frmManager) Then
-                    If TypeOf (frmManager) Is SPPBManager Then
-                        RaiseEvent ShowSPPBData()
-                    End If
-                End If
-            End If
+            .OpenerManager = UCSPPBManager
+            '.ShowInTaskbar = False
+            .Owner = Me
+            Me.NumberClick = Me.NumberClick + 1
+            .Text = "SPPB 0" & Me.NumberClick.ToString()
+            .Show()
+            'If Me.MustReloadData Then
+            '    If Not IsNothing(Me.frmManager) Then
+            '        If TypeOf (frmManager) Is SPPBManager Then
+            '            RaiseEvent ShowSPPBData()
+            '        End If
+            '    End If
+            'End If
         End With
+    End Sub
+
+    Private Sub SPPB_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        If Me.OwnedForms.Length > 0 Then
+            Me.ShowMessageError("Can not close parent form while SPPB Form is open")
+            e.Cancel = True
+        End If
     End Sub
     'Private Sub GridEX1_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
     '    Try
@@ -995,4 +1016,41 @@ Public Class SPPB
             Me.Cursor = Cursors.Default
         End Try
     End Sub
+    'Private Sub ShowCustomLookUpSPPB()
+    '    flUp = New LookUp()
+    '    Dim tbl As DataTable = Nothing
+    '    'ambil data untuk permulaan
+    '    'check SPPB date di grid
+    '    'jika kurang dari 3 bulan maka ambil data 3 bulan sampai sekarang
+    '    'else startSPPB to current
+    '    Dim SPPBDate As Object = Nothing
+    '    Dim UCSPPBManager As SPPBManager = CType(Me.frmManager, SPPBManager)
+    '    Dim DV As DataView = CType(UCSPPBManager.grdHeader.DataSource, DataView).ToTable().Copy().DefaultView()
+    '    DV.Sort = "SPPB_DATE ASC"
+    '    Dim oStartDate As Object = DV(0)("SPPB_DATE"), StartDate As Date = DateTime.Now()
+    '    If Not IsNothing(oStartDate) And Not IsDBNull(oStartDate) Then
+    '        StartDate = CDate(oStartDate)
+    '    End If
+    '    DV.Sort = "SPPB_DATE DESC"
+    '    Dim oEndDate As Object = DV(0)("SPPB_DATE"), EndDate As Date = DateTime.Now()
+    '    If Not IsNothing(oEndDate) And Not IsDBNull(oEndDate) Then
+    '        EndDate = CDate(oEndDate)
+    '    End If
+    '    If StartDate.Equals(EndDate) Then
+    '        StartDate = StartDate.AddMonths(-3)
+    '    ElseIf DateDiff(DateInterval.Month, StartDate, EndDate) < 3 Then
+    '        StartDate = EndDate.AddMonths(-3)
+    '    End If
+    '    tbl = Me.clsSPPBGONEntry.getSPPBBrandPack(String.Empty, StartDate, EndDate)
+    '    If Not IsNothing(tbl) Then
+    '        DV = tbl.DefaultView()
+    '    End If
+    '    With flUp
+    '        .Grid.SetDataBinding(DV, "")
+
+    '        .Grid.RetrieveStructure()
+    '        .Grid.AutoSizeColumns()
+    '    End With
+    'End Sub
+
 End Class

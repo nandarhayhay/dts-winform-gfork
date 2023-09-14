@@ -15,10 +15,10 @@ Namespace OrderAcceptance
             Try
                 If mode = SaveMode.Insert Then
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
+                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
                 Else
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV;"
+                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV;"
                 End If
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Dim dtProdConvertion As New DataTable("T_ProdConvertion")
@@ -209,6 +209,11 @@ Namespace OrderAcceptance
             End Try
         End Sub
 
+
+
+
+
+
         ''' <summary>
         ''' Untuk menampilkan edit data bila gon sudah ada
         ''' </summary>
@@ -341,6 +346,9 @@ Namespace OrderAcceptance
                         "DECLARE @V_MESSAGE VARCHAR(200);" & vbCrLf & _
                         " SET @V_MESSAGE = CONCAT('PO NUMBER ' , @PO_NUMBER , ' Has already existed');" & vbCrLf & _
                         " IF EXISTS(SELECT PO_NUMBER FROM GON_SEPARATED_PO_HEADER WHERE PO_NUMBER = @PO_NUMBER) " & vbCrLf & _
+                        " BEGIN RAISERROR(@V_MESSAGE,16,1);RETURN; END" & vbCrLf & _
+                        " SET @V_MESSAGE = CONCAT('SPPB_NUMBER ' , @SPPB_NUMBER , ' Has already existed');" & vbCrLf & _
+                        " IF EXISTS(SELECT SPPB_NUMBER FROM GON_SEPARATED_PO_HEADER WHERE SPPB_NUMBER = @SPPB_NUMBER) " & vbCrLf & _
                         " BEGIN RAISERROR(@V_MESSAGE,16,1);RETURN; END" & vbCrLf & _
                         "INSERT INTO GON_SEPARATED_PO_HEADER(PO_NUMBER,PO_DATE,SPPB_NUMBER,SPPB_DATE,SHIP_TO,CreatedBy,CreatedDate) " & vbCrLf & _
                         " VALUES(@PO_NUMBER,@PO_DATE,@SPPB_NUMBER,@SPPB_DATE,@SHIP_TO,@CreatedBy,CONVERT(VARCHAR(100),GETDATE(),101)); " & vbCrLf & _
@@ -851,7 +859,7 @@ Namespace OrderAcceptance
                 End If
                 If SaveGonDetail Then
                     QrySelectGonDetail = "SET NOCOUNT ON;" & vbCrLf & _
-                                    " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UNIT1,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
+                                    " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UnitOfMeasure,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
                                     " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader LEFT OUTER JOIN BRND_PROD_CONV BPC ON BPC.BRANDPACK_ID = GSD.ITEM " & vbCrLf & _
                                     " INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER;"
                     'QrySelectGonDetail = "SELECT GSD.* FROM GON_SEPARATED_DETAIL GSD INNER JOIN GON_SEPARATED_PO_DETAIL GSPD ON GSD.FKAppPODetail = GSPD.IDApp " & vbCrLf & _
@@ -953,7 +961,7 @@ Namespace OrderAcceptance
         Public Function getGOnDetail(ByVal GON_NO As String, ByVal closeConnection As Boolean) As DataTable
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UNIT1,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
+                " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UnitOfMeasure,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
                 " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader LEFT OUTER JOIN BRND_PROD_CONV BPC ON BPC.BRANDPACK_ID = GSD.ITEM " & vbCrLf & _
                 " INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
