@@ -293,9 +293,11 @@ Public Class GonNonPODist
                 Return True
             End If
         End If
-        If Me.cmdWarhouse.SelectedIndex <> -1 Then
-            If Me.cmdWarhouse.SelectedValue.ToString() <> Me.OGONHeader.WarhouseCode Then
-                Return True
+        If Me.IsHOUser Then
+            If Me.cmdWarhouse.SelectedIndex <> -1 Then
+                If Me.cmdWarhouse.SelectedValue.ToString() <> Me.OGONHeader.WarhouseCode Then
+                    Return True
+                End If
             End If
         End If
         If Me.txtPolice_no_Trans.Text.Trim() <> Me.OGONHeader.PoliceNoTrans Then
@@ -432,7 +434,7 @@ Public Class GonNonPODist
         If Me.SForm = StatusForm.Edit Or Me.SForm = StatusForm.Open Then
             Me.DVGonProduct = Me.clsGonNonPO.getPODetail(Me.OSPPBHeader.PONumber, False)
         End If
-        Me.DVMConversiProduct = Me.clsGonNonPO.getProdConvertion(cSForm, True)
+        Me.DVMConversiProduct = Me.clsGonNonPO.getProdConvertion(True)
         'set MCB gudang langsung
         'JKT = 1
         'MRK = 2
@@ -470,7 +472,7 @@ Public Class GonNonPODist
             If col.Key = "BRANDPACK_NAME" Then
                 col.Caption = "ITEM DESCRIPTIONS"
             End If
-            If col.Key = "CreatedBy" Or col.Key = "CreatedDate" Or col.Key = "ModifiedBy" Or col.Key = "ModifiedDate" Then
+            If col.Key = "CreatedBy" Or col.Key = "CreatedDate" Or col.Key = "ModifiedBy" Or col.Key = "ModifiedDate" Or col.Key = "ITEM_OTHER" Then
                 col.Visible = False
             End If
             If col.Key = "QTY_UNIT" Then
@@ -573,7 +575,43 @@ Public Class GonNonPODist
         End With
         Me.GridEX1.RootTable.FormatConditions.Add(FC1)
     End Sub
+    Private Sub ExportToExcell(ByVal SheetName As String, ByVal grid As Janus.Windows.GridEX.GridEX)
+        'If e.KeyCode = Keys.F7 Then
 
+        'ElseIf e.KeyCode = Keys.Delete Then
+        '    Me.isLoadingRow = True
+        '    GridEX1.CancelCurrentEdit()
+        '    Me.GridEX1.Delete()
+        '    Me.isLoadingRow = False
+        'End If
+        Try
+            Dim FE As New Janus.Windows.GridEX.Export.GridEXExporter()
+            Me.Cursor = Cursors.WaitCursor
+            FE.IncludeHeaders = True
+            FE.SheetName = SheetName
+            FE.IncludeFormatStyle = False
+            FE.IncludeExcelProcessingInstruction = True
+            FE.ExportMode = Janus.Windows.GridEX.ExportMode.AllRows
+            Dim SD As New SaveFileDialog()
+            SD.OverwritePrompt = True
+            SD.DefaultExt = ".xls"
+            SD.Filter = "All Files|*.*"
+            SD.RestoreDirectory = True
+            SD.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            If SD.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+                Using FS As New System.IO.FileStream(SD.FileName, IO.FileMode.Create)
+                    FE.GridEX = grid
+                    FE.Export(FS)
+                    FS.Close()
+                    MessageBox.Show("Data Exported to " & SD.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End Using
+            End If
+            Me.Cursor = Cursors.Default
+        Catch ex As Exception
+            Cursor = Cursors.Default
+            Me.ShowMessageError(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_GridEX1_KeyDown")
+        End Try
+    End Sub
     Private Function SaveData() As Boolean
         Dim validData As Boolean = Me.ValidataHeader(True)
         If Not validData Then : Return False : End If
@@ -636,7 +674,12 @@ Public Class GonNonPODist
         If Not HasChangedHeaderPO And Not HasChangedGONHeader And Not HasChangedPODetail And Not HasChangeGonDetail Then
             Return False
         End If
-        Return Me.clsGonNonPO.SaveData(Me.SForm, HasChangedHeaderPO, HasChangedPODetail, HasChangedGONHeader, HasChangeGonDetail, Me.OGONHeader, Me.OSPPBHeader, Me.dtGonPODetail, Me.dtGonDetail)
+        If Me.SForm = StatusForm.Edit Then
+            Me.Mode = SaveMode.Update
+        Else : SForm = StatusForm.Insert
+            Me.Mode = SaveMode.Insert
+        End If
+        Return Me.clsGonNonPO.SaveData(Me.Mode, HasChangedHeaderPO, HasChangedPODetail, HasChangedGONHeader, HasChangeGonDetail, Me.OGONHeader, Me.OSPPBHeader, Me.dtGonPODetail, Me.dtGonDetail)
     End Function
     Private Sub GonNonPODist_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
@@ -757,7 +800,6 @@ Public Class GonNonPODist
                     Me.btnPrint.Enabled = False
                 End If
             End If
-            'Me.ReadAccess()
             If Me.SForm = StatusForm.Edit Or Me.SForm = StatusForm.Insert Then
                 If IsNothing(NufarmBussinesRules.SharedClass.tblPoliceNumber) Then
                     Dim SettingConfig As New NufarmBussinesRules.SettingDTS.RefBussinesRulesSetting()
@@ -836,6 +878,87 @@ Public Class GonNonPODist
 
         End If
     End Sub
+    'Private Function checkValidityGonQty(ByVal GonQty As Decimal, ByVal oVol1 As Object, ByVal oVol2 As Object, ByRef ModQty As Decimal) As Boolean
+    '    Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
+    '    Dim col1 As Integer = 0
+    '    If GonQty >= Dvol1 Then
+    '        col1 = Convert.ToInt32(Decimal.Truncate(GonQty / Dvol1))
+    '        Dim lqty As Decimal = GonQty Mod Dvol1
+    '        Dim ilqty As Integer = 0
+    '        If lqty > 0 Then
+    '            '    'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
+    '            '    ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+    '            'ElseIf lqty > 0 And lqty < 1 Then
+    '            '    'ilqty = ilqty + DVol2
+    '            '    ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+    '            'if decimal.rem
+    '            'dim result = 
+    '            'Dim WholePart As Decimal = Decimal.Truncate((lqty / Dvol1) * DVol2)
+    '            'Dim fractionalPart As Decimal = gon
+    '            If ModQty > 0 Then
+    '                Return False
+    '            End If
+    '        End If
+
+    '    ElseIf GonQty > 0 Then ''gon kurang dari 1 coly
+    '        ModQty = Decimal.Truncate((GonQty / Dvol1) * DVol2)
+    '        If ModQty > 0 Then
+    '            Return False
+    '        End If
+    '        Dim ilqty As Integer = Convert.ToInt32((GonQty / Dvol1) * DVol2)
+    '    End If
+    'End Function
+    Private Function checkValidityProduct(ByVal oUOM As Object, ByVal oVol1 As Object, ByVal oVol2 As Object, ByVal oUnit1 As Object, ByVal oUnit2 As Object, ByVal BrandPackID As String, ByVal BrandPackName As String) As Boolean
+
+        Dim ValidData As Boolean = True
+        If oUOM Is Nothing Or oUOM Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", Unit of Measure has not been set yet")
+                ValidData = False
+            Else
+                oUOM = Me.DVMConversiProduct(0)("UnitOfMeasure")
+            End If
+        End If
+        If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for Volume 1 has not been set yet")
+                ValidData = False
+            Else
+                oVol1 = Me.DVMConversiProduct(0)("VOL1")
+            End If
+        End If
+        If oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for Volume 2 has not been set yet")
+                ValidData = False
+            Else
+                oVol2 = Me.DVMConversiProduct(0)("VOL2")
+            End If
+        End If
+        If oUnit1 Is Nothing Or oUnit1 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for unit 1 has not been set yet")
+                ValidData = False
+            Else
+                oUnit1 = Me.DVMConversiProduct(0)("UNIT1")
+            End If
+        End If
+
+        If oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for unit 1 has not been set yet")
+                ValidData = False
+            Else
+                oUnit2 = Me.DVMConversiProduct(0)("UNIT2")
+            End If
+        End If
+        Return ValidData
+    End Function
     Private Function cekAndSetBrandPackGon(ByVal columnKey As String, ByVal BrandPackID As String, ByRef BrandPackName As String, ByVal FillChkProd As Boolean, ByVal fillGridGon As Boolean) As Boolean
         If columnKey = "QUANTITY" Or columnKey = "BRANDPACK_ID" Then
             'check apakah sudah ada GON nya
@@ -872,6 +995,10 @@ Public Class GonNonPODist
             Else
                 Return True
             End If
+            Dim oUOM As Object = Nothing
+            Dim oVol1 As Object = Nothing, oVol2 As Object = Nothing
+            Dim oUnit1 As Object = Nothing, oUnit2 As Object = Nothing
+            Dim Devqty As Object = Nothing
             If CDec(QTY) <= 0 Then
                 Me.ShowMessageInfo("Please enter valid value for Qty")
                 Me.GridEX1.CancelCurrentEdit()
@@ -879,11 +1006,12 @@ Public Class GonNonPODist
             Else
                 Me.Cursor = Cursors.WaitCursor
                 ''cek apakah yang di input bisa di bagi kemasan
-                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
+                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
                 If Me.DVMConversiProduct.Count > 0 Then
-                    Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
-                    Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
-                    Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
+                    oUOM = DVMConversiProduct(0)("UnitOfMeasure")
+                    oVol1 = DVMConversiProduct(0)("VOL1") : oVol2 = DVMConversiProduct(0)("VOL2")
+                    oUnit1 = DVMConversiProduct(0)("UNIT1") : oUnit2 = DVMConversiProduct(0)("UNIT2")
+                    Devqty = DVMConversiProduct(0)("DEVIDED_QUANTITY")
                     If oUOM Is Nothing Or oUOM Is DBNull.Value Then
                         Me.ShowMessageError(BrandPackName & ", Unit of Measure has not been set yet")
                         Me.GridEX1.CancelCurrentEdit()
@@ -927,7 +1055,14 @@ Public Class GonNonPODist
                 End If
             End If
             Me.Cursor = Cursors.WaitCursor
-            'update LEFT_QTY
+
+            Dim ResultModQty As Decimal = QTY Mod Devqty
+            If ResultModQty > 0 Then
+                Me.ShowMessageInfo(String.Format("can not enter value {0}" & vbCrLf & "VALUE is not even with packaging" & vbCrLf & "excess/lack value = {1}", QTY, ResultModQty))
+                Me.GridEX1.CancelCurrentEdit()
+                Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return False
+            End If
+
             Me.IsloadingMCB = True
             Me.IsloadingRow = True
             If Not IsNothing(Me.chkProduct.DropDownDataSource) Then
@@ -957,20 +1092,21 @@ Public Class GonNonPODist
                         If foundRows.Length > 0 Then
                             Dim info As New CultureInfo("id-ID")
                             foundRows(0).BeginEdit()
-                            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
+                            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
                             If DVMConversiProduct.Count <= 0 Then
                                 Me.ShowMessageError("Convertion for " & BrandPackName & " could not be found in database")
                                 Me.GridEX1.CancelCurrentEdit()
                                 Return False
                             End If
-                            Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
-                            Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
-                            Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
+                            oUOM = DVMConversiProduct(0)("UnitOfMeasure")
+                            oVol1 = DVMConversiProduct(0)("VOL1") : oVol2 = DVMConversiProduct(0)("VOL2")
+                            oUnit1 = DVMConversiProduct(0)("UNIT1") : oUnit2 = DVMConversiProduct(0)("UNIT2")
                             Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
                             Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
                             Dim col1 As Integer = 0
                             Dim collyBox As String = "", collyPackSize As String = ""
                             'Dim newRow As DataRow = CType(Me.grdGon.DataSource, DataTable).NewRow()
+
                             If QTY >= Dvol1 Then
                                 col1 = Convert.ToInt32(Decimal.Truncate(QTY / Dvol1))
                                 collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
@@ -1008,6 +1144,7 @@ Public Class GonNonPODist
             End If
             Return True
         End If
+        Me.DVMConversiProduct.RowFilter = ""
         Me.IsloadingMCB = False
         Me.IsloadingRow = False
     End Function
@@ -1120,11 +1257,12 @@ Public Class GonNonPODist
             Else
                 Me.Cursor = Cursors.WaitCursor
                 ''cek apakah yang di input bisa di bagi kemasan
-                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
+                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
                 If Me.DVMConversiProduct.Count > 0 Then
                     Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                     Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                     Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
+                    Dim DevQty As Decimal = DVMConversiProduct(0)("DEVIDED_QUANTITY")
                     If oUOM Is Nothing Or oUOM Is DBNull.Value Then
                         Me.ShowMessageError(BrandPackName & ", UnitOfMeasure(UOM) has not been set yet")
                         e.Cancel = True
@@ -1143,6 +1281,11 @@ Public Class GonNonPODist
                     End If
                     Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
                     Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
+                    If QTY Mod DevQty > 0 Then
+                        Me.ShowMessageInfo(String.Format("can not enter value {0}" & vbCrLf & "VALUE is not even with packaging" & vbCrLf & "excess/lack value = {1}", QTY, QTY Mod DevQty))
+                        e.Cancel = True
+                        Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
+                    End If
                     If QTY >= Dvol1 Then
                     ElseIf QTY > 0 Then
                         Dim ilqty As Decimal = (QTY / Dvol1) * DVol2
@@ -1178,6 +1321,7 @@ Public Class GonNonPODist
                 Me.GridEX1.SetValue("STATUS", "Pending")
                 Me.Cursor = Cursors.Default
             End If
+            Me.DVMConversiProduct.RowFilter = ""
         Catch ex As Exception
             Me.Cursor = Cursors.Default
             e.Cancel = True
@@ -1798,7 +1942,7 @@ Public Class GonNonPODist
             For Each rowChk As Janus.Windows.GridEX.GridEXRow In Me.chkProduct.DropDownList.GetRows()
                 Dim BrandPackID As String = rowChk.Cells("BRANDPACK_ID").Value.ToString()
                 Dim FoundRow() As DataRow = dtGonDetail.Select("ITEM = '" & BrandPackID & "'")
-                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
+                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
                 Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                 Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                 Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
@@ -1934,12 +2078,20 @@ Public Class GonNonPODist
                     Me.Cursor = Cursors.Default
                     Return
                 End If
-                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND INACTIVE = " & False
+                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+
                 Dim QTY As Decimal = Convert.ToDecimal(Me.grdGon.GetValue("QTY"))
+                Dim DevQty As Decimal = DVMConversiProduct(0)("DEVIDED_QUANTITY")
+                If QTY Mod DevQty > 0 Then
+                    Me.ShowMessageInfo(String.Format("can not enter value {0}" & vbCrLf & "VALUE is not even with packaging" & vbCrLf & "excess/lack value = {1}", QTY, QTY Mod DevQty))
+                    Me.GridEX1.CancelCurrentEdit()
+                    Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
+                End If
                 Dim oUOM As Object = DVMConversiProduct(0)("UnitOfMeasure")
                 Dim oVol1 As Object = DVMConversiProduct(0)("VOL1"), oVol2 As Object = DVMConversiProduct(0)("VOL2")
                 Dim oUnit1 As Object = DVMConversiProduct(0)("UNIT1"), oUnit2 As Object = DVMConversiProduct(0)("UNIT2")
                 Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
+
                 Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
                 Dim col1 As Integer = 0
                 Dim collyBox As String = "", collyPackSize As String = ""
@@ -1976,6 +2128,7 @@ Public Class GonNonPODist
 
             Me.grdGon.UpdateData()
             Me.IsloadingRow = False
+            Me.DVMConversiProduct.RowFilter = ""
             Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.grdGon.CancelCurrentEdit()
@@ -2117,11 +2270,11 @@ Public Class GonNonPODist
                 If Me.SForm = StatusForm.Insert Then
                     Me.setEnabledPOEntry(False, True)
                     Me.setEnabledGONEntry(False, True)
-                    If Not IsNothing(Me.grdGon.DataSource) Then
-                        Me.btnPrint.Enabled = Me.grdGon.RecordCount > 0
-                    End If
-                Else
-                    Me.Close()
+                    'Else
+                    '    Me.Close()
+                End If
+                If Not IsNothing(Me.grdGon.DataSource) Then
+                    Me.btnPrint.Enabled = Me.grdGon.RecordCount > 0
                 End If
             End If
             Me.IsloadingRow = False
@@ -2566,7 +2719,7 @@ Public Class GonNonPODist
                 End If
                 .crvGON.ReportSource = .ReportDoc
                 .crvGON.DisplayGroupTree = False
-
+                .isSingleReport = True
                 '.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable
                 If Not IsDotMatrixPrint And Not IsImmediatePrint Then
                     .ShowDialog(Me)
@@ -2672,9 +2825,12 @@ Public Class GonNonPODist
                 .Columns.Add("QUANTITY", Type.GetType("System.String"))
                 .Columns.Add("SHIP_TO_WARHOUSE", Type.GetType("System.String"))
                 .Columns("SHIP_TO_WARHOUSE").DefaultValue = "Plant Merak" 'di isi dan di perbaiki nantinya
+                .Columns.Add("COLLY_BOX", Type.GetType("System.String"))
+                .Columns.Add("COLLY_PACKSIZE", Type.GetType("System.String"))
             End With
             Dim tblDummy As DataTable = CType(Me.GridEX1.DataSource, DataTable)
-            Me.DVMConversiProduct.Sort = "BRANDPACK_ID"
+            Me.DVMConversiProduct.RowFilter = ""
+            Me.DVMConversiProduct.Sort = "BRANDPACK_ID ASC"
             Dim info As New CultureInfo("id-ID")
             For i As Integer = 0 To tblDummy.Rows.Count - 1
                 Dim POOriginal As Decimal = 0
@@ -2685,7 +2841,6 @@ Public Class GonNonPODist
                 newRow("SPPB_NUMBER") = Me.txtSPPBNo.Text.Trim()
                 newRow("SPPB_DATE") = Me.dtPicSPPBDate.Value
                 newRow("PO_DATE") = Me.dtPicPODate.Value
-                newRow("ITEM") = row("BRANDPACK_ID")
                 If Not IsNothing(row("QUANTITY")) And Not IsDBNull(row("QUANTITY")) Then
                     POOriginal = row("QUANTITY")
                 End If
@@ -2694,10 +2849,54 @@ Public Class GonNonPODist
                 newRow("SHIP_TO_CUSTOMER") = Me.txtDefShipto.Text.Trim()
                 Dim BrandPackID As String = row("BRANDPACK_ID")
                 Dim Index As Integer = Me.DVMConversiProduct.Find(BrandPackID)
+                Dim BrandPackName As String = "Unregistered product convertion"
                 Dim UnitOfMeasure = " ? "
+                Dim collyBox As String = "", collyPackSize As String = ""
                 If Index <> -1 Then
+                    BrandPackName = Me.DVMConversiProduct(Index)("BRANDPACK_NAME")
+                    newRow("ITEM") = BrandPackName
+                    Dim oVol1 As Object = DVMConversiProduct(Index)("VOL1"), oVol2 As Object = DVMConversiProduct(Index)("VOL2")
+                    Dim oUnit1 As Object = DVMConversiProduct(Index)("UNIT1"), oUnit2 As Object = DVMConversiProduct(Index)("UNIT2")
+                    Dim ValidData As Boolean = True
+                    If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+                        Me.ShowMessageError(BrandPackName & ", colly for Volume 1 has not been set yet")
+                        ValidData = False
+                    ElseIf oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
+                        Me.ShowMessageError(BrandPackName & ", colly for Volume 2 has not been set yet")
+                        ValidData = False
+                    ElseIf oUnit1 Is Nothing Or oUnit2 Is DBNull.Value Then
+                        Me.ShowMessageError(BrandPackName & ", colly for Unit 1 has not been set yet")
+                        ValidData = False
+                    ElseIf oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
+                        Me.ShowMessageError(BrandPackName & ", colly for Unit 2 has not been set yet")
+                        ValidData = False
+                    End If
+                    If Not ValidData Then : Cursor = Cursors.Default : Return : End If
+                    Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
+                    Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
+                    Dim col1 As Integer = 0
+
+                    If POOriginal >= Dvol1 Then
+                        col1 = Convert.ToInt32(Decimal.Truncate(POOriginal / Dvol1))
+                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
+                        Dim lqty As Decimal = POOriginal Mod Dvol1
+                        Dim ilqty As Integer = 0
+                        If lqty >= 1 Then
+                            'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
+                            ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                        ElseIf lqty > 0 And lqty < 1 Then
+                            ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                            'ilqty = ilqty + DVol2
+                        End If
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    ElseIf POOriginal > 0 Then ''gon kurang dari 1 coly
+                        Dim ilqty As Integer = Convert.ToInt32((POOriginal / Dvol1) * DVol2)
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    End If
                     UnitOfMeasure = Me.DVMConversiProduct(Index)("UnitOfMeasure")
                 End If
+                newRow("COLLY_BOX") = collyBox
+                newRow("COLLY_PACKSIZE") = collyPackSize
                 newRow("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", POOriginal, UnitOfMeasure.ToString())
                 newRow.EndEdit()
                 dtTable.Rows.Add(newRow)
@@ -2721,5 +2920,22 @@ Public Class GonNonPODist
             Me.Cursor = Cursors.Default
             Me.ShowMessageError(ex.Message)
         End Try
+    End Sub
+
+
+    Private Sub grdGon_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdGon.KeyDown
+        Me.Cursor = Cursors.WaitCursor
+        If e.KeyCode = Keys.F7 Then
+            Me.ExportToExcell("GON_" & Me.txtGONNO.Text(), Me.grdGon)
+        End If
+        Me.Cursor = Cursors.Default
+    End Sub
+
+    Private Sub GridEX1_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles GridEX1.KeyDown
+        Me.Cursor = Cursors.WaitCursor
+        If e.KeyCode = Keys.F7 Then
+            Me.ExportToExcell("SPPB_" & Me.txtSPPBNo.Text, Me.GridEX1)
+        End If
+        Me.Cursor = Cursors.Default
     End Sub
 End Class

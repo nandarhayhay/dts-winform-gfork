@@ -109,6 +109,7 @@ Partial Class BrandPackHistory
         Me.grdBrandPack.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.grdBrandPack.CardCaptionPrefix = "BRANDPACK_ID >>"
         Me.grdBrandPack.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
+        Me.grdBrandPack.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
         grdBrandPack_DesignTimeLayout.LayoutString = resources.GetString("grdBrandPack_DesignTimeLayout.LayoutString")
         Me.grdBrandPack.DesignTimeLayout = grdBrandPack_DesignTimeLayout
         Me.grdBrandPack.Dock = System.Windows.Forms.DockStyle.Fill
@@ -163,7 +164,7 @@ Partial Class BrandPackHistory
         Me.Bar4.DockSide = DevComponents.DotNetBar.eDockSide.Document
         Me.Bar4.Location = New System.Drawing.Point(265, 220)
         Me.Bar4.Name = "Bar4"
-        Me.Bar4.Size = New System.Drawing.Size(35, 47)
+        Me.Bar4.Size = New System.Drawing.Size(35, 51)
         Me.Bar4.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2003
         Me.Bar4.TabIndex = 19
         Me.Bar4.TabStop = False

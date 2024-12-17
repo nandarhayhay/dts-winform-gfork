@@ -26,7 +26,7 @@ Public Class OtherDDDR
     Private Sub OtherDDDR_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
             Dim Flag As String = "O"
-            If Me.btnDiscCBD.Checked = True Or Me.btnDiscDD.Checked = True Or Me.btnDiscDr.Checked = True Or Me.btnDiscDK.Checked = True Then
+            If Me.btnDiscCBD.Checked = True Or Me.btnDiscDD.Checked = True Or Me.btnDiscDr.Checked = True Or Me.btnDiscDK.Checked = True Or Me.btnDiscDP.Checked = True Then
                 If btnDiscCBD.Checked Then
                     Me.pnlUncategorizedDisc.Enabled = False
                     Me.TypeApp = "CBD"
@@ -43,13 +43,13 @@ Public Class OtherDDDR
                     Me.pnlUncategorizedDisc.Enabled = False
                     Me.TypeApp = "DK"
                     Flag = "ODK"
-                    'ElseIf Me.btnUncategorized.Checked Then
-                    '    Me.pnlUncategorizedDisc.Enabled = True
-                    '    Me.TypeApp = "O"
-                    '    Flag = "O"
-                    '    Me.GridEX1.SetDataBinding(Nothing, "")
-                    '    Me.AcceptButton = Me.btnOK
-                    '    Me.CancelButton = Me.btnCancel
+                ElseIf Me.btnDiscDP.Checked Then
+                    Me.pnlUncategorizedDisc.Enabled = False
+                    Me.TypeApp = "DP"
+                    Flag = "ODP"
+                    'Me.GridEX1.SetDataBinding(Nothing, "")
+                    'Me.AcceptButton = Me.btnOK
+                    'Me.CancelButton = Me.btnCancel
                 End If
                 'get discount
                 Dim dt As DataTable = Me.ClsDisc.getDiscount(Me.TypeApp, Me.BrandPackID, Me.BrandPackName, Me.DistributorID, Me.PODate, Me.OAQty, Me.OABrandPackID, True)
@@ -153,6 +153,10 @@ Public Class OtherDDDR
                         Me.pnlUncategorizedDisc.Enabled = False
                         TypeApp = "DK"
                         Flag = "ODK"
+                    Case "btnDiscDP"
+                        Me.pnlUncategorizedDisc.Enabled = False
+                        TypeApp = "DP"
+                        Flag = "ODP"
                     Case "btnUncategorized"
                         Me.pnlUncategorizedDisc.Enabled = True
                         TypeApp = "O"
@@ -286,6 +290,8 @@ Public Class OtherDDDR
                     'Me.resultQty = Me.txtDiscType.Value
                 ElseIf Me.btnDiscDK.Checked Then
                     Me.Flag = "ODK"
+                ElseIf Me.btnDiscDP.Checked Then
+                    Me.Flag = "ODP"
                 End If
                 With Me.tblResult
                     With Me.tblResult

@@ -19,6 +19,7 @@ Public Class SPPB
     'Private WithEvents flUp As New LookUp()
     Private listCheckSPPB As New List(Of String)
 
+
     Private ReadOnly Property clsSPPBGONEntry() As NufarmBussinesRules.OrderAcceptance.SPPBEntryGON
         Get
             If m_clsSPPBGONEntry Is Nothing Then
@@ -234,6 +235,10 @@ Public Class SPPB
                             'End If
                         End If
                     End If
+                Case "btnDailyGON"
+                    Dim ucDailyGon As New DailyGON()
+                    Me.AddControl(CType(ucDailyGon, UserControl))
+                    Me.GridEX1 = ucDailyGon.GridEX1
                 Case "btnShowSPPB"
                     Dim USPPBManager As New SPPBManager()
                     USPPBManager.frmParentSPPB = Me
@@ -258,11 +263,14 @@ Public Class SPPB
                         Me.SaveFileDialog1.OverwritePrompt = True
                         Me.SaveFileDialog1.DefaultExt = ".xls"
                         Me.SaveFileDialog1.Filter = "All Files|*.*"
-                        Me.SaveFileDialog1.InitialDirectory = "C:\"
+                        Me.SaveFileDialog1.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                        Me.SaveFileDialog1.RestoreDirectory = True
                         If Me.SaveFileDialog1.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
                             Dim FS As New System.IO.FileStream(Me.SaveFileDialog1.FileName, IO.FileMode.Create)
                             Me.GridEXExporter1.GridEX = Me.GridEX1
-                            Me.GridEXExporter1.SheetName = "OA_BRANDPACK"
+                            Me.GridEXExporter1.IncludeFormatStyle = True
+                            Me.GridEXExporter1.IncludeHeaders = True
+                            'Me.GridEXExporter1.SheetName = "OA_BRANDPACK"
                             Me.GridEXExporter1.Export(FS)
                             FS.Close()
                             MessageBox.Show("Data Exported to " & Me.SaveFileDialog1.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -294,19 +302,13 @@ Public Class SPPB
                         Case "GonReturnedBackManager"
                             Me.EditGONReturn()
                     End Select
-                Case "btnCurrentSelection"
-                    If Me.GridEX1.Name = "grdHeader" Then
-                        If Me.GridEX1.GetRow.RowType <> Janus.Windows.GridEX.RowType.Record Then
-                            Me.ShowMessageInfo("Please select SPPB Data")
-                        Else
-                            'show crystal report print SPPB
-                        End If
-                    End If
-                Case "btnPrintcustoms"
+
 
             End Select
+            Me.Cursor = Cursors.Default
             Me.MustReloadData = False
         Catch ex As Exception
+            Me.Cursor = Cursors.Default
             Me.ShowMessageInfo(ex.Message)
             Me.LogMyEvent(ex.Message, Me.Name + "_Bar2_ItemClick")
             'Me.MustReloadData = False
@@ -447,7 +449,7 @@ Public Class SPPB
             .dvPO = tblPO.DefaultView()
             .dtPicSPPBDate.MinDate = tblPO.Rows(0)("PO_DATE")
             Dim tblSPPBrandPack As DataTable = Me.clsSPPBGONEntry.getSPPBBrandPack(.SPPB_NO, .PO_REF_NO, False, False)
-            Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGOnData(.SPPB_NO, False)
+            Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGOnDataBySPPB(.SPPB_NO, False)
             Dim ObjSPPBHeader As New Nufarm.Domain.SPPBHeader()
             With ObjSPPBHeader
                 .SPPBNO = .SPPBNO
@@ -794,8 +796,10 @@ Public Class SPPB
             Dim tblPO As DataTable = Me.clsSPPBGONEntry.getPO(.PO_REF_NO, SaveMode.Update, False)
             .dvPO = tblPO.DefaultView()
             .dtPicSPPBDate.MinDate = tblPO.Rows(0)("PO_DATE")
+            ''get data SPPB
             Dim tblSPPBrandPack As DataTable = Me.clsSPPBGONEntry.getSPPBBrandPack(.SPPB_NO, .PO_REF_NO, False, False)
-            Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGOnData(.SPPB_NO, False)
+            'get data GON
+            Dim tblGOn As DataTable = Me.clsSPPBGONEntry.getGonDataByGONNumber(GONNO, .SPPB_NO, False)
             Dim ObjSPPBHeader As New Nufarm.Domain.SPPBHeader()
             With ObjSPPBHeader
                 .SPPBNO = UCSPPBManager.grdDetail.GetValue("SPPB_NO").ToString()
@@ -811,7 +815,9 @@ Public Class SPPB
             'get gon Description
             'get gon_NO,gon_date,Remark,status
             Dim status As String = Me.GridEX1.GetValue("STATUS").ToString()
-            .OGONHeader = Me.clsSPPBGONEntry.getGONDescriptionBySPPB(.SPPB_NO, status, False)
+            'getgonheaderWithSPPB
+            .OGONHeader = Me.clsSPPBGONEntry.getGONDescriptionByGONNumber(GONNO, .SPPB_NO, status, True)
+            '.OGONHeader = Me.clsSPPBGONEntry.getGONDescriptionBySPPB(.SPPB_NO, status, False)
             .txtGONNO.Text = .OGONHeader.GON_NO
             .dtPicGONDate.Value = .OGONHeader.GON_DATE
             .cmbStatusSPPB.Text = status
@@ -820,7 +826,9 @@ Public Class SPPB
             .cmdWarhouse.SelectedValue = .OGONHeader.WarhouseCode
             '.txtRemark.Text = .OGONHeader.DescriptionApp
             .txtShipTo.Text = .OGONHeader.ShipTo
+
             DVGONManager = CType(UCSPPBManager.grdDetail.DataSource, DataView)
+
             Dim OrowFilter As String = DVGONManager.RowFilter
             DVGONManager.RowFilter = ""
             Dim DVDummy As DataView = DVGONManager.ToTable().Copy().DefaultView()
@@ -832,35 +840,35 @@ Public Class SPPB
                 GONIDArea = IIf((Not IsNothing(DVDummy(Index)("GON_ID_AREA")) And Not IsDBNull(DVDummy(Index)("GON_ID_AREA"))), DVDummy(Index)("GON_ID_AREA").ToString(), "")
             End If
             DVDummy.RowFilter = "GON_NO = '" & .GON_NO & "'"
-            'tblGOn.Rows.Clear() : tblGOn.AcceptChanges()
-            tblGOn = Me.CreateOrReCreateTblGON()
-            For i As Integer = 0 To DVDummy.Count - 1
-                ''isi table gon DENGAN DVDummy
-                Dim drv As DataRow = tblGOn.NewRow()
-                drv.BeginEdit()
-                drv("GON_DETAIL_ID") = DVDummy(i)("GON_DETAIL_ID")
-                drv("GON_HEADER_ID") = DVDummy(i)("GON_HEADER_ID")
-                drv("SPPB_BRANDPACK_ID") = DVDummy(i)("SPPB_BRANDPACK_ID")
-                drv("BRANDPACK_ID") = DVDummy(i)("BRANDPACK_ID")
-                drv("BRANDPACK_NAME") = DVDummy(i)("BRANDPACK_NAME")
-                drv("GON_QTY") = DVDummy(i)("GON_QTY")
-                drv("IsOPen") = True
-                drv("BatchNo") = IIf(DVDummy.Table.Columns.Contains("BatchNo"), DVDummy(i)("BatchNo"), "")
-                drv("UnitOfMeasure") = IIf(DVDummy.Table.Columns.Contains("UnitOfMeasure"), DVDummy(i)("UnitOfMeasure"), "") ' DVDummy(i)("UnitOfMeasure")
-                drv("UNIT1") = IIf(DVDummy.Table.Columns.Contains("UNIT1"), DVDummy(i)("UNIT1"), "")
-                drv("VOL1") = IIf(DVDummy.Table.Columns.Contains("VOL1"), DVDummy(i)("VOL1"), "")
-                drv("UNIT2") = IIf(DVDummy.Table.Columns.Contains("UNIT2"), DVDummy(i)("UNIT2"), "")
-                drv("VOL2") = IIf(DVDummy.Table.Columns.Contains("VOL2"), DVDummy(i)("VOL2"), "")
-                drv("IsCompleted") = DVDummy(i)("IsCompleted")
-                drv("IsUpdatedBySystem") = False
-                drv("CreatedBy") = DVDummy(i)("CreatedBy")
-                drv("CreatedDate") = DVDummy(i)("CreatedDate")
-                drv("ModifiedBy") = String.Empty
-                drv("ModifiedDate") = NufarmBussinesRules.SharedClass.ServerDate
-                drv.EndEdit()
-                tblGOn.Rows.Add(drv)
-            Next
-            tblGOn.AcceptChanges()
+            ''tblGOn.Rows.Clear() : tblGOn.AcceptChanges()
+            'tblGOn = Me.CreateOrReCreateTblGON()
+            'For i As Integer = 0 To DVDummy.Count - 1
+            '    ''isi table gon DENGAN DVDummy
+            '    Dim drv As DataRow = tblGOn.NewRow()
+            '    drv.BeginEdit()
+            '    drv("GON_DETAIL_ID") = DVDummy(i)("GON_DETAIL_ID")
+            '    drv("GON_HEADER_ID") = DVDummy(i)("GON_HEADER_ID")
+            '    drv("SPPB_BRANDPACK_ID") = DVDummy(i)("SPPB_BRANDPACK_ID")
+            '    drv("BRANDPACK_ID") = DVDummy(i)("BRANDPACK_ID")
+            '    drv("BRANDPACK_NAME") = DVDummy(i)("BRANDPACK_NAME")
+            '    drv("GON_QTY") = DVDummy(i)("GON_QTY")
+            '    drv("IsOPen") = True
+            '    drv("BatchNo") = IIf(DVDummy.Table.Columns.Contains("BatchNo"), DVDummy(i)("BatchNo"), "")
+            '    drv("UnitOfMeasure") = IIf(DVDummy.Table.Columns.Contains("UnitOfMeasure"), DVDummy(i)("UnitOfMeasure"), "") ' DVDummy(i)("UnitOfMeasure")
+            '    drv("UNIT1") = IIf(DVDummy.Table.Columns.Contains("UNIT1"), DVDummy(i)("UNIT1"), "")
+            '    drv("VOL1") = IIf(DVDummy.Table.Columns.Contains("VOL1"), DVDummy(i)("VOL1"), "")
+            '    drv("UNIT2") = IIf(DVDummy.Table.Columns.Contains("UNIT2"), DVDummy(i)("UNIT2"), "")
+            '    drv("VOL2") = IIf(DVDummy.Table.Columns.Contains("VOL2"), DVDummy(i)("VOL2"), "")
+            '    drv("IsCompleted") = DVDummy(i)("IsCompleted")
+            '    drv("IsUpdatedBySystem") = False
+            '    drv("CreatedBy") = DVDummy(i)("CreatedBy")
+            '    drv("CreatedDate") = DVDummy(i)("CreatedDate")
+            '    drv("ModifiedBy") = String.Empty
+            '    drv("ModifiedDate") = NufarmBussinesRules.SharedClass.ServerDate
+            '    drv.EndEdit()
+            '    tblGOn.Rows.Add(drv)
+            'Next
+            'tblGOn.AcceptChanges()
             If DVDummy.Count = 1 Then
                 ListSPPBBrandPack.Add(DVDummy(0)("SPPB_BRANDPACK_ID").ToString())
             ElseIf DVDummy.Count > 1 Then
@@ -922,7 +930,6 @@ Public Class SPPB
             '        End If
             '    End If
             'End If
-
         End With
     End Sub
     Private Sub showSPPBEntry()

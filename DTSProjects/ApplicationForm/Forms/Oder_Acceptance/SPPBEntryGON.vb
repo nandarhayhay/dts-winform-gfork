@@ -166,15 +166,15 @@ Public Class SPPBEntryGON
                 Me.baseTooltip.Show("Invalid GON NO", Me.txtGONNO, 2500) : Me.txtGONNO.Focus() : Return False
             End If
         End If
-        If Me.mcbTransporter.Value Is Nothing Then
-            If Not IsNothing(CtrlToExclude) Then
-                If CtrlToExclude.Name <> "mcbTransporter" Then
-                    Me.baseTooltip.Show("Invalid Transporter", Me.mcbTransporter, 2500) : Me.mcbTransporter.Focus() : Return False
-                End If
-            ElseIf IsAllToCheck Then
-                Me.baseTooltip.Show("Invalid Transporter", Me.mcbTransporter, 2500) : Me.mcbTransporter.Focus() : Return False
-            End If
-        End If
+        'If Me.mcbTransporter.Value Is Nothing Then
+        '    If Not IsNothing(CtrlToExclude) Then
+        '        If CtrlToExclude.Name <> "mcbTransporter" Then
+        '            Me.baseTooltip.Show("Invalid Transporter", Me.mcbTransporter, 2500) : Me.mcbTransporter.Focus() : Return False
+        '        End If
+        '    ElseIf IsAllToCheck Then
+        '        Me.baseTooltip.Show("Invalid Transporter", Me.mcbTransporter, 2500) : Me.mcbTransporter.Focus() : Return False
+        '    End If
+        'End If
         If Me.mcbTransporter.SelectedIndex <= -1 Then
             If Not IsNothing(CtrlToExclude) Then
                 If CtrlToExclude.Name <> "mcbTransporter" Then
@@ -184,15 +184,15 @@ Public Class SPPBEntryGON
                 Me.baseTooltip.Show("Invalid Transporter", Me.mcbTransporter, 2500) : Me.mcbTransporter.Focus() : Return False
             End If
         End If
-        If Me.mcbGonArea.Value Is Nothing Then
-            If Not IsNothing(CtrlToExclude) Then
-                If CtrlToExclude.Name <> "mcbGonArea" Then
-                    Me.baseTooltip.Show("Invalid GON area", Me.mcbGonArea, 2500) : Me.mcbGonArea.Focus() : Return False
-                End If
-            Else
-                Me.baseTooltip.Show("Invalid GON area", Me.mcbGonArea, 2500) : Me.mcbGonArea.Focus() : Return False
-            End If
-        End If
+        'If Me.mcbGonArea.Value Is Nothing Then
+        '    If Not IsNothing(CtrlToExclude) Then
+        '        If CtrlToExclude.Name <> "mcbGonArea" Then
+        '            Me.baseTooltip.Show("Invalid GON area", Me.mcbGonArea, 2500) : Me.mcbGonArea.Focus() : Return False
+        '        End If
+        '    Else
+        '        Me.baseTooltip.Show("Invalid GON area", Me.mcbGonArea, 2500) : Me.mcbGonArea.Focus() : Return False
+        '    End If
+        'End If
         If Me.mcbGonArea.SelectedIndex <= -1 Then
             If Not IsNothing(CtrlToExclude) Then
                 If CtrlToExclude.Name <> "mcbGonArea" Then
@@ -224,34 +224,53 @@ Public Class SPPBEntryGON
             End If
         End If
         If Me.cmbStatusSPPB.Text = "" Then
+            Dim listStatus As New List(Of String)
+            listStatus.Add("--NEW SPPB--")
             If Not IsNothing(CtrlToExclude) Then
+                ''check grid sppbBrandpack
                 If CtrlToExclude.Name <> "cmbStatusSPPB" Then
-                    Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
+                    For Each row As Janus.Windows.GridEX.GridEXRow In Me.grdSPPB.GetRows()
+                        Dim st As String = row.Cells("STATUS").Value
+                        If Not listStatus.Contains(st) Then
+                            listStatus.Add(st)
+                        End If
+                    Next
+                    If listStatus.Count <= 1 Then
+                        Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
+                    End If
                 End If
             Else
-                Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
-            End If
-        End If
-        If Me.cmbStatusSPPB.SelectedValue Is Nothing Then
-            If Not IsNothing(CtrlToExclude) Then
-                If CtrlToExclude.Name <> "cmbStatusSPPB" Then
+                For Each row As Janus.Windows.GridEX.GridEXRow In Me.grdSPPB.GetRows()
+                    Dim st As String = row.Cells("STATUS").Value
+                    If Not listStatus.Contains(st) Then
+                        listStatus.Add(st)
+                    End If
+                Next
+                If listStatus.Count <= 1 Then
                     Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
                 End If
-            Else
-                Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
             End If
         End If
-        If Me.cmbStatusSPPB.Text = "---Select---" Then
-            If Not IsNothing(CtrlToExclude) Then
-                If CtrlToExclude.Name <> "cmbStatusSPPB" Then
-                    Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
-                End If
-            Else
-                Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
-            End If
-        End If
-        Return True
-        If Me.cmdWarhouse.SelectedIndex <= 0 Then
+        'If Me.cmbStatusSPPB.SelectedValue Is Nothing Then
+        '    If Not IsNothing(CtrlToExclude) Then
+        '        If CtrlToExclude.Name <> "cmbStatusSPPB" Then
+        '            Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
+        '        End If
+        '    Else
+        '        Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
+        '    End If
+        'End If
+        'If Me.cmbStatusSPPB.Text = "---Select---" Then
+        '    If Not IsNothing(CtrlToExclude) Then
+        '        If CtrlToExclude.Name <> "cmbStatusSPPB" Then
+        '            Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
+        '        End If
+        '    Else
+        '        Me.baseTooltip.Show("Invalid status", Me.cmbStatusSPPB, 2500) : Me.cmbStatusSPPB.Focus() : Return False
+        '    End If
+        'End If
+
+        If Me.cmdWarhouse.SelectedIndex <= -1 Then
             If Not IsNothing(CtrlToExclude) Then
                 If CtrlToExclude.Name <> "cmdWarhouse" Then
                     Me.baseTooltip.Show("Invalid status", Me.cmdWarhouse, 2500) : Me.cmdWarhouse.Focus() : Return False
@@ -260,7 +279,7 @@ Public Class SPPBEntryGON
                 Me.baseTooltip.Show("Invalid status", Me.cmdWarhouse, 2500) : Me.cmdWarhouse.Focus() : Return False
             End If
         End If
-
+        Return True
     End Function
     Private m_TblGON As DataTable = Nothing
     Friend Property tblMasterGON() As DataTable
@@ -728,13 +747,11 @@ Public Class SPPBEntryGON
             ''fill MCBRefno only with PO Ref No in SPPBManager
         End If
         'get convertion data
-        Me.DVMConversiProduct = Me.clsSPPB.getProdConvertion(Me.Mode, False)
+        Me.DVMConversiProduct = Me.clsSPPB.getProdConvertion(False)
         Me.DVMConversiProduct.Sort = "BRANDPACK_ID"
     End Sub
     Private Sub SPPBEntryGON_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
-            'initial base tool tiip
-
             Me.InitializeData()
             If Me.Mode = SaveMode.Insert Then
                 Me.mcbOA_REF_NO.Focus()
@@ -817,7 +834,7 @@ Public Class SPPBEntryGON
 
     Private Function ReloadSPPData() As Boolean
         ''looping data if there is GON data
-        Dim tblGOn As DataTable = Me.clsSPPB.getGOnData(Me.txtSPPBNO.Text.TrimEnd().TrimStart(), False)
+        Dim tblGOn As DataTable = Me.clsSPPB.getGOnDataBySPPB(Me.txtSPPBNO.Text.TrimEnd().TrimStart(), False)
         If tblGOn.Rows.Count > 0 Then
             If MessageBox.Show("This will reload sppb data" & vbCrLf & "If system finds some different data(s)" & vbCrLf & "gon data will be marked by red row", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.No Then
                 Return False
@@ -1214,11 +1231,22 @@ Public Class SPPBEntryGON
             ''get default shipto
 
             Dim IsReadOnly As Boolean = Me.mcbOA_REF_NO.ReadOnly
-            Me.mcbOA_REF_NO.ReadOnly = False
-            Me.mcbOA_REF_NO.Enabled = True
-            Me.mcbOA_REF_NO.Focus()
-            Me.mcbOA_REF_NO.DroppedDown = True
-            Dim Address As String = Me.mcbOA_REF_NO.DropDownList().GetValue("ADDRESS")
+            'Me.mcbOA_REF_NO.ReadOnly = False
+            'Me.mcbOA_REF_NO.Enabled = True
+            'Me.mcbOA_REF_NO.Focus()
+            'Me.mcbOA_REF_NO.DroppedDown = True
+            Dim dummyDVPO As DataView = Me.dvPO.ToTable.Copy().DefaultView()
+            dummyDVPO.Sort = "PO_REF_NO"
+            Dim Address As String = ""
+            'Dim DistributorName As String = ""
+            Dim Index As Integer = dummyDVPO.Find(Me.mcbOA_REF_NO.Text)
+            If Index <> -1 Then
+                Address = dummyDVPO(Index)("ADDRESS").ToString()
+            Else
+                Me.ShowMessageError("can not Find PO REf NO")
+                Me.Cursor = Cursors.Default
+                Return
+            End If
             If Not String.IsNullOrEmpty(lastShipTo) Then
                 Address = lastShipTo
             End If
@@ -1411,8 +1439,8 @@ Public Class SPPBEntryGON
         End With
         Return False
     End Function
-    Private Function CreateGONHeader() As NuFarm.Domain.GONHeader
-        Dim ObjGONHeader As New NuFarm.Domain.GONHeader()
+    Private Function CreateGONHeader() As Nufarm.Domain.GONHeader
+        Dim ObjGONHeader As New Nufarm.Domain.GONHeader()
         With ObjGONHeader
             .SPPBNO = Me.txtSPPBNO.Text.TrimStart().TrimEnd()
             .GON_NO = Me.txtGONNO.Text.TrimStart().TrimEnd()
@@ -1430,8 +1458,8 @@ Public Class SPPBEntryGON
         End With
         Return ObjGONHeader
     End Function
-    Private Function getGOnHeader() As NuFarm.Domain.GONHeader
-        Dim ObjGONHeader As New NuFarm.Domain.GONHeader()
+    Private Function getGOnHeader() As Nufarm.Domain.GONHeader
+        Dim ObjGONHeader As New Nufarm.Domain.GONHeader()
         With ObjGONHeader
             .GON_DATE = Convert.ToDateTime(Me.dtPicGONDate.Value.ToShortDateString())
             .GON_ID_AREA = Me.mcbGonArea.Value.ToString()
@@ -1465,15 +1493,16 @@ Public Class SPPBEntryGON
         Dim SuccessSaving As Boolean = False
         Dim ChangedGON As Boolean = Me.HasChangedGONData()
         Dim ChangedSPPB As Boolean = Me.HasChangedSPPBData()
-        Dim objSPPBHeader As NuFarm.Domain.SPPBHeader = Nothing
-        Dim ObjGONHeader As NuFarm.Domain.GONHeader = Nothing
+        Dim objSPPBHeader As Nufarm.Domain.SPPBHeader = Nothing
+        Dim ObjGONHeader As Nufarm.Domain.GONHeader = Nothing
         If ChangedGON = False And ChangedSPPB = False Then
             If Me.HasChangedGONHeader() Then
                 ''insert / update gon
-                Dim GonHeader As NuFarm.Domain.GONHeader = Me.CreateGONHeader()
+                Dim GonHeader As Nufarm.Domain.GONHeader = Me.CreateGONHeader()
                 Me.clsSPPB.SaveOrUpdateGON(GonHeader)
                 Me.OGONHeader = GonHeader
-                Me.DS = NewDS : Me.frmParent.MustReloadData = True
+                'Me.DS = NewDS
+                Me.frmParent.MustReloadData = True
                 isNewGON = False
                 Return True
             Else
@@ -1481,7 +1510,7 @@ Public Class SPPBEntryGON
             End If
         End If
         If ChangedGON Or ChangedSPPB Then
-            objSPPBHeader = New NuFarm.Domain.SPPBHeader()
+            objSPPBHeader = New Nufarm.Domain.SPPBHeader()
             With objSPPBHeader
                 .SPPBNO = Me.txtSPPBNO.Text.TrimStart().TrimEnd()
                 .PONumber = Me.mcbOA_REF_NO.Value.ToString()
@@ -1579,7 +1608,7 @@ Public Class SPPBEntryGON
                         Next
                     End If
                 End If
-                objSPPBHeader = New NuFarm.Domain.SPPBHeader()
+                objSPPBHeader = New Nufarm.Domain.SPPBHeader()
                 With objSPPBHeader
                     .SPPBNO = Me.txtSPPBNO.Text.TrimStart().TrimEnd()
                     .PONumber = Me.mcbOA_REF_NO.Value.ToString()
@@ -1592,17 +1621,13 @@ Public Class SPPBEntryGON
             Me.Cursor = Cursors.Default : Return False
         End If
         If SuccessSaving Then : Me.DS = NewDS
-            'If Me.Mode = SaveMode.Update Then
-            '    Me.frmParent.MustReloadData = True
-            'Else
-            '    'ctype(me.frmParent,SPPB).s
-            '    Me.OpenerManager.ShowData(False)
-            'End If
             Me.OpenerManager.ShowData(False)
-            Me.OGONHeader = ObjGONHeader : Me.btnPrint.Enabled = False : End If
-        Me.DS.AcceptChanges()
-        Me.isNewGON = False
-        Return True
+            Me.OGONHeader = ObjGONHeader
+            Me.DS.AcceptChanges()
+            Me.isNewGON = False
+            'Me.btnPrint.Enabled = False
+            Return True
+        End If
     End Function
     Private Function HasChangedGONData() As Boolean
         If Not Me.IsloadingRow Then : Me.IsloadingRow = True : End If
@@ -1704,6 +1729,7 @@ Public Class SPPBEntryGON
             Me.IsloadingRow = True
             If e.Column.Key = "GON_QTY" Then
                 'chek ke database
+                'check qty apakah bisa genap dengan kemasan
 
                 If IsNothing(Me.grdGon.GetValue(e.Column)) Or TypeOf Me.grdGon.GetValue(e.Column) Is DBNull Then
                     Me.ShowMessageInfo("Can not set null value on gon_qty") : Me.grdGon.CancelCurrentEdit() : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
@@ -1751,11 +1777,39 @@ Public Class SPPBEntryGON
                         'BFind = Me.grdSPPB.Find(Me.grdSPPB.RootTable.Columns("SPPB_BRANDPACK_ID"), Janus.Windows.GridEX.ConditionOperator.Equal, SPPBBrandPackID, -1, 1)
                         Me.ShowMessageInfo("Please reset status sppb based on Qty value you've just entered")
                     End If
-                ElseIf (NTotalGONQTy + NGOnQTY) <= 0 Then
+                End If
+
+                If (NTotalGONQTy + NGOnQTY) <= 0 Then
                     If String.IsNullOrEmpty(StatusSPPB) Or StatusSPPB <> "--NEW SPPB--" Then
                         'BFind = Me.grdSPPB.Find(Me.grdSPPB.RootTable.Columns("SPPB_BRANDPACK_ID"), Janus.Windows.GridEX.ConditionOperator.Equal, SPPBBrandPackID, -1, 1)
                         If BFind Then : Me.grdSPPB.SetValue("STATUS", "--NEW SPPB--") : End If
                     End If
+                End If
+                'check GON
+                '               row("TRANSPORTER_NAME") = Me.mcbTransporter.Text
+                Dim BrandPackName As String = Me.grdGon.GetValue("BRANDPACK_NAME")
+
+                Dim BrandPackID As String = Me.grdGon.GetValue("BRANDPACK_ID").ToString()
+                'Dim GonQty As Decimal = Convert.ToDecimal(tblGON.Rows(i)("GON_QTY"))
+                Dim oUOM As Object = Me.grdGon.GetValue("UnitOfMeasure")
+                Dim oVol1 As Object = Me.grdGon.GetValue("VOL1"), oVol2 As Object = Me.grdGon.GetValue("VOL2")
+                Dim oUnit1 As Object = Me.grdGon.GetValue("UNIT1"), oUnit2 As Object = Me.grdGon.GetValue("UNIT2")
+                Dim DevQty As Decimal = 0
+                Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+                index = Me.DVMConversiProduct.Find(BrandPackID)
+                If Index <> -1 Then
+                    DevQty = DVMConversiProduct(index)("DEVIDED_QUANTITY")
+                End If
+                If DevQty = 0 Then
+                    Me.ShowMessageError("Devided Quantity for the product is unknown") : Me.Cursor = Cursors.Default : Return
+                End If
+                Dim ValidData As Boolean = Me.checkValidityProduct(oUOM, oVol1, oVol2, oUnit1, oUnit2, BrandPackID, BrandPackName)
+                If Not ValidData Then : Cursor = Cursors.Default : Return : End If
+                Dim ResModQty As Decimal = NGOnQTY Mod DevQty
+                If ResModQty > 0 Then
+                    Me.ShowMessageInfo(String.Format("can not enter value {0}" & vbCrLf & "VALUE is not even with packaging" & vbCrLf & "excess/lack value = {1}", NGOnQTY, ResModQty))
+                    Me.grdGon.CancelCurrentEdit()
+                    Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
                 End If
                 If BFind Then
                     If Me.Mode = SaveMode.Update Then
@@ -1766,10 +1820,10 @@ Public Class SPPBEntryGON
                         Me.grdGon.SetValue("ModifiedDate", NufarmBussinesRules.SharedClass.ServerDate)
                     End If
                 End If
-
             End If
             grdGon.UpdateData() : Me.grdSPPB.UpdateData()
             If Not Me.btnSave.Enabled Then : Me.btnSave.Enabled = (Me.HasChangedGONData() Or Me.HasChangedSPPBData()) : End If
+            Me.DVMConversiProduct.RowFilter = ""
             Me.IsloadingRow = False : Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.grdGon.CancelCurrentEdit()
@@ -2141,36 +2195,38 @@ Public Class SPPBEntryGON
             If Not Me.isValidSPPB() Then : Return : End If
             Me.Cursor = Cursors.WaitCursor
             Me.IsloadingRow = True : If Not Me.SaveData() Then : Me.IsloadingRow = False : Cursor = Cursors.Default : Return : End If
-            If Me.Mode = SaveMode.Update Then
-                Me.IsloadingRow = True : Me.Close() : Me.Cursor = Cursors.Default : Return
-            End If
+            'If Me.Mode = SaveMode.Update Then
+            '    Me.IsloadingRow = True : Me.Close() : Me.Cursor = Cursors.Default : Return
+            'End If
             ''bind grid
             Me.BindGrid(Me.grdGon, Me.DS.Tables("GON_DETAIL_INFO").DefaultView)
             Me.BindGrid(Me.grdSPPB, Me.DS.Tables("SPPB_BRANDPACK_INFO").DefaultView)
             Me.IsloadingRow = True
             Dim DV As DataView = CType(Me.mcbOA_REF_NO.DataSource, DataView)
 
-            Dim OrowFilter As String = DV.RowFilter : Dim OSort As String = DV.Sort
-            DV.RowFilter = ""
-            DV.Sort = "PO_REF_NO DESC "
-            Dim DVDummy As DataView = DV.ToTable().Copy().DefaultView()
-            DVDummy.RowFilter = ""
-            DVDummy.Sort = "PO_REF_NO DESC "
+            If Me.Mode = SaveMode.Insert Then
+                Dim OrowFilter As String = DV.RowFilter : Dim OSort As String = DV.Sort
+                DV.RowFilter = ""
+                DV.Sort = "PO_REF_NO DESC "
+                Dim DVDummy As DataView = DV.ToTable().Copy().DefaultView()
+                DVDummy.RowFilter = ""
+                DVDummy.Sort = "PO_REF_NO DESC "
 
-            Dim PONUMber As String = Me.mcbOA_REF_NO.Value.ToString()
-            Dim Index As Integer = DVDummy.Find(PONUMber)
-            If Index <> -1 Then
-                DVDummy.Delete(Index)
+                Dim PONUMber As String = Me.mcbOA_REF_NO.Value.ToString()
+                Dim Index As Integer = DVDummy.Find(PONUMber)
+                If Index <> -1 Then
+                    DVDummy.Delete(Index)
+                End If
+                Me.BindMulticolumnCombo(Me.mcbOA_REF_NO, DVDummy, "PO_REF_NO", "PO_REF_NO")
+                Me.mcbOA_REF_NO.Text = PONUMber
             End If
-            Me.BindMulticolumnCombo(Me.mcbOA_REF_NO, DVDummy, "PO_REF_NO", "PO_REF_NO")
-            Me.mcbOA_REF_NO.Text = PONUMber
+
             ''matikan combo refno
             'Me.mcbOA_REF_NO.Enabled = False
             Me.btnPrint.Enabled = True
             Me.IsloadingRow = False
             Me.btnSave.Enabled = False
             Me.HasSavedSPPB = True
-
             Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.IsloadingRow = False
@@ -2184,7 +2240,7 @@ Public Class SPPBEntryGON
     Private Sub btnCLose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCLose.Click
         Try
             Me.IsloadingRow = True
-            Me.Cursor = Cursors.WaitCursor
+            'Me.Cursor = Cursors.WaitCursor
             If Me.HasSavedSPPB Then
                 If Me.DS.HasChanges() Then
                     If Me.ShowConfirmedMessage(Me.MessageDataHasChanged) = Windows.Forms.DialogResult.No Then
@@ -2196,10 +2252,10 @@ Public Class SPPBEntryGON
                         If Not Me.SaveData() Then : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return : End If
                         Me.DS.AcceptChanges()
                     End If
-                End If
+                End If : Me.Cursor = Cursors.Default
                 Me.DisposeAllObjects()
                 Me.Close()
-                Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
+                Me.IsloadingRow = False : Return
             End If
             If Me.HasChangedGONData Or Me.HasChangedSPPBData Then
                 If Me.ShowConfirmedMessage(Me.MessageDataHasChanged) = Windows.Forms.DialogResult.No Then
@@ -2216,11 +2272,12 @@ Public Class SPPBEntryGON
                     Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
                 End If
             Else
+                Me.Cursor = Cursors.Default
                 Me.IsloadingRow = True
                 Me.DisposeAllObjects()
                 Me.Close()
             End If
-
+            Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.LogMyEvent(ex.Message, Me.Name + "_btnCLose_Click")
             Me.IsloadingRow = False
@@ -2402,14 +2459,14 @@ Public Class SPPBEntryGON
                                     drv("UNIT1") = ""
                                     drv("VOL2") = 0
                                 End If
-                                    drv("IsCompleted") = False
-                                    drv("IsUpdatedBySystem") = False
-                                    drv("CreatedBy") = NufarmBussinesRules.User.UserLogin.UserName
-                                    drv("CreatedDate") = NufarmBussinesRules.SharedClass.ServerDate
-                                    drv("ModifiedBy") = String.Empty
-                                    drv("ModifiedDate") = NufarmBussinesRules.SharedClass.ServerDate
-                                    drv.EndEdit()
-                                End If
+                                drv("IsCompleted") = False
+                                drv("IsUpdatedBySystem") = False
+                                drv("CreatedBy") = NufarmBussinesRules.User.UserLogin.UserName
+                                drv("CreatedDate") = NufarmBussinesRules.SharedClass.ServerDate
+                                drv("ModifiedBy") = String.Empty
+                                drv("ModifiedDate") = NufarmBussinesRules.SharedClass.ServerDate
+                                drv.EndEdit()
+                            End If
                         Next
                         ''delete data di grid gon yang tidak ada di chk product
                         Dim rows() As Janus.Windows.GridEX.GridEXRow = Me.chkProduct.DropDownList().GetCheckedRows()
@@ -2549,7 +2606,7 @@ Public Class SPPBEntryGON
                             Me.DS.Tables.Remove("GON_DETAIL_INFO")
                         End If
                         Me.DS.AcceptChanges()
-                        Dim tblGON As DataTable = Me.clsSPPB.getGOnData(Me.txtSPPBNO.Text.TrimStart().TrimEnd(), True)
+                        Dim tblGON As DataTable = Me.clsSPPB.getGOnDataBySPPB(Me.txtSPPBNO.Text.TrimStart().TrimEnd(), True)
                         'bind grid
                         Me.BindGrid(Me.grdGon, tblGON.DefaultView)
                         Me.IsloadingRow = False
@@ -2589,10 +2646,43 @@ Public Class SPPBEntryGON
                 Dim SPPBrandPackID As String = Me.grdSPPB.GetValue("SPPB_BRANDPACK_ID").ToString()
                 Dim SPPBQTY As Decimal = Convert.ToDecimal(Me.grdSPPB.GetValue("SPPB_QTY"))
                 ''check totalGonQty
-                Dim TotalGOnQty As Decimal = Me.clsSPPB.GetTotalGONQTY(SPPBrandPackID, True)
-                If TotalGOnQty >= SPPBQTY Then
-                    Me.ShowMessageInfo("can not set status while SPPBQty is equal with TotalGONQty" & vbCrLf & "The status has been shipped") : Me.grdSPPB.CancelCurrentEdit() : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
+                Dim DtDummy As DataTable = CType(Me.grdGon.DataSource, DataTable).Copy()
+                Dim TotalGOnQty As Decimal = 0
+                Dim InputGonQty As Decimal = 0
+                If Me.Mode = SaveMode.Update Then
+                    If Me.DataToEdit = EditData.GON Then
+                        'get gonheaderid
+                        Dim GonHeaderID As String = ""
+                        If Me.grdGon.SelectedItems Is Nothing Then
+                            Me.grdGon.Select()
+                            Me.grdGon.MoveFirst()
+                        ElseIf Me.grdGon.SelectedItems.Count <= 0 Then
+                            Me.grdGon.Select()
+                            Me.grdGon.MoveFirst()
+                        End If
+                        GonHeaderID = Me.grdGon.GetValue("GON_HEADER_ID")
+                        'totalgon diluar data di grid
+                        TotalGOnQty = Me.clsSPPB.GetTotalGONQTY(SPPBrandPackID, True, , GonHeaderID)
+                        InputGonQty = CDec(Me.grdGon.GetValue("GON_QTY"))
+                        If SPPBQTY < (TotalGOnQty + InputGonQty) Then
+                            Me.ShowMessageInfo("can not set status while SPPBQty is less than TotalGONQty") : Me.grdSPPB.CancelCurrentEdit() : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
+                        End If
+                    Else
+                        'get totalgon by grid
+                        Dim OTotalGOn As Object = DtDummy.Compute("SUM(GON_QTY)", "SPPB_BRANDPACK_ID = '" & SPPBrandPackID & "'")
+                        If Not IsNothing(OTotalGOn) And Not IsDBNull(OTotalGOn) Then
+                            TotalGOnQty = CDec(OTotalGOn)
+                            If TotalGOnQty > SPPBQTY Then
+                                Me.ShowMessageInfo("can not set status while SPPBQty is less than TotalGONQty") : Me.grdSPPB.CancelCurrentEdit() : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
+                            End If
+                        End If
+                    End If
                 End If
+                'dim dummyRows() as DataRow = dtDummy.Select("
+
+                'If TotalGOnQty >= SPPBQTY Then
+                '    Me.ShowMessageInfo("can not set status while SPPBQty is equal with TotalGONQty" & vbCrLf & "The status has been shipped") : Me.grdSPPB.CancelCurrentEdit() : Me.IsloadingRow = False : Me.Cursor = Cursors.Default : Return
+                'End If
                 If Me.grdSPPB.GetValue("STATUS").ToString() = "OTHER" Then
                     If IsNothing(Me.frmSetstat) OrElse Me.frmSetstat.IsDisposed() Then
                         frmSetstat = New FrmSetOtherStatus()
@@ -2765,7 +2855,57 @@ Public Class SPPBEntryGON
             Me.btnSave.Enabled = (Me.OGONHeader.GT_ID <> Me.mcbTransporter.Value)
         End If
     End Sub
+    Private Function checkValidityProduct(ByVal oUOM As Object, ByVal oVol1 As Object, ByVal oVol2 As Object, ByVal oUnit1 As Object, ByVal oUnit2 As Object, ByVal BrandPackID As String, ByVal BrandPackName As String) As Boolean
 
+        Dim ValidData As Boolean = True
+        If oUOM Is Nothing Or oUOM Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", Unit of Measure has not been set yet")
+                ValidData = False
+            Else
+                oUOM = Me.DVMConversiProduct(0)("UnitOfMeasure")
+            End If
+        End If
+        If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for Volume 1 has not been set yet")
+                ValidData = False
+            Else
+                oVol1 = Me.DVMConversiProduct(0)("VOL1")
+            End If
+        End If
+        If oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for Volume 2 has not been set yet")
+                ValidData = False
+            Else
+                oVol2 = Me.DVMConversiProduct(0)("VOL2")
+            End If
+        End If
+        If oUnit1 Is Nothing Or oUnit1 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for unit 1 has not been set yet")
+                ValidData = False
+            Else
+                oUnit1 = Me.DVMConversiProduct(0)("UNIT1")
+            End If
+        End If
+
+        If oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
+            Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "'"
+            If Me.DVMConversiProduct.Count <= 0 Then
+                Me.ShowMessageError(BrandPackName & ", colly for unit 1 has not been set yet")
+                ValidData = False
+            Else
+                oUnit2 = Me.DVMConversiProduct(0)("UNIT2")
+            End If
+        End If
+        Return ValidData
+    End Function
     Private Sub btnPrint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPrint.Click
         Try
             If Me.lblDistributor.Text = "" Then : Return : End If
@@ -2826,20 +2966,34 @@ Public Class SPPBEntryGON
             Dim info As New CultureInfo("id-ID")
             ''masukan data conversi di gon_table columnya di hide saja
             Me.mcbOA_REF_NO.Focus()
-            Me.mcbOA_REF_NO.DroppedDown = True
-            Dim Address As String = Me.mcbOA_REF_NO.DropDownList().GetValue("ADDRESS").ToString()
-            Dim DistributorName As String = Me.mcbOA_REF_NO.DropDownList.GetValue("DISTRIBUTOR_NAME").ToString()
+            'Me.mcbOA_REF_NO.DroppedDown = True
+            Dim dummyDVPO As DataView = Me.dvPO.ToTable.Copy().DefaultView()
+            dummyDVPO.Sort = "PO_REF_NO"
+            Dim Address As String = ""
+            Dim DistributorName As String = ""
+            Dim PORefNo As String = ""
+            Dim PORefDate As System.DateTime = Nothing
+            Dim Index As Integer = dummyDVPO.Find(Me.mcbOA_REF_NO.Text)
+            If Index <> -1 Then
+                Address = dummyDVPO(Index)("ADDRESS").ToString()
+                DistributorName = dummyDVPO(Index)("DISTRIBUTOR_NAME").ToString()
+                PORefNo = dummyDVPO(Index)("PO_REF_NO").ToString()
+                PORefDate = Convert.ToDateTime(dummyDVPO(Index)("PO_DATE"))
+            Else
+                Me.ShowMessageError("can not Find PO REf NO")
+                Me.Cursor = Cursors.Default
+                Return
+            End If
+            'Me.mcbOA_REF_NO.DroppedDown = False
             If Me.txtShipTo.Text <> "" Then
                 Address = Me.txtShipTo.Text.Trim().Replace(vbCrLf, " ")
             End If
-            Me.mcbOA_REF_NO.DroppedDown = False
             For i As Integer = 0 To tblGON.Rows.Count - 1
                 Dim row As DataRow = tbl_ref_gon.NewRow()
                 row("DISTRIBUTOR_NAME") = DistributorName
                 row("ADDRESS") = Address
                 row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, Address)
-                Dim PORefNo As String = Me.mcbOA_REF_NO.DropDownList().GetValue("PO_REF_NO").ToString()
-                Dim PORefDate As System.DateTime = Convert.ToDateTime(Me.mcbOA_REF_NO.DropDownList().GetValue("PO_DATE"))
+               
                 row("PO_REF_NO") = PORefNo
                 row("PO_REF_DATE") = PORefDate
                 row("POREF_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", PORefNo, PORefDate)
@@ -2860,96 +3014,40 @@ Public Class SPPBEntryGON
                 row("TRANSPORTER_NAME") = Me.mcbTransporter.Text
                 Dim BrandPackName As String = tblGON.Rows(i)("BRANDPACK_NAME")
                 row("BRANDPACK_NAME") = BrandPackName
+                Dim BrandPackID As String = tblGON.Rows(i)("BRANDPACK_ID").ToString()
                 Dim GonQty As Decimal = Convert.ToDecimal(tblGON.Rows(i)("GON_QTY"))
                 Dim oUOM As Object = tblGON.Rows(i)("UnitOfMeasure")
                 Dim oVol1 As Object = tblGON.Rows(i)("VOL1"), oVol2 As Object = tblGON.Rows(i)("VOL2")
                 Dim oUnit1 As Object = tblGON.Rows(i)("UNIT1"), oUnit2 As Object = tblGON.Rows(i)("UNIT2")
-                Dim ValidData As Boolean = True
-                If oUOM Is Nothing Or oUOM Is DBNull.Value Then
-                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tblGON.Rows(i)("BRANDPACK_ID") & "'"
-                    If Me.DVMConversiProduct.Count <= 0 Then
-                        Me.ShowMessageError(BrandPackName & ", Unit of Measure has not been set yet")
-                        ValidData = False
-                    Else
-                        oUOM = Me.DVMConversiProduct(0)("UnitOfMeasure")
-                    End If
-                End If
-                If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
-                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tblGON.Rows(i)("BRANDPACK_ID") & "'"
-                    If Me.DVMConversiProduct.Count <= 0 Then
-                        Me.ShowMessageError(BrandPackName & ", colly for Volume 1 has not been set yet")
-                        ValidData = False
-                    Else
-                        oVol1 = Me.DVMConversiProduct(0)("VOL1")
-                    End If
-                End If
-                If oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
-                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tblGON.Rows(i)("BRANDPACK_ID") & "'"
-                    If Me.DVMConversiProduct.Count <= 0 Then
-                        Me.ShowMessageError(BrandPackName & ", colly for Volume 2 has not been set yet")
-                        ValidData = False
-                    Else
-                        oVol2 = Me.DVMConversiProduct(0)("VOL2")
-                    End If
-                End If
-                If oUnit1 Is Nothing Or oUnit1 Is DBNull.Value Then
-                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tblGON.Rows(i)("BRANDPACK_ID") & "'"
-                    If Me.DVMConversiProduct.Count <= 0 Then
-                        Me.ShowMessageError(BrandPackName & ", colly for unit 1 has not been set yet")
-                        ValidData = False
-                    Else
-                        oUnit1 = Me.DVMConversiProduct(0)("UNIT1")
-                    End If
-                End If
-
-                If oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
-                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tblGON.Rows(i)("BRANDPACK_ID") & "'"
-                    If Me.DVMConversiProduct.Count <= 0 Then
-                        Me.ShowMessageError(BrandPackName & ", colly for unit 1 has not been set yet")
-                        ValidData = False
-                    Else
-                        oUnit2 = Me.DVMConversiProduct(0)("UNIT2")
-                    End If
-                End If
-
-                'If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
-                '    Me.ShowMessageError(BrandPackName & ", colly for Volume 1 has not been set yet")
-                '    ValidData = False
-                'ElseIf oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
-                '    Me.ShowMessageError(BrandPackName & ", colly for Volume 2 has not been set yet")
-                '    ValidData = False
-                'ElseIf oUnit1 Is Nothing Or oUnit2 Is DBNull.Value Then
-                '    Me.ShowMessageError(BrandPackName & ", colly for Unit 1 has not been set yet")
-                '    ValidData = False
-                'ElseIf oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
-                '    Me.ShowMessageError(BrandPackName & ", colly for Unit 2 has not been set yet")
-                '    ValidData = False
-                'End If
+                Dim ValidData As Boolean = Me.checkValidityProduct(oUOM, oVol1, oVol2, oUnit1, oUnit2, BrandPackID, BrandPackName)
                 If Not ValidData Then : Cursor = Cursors.Default : Return : End If
                 Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
                 Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
                 Dim col1 As Integer = 0
                 Dim collyBox As String = "", collyPackSize As String = ""
-                If GonQty >= Dvol1 Then
-                    col1 = Convert.ToInt32(Decimal.Truncate(GonQty / Dvol1))
-                    collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
-                    Dim lqty As Decimal = GonQty Mod Dvol1
-                    Dim ilqty As Integer = 0
-                    If lqty >= 1 Then
-                        'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
-                        ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
-                    ElseIf lqty > 0 And lqty < 1 Then
-                        'ilqty = ilqty + DVol2
-                        ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                ValidData = Me.checkValidityProduct(oUOM, oVol1, oVol2, oUnit1, oUnit2, BrandPackID, BrandPackName)
+                If ValidData Then
+                    If GonQty >= Dvol1 Then
+                        col1 = Convert.ToInt32(Decimal.Truncate(GonQty / Dvol1))
+                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
+                        Dim lqty As Decimal = GonQty Mod Dvol1
+                        Dim ilqty As Integer = 0
+                        If lqty >= 1 Then
+                            'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
+                            ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                        ElseIf lqty > 0 And lqty < 1 Then
+                            'ilqty = ilqty + DVol2
+                            ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                        End If
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    ElseIf GonQty > 0 Then ''gon kurang dari 1 coly
+                        Dim ilqty As Integer = Convert.ToInt32((GonQty / Dvol1) * DVol2)
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
                     End If
-                    collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
-                ElseIf GonQty > 0 Then ''gon kurang dari 1 coly
-                    Dim ilqty As Integer = Convert.ToInt32((GonQty / Dvol1) * DVol2)
-                    collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    row("COLLY_BOX") = collyBox
+                    row("COLLY_PACKSIZE") = collyPackSize
                 End If
                 row("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", GonQty, oUOM.ToString())
-                row("COLLY_BOX") = collyBox
-                row("COLLY_PACKSIZE") = collyPackSize
                 row("BATCH_NO") = tblGON.Rows(i)("BatchNo")
                 row.EndEdit()
                 tbl_ref_gon.Rows.Add(row)
@@ -2971,7 +3069,7 @@ Public Class SPPBEntryGON
                 End If
                 .crvGON.ReportSource = .ReportDoc
                 .crvGON.DisplayGroupTree = False
-
+                .isSingleReport = True
                 '.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable
                 If Not IsDotMatrixPrint And Not IsImmediatePrint Then
                     .ShowDialog(Me)
@@ -2984,10 +3082,10 @@ Public Class SPPBEntryGON
                     .crvGON.PrintReport()
                     Application.DoEvents()
                 End If
-
             End With
             Me.Cursor = Cursors.Default
         Catch ex As Exception
+            Me.ShowMessageError(ex.Message)
             Me.IsloadingRow = False
             Me.Cursor = Cursors.Default
             Me.LogMyEvent(ex.Message, Me.Name + "_btnPrint_Click")
@@ -3030,4 +3128,5 @@ Public Class SPPBEntryGON
             Me.Text = "SPPB  " & Me.txtSPPBNO.Text.Trim() & ", GON " & Me.txtGONNO.Text.Trim()
         End If
     End Sub
+
 End Class

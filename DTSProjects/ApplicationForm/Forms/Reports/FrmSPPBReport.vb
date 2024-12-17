@@ -38,4 +38,25 @@ Public Class FrmSPPBReport
         End If
         Me.hasLoadForm = True
     End Sub
+
+    Private Sub FrmSPPBReport_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            If Not IsNothing(Me.ReportDoc) Then
+                Me.ReportDoc.Dispose()
+                Me.ReportDoc = Nothing
+            End If
+            'If Not IsNothing(Me.connInfo) Then
+            '    Me.connInfo = Nothing
+            'End If
+        Catch ex As Exception
+
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub crvSPPB_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles crvSPPB.Load
+
+    End Sub
 End Class

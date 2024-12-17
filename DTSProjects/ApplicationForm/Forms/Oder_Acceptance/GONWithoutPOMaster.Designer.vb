@@ -43,16 +43,17 @@ Partial Class GONWithoutPOMaster
         Me.btnRefresh = New DevComponents.DotNetBar.ButtonItem
         Me.btnAddNew = New DevComponents.DotNetBar.ButtonItem
         Me.btnEdit = New DevComponents.DotNetBar.ButtonItem
-        Me.GridEXPrintDocument1 = New Janus.Windows.GridEX.GridEXPrintDocument
-        Me.PrintPreviewDialog1 = New System.Windows.Forms.PrintPreviewDialog
-        Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
-        Me.PageSetupDialog2 = New System.Windows.Forms.PageSetupDialog
-        Me.FilterEditor1 = New Janus.Windows.FilterEditor.FilterEditor
-        Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
-        Me.GridEXExporter1 = New Janus.Windows.GridEX.Export.GridEXExporter(Me.components)
         Me.btnPrintSPPB = New DevComponents.DotNetBar.ButtonItem
         Me.btnCurrentSelection = New DevComponents.DotNetBar.ButtonItem
         Me.btnPrintcustoms = New DevComponents.DotNetBar.ButtonItem
+        Me.GridEXPrintDocument1 = New Janus.Windows.GridEX.GridEXPrintDocument
+        Me.PrintPreviewDialog1 = New System.Windows.Forms.PrintPreviewDialog
+        Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
+        Me.FilterEditor1 = New Janus.Windows.FilterEditor.FilterEditor
+        Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
+        Me.GridEXExporter1 = New Janus.Windows.GridEX.Export.GridEXExporter(Me.components)
+        Me.btnVarFG = New DevComponents.DotNetBar.ButtonItem
+        Me.btnSampleUnreg = New DevComponents.DotNetBar.ButtonItem
         Me.ContextMenuStrip1.SuspendLayout()
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -236,6 +237,7 @@ Partial Class GONWithoutPOMaster
         Me.btnAddNew.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
         Me.btnAddNew.ImageIndex = 15
         Me.btnAddNew.Name = "btnAddNew"
+        Me.btnAddNew.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnVarFG, Me.btnSampleUnreg})
         Me.btnAddNew.Text = "Add New"
         '
         'btnEdit
@@ -245,6 +247,24 @@ Partial Class GONWithoutPOMaster
         Me.btnEdit.Name = "btnEdit"
         Me.btnEdit.Text = "Edit Row"
         Me.btnEdit.Tooltip = "Edit selected row in datagrid "
+        '
+        'btnPrintSPPB
+        '
+        Me.btnPrintSPPB.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
+        Me.btnPrintSPPB.ImageIndex = 9
+        Me.btnPrintSPPB.Name = "btnPrintSPPB"
+        Me.btnPrintSPPB.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCurrentSelection, Me.btnPrintcustoms})
+        Me.btnPrintSPPB.Text = "Printing SPPB"
+        '
+        'btnCurrentSelection
+        '
+        Me.btnCurrentSelection.Name = "btnCurrentSelection"
+        Me.btnCurrentSelection.Text = "Current Sell"
+        '
+        'btnPrintcustoms
+        '
+        Me.btnPrintcustoms.Name = "btnPrintcustoms"
+        Me.btnPrintcustoms.Text = "Customs"
         '
         'GridEXPrintDocument1
         '
@@ -269,10 +289,6 @@ Partial Class GONWithoutPOMaster
         '
         Me.PageSetupDialog1.Document = Me.GridEXPrintDocument1
         '
-        'PageSetupDialog2
-        '
-        Me.PageSetupDialog2.Document = Me.GridEXPrintDocument1
-        '
         'FilterEditor1
         '
         Me.FilterEditor1.AutoApply = True
@@ -293,23 +309,15 @@ Partial Class GONWithoutPOMaster
         '
         Me.GridEXExporter1.IncludeFormatStyle = False
         '
-        'btnPrintSPPB
+        'btnVarFG
         '
-        Me.btnPrintSPPB.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
-        Me.btnPrintSPPB.ImageIndex = 9
-        Me.btnPrintSPPB.Name = "btnPrintSPPB"
-        Me.btnPrintSPPB.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCurrentSelection, Me.btnPrintcustoms})
-        Me.btnPrintSPPB.Text = "Printing SPPB"
+        Me.btnVarFG.Name = "btnVarFG"
+        Me.btnVarFG.Text = "Various FG"
         '
-        'btnCurrentSelection
+        'btnSampleUnreg
         '
-        Me.btnCurrentSelection.Name = "btnCurrentSelection"
-        Me.btnCurrentSelection.Text = "Current Sell"
-        '
-        'btnPrintcustoms
-        '
-        Me.btnPrintcustoms.Name = "btnPrintcustoms"
-        Me.btnPrintcustoms.Text = "Customs"
+        Me.btnSampleUnreg.Name = "btnSampleUnreg"
+        Me.btnSampleUnreg.Text = "Sample Product"
         '
         'GONWithoutPOMaster
         '
@@ -344,7 +352,6 @@ Partial Class GONWithoutPOMaster
     Private WithEvents GridEXPrintDocument1 As Janus.Windows.GridEX.GridEXPrintDocument
     Private WithEvents PrintPreviewDialog1 As System.Windows.Forms.PrintPreviewDialog
     Private WithEvents PageSetupDialog1 As System.Windows.Forms.PageSetupDialog
-    Private WithEvents PageSetupDialog2 As System.Windows.Forms.PageSetupDialog
     Private WithEvents FilterEditor1 As Janus.Windows.FilterEditor.FilterEditor
     Private WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
     Private WithEvents GridEXExporter1 As Janus.Windows.GridEX.Export.GridEXExporter
@@ -357,5 +364,7 @@ Partial Class GONWithoutPOMaster
     Friend WithEvents btnPrintSPPB As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnCurrentSelection As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnPrintcustoms As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnVarFG As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnSampleUnreg As DevComponents.DotNetBar.ButtonItem
 
 End Class

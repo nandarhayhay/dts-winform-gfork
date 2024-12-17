@@ -40,6 +40,8 @@ Public Class Main
     Private frmAchievementR As AchievementF
     Private frmConfProd As ConvertionProduct
     Private frmGonNonPO As GONWithoutPOMaster
+    Private frmOtherProd As OtherProduct
+    Private frmQtyConv As QtyConvertion
 private frmGonDetailData as GonDetailData 
 #End Region
 
@@ -165,6 +167,8 @@ private frmGonDetailData as GonDetailData
             Case "GONWithoutPOMaster" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GONWithoutPOMaster
             Case "ConvertionProduct" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.ConvertionProduct
             Case "GonDetailData" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GonDetailData
+            Case "OtherProduct" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.OtherProduct
+            Case "QtyConvertion" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.QtyConvertion
         End Select
     End Function
 
@@ -210,6 +214,9 @@ private frmGonDetailData as GonDetailData
         Me.btnProdconv.Visible = Me.IsHasPrivilege("ConvertionProduct")
         Me.btnGONNonPODistributor.Visible = Me.IsHasPrivilege("GONWithoutPOMaster")
         Me.btnGonDetailData.Visible = Me.IsHasPrivilege("GonDetailData")
+        Me.btnOtherProduct.Visible = Me.IsHasPrivilege("OtherProduct")
+        Me.btnManualQtyConv.Visible = Me.IsHasPrivilege("QtyConvertion")
+
         Me.btnCompareBrandPack.Visible = False
         Me.btnManageUser.Visible = False
     End Sub
@@ -253,6 +260,8 @@ private frmGonDetailData as GonDetailData
             Me.btnProdconv.Visible = True
             Me.btnSPPbAndGon.Visible = True
             Me.btnGonDetailData.Visible = True
+            Me.btnOtherProduct.Visible = True
+            btnManualQtyConv.Visible = True
         ElseIf NufarmBussinesRules.User.UserLogin.IsAdmin Then ' ITSupport
             Me.getCommonPriviledge()
             Me.btnSetting.Visible = True
@@ -263,6 +272,8 @@ private frmGonDetailData as GonDetailData
             Me.btnDiscDDAndDR.Visible = True
             Me.btnSPPbAndGon.Visible = True
             Me.btnGonDetailData.Visible = True
+            Me.btnOtherProduct.Visible = True
+            btnManualQtyConv.Visible = True
         Else
             btnSetting.Visible = False : Me.btnLogIn.Visible = False
             Me.btnLogout.Visible = True
@@ -290,6 +301,7 @@ private frmGonDetailData as GonDetailData
             btnByGrid.Visible = False
             btnBrandPackPlantation.Visible = False
             Me.btnBrandPackItem.Text = "Product"
+            Me.btnOtherProduct.Visible = False
         End If
     End Sub
 
@@ -1460,9 +1472,9 @@ private frmGonDetailData as GonDetailData
             With Me.frmConfProd
                 .ShowInTaskbar = False
                 .CMain = Me
+                FrmActive = Me.frmConfProd
                 .ShowDialog(Me) : Me.ReadAcces()
             End With
-            FrmActive = Me.frmConfProd
         Else : Me.DOLogin()
             If NufarmBussinesRules.User.UserLogin.HasLogin Then
                 Me.frmConfProd = New ConvertionProduct()
@@ -1471,13 +1483,59 @@ private frmGonDetailData as GonDetailData
                     .CMain = Me
                 End With
                 Me.Timer1.Enabled = True : Me.Timer1.Start()
-                Me.FrmActive = Me.frmGonNonPO
+                Me.FrmActive = Me.frmConfProd
             End If
             Me.Timer1.Enabled = True : Me.Timer1.Start()
             Me.FrmActive = Me.frmConfProd
         End If
     End Sub
 
+    Private Sub ShowOtherProduct()
+        If NufarmBussinesRules.User.UserLogin.HasLogin Then
+            If IsNothing(Me.frmOtherProd) OrElse Me.frmOtherProd.IsDisposed() Then
+                Me.FormLoading = StatusForm.Loading
+                Me.frmOtherProd = New OtherProduct()
+            End If
+            With Me.frmOtherProd
+                .ShowInTaskbar = False
+                .CMain = Me
+                .MdiParent = Me
+                .Show()
+                Me.ReadAcces()
+            End With
+            FrmActive = Me.frmOtherProd
+        Else : Me.DOLogin()
+            If NufarmBussinesRules.User.UserLogin.HasLogin Then
+                Me.frmOtherProd = New OtherProduct()
+                With Me.frmOtherProd
+                    .ShowInTaskbar = False
+                    .CMain = Me
+                    .MdiParent = Me
+                    .Show()
+                End With
+                Me.Timer1.Enabled = True : Me.Timer1.Start()
+                Me.FrmActive = Me.frmOtherProd
+            End If
+            Me.Timer1.Enabled = True : Me.Timer1.Start()
+            Me.FrmActive = Me.frmOtherProd
+        End If
+    End Sub
+
+    Private Sub ShowQtyConv()
+        If NufarmBussinesRules.User.UserLogin.HasLogin = True Then
+            Me.FormLoading = StatusForm.Loading
+            ' Me.tmrHoldShowForm.Enabled = True
+            frmQtyConv = New QtyConvertion() : FrmActive = frmQtyConv
+            frmQtyConv.Owner = Me
+            frmQtyConv.ShowInTaskbar = False : frmQtyConv.Show() : Me.ReadAcces()
+        Else
+            Me.DOLogin() : If NufarmBussinesRules.User.UserLogin.HasLogin = True Then
+                frmQtyConv = New QtyConvertion() : FrmActive = frmQtyConv
+                'frmQtyConv.ShowInTaskbar = False
+                Me.Timer1.Enabled = True : Me.Timer1.Start()
+            End If
+        End If
+    End Sub
     Private Sub RenewObjectForm(ByVal OForm As Form)
         If Not IsNothing(OForm) Then
             If Not OForm.IsDisposed() Then
@@ -1546,6 +1604,8 @@ private frmGonDetailData as GonDetailData
                 Case "btnProdconv" : Me.ShowConvertionProduct()
                 Case "btnGONNonPODistributor" : Me.ShowGonNonPODistr()
                 Case "btnGonDetailData" : Me.ShowGonDetailData()
+                Case "btnOtherProduct" : Me.ShowOtherProduct()
+                Case "btnManualQtyConv" : Me.ShowQtyConv()
             End Select
         Catch ex As Exception
             Me.StatProg = StatusProgress.None : MessageBox.Show(ex.Message)
@@ -1621,6 +1681,10 @@ private frmGonDetailData as GonDetailData
                     Case "btnDiscDDAndDR" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmDiscDDorDR.Show()
                     Case "btnAchievementDPDR" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmAchievementR.Show()
                     Case "btnProdconv" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmConfProd.ShowDialog(Me)
+                    Case "btnOtherProduct" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmOtherProd.Show()
+                    Case "btnManualQtyConv" : Me.Timer1.Enabled = False : Me.Timer1.Stop()
+                        Me.frmQtyConv.Owner = Me
+                        Me.frmQtyConv.Show()
                 End Select
             End If
             Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.HoldLoadForm = 0 : Me.ReadAcces()
@@ -1747,4 +1811,5 @@ private frmGonDetailData as GonDetailData
         End Try
 
     End Sub
+
 End Class

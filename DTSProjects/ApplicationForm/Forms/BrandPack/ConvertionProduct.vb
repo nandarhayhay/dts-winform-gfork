@@ -295,10 +295,14 @@ Public Class ConvertionProduct
                     Cursor = Cursors.Default
                     Me.ShowMessageError(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_btnClose_Click")
                 End Try
+            Else
+                Me.IsLoadingRow = True
+                Me.Close()
             End If
         Else
             Me.IsLoadingRow = True
             Me.Close()
+            Me.Dispose(True)
         End If
     End Sub
 

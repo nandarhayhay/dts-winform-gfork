@@ -53,6 +53,7 @@ Partial Class SPPB
         Me.PrintPreviewDialog1 = New System.Windows.Forms.PrintPreviewDialog
         Me.Bar1 = New DevComponents.DotNetBar.Bar
         Me.xpgData = New SteepValley.Windows.Forms.XPGradientPanel
+        Me.btnDailyGON = New DevComponents.DotNetBar.ButtonItem
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Bar2.SuspendLayout()
         CType(Me.cmbDistributor, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -110,7 +111,7 @@ Partial Class SPPB
         'btnSearchDistributor
         '
         Me.btnSearchDistributor.BackColor = System.Drawing.Color.Transparent
-        Me.btnSearchDistributor.Location = New System.Drawing.Point(784, 2)
+        Me.btnSearchDistributor.Location = New System.Drawing.Point(785, 2)
         Me.btnSearchDistributor.Name = "btnSearchDistributor"
         Me.btnSearchDistributor.Size = New System.Drawing.Size(17, 18)
         Me.btnSearchDistributor.TabIndex = 2
@@ -123,7 +124,7 @@ Partial Class SPPB
         Me.cmbDistributor.DesignTimeLayout = cmbDistributor_DesignTimeLayout
         Me.cmbDistributor.DisplayMember = "DISTRIBUTOR_NAME"
         Me.cmbDistributor.HoverMode = Janus.Windows.GridEX.HoverMode.Highlight
-        Me.cmbDistributor.Location = New System.Drawing.Point(576, 0)
+        Me.cmbDistributor.Location = New System.Drawing.Point(577, 0)
         Me.cmbDistributor.Name = "cmbDistributor"
         Me.cmbDistributor.SelectedIndex = -1
         Me.cmbDistributor.SelectedItem = Nothing
@@ -255,7 +256,7 @@ Partial Class SPPB
         Me.btnShowData.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
         Me.btnShowData.ImageIndex = 19
         Me.btnShowData.Name = "btnShowData"
-        Me.btnShowData.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnShowSPPB, Me.btnShowReturningGON})
+        Me.btnShowData.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnShowSPPB, Me.btnShowReturningGON, Me.btnDailyGON})
         Me.btnShowData.Text = "ShowData"
         '
         'btnShowSPPB
@@ -334,6 +335,11 @@ Partial Class SPPB
         Me.xpgData.TabIndex = 28
         Me.xpgData.Watermark = Global.DTSProjects.My.Resources.Resources.Splash
         '
+        'btnDailyGON
+        '
+        Me.btnDailyGON.Name = "btnDailyGON"
+        Me.btnDailyGON.Text = "Daily GON"
+        '
         'SPPB
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -384,5 +390,6 @@ Partial Class SPPB
     Private WithEvents btnShowSPPB As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnShowReturningGON As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnSearchDistributor As DTSProjects.ButtonSearch
+    Friend WithEvents btnDailyGON As DevComponents.DotNetBar.ButtonItem
 
 End Class

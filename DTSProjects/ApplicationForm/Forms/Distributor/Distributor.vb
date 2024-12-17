@@ -1,3 +1,5 @@
+Imports System.Text
+Imports System.Text.RegularExpressions
 Public Class Distributor
     Private clsDitributor As NufarmBussinesRules.DistributorRegistering.DistributorRegistering
     Private Mode As ModeSaving
@@ -28,6 +30,7 @@ Public Class Distributor
         Me.GridEX1.RootTable.Columns("NPWP").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.GridEX1.RootTable.Columns("MAX_DISC_PER_PO").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.GridEX1.RootTable.Columns("ADDRESS").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+        Me.GridEX1.RootTable.Columns("EMAIL").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.GridEX1.RootTable.Columns("CONTACT").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.GridEX1.RootTable.Columns("PHONE").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.GridEX1.RootTable.Columns("FAX").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
@@ -126,6 +129,12 @@ Public Class Distributor
         Else
             Me.dtPicBirtDate.Text = ""
         End If
+        If Not IsDBNull(Me.GridEX1.GetValue("EMAIL")) Then
+            Me.txtEmailAddress.Text = Me.GridEX1.GetValue("EMAIL")
+        Else
+            Me.txtEmailAddress.Text = ""
+        End If
+
         Me.txtContactMobile1.Text = IIf((IsNothing(Me.GridEX1.GetValue("HP1")) Or IsDBNull(Me.GridEX1.GetValue("HP1"))), "", Me.GridEX1.GetValue("HP1").ToString())
     End Sub
 
@@ -422,6 +431,11 @@ Public Class Distributor
                     Else
                         Me.clsDitributor.BIRTHDATE = DBNull.Value
                     End If
+                    If Me.txtEmailAddress.Text <> "" Then
+                        Me.clsDitributor.Email = Me.txtEmailAddress.Text.Trim()
+                    Else
+                        Me.clsDitributor.Email = DBNull.Value
+                    End If
                     Me.clsDitributor.HP1 = Me.txtContactMobile1.Text.TrimStart().TrimEnd()
                     Me.clsDitributor.RESPONSIBLE_PERSON = Me.txtResponsiblePerson.Text
                     Me.clsDitributor.JOIN_DATE = IIf(Me.dtPicJonDate.Text = "", DBNull.Value, Convert.ToDateTime(Me.dtPicJonDate.Value.ToShortDateString()))
@@ -626,6 +640,38 @@ Public Class Distributor
                 Me.LogMyEvent(ex.Message, Me.Name + "_GridEX1_DeletingRecord")
             End Try
             Cursor = Cursors.Default
+
+        End If
+    End Sub
+
+    Private Sub txtEmailAddress_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtEmailAddress.KeyPress
+        Dim ac As String = "@"
+        If e.KeyChar <> ChrW(Keys.Back) Then
+            If Asc(e.KeyChar) < 97 Or Asc(e.KeyChar) > 122 Then
+                If Asc(e.KeyChar) <> 46 And Asc(e.KeyChar) <> 95 Then
+                    If Asc(e.KeyChar) < 48 Or Asc(e.KeyChar) > 57 Then
+                        If ac.IndexOf(e.KeyChar) = -1 Then
+                            e.Handled = True
+                        Else
+                            If txtEmailAddress.Text.Contains("@") And e.KeyChar = "@" Then
+                                e.Handled = True
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+
+        End If
+    End Sub
+
+    Private Sub txtEmailAddress_Validating(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtEmailAddress.Validating
+        Dim pattern As String = "^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$"
+        Dim match As System.Text.RegularExpressions.Match = Regex.Match(txtEmailAddress.Text.Trim(), pattern, RegexOptions.IgnoreCase)
+        If (match.Success) Then
+            'MessageBox.Show("Success", "Checking")
+        Else
+            MessageBox.Show("Please enter a valid email id", "Checking")
+            txtEmailAddress.Clear()
         End If
     End Sub
 End Class

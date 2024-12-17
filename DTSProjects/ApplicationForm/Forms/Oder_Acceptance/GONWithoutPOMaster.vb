@@ -1,6 +1,7 @@
 Imports System.Threading
 Imports System
 Imports Nufarm.Domain
+Imports NufarmBussinesRules.common.Helper
 Imports DTSProjects.GonNonPODist
 Imports System.Configuration
 Imports System.Globalization
@@ -12,6 +13,7 @@ Public Class GONWithoutPOMaster
     Private StatProg As StatusProgress = StatusProgress.None
     Friend MustReload As Boolean = False
     Private m_SGonManager As NufarmBussinesRules.OrderAcceptance.SeparatedGONManager
+    Private m_clsSampleGon As NufarmBussinesRules.OrderAcceptance.SampleGON
     Private PageIndex As Int32 = 0, PageSize As Integer = 0, TotalIndex As Integer = 0, RowCount As Integer = 0
     Private m_DataType As NufarmBussinesRules.common.Helper.DataTypes = NufarmBussinesRules.common.Helper.DataTypes.VarChar
     Private m_Criteria As NufarmBussinesRules.common.Helper.CriteriaSearch = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
@@ -28,12 +30,22 @@ Public Class GONWithoutPOMaster
     Private listSPPB As New List(Of String)
     Private OriginalWaterMarkText As String
     Private isLoadingRow As Boolean = False
+    'Private DVMConversiProduct As DataView = Nothing
+    'Private DVSampleProduct As DataView = Nothing
     Private ReadOnly Property SGonManager() As NufarmBussinesRules.OrderAcceptance.SeparatedGONManager
         Get
             If m_SGonManager Is Nothing Then
                 m_SGonManager = New NufarmBussinesRules.OrderAcceptance.SeparatedGONManager()
             End If
             Return m_SGonManager
+        End Get
+    End Property
+    Private ReadOnly Property clsSampleGon() As NufarmBussinesRules.OrderAcceptance.SampleGON
+        Get
+            If m_clsSampleGon Is Nothing Then
+                Me.m_clsSampleGon = New NufarmBussinesRules.OrderAcceptance.SampleGON()
+            End If
+            Return m_clsSampleGon
         End Get
     End Property
     Private Enum FilterData
@@ -99,6 +111,8 @@ Public Class GONWithoutPOMaster
             Me.AdvancedTManager1.GridEX1.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.True
             Me.btnAddNew.Visible = True
         End If
+        'Dim IsDotMatrixPrint As Boolean = CBool(ConfigurationManager.AppSettings("DotMatrixPrint"))
+        'Me.btnPrintcustoms.Visible = Not IsDotMatrixPrint
     End Sub
     Friend Sub LoadData()
         Me.SFG = StateFillingGrid.Filling
@@ -184,7 +198,7 @@ Public Class GONWithoutPOMaster
         '        C8713ZN()
         '        JAMINGUN()
     End Sub
-    Private Sub AddNewGON()
+    Private Sub AddNewGONFG()
         Dim OSPPBHeader As New SPPBHeader()
         Dim OGONHeader As New GONHeader()
         Dim frmInputGon As New GonNonPODist()
@@ -193,6 +207,25 @@ Public Class GONWithoutPOMaster
             .OGONHeader = OGONHeader
             .OSPPBHeader = OSPPBHeader
             .SForm = StatusForm.Insert
+            .initializedData()
+            .StartPosition = FormStartPosition.CenterScreen
+            .Opener = Me
+            .ShowDialog()
+        End With
+    End Sub
+    ''' <summary>
+    ''' sample gon
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub AddNewGonVG()
+        Dim OSPPBHeader As New SPPBHeader()
+        Dim OGONHeader As New GONHeader()
+        Dim frmInputGon As New GonSample()
+        With frmInputGon
+            .CMain = Me.CMain
+            .OGONHeader = OGONHeader
+            .OSPPBHeader = OSPPBHeader
+            .SForm = SaveMode.Insert
             .initializedData()
             .StartPosition = FormStartPosition.CenterScreen
             .Opener = Me
@@ -230,7 +263,7 @@ Public Class GONWithoutPOMaster
                 End If
             Case "btnPageSettings"
                 Me.PageSetupDialog1.Document = Me.GridEXPrintDocument1
-                Me.PageSetupDialog2.ShowDialog(Me)
+                Me.PageSetupDialog1.ShowDialog(Me)
             Case "btnCustomFilter"
                 Me.FilterEditor1.Visible = True
                 Me.FilterEditor1.SortFieldList = False
@@ -243,8 +276,15 @@ Public Class GONWithoutPOMaster
                 Me.AdvancedTManager1.GridEX1.RemoveFilters()
                 Me.AdvancedTManager1.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
                 Me.GetStateChecked(Me.btnFilterEqual)
-            Case "btnAddNew"
-                Me.AddNewGON()
+                'Case "btnAddNew"
+
+            Case "btnVarFG"
+                Me.AddNewGONFG()
+                If Me.MustReload Then
+                    Me.ReloadOpener()
+                End If
+            Case "btnSampleUnreg"
+                Me.AddNewGonVG() 'SAMPLE GON
                 If Me.MustReload Then
                     Me.ReloadOpener()
                 End If
@@ -261,7 +301,6 @@ Public Class GONWithoutPOMaster
                     Me.GridEXExporter1.IncludeFormatStyle = True
                     Me.GridEXExporter1.Export(FS)
                     FS.Close()
-                    FS.Flush()
                     MessageBox.Show("Data Exported to " & Me.SaveFileDialog1.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If
             Case "btnEdit"
@@ -269,21 +308,30 @@ Public Class GONWithoutPOMaster
                     Me.Cursor = Cursors.WaitCursor
                     Dim gonNumber As Object = AdvancedTManager1.GridEX1.GetValue("GON_NUMBER")
                     Dim PONumber As Object = AdvancedTManager1.GridEX1.GetValue("PO_NUMBER")
-                    'Dim gonNumber As String = AdvancedTManager1.GridEX1.GetValue("GON_NUMBER").ToString()
-                    If Not IsNothing(gonNumber) And Not IsDBNull(gonNumber) Then
-                        If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
-                            Me.PullAndShowData("", gonNumber, StatusForm.Edit)
+                    ''cek PO Category
+                    Dim POCateGory As String = Me.AdvancedTManager1.GridEX1.GetValue("PO_CATEGORY")
+                    If POCateGory = "UNREG_FIN_GOODS" Then
+                        If Not IsNothing(gonNumber) And Not IsDBNull(gonNumber) Then
+                            If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
+                                Me.PullAndShowDataSP("", gonNumber, SaveMode.Update)
+                            Else
+                                Me.PullAndShowDataSP(PONumber, "", SaveMode.Update)
+                            End If
+                        Else
+                            Me.PullAndShowDataSP(PONumber, "", SaveMode.Update)
+                        End If
+                    ElseIf POCateGory = "REG_FIN_GOODS" Then
+                        If Not IsNothing(gonNumber) And Not IsDBNull(gonNumber) Then
+                            If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
+                                Me.PullAndShowData("", gonNumber, StatusForm.Edit)
+                            Else
+                                Me.PullAndShowData(PONumber, "", StatusForm.Edit)
+                            End If
                         Else
                             Me.PullAndShowData(PONumber, "", StatusForm.Edit)
                         End If
-                    Else
-                        'If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
-                        '    Me.PullAndShowData("", gonNumber, StatusForm.Edit)
-                        'Else
-                        '    Me.PullAndShowData(PONumber, "", StatusForm.Edit)
-                        'End If
-                        Me.PullAndShowData(PONumber, "", StatusForm.Edit)
                     End If
+
                     If Me.MustReload Then
                         Me.ReloadOpener()
                     End If
@@ -345,6 +393,9 @@ Public Class GONWithoutPOMaster
             .ShowDialog(Me)
             Me.isLoadingRow = False
         End With
+        If Not IsNothing(Me.frmSPPBrep) Then
+            Me.frmSPPBrep.Dispose() : frmSPPBrep = Nothing
+        End If
     End Sub
     Private Sub DisplayData(ByVal dt As DataTable)
         With Me.frmSPPBrep
@@ -371,7 +422,75 @@ Public Class GONWithoutPOMaster
                 End If
             End If
             Dim dt As DataTable = Me.SGonManager.getSPPBReportData(listSPPB)
-            Me.DisplayData(dt)
+            Dim dtTable As New DataTable("Ref_Other_SPPB")
+            With dtTable
+                .Columns.Add("FKApp", Type.GetType("System.Int32"))
+                .Columns.Add("PO_NUMBER", Type.GetType("System.String"))
+                .Columns.Add("SPPB_NUMBER", Type.GetType("System.String"))
+                .Columns.Add("SPPB_DATE", Type.GetType("System.DateTime"))
+                .Columns.Add("PO_DATE", Type.GetType("System.DateTime"))
+                .Columns.Add("ITEM", Type.GetType("System.String"))
+                .Columns.Add("PO_ORIGINAL", Type.GetType("System.Decimal"))
+                .Columns("PO_ORIGINAL").DefaultValue = 0
+                .Columns.Add("STATUS", Type.GetType("System.String"))
+                .Columns.Add("SHIP_TO_CUSTOMER", Type.GetType("System.String"))
+                .Columns.Add("QUANTITY", Type.GetType("System.String"))
+                .Columns.Add("COLLY_BOX", Type.GetType("System.String"))
+                .Columns.Add("COLLY_PACKSIZE", Type.GetType("System.String"))
+                .Columns.Add("SHIP_TO_WARHOUSE", Type.GetType("System.String"))
+                .Columns("SHIP_TO_WARHOUSE").DefaultValue = "Plant Merak" 'di isi dan di perbaiki nantinya
+            End With
+          
+            Dim info As New CultureInfo("id-ID")
+            For i As Integer = 0 To dt.Rows.Count - 1
+                Dim POOriginal As Decimal = 0
+                Dim row As DataRow = dt.Rows(i)
+                Dim newRow As DataRow = dtTable.NewRow()
+                newRow.BeginEdit()
+                newRow("PO_NUMBER") = row("PO_NUMBER")
+                newRow("SPPB_NUMBER") = row("SPPB_NUMBER")
+                newRow("SPPB_DATE") = row("SPPB_DATE")
+                newRow("PO_DATE") = row("PO_DATE")
+                newRow("ITEM") = row("ITEM")
+                If Not IsNothing(row("PO_ORIGINAL")) And Not IsDBNull(row("PO_ORIGINAL")) Then
+                    POOriginal = row("PO_ORIGINAL")
+                End If
+                Dim oVol1 As Object = row("VOL1"), oVol2 As Object = row("VOL2")
+                Dim oUnit1 As Object = row("UNIT1"), oUnit2 As Object = row("UNIT2")
+                Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
+                Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
+                Dim col1 As Integer = 0
+                Dim collyBox As String = "", collyPackSize As String = ""
+                If POOriginal >= Dvol1 Then
+                    col1 = Convert.ToInt32(Decimal.Truncate(POOriginal / Dvol1))
+                    collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
+                    Dim lqty As Decimal = POOriginal Mod Dvol1
+                    Dim ilqty As Integer = 0
+                    If lqty >= 1 Then
+                        'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
+                        ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                    ElseIf lqty > 0 And lqty < 1 Then
+                        ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                        'ilqty = ilqty + DVol2
+                    End If
+                    collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                ElseIf POOriginal > 0 Then ''gon kurang dari 1 coly
+                    Dim ilqty As Integer = Convert.ToInt32((POOriginal / Dvol1) * DVol2)
+                    collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                End If
+                newRow("PO_ORIGINAL") = POOriginal
+                newRow("COLLY_BOX") = collyBox
+                newRow("COLLY_PACKSIZE") = collyPackSize
+                newRow("PO_ORIGINAL") = POOriginal
+                newRow("STATUS") = row("STATUS")
+                newRow("SHIP_TO_CUSTOMER") = row("SHIP_TO_CUSTOMER")
+                Dim UnitOfMeasure = row("UnitOfMeasure").ToString()
+                newRow("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", POOriginal, UnitOfMeasure.ToString())
+                newRow.EndEdit()
+                dtTable.Rows.Add(newRow)
+            Next
+            dtTable.AcceptChanges()
+            Me.DisplayData(dtTable)
             Me.isLoadingRow = False
             Cursor = Cursors.Default
         Catch ex As Exception
@@ -470,11 +589,14 @@ Public Class GONWithoutPOMaster
             .Columns.Add("STATUS", Type.GetType("System.String"))
             .Columns.Add("SHIP_TO_CUSTOMER", Type.GetType("System.String"))
             .Columns.Add("QUANTITY", Type.GetType("System.String"))
+            .Columns.Add("COLLY_BOX", Type.GetType("System.String"))
+            .Columns.Add("COLLY_PACKSIZE", Type.GetType("System.String"))
             .Columns.Add("SHIP_TO_WARHOUSE", Type.GetType("System.String"))
             .Columns("SHIP_TO_WARHOUSE").DefaultValue = "Plant Merak" 'di isi dan di perbaiki nantinya
         End With
         Dim tblDummy As New DataTable("Ref_Other_SPPB")
         Me.SGonManager.getSPPBReportData(SPPBNo, True, Nothing, tblDummy)
+        'Dim POCateGory As String = Me.AdvancedTManager1.GridEX1.GetValue("PO_CATEGORY")
         Dim info As New CultureInfo("id-ID")
         For i As Integer = 0 To tblDummy.Rows.Count - 1
             Dim POOriginal As Decimal = 0
@@ -489,7 +611,47 @@ Public Class GONWithoutPOMaster
             If Not IsNothing(row("PO_ORIGINAL")) And Not IsDBNull(row("PO_ORIGINAL")) Then
                 POOriginal = row("PO_ORIGINAL")
             End If
+            Dim oVol1 As Object = row("VOL1"), oVol2 As Object = row("VOL2")
+            Dim oUnit1 As Object = row("UNIT1"), oUnit2 As Object = row("UNIT2")
+            Dim ValidData As Boolean = True
+            If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+                Me.ShowMessageError(row("ITEM").ToString() & ", colly for Volume 1 has not been set yet")
+                ValidData = False
+            ElseIf oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
+                Me.ShowMessageError(row("ITEM").ToString() & ", colly for Volume 2 has not been set yet")
+                ValidData = False
+            ElseIf oUnit1 Is Nothing Or oUnit2 Is DBNull.Value Then
+                Me.ShowMessageError(row("ITEM").ToString() & ", colly for Unit 1 has not been set yet")
+                ValidData = False
+            ElseIf oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
+                Me.ShowMessageError(row("ITEM").ToString() & ", colly for Unit 2 has not been set yet")
+                ValidData = False
+            End If
+            If Not ValidData Then : Cursor = Cursors.Default : Return : End If
+            Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
+            Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
+            Dim col1 As Integer = 0
+            Dim collyBox As String = "", collyPackSize As String = ""
+            If POOriginal >= Dvol1 Then
+                col1 = Convert.ToInt32(Decimal.Truncate(POOriginal / Dvol1))
+                collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
+                Dim lqty As Decimal = POOriginal Mod Dvol1
+                Dim ilqty As Integer = 0
+                If lqty >= 1 Then
+                    'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
+                    ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                ElseIf lqty > 0 And lqty < 1 Then
+                    ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                    'ilqty = ilqty + DVol2
+                End If
+                collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+            ElseIf POOriginal > 0 Then ''gon kurang dari 1 coly
+                Dim ilqty As Integer = Convert.ToInt32((POOriginal / Dvol1) * DVol2)
+                collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+            End If
             newRow("PO_ORIGINAL") = POOriginal
+            newRow("COLLY_BOX") = collyBox
+            newRow("COLLY_PACKSIZE") = collyPackSize
             newRow("STATUS") = row("STATUS")
             newRow("SHIP_TO_CUSTOMER") = row("SHIP_TO_CUSTOMER")
             Dim UnitOfMeasure = row("UnitOfMeasure").ToString()
@@ -511,6 +673,9 @@ Public Class GONWithoutPOMaster
             Me.isLoadingRow = True
             .ShowDialog(Me)
         End With
+        If Not IsNothing(Me.frmSPPBrep) Then
+            Me.frmSPPBrep.Dispose() : frmSPPBrep = Nothing
+        End If
         Me.isLoadingRow = False
     End Sub
     Private Sub setVisibleDateControl(ByVal isVisible As Boolean)
@@ -534,7 +699,7 @@ Public Class GONWithoutPOMaster
         End If
     End Sub
     Private Sub RunQuery(ByVal SearchString As String, ByVal SearchBy As String, ByVal FD As FilterData)
-        RowCount = 0 : Dim Dv As DataView = Nothing
+        Dim Dv As DataView = Nothing
         If Me.m_DataType = NufarmBussinesRules.common.Helper.DataTypes.DateTime And Me.AdvancedTManager1.dtPicFrom.Visible Then
             If Not String.IsNullOrEmpty(SearchString) Then
                 Select Case FD
@@ -788,75 +953,75 @@ Public Class GONWithoutPOMaster
             Select Case Me.OriginalCriteria
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                     .btnCriteria.Text = "|*"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+                    .btnCriteria.CompareOperator = CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                     .btnCriteria.Text = "*|"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+                    .btnCriteria.CompareOperator = CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                     .btnCriteria.Text = "="
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Equal
+                    .btnCriteria.CompareOperator = CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                     .btnCriteria.Text = ">"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Greater
+                    .btnCriteria.CompareOperator = CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                     .btnCriteria.Text = ">="
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+                    .btnCriteria.CompareOperator = CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.In
                     .btnCriteria.Text = "*|*"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.In
+                    .btnCriteria.CompareOperator = CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                     .btnCriteria.Text = "<"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Less
+                    .btnCriteria.CompareOperator = CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                     .btnCriteria.Text = "<="
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+                    .btnCriteria.CompareOperator = CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                     .btnCriteria.Text = "*.*"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Like
+                    .btnCriteria.CompareOperator = CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
                     .btnCriteria.Text = "<>"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+                    .btnCriteria.CompareOperator = CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
                     .btnCriteria.Text = "<>"
-                    .btnCriteria.CompOperator = NuFarm.Common.GUI.ToggleButton.CompareOperator.Between
+                    .btnCriteria.CompareOperator = CompareOperator.Between
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
             End Select
         End With
         Me.isUndoingCriteria = False
     End Sub
     Private Sub SetOriginalCriteria()
-        Select Case Me.AdvancedTManager1.btnCriteria.CompOperator
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+        Select Case Me.AdvancedTManager1.btnCriteria.CompareOperator
+            Case CompareOperator.BeginWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+            Case CompareOperator.EndWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Equal
+            Case CompareOperator.Equal
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Greater
+            Case CompareOperator.Greater
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+            Case CompareOperator.GreaterOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.In
+            Case CompareOperator.In
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Less
+            Case CompareOperator.Less
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+            Case CompareOperator.LessOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Like
+            Case CompareOperator.Like
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+            Case CompareOperator.NotEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
-            Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Between
+            Case CompareOperator.Between
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
         End Select
     End Sub
@@ -913,28 +1078,28 @@ Public Class GONWithoutPOMaster
             Me.Cursor = Cursors.WaitCursor
             Me.AdvancedTManager1.txtSearch.Enabled = True
             If Me.isUndoingCriteria Then : Return : End If
-            Select Case Me.AdvancedTManager1.btnCriteria.CompOperator
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+            Select Case Me.AdvancedTManager1.btnCriteria.CompareOperator
+                Case CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+                Case CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Equal
+                Case CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Greater
+                Case CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+                Case CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.In
+                Case CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Less
+                Case CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+                Case CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Like
+                Case CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+                Case CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
-                Case NuFarm.Common.GUI.ToggleButton.CompareOperator.Between
+                Case CompareOperator.Between
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
                     Me.AdvancedTManager1.txtSearch.Text = ""
                     Me.AdvancedTManager1.txtSearch.Enabled = False
@@ -1006,22 +1171,6 @@ Public Class GONWithoutPOMaster
             If boolSucced Then : e.Cancel = False
             Else : e.Cancel = True
             End If
-            'If mustReload Then
-            '    Me.ReloadOpener()
-            'Else
-            '    'cek apakah ada IDApp detial di GON_SEPARATED_DETAIL
-            '    Me.AdvancedTManager1.GridEX1.UpdateData()
-            '    If (Me.AdvancedTManager1.GridEX1.RecordCount <= 0) Then
-            '        If Me.TotalIndex > 1 Then
-            '            If Me.PageIndex > 1 Then
-            '                Me.PageIndex -= 
-
-            '            End If
-            '        End If
-            '        Me.SetStatusRecord()
-            '        Me.SetButtonStatus()
-            '    End If
-            'End If
             Me.AdvancedTManager1.GridEX1.UpdateData()
             If (Me.AdvancedTManager1.GridEX1.RecordCount <= 0) Then
                 If Me.TotalIndex > 1 Then
@@ -1094,6 +1243,30 @@ Public Class GONWithoutPOMaster
             .ShowDialog()
         End With
     End Sub
+    Private Sub PullAndShowDataSP(ByVal PONumber As String, ByVal GONNumber As String, ByVal SForm As SaveMode)
+        Dim OSPPBHeader As New SPPBHeader()
+        Dim OGONHeader As New GONHeader()
+        Dim frmInputGon As New GonSample()
+        With frmInputGon
+            .CMain = Me.CMain
+            If Not String.IsNullOrEmpty(GONNumber) And GONNumber <> "PENDING GON" Then
+                Me.clsSampleGon.getFormData(GONNumber, OSPPBHeader, OGONHeader, False)
+                .OGONHeader = OGONHeader
+                .OSPPBHeader = OSPPBHeader
+                .dtGonDetail = Me.clsSampleGon.getGOnDetail(OGONHeader.GON_NO, False)
+            ElseIf Not String.IsNullOrEmpty(PONumber) Then
+                Me.clsSampleGon.getPOData(PONumber, OSPPBHeader, False)
+                .OSPPBHeader = OSPPBHeader
+                .dtGonDetail = Me.clsSampleGon.getGOnDetail("", False)
+            End If
+            .dtGonPODetail = Me.clsSampleGon.getGonPODetail(OSPPBHeader.PONumber, False)
+            .SForm = SForm
+            .initializedData()
+            .StartPosition = FormStartPosition.CenterScreen
+            .Opener = Me
+            .ShowDialog()
+        End With
+    End Sub
     Private Sub AdvancedTManager1_GridDoubleClicked(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AdvancedTManager1.GridDoubleClicked
         Try
             If Me.SFG = StateFillingGrid.Filling Then : Return : End If
@@ -1106,20 +1279,27 @@ Public Class GONWithoutPOMaster
             Dim gonNumber As Object = AdvancedTManager1.GridEX1.GetValue("GON_NUMBER")
             Dim PONumber As Object = AdvancedTManager1.GridEX1.GetValue("PO_NUMBER")
             'Dim gonNumber As String = AdvancedTManager1.GridEX1.GetValue("GON_NUMBER").ToString()
-            If Not IsNothing(gonNumber) And Not IsDBNull(gonNumber) Then
-                If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
-                    Me.PullAndShowData("", gonNumber, StatusForm.Open)
+            Dim POCateGory As String = Me.AdvancedTManager1.GridEX1.GetValue("PO_CATEGORY")
+            If POCateGory = "UNREG_FIN_GOODS" Then
+                If Not IsNothing(gonNumber) And Not IsDBNull(gonNumber) Then
+                    If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
+                        Me.PullAndShowDataSP("", gonNumber, SaveMode.Open)
+                    Else
+                        Me.PullAndShowDataSP(PONumber, "", SaveMode.Open)
+                    End If
+                Else
+                    Me.PullAndShowDataSP(PONumber, "", SaveMode.Open)
+                End If
+            ElseIf POCateGory = "REG_FIN_GOODS" Then
+                If Not IsNothing(gonNumber) And Not IsDBNull(gonNumber) Then
+                    If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
+                        Me.PullAndShowData("", gonNumber, StatusForm.Open)
+                    Else
+                        Me.PullAndShowData(PONumber, "", StatusForm.Open)
+                    End If
                 Else
                     Me.PullAndShowData(PONumber, "", StatusForm.Open)
                 End If
-                'Me.PullAndShowData("", gonNumber, StatusForm.Open)
-            Else
-                'If Not String.IsNullOrEmpty(gonNumber) And gonNumber <> "PENDING GON" Then
-                '    Me.PullAndShowData("", gonNumber, StatusForm.Open)
-                'Else
-                '    Me.PullAndShowData(PONumber, "", StatusForm.Open)
-                'End If
-                Me.PullAndShowData(PONumber, "", StatusForm.Open)
             End If
 
             Me.Cursor = Cursors.Default

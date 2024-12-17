@@ -88,6 +88,18 @@
               </xs:element>
               <xs:element name="QUANTITY" msprop:Generator_UserColumnName="QUANTITY" msprop:Generator_ColumnVarNameInTable="columnQUANTITY" msprop:Generator_ColumnPropNameInRow="QUANTITY" msprop:Generator_ColumnPropNameInTable="QUANTITYColumn" type="xs:string" minOccurs="0" />
               <xs:element name="SHIP_TO_WARHOUSE" msprop:Generator_UserColumnName="SHIP_TO_WARHOUSE" msprop:Generator_ColumnPropNameInRow="SHIP_TO_WARHOUSE" msprop:Generator_ColumnVarNameInTable="columnSHIP_TO_WARHOUSE" msprop:Generator_ColumnPropNameInTable="SHIP_TO_WARHOUSEColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="COLLY_BOX" msprop:Generator_UserColumnName="COLLY_BOX" msprop:Generator_ColumnVarNameInTable="columnCOLLY_BOX" msprop:Generator_ColumnPropNameInRow="COLLY_BOX" msprop:Generator_ColumnPropNameInTable="COLLY_BOXColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="COLLY_PACKSIZE" msprop:Generator_UserColumnName="COLLY_PACKSIZE" msprop:Generator_ColumnVarNameInTable="columnCOLLY_PACKSIZE" msprop:Generator_ColumnPropNameInRow="COLLY_PACKSIZE" msprop:Generator_ColumnPropNameInTable="COLLY_PACKSIZEColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="CONVERTION_RESULT" msprop:Generator_UserTableName="CONVERTION_RESULT" msprop:Generator_RowDeletedName="CONVERTION_RESULTRowDeleted" msprop:Generator_TableClassName="CONVERTION_RESULTDataTable" msprop:Generator_RowChangedName="CONVERTION_RESULTRowChanged" msprop:Generator_RowClassName="CONVERTION_RESULTRow" msprop:Generator_RowChangingName="CONVERTION_RESULTRowChanging" msprop:Generator_RowEvArgName="CONVERTION_RESULTRowChangeEvent" msprop:Generator_RowEvHandlerName="CONVERTION_RESULTRowChangeEventHandler" msprop:Generator_TablePropName="CONVERTION_RESULT" msprop:Generator_TableVarName="tableCONVERTION_RESULT" msprop:Generator_RowDeletingName="CONVERTION_RESULTRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ITEM_DESCRIPTIONS" msprop:Generator_UserColumnName="ITEM_DESCRIPTIONS" msprop:Generator_ColumnPropNameInRow="ITEM_DESCRIPTIONS" msprop:Generator_ColumnVarNameInTable="columnITEM_DESCRIPTIONS" msprop:Generator_ColumnPropNameInTable="ITEM_DESCRIPTIONSColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="UNIT_QUANTITY" msprop:Generator_UserColumnName="UNIT_QUANTITY" msprop:Generator_ColumnPropNameInRow="UNIT_QUANTITY" msprop:Generator_ColumnVarNameInTable="columnUNIT_QUANTITY" msprop:Generator_ColumnPropNameInTable="UNIT_QUANTITYColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="COLLY_BOX" msprop:Generator_UserColumnName="COLLY_BOX" msprop:Generator_ColumnPropNameInRow="COLLY_BOX" msprop:Generator_ColumnVarNameInTable="columnCOLLY_BOX" msprop:Generator_ColumnPropNameInTable="COLLY_BOXColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="COLLY_PACKSIZE" msprop:Generator_UserColumnName="COLLY_PACKSIZE" msprop:Generator_ColumnPropNameInRow="COLLY_PACKSIZE" msprop:Generator_ColumnVarNameInTable="columnCOLLY_PACKSIZE" msprop:Generator_ColumnPropNameInTable="COLLY_PACKSIZEColumn" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

@@ -48,6 +48,7 @@ Partial Class ReportGrid
         Me.btnReportSales = New DevComponents.DotNetBar.ButtonItem
         Me.btnReportDDDR = New DevComponents.DotNetBar.ButtonItem
         Me.btnTarget4MPeriode = New DevComponents.DotNetBar.ButtonItem
+        Me.btnPOAndDPDFMP = New DevComponents.DotNetBar.ButtonItem
         Me.ButtonItem2 = New DevComponents.DotNetBar.ButtonItem
         Me.btnCardView = New DevComponents.DotNetBar.ButtonItem
         Me.btnSingleCard = New DevComponents.DotNetBar.ButtonItem
@@ -59,7 +60,6 @@ Partial Class ReportGrid
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
         Me.ExpandablePanel1 = New DevComponents.DotNetBar.ExpandablePanel
-        Me.btnPOAndDPDFMP = New DevComponents.DotNetBar.ButtonItem
         CType(Me.Bar2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -280,6 +280,12 @@ Partial Class ReportGrid
         Me.btnTarget4MPeriode.Name = "btnTarget4MPeriode"
         Me.btnTarget4MPeriode.Text = "Target 4M Periode"
         '
+        'btnPOAndDPDFMP
+        '
+        Me.btnPOAndDPDFMP.ImageIndex = 17
+        Me.btnPOAndDPDFMP.Name = "btnPOAndDPDFMP"
+        Me.btnPOAndDPDFMP.Text = "Recap PO DPD FMP"
+        '
         'ButtonItem2
         '
         Me.ButtonItem2.Name = "ButtonItem2"
@@ -366,12 +372,6 @@ Partial Class ReportGrid
         Me.ExpandablePanel1.TitleStyle.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText
         Me.ExpandablePanel1.TitleStyle.GradientAngle = 90
         Me.ExpandablePanel1.TitleText = "Type of Report"
-        '
-        'btnPOAndDPDFMP
-        '
-        Me.btnPOAndDPDFMP.ImageIndex = 17
-        Me.btnPOAndDPDFMP.Name = "btnPOAndDPDFMP"
-        Me.btnPOAndDPDFMP.Text = "Recap PO DPD FMP"
         '
         'ReportGrid
         '

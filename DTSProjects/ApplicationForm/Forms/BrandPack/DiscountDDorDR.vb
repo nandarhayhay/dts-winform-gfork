@@ -100,6 +100,8 @@ Public Class DiscountDDOrDR
                         Me.btnAddNew.Checked = False
                         Me.btnSave.Enabled = False
                         Me.Mode = NufarmBussinesRules.common.Helper.SaveMode.None
+                        Me.listCheckedBrandPacks = Nothing
+                        Me.listCheckedBrands = Nothing
                     Else
                         Me.ClearEntry()
                         DVBrand = Me.clsDiscountPrice.getBrand(0, Convert.ToDateTime(Me.dtPicFrom.Value.ToShortDateString()), _
@@ -149,7 +151,7 @@ Public Class DiscountDDOrDR
                         Me.Cursor = Cursors.Default : Return
                     End If
                     If Me.SaveData() Then
-                        Me.PageIndex = Me.TotalIndex
+                        'Me.PageIndex = Me.TotalIndex
                         Me.Isloadingrow = True : isLoadingCombo = True
                         Me.GetData() : Me.ClearEntry()
                         Me.btnEditRow.Checked = False
@@ -238,26 +240,27 @@ Public Class DiscountDDOrDR
             If Not hasLoadForm Then : Return : End If
             Me.Cursor = Cursors.WaitCursor
             If Me.isUndoingCriteria Then : Return : End If
-            Select Case Me.TManager1.btnCriteria.CompOperator
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+            Select Case Me.TManager1.btnCriteria.CompareOperator
+
+                Case CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+                Case CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+                Case CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
+                Case CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+                Case CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.In
+                Case CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
+                Case CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+                Case CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
+                Case CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
-                Case Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+                Case CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
             End Select
             Me.TManager1_ButonClick(Me.TManager1.btnSearch, New EventArgs())
@@ -694,7 +697,7 @@ Public Class DiscountDDOrDR
 
     Private Sub FillValueList()
         'AMBIL DATA DI ACCPACK 
-        Dim VList() As String = {"DD", "DR", "CBD", "DK"}
+        Dim VList() As String = {"DD", "DR", "CBD", "DK", "DP"}
         Dim ColDiscType As Janus.Windows.GridEX.GridEXColumn = Me.grdProgDisc.RootTable.Columns("TypeApp")
         ColDiscType.EditType = Janus.Windows.GridEX.EditType.DropDownList
         ColDiscType.AutoComplete = True : ColDiscType.HasValueList = True
@@ -770,6 +773,7 @@ Public Class DiscountDDOrDR
             'get listBrands
             Me.txtProgramID.Text = strProgID
             'reset dulu
+
             Me.chkTargetPOPerBrand.Checked = False
             Me.chkTargetPOPerPackSize.Checked = False
 
@@ -930,9 +934,10 @@ Public Class DiscountDDOrDR
             Me.txtDescriptions.Text = Me.TManager1.GridEX1.GetValue("PROGRAM_DESC")
         End With
         'Mode Edit Periode harus disabled, karena terlalu kompleks logic nya
-        Me.dtPicFrom.ReadOnly = True
-        Me.dtPicEndDate.ReadOnly = True
-        If Me.clsDiscountPrice.HasReference(IDApp, True) Or NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR = False Then
+        Dim HasRef As Boolean = (Me.clsDiscountPrice.HasReference(IDApp, True) Or NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR = False)
+        Me.dtPicFrom.ReadOnly = HasRef
+        Me.dtPicEndDate.ReadOnly = HasRef
+        If HasRef Then
             Me.txtProgramID.Enabled = False
             Me.rdbAllDist.Enabled = False
             Me.rdbCertainDisc.Enabled = False
@@ -1119,26 +1124,26 @@ Public Class DiscountDDOrDR
         Return strResult
     End Function
     Private Sub SetOriginalCriteria()
-        Select Case Me.TManager1.btnCriteria.CompOperator
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+        Select Case Me.TManager1.btnCriteria.CompareOperator
+            Case CompareOperator.BeginWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+            Case CompareOperator.EndWith
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+            Case CompareOperator.Equal
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
+            Case CompareOperator.Greater
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+            Case CompareOperator.GreaterOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.In
+            Case CompareOperator.In
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
+            Case CompareOperator.Less
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+            Case CompareOperator.LessOrEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
+            Case CompareOperator.Like
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
-            Case Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+            Case CompareOperator.NotEqual
                 Me.OriginalCriteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
         End Select
     End Sub
@@ -1148,43 +1153,43 @@ Public Class DiscountDDOrDR
             Select Case Me.OriginalCriteria
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                     .btnCriteria.Text = "|*"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.BeginWith
+                    .btnCriteria.CompareOperator = CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                     .btnCriteria.Text = "*|"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.EndWith
+                    .btnCriteria.CompareOperator = CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                     .btnCriteria.Text = "="
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+                    .btnCriteria.CompareOperator = CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                     .btnCriteria.Text = ">"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Greater
+                    .btnCriteria.CompareOperator = CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                     .btnCriteria.Text = ">="
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.GreaterOrEqual
+                    .btnCriteria.CompareOperator = CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.In
                     .btnCriteria.Text = "*|*"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.In
+                    .btnCriteria.CompareOperator = CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                     .btnCriteria.Text = "<"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Less
+                    .btnCriteria.CompareOperator = CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                     .btnCriteria.Text = "<="
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.LessOrEqual
+                    .btnCriteria.CompareOperator = CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                     .btnCriteria.Text = "*.*"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Like
+                    .btnCriteria.CompareOperator = CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
                     .btnCriteria.Text = "<>"
-                    .btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.NotEqual
+                    .btnCriteria.CompareOperator = CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
             End Select
         End With

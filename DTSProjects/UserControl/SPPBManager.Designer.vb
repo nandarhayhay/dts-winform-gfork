@@ -49,8 +49,14 @@ Partial Class SPPBManager
         Me.SalesReportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.SPPBEntryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.EditGONToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.PrintGONToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.btnPrintGonCurSell = New System.Windows.Forms.ToolStripMenuItem
+        Me.btnPrinCustoms = New System.Windows.Forms.ToolStripMenuItem
         Me.chkFilter = New System.Windows.Forms.CheckBox
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.btnPrintSPPB = New DevComponents.DotNetBar.ButtonItem
+        Me.btnCurrentSelection = New DevComponents.DotNetBar.ButtonItem
+        Me.btnPrintcustoms = New DevComponents.DotNetBar.ButtonItem
         Me.xpgFilterDate.SuspendLayout()
         CType(Me.grdHeader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlMain.SuspendLayout()
@@ -348,15 +354,15 @@ Partial Class SPPBManager
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GetDataToolStripMenuItem, Me.EditGONToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GetDataToolStripMenuItem, Me.EditGONToolStripMenuItem, Me.PrintGONToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(124, 48)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(153, 92)
         '
         'GetDataToolStripMenuItem
         '
         Me.GetDataToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SalesReportSummaryToolStripMenuItem, Me.SalesReportToolStripMenuItem, Me.SPPBEntryToolStripMenuItem})
         Me.GetDataToolStripMenuItem.Name = "GetDataToolStripMenuItem"
-        Me.GetDataToolStripMenuItem.Size = New System.Drawing.Size(123, 22)
+        Me.GetDataToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.GetDataToolStripMenuItem.Text = "Get Data"
         '
         'SalesReportSummaryToolStripMenuItem
@@ -380,8 +386,27 @@ Partial Class SPPBManager
         'EditGONToolStripMenuItem
         '
         Me.EditGONToolStripMenuItem.Name = "EditGONToolStripMenuItem"
-        Me.EditGONToolStripMenuItem.Size = New System.Drawing.Size(123, 22)
+        Me.EditGONToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.EditGONToolStripMenuItem.Text = "Edit GON"
+        '
+        'PrintGONToolStripMenuItem
+        '
+        Me.PrintGONToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnPrintGonCurSell, Me.btnPrinCustoms})
+        Me.PrintGONToolStripMenuItem.Name = "PrintGONToolStripMenuItem"
+        Me.PrintGONToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.PrintGONToolStripMenuItem.Text = "Print GON"
+        '
+        'btnPrintGonCurSell
+        '
+        Me.btnPrintGonCurSell.Name = "btnPrintGonCurSell"
+        Me.btnPrintGonCurSell.Size = New System.Drawing.Size(168, 22)
+        Me.btnPrintGonCurSell.Text = "Current Sellection"
+        '
+        'btnPrinCustoms
+        '
+        Me.btnPrinCustoms.Name = "btnPrinCustoms"
+        Me.btnPrinCustoms.Size = New System.Drawing.Size(168, 22)
+        Me.btnPrinCustoms.Text = "Customs"
         '
         'chkFilter
         '
@@ -399,6 +424,24 @@ Partial Class SPPBManager
         Me.ToolTip1.IsBalloon = True
         Me.ToolTip1.ShowAlways = True
         Me.ToolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
+        '
+        'btnPrintSPPB
+        '
+        Me.btnPrintSPPB.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
+        Me.btnPrintSPPB.ImageIndex = 9
+        Me.btnPrintSPPB.Name = "btnPrintSPPB"
+        Me.btnPrintSPPB.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCurrentSelection, Me.btnPrintcustoms})
+        Me.btnPrintSPPB.Text = "Printing SPPB"
+        '
+        'btnCurrentSelection
+        '
+        Me.btnCurrentSelection.Name = "btnCurrentSelection"
+        Me.btnCurrentSelection.Text = "Current Sell"
+        '
+        'btnPrintcustoms
+        '
+        Me.btnPrintcustoms.Name = "btnPrintcustoms"
+        Me.btnPrintcustoms.Text = "Customs"
         '
         'SPPBManager
         '
@@ -445,5 +488,11 @@ Partial Class SPPBManager
     Friend WithEvents SPPBEntryToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents EditGONToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SalesReportSummaryToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents PrintGONToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents btnPrintGonCurSell As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents btnPrinCustoms As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents btnPrintSPPB As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnCurrentSelection As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnPrintcustoms As DevComponents.DotNetBar.ButtonItem
 
 End Class

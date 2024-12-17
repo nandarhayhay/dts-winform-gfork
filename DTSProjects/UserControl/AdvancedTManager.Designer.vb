@@ -26,7 +26,7 @@ Partial Class AdvancedTManager
         Me.lblFrom = New System.Windows.Forms.Label
         Me.dtPicUntil = New System.Windows.Forms.DateTimePicker
         Me.dtPicFrom = New System.Windows.Forms.DateTimePicker
-        Me.btnCriteria = New Nufarm.Common.GUI.ToggleButton
+        Me.btnCriteria = New NuFarm.Common.GUI.ToggleButton
         Me.txtMaxRecord = New System.Windows.Forms.TextBox
         Me.cbCategory = New System.Windows.Forms.ComboBox
         Me.cbPageSize = New System.Windows.Forms.ComboBox
@@ -118,7 +118,7 @@ Partial Class AdvancedTManager
         'btnCriteria
         '
         Me.btnCriteria.ClickedImage = "Clicked"
-        Me.btnCriteria.CompOperator = Nufarm.Common.GUI.ToggleButton.CompareOperator.Equal
+        Me.btnCriteria.CompareOperator = CompareOperator.Equal
         Me.btnCriteria.DisabledImage = "Disabled"
         Me.btnCriteria.FlatAppearance.BorderColor = System.Drawing.SystemColors.GradientActiveCaption
         Me.btnCriteria.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ButtonFace
@@ -227,6 +227,7 @@ Partial Class AdvancedTManager
         Me.GridEX1.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX1.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
         Me.GridEX1.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
+        Me.GridEX1.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
         Me.GridEX1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
         Me.GridEX1.FilterRowButtonStyle = Janus.Windows.GridEX.FilterRowButtonStyle.ConditionOperatorDropDown
@@ -373,7 +374,7 @@ Partial Class AdvancedTManager
     Friend WithEvents btnNext As Janus.Windows.EditControls.UIButton
     Friend WithEvents btnGoPrevios As Janus.Windows.EditControls.UIButton
     Friend WithEvents btnGoFirst As Janus.Windows.EditControls.UIButton
-    Friend WithEvents btnCriteria As Nufarm.Common.GUI.ToggleButton
+    Public WithEvents btnCriteria As Nufarm.Common.GUI.ToggleButton
     Friend WithEvents txtSearch As System.Windows.Forms.TextBox
     Friend WithEvents CHKSelectAll As System.Windows.Forms.CheckBox
     Public WithEvents lblUntil As System.Windows.Forms.Label

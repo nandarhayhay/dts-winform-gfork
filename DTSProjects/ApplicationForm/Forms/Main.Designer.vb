@@ -46,6 +46,7 @@ Partial Class Main
         Me.btnProductClass = New DevComponents.DotNetBar.ButtonItem
         Me.btnAVGPrice = New DevComponents.DotNetBar.ButtonItem
         Me.btnProdconv = New DevComponents.DotNetBar.ButtonItem
+        Me.btnOtherProduct = New DevComponents.DotNetBar.ButtonItem
         Me.btnDistributor = New DevComponents.DotNetBar.ButtonItem
         Me.btnDistributorRegistering = New DevComponents.DotNetBar.ButtonItem
         Me.btnDistributorHistory = New DevComponents.DotNetBar.ButtonItem
@@ -71,6 +72,7 @@ Partial Class Main
         Me.btnGonDetailData = New DevComponents.DotNetBar.ButtonItem
         Me.btnTransporter = New DevComponents.DotNetBar.ButtonItem
         Me.btnGONArea = New DevComponents.DotNetBar.ButtonItem
+        Me.btnManualQtyConv = New DevComponents.DotNetBar.ButtonItem
         Me.btnGenerate = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscMarketing = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscAgreement = New DevComponents.DotNetBar.ButtonItem
@@ -287,7 +289,7 @@ Partial Class Main
         '
         Me.btnBrandPack.Name = "btnBrandPack"
         Me.btnBrandPack.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftP)
-        Me.btnBrandPack.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPack, Me.btnBrand, Me.btnBrandPackItem, Me.btnPriceHistory, Me.btnPlantation, Me.btnCompareBrandPack, Me.btnClasification, Me.btnProductClass, Me.btnAVGPrice, Me.btnProdconv})
+        Me.btnBrandPack.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPack, Me.btnBrand, Me.btnBrandPackItem, Me.btnPriceHistory, Me.btnPlantation, Me.btnCompareBrandPack, Me.btnClasification, Me.btnProductClass, Me.btnAVGPrice, Me.btnProdconv, Me.btnOtherProduct})
         Me.btnBrandPack.Text = "BrandPack"
         '
         'btnPack
@@ -358,7 +360,12 @@ Partial Class Main
         'btnProdconv
         '
         Me.btnProdconv.Name = "btnProdconv"
-        Me.btnProdconv.Text = "Product Convertion"
+        Me.btnProdconv.Text = "Master Data Product Convertion"
+        '
+        'btnOtherProduct
+        '
+        Me.btnOtherProduct.Name = "btnOtherProduct"
+        Me.btnOtherProduct.Text = "Other Product"
         '
         'btnDistributor
         '
@@ -492,7 +499,7 @@ Partial Class Main
         'btnSPPbAndGon
         '
         Me.btnSPPbAndGon.Name = "btnSPPbAndGon"
-        Me.btnSPPbAndGon.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnSPPB, Me.btnGONNonPODistributor, Me.btnGonDetailData, Me.btnTransporter, Me.btnGONArea})
+        Me.btnSPPbAndGon.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnSPPB, Me.btnGONNonPODistributor, Me.btnGonDetailData, Me.btnTransporter, Me.btnGONArea, Me.btnManualQtyConv})
         Me.btnSPPbAndGon.Text = "SPPB And GON"
         '
         'btnSPPB
@@ -524,6 +531,11 @@ Partial Class Main
         Me.btnGONArea.ImageIndex = 33
         Me.btnGONArea.Name = "btnGONArea"
         Me.btnGONArea.Text = "G O N Area"
+        '
+        'btnManualQtyConv
+        '
+        Me.btnManualQtyConv.Name = "btnManualQtyConv"
+        Me.btnManualQtyConv.Text = "Manually Qty Convertion"
         '
         'btnGenerate
         '
@@ -841,4 +853,6 @@ Partial Class Main
     Friend WithEvents btnProdconv As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnSPPbAndGon As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnGonDetailData As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnOtherProduct As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnManualQtyConv As DevComponents.DotNetBar.ButtonItem
 End Class

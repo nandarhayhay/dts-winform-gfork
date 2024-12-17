@@ -136,6 +136,7 @@ Partial Class ConvertionProduct
         Me.GridEX1.Name = "GridEX1"
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
+        Me.GridEX1.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX1.Size = New System.Drawing.Size(792, 432)
         Me.GridEX1.TabIndex = 6
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007

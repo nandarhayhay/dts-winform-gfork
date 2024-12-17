@@ -377,30 +377,36 @@ Public Class GonDetailData
                     status = row("STATUS")
 
                     row.BeginEdit()
+                    XSize = GonQty / DevQty
+                    PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                    PODIsc = PODIsc * DevQty
+                    'TotalGONPO += PODIsc
 
-                    If i1 = rows.Length - 1 Then ''yang terakhir
-                        If status = "SHIPPED" Then
-                            PODIsc = POOriginal - TotalGONPO
-                            GONDisc = TotalDisc - TotalGONDisc
-                        Else
-                            XSize = GonQty / DevQty
-                            PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
-                            PODIsc = PODIsc * DevQty
+                    GONDisc = Decimal.Round((TotalDisc * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                    GONDisc = GONDisc * DevQty
+                    'If i1 = rows.Length - 1 Then ''yang terakhir
+                    '    If status = "SHIPPED" Then
+                    '        PODIsc = POOriginal - TotalGONPO
+                    '        GONDisc = TotalDisc - TotalGONDisc
+                    '    Else
+                    '        XSize = GonQty / DevQty
+                    '        PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                    '        PODIsc = PODIsc * DevQty
 
-                            GONDisc = Decimal.Round((TotalDisc * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
-                            GONDisc = GONDisc * DevQty
-                        End If
+                    '        GONDisc = Decimal.Round((TotalDisc * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                    '        GONDisc = GONDisc * DevQty
+                    '    End If
 
-                    Else
-                        XSize = GonQty / DevQty
-                        PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
-                        PODIsc = PODIsc * DevQty
-                        TotalGONPO += PODIsc
+                    'Else
+                    '    XSize = GonQty / DevQty
+                    '    PODIsc = Decimal.Round((POOriginal * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                    '    PODIsc = PODIsc * DevQty
+                    '    TotalGONPO += PODIsc
 
-                        GONDisc = Decimal.Round((TotalDisc * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
-                        GONDisc = GONDisc * DevQty
-                        TotalGONDisc += GONDisc
-                    End If
+                    '    GONDisc = Decimal.Round((TotalDisc * XSize) / SPPBqty, MidpointRounding.AwayFromZero)
+                    '    GONDisc = GONDisc * DevQty
+                    '    TotalGONDisc += GONDisc
+                    'End If
                     If TotalDisc <= 0 Then
                         row("GON_PO") = GonQty
                         row("GON_DISC_INC") = 0

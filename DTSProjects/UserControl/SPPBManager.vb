@@ -1,8 +1,10 @@
 Imports System.Threading
 Imports System.Configuration
+Imports System.Globalization
 Public Class SPPBManager
     Friend WithEvents frmParentSPPB As SPPB = Nothing
     Friend WithEvents frmParentGrid As ReportGrid = Nothing
+    Friend WithEvents frmGonReport As FrmGonReport
     'Public Event gridCurrentCell_Changed(ByVal sender As Object, ByVal e As EventArgs)
     Friend IsLoadding As Boolean
     Private LD As Loading
@@ -19,6 +21,10 @@ Public Class SPPBManager
     Private CategoryType As String = "MasterCategory"
     Private isHOUser As Boolean = CBool(ConfigurationManager.AppSettings("IsHO"))
     Private ShowPrice As Boolean = CBool(ConfigurationManager.AppSettings("ShowPrice"))
+    Private DVMConversiProduct As DataView = Nothing
+    Private OriginalWaterMarkText As String
+    Private listGONHeaderIDs As New List(Of String)
+
     Public Property Grid() As Janus.Windows.GridEX.GridEX
         Get
             Return Me.m_Grid
@@ -64,6 +70,8 @@ Public Class SPPBManager
         If Not Me.isHOUser Then
             Me.SalesReportSummaryToolStripMenuItem.Visible = False
         End If
+        Dim IsDotMatrixPrint As Boolean = CBool(ConfigurationManager.AppSettings("DotMatrixPrint"))
+        Me.btnPrintcustoms.Visible = Not IsDotMatrixPrint
     End Sub
     '====================================OLD PROCESS===============================================
     'Private ReadOnly Property clsSPPBDetail() As NufarmBussinesRules.OrderAcceptance.SPPB_Detail
@@ -816,9 +824,11 @@ Public Class SPPBManager
 
     Private Sub SPPBManager_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Try
+            'get data prod convertion immediately and save in variable
+            Using clsSPPB As New NufarmBussinesRules.OrderAcceptance.SPPBEntryGON()
+                Me.DVMConversiProduct = clsSPPB.getProdConvertion(True)
+            End Using
 
-            'Me.btnFilteDate_Click(Me.btnFilteDate, New EventArgs())
-            'initialize data
             With Me.ToolTip1
                 .UseFading = True
                 .UseAnimation = True
@@ -1297,7 +1307,6 @@ Public Class SPPBManager
         Try
             Me.Cursor = Cursors.WaitCursor
             frmParentSPPB.EditGON()
-            Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.IsLoadding = False
             Me.StatProg = StatusProgress.None
@@ -1310,6 +1319,7 @@ Public Class SPPBManager
                 Me.frmParentGrid.LogMyEvent(ex.Message, Me.Name + "_btnFilteDate_Click")
             End If
         End Try
+        Me.Cursor = Cursors.Default
     End Sub
 
     Private Sub SalesReportSummaryToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SalesReportSummaryToolStripMenuItem.Click
@@ -1358,5 +1368,461 @@ Public Class SPPBManager
         If e.KeyCode = Keys.Enter Then
             Me.btnFilteDate_Click(Me.btnFilteDate, New EventArgs())
         End If
+    End Sub
+    Private Function CreateOrRecreateTblGON() As DataTable
+        Dim tbl_ref_gon As New DataTable("tbl_ref_gon")
+        Dim colDISTRIBUTOR_NAME As New DataColumn("DISTRIBUTOR_NAME", Type.GetType("System.String"))
+        colDISTRIBUTOR_NAME.DefaultValue = ""
+        Dim colVarDistAddress As New DataColumn("VAR_DIST_ADDRESS", Type.GetType("System.String"))
+        Dim colADDRESS As New DataColumn("ADDRESS", Type.GetType("System.String"))
+        colADDRESS.DefaultValue = ""
+        Dim colPO_REF_NO As New DataColumn("PO_REF_NO", Type.GetType("System.String"))
+        Dim colPO_REF_DATE As New DataColumn("PO_REF_DATE", Type.GetType("System.DateTime"))
+        Dim colPONoAndDate As New DataColumn("POREF_NO_AND_DATE", Type.GetType("System.String"))
+        Dim colSPPB_NO As New DataColumn("SPPB_NO", Type.GetType("System.String"))
+        Dim colSPPB_DATE As New DataColumn("SPPB_DATE", Type.GetType("System.DateTime"))
+        Dim colSPPBNoAndDate As New DataColumn("SPPB_NO_AND_DATE", Type.GetType("System.String"))
+        Dim colVarGonDate As New DataColumn("VAR_GON_DATE_STR", Type.GetType("System.String"))
+        Dim colVarWarHouse As New DataColumn("VAR_WARHOUSE", Type.GetType("System.String"))
+        Dim colGON_NO As New DataColumn("GON_NO", Type.GetType("System.String"))
+        Dim colGON_DATE As New DataColumn("GON_DATE", Type.GetType("System.DateTime"))
+        Dim colTRANSPORTER_NAME As New DataColumn("TRANSPORTER_NAME", Type.GetType("System.String"))
+        Dim colBrandPackName As New DataColumn("BRANDPACK_NAME", Type.GetType("System.String"))
+        colBrandPackName.AllowDBNull = False
+        Dim colQUANTITY As New DataColumn("QUANTITY", Type.GetType("System.String"))
+        Dim colCOLLY_BOX As New DataColumn("COLLY_BOX", Type.GetType("System.String"))
+        Dim colCOLLY_PACKSIZE As New DataColumn("COLLY_PACKSIZE", Type.GetType("System.String"))
+        Dim colBATCH_NO As New DataColumn("BATCH_NO", Type.GetType("System.String"))
+        Dim colPolNoTrans As New DataColumn("POLICE_NO_TRANS", Type.GetType("System.String"))
+        Dim colDriverTrans As New DataColumn("DRIVER_TRANS", Type.GetType("System.String"))
+        colBATCH_NO.AllowDBNull = True
+        tbl_ref_gon.Columns.AddRange(New DataColumn() {colDISTRIBUTOR_NAME, colVarDistAddress, colADDRESS, colPO_REF_NO, colPO_REF_DATE, colPONoAndDate, colSPPB_NO, _
+        colSPPB_DATE, colSPPBNoAndDate, colVarGonDate, colVarWarHouse, colGON_NO, colGON_DATE, colPolNoTrans, colDriverTrans, colTRANSPORTER_NAME, colBrandPackName, colQUANTITY, _
+        colCOLLY_BOX, colCOLLY_PACKSIZE, colBATCH_NO})
+        Return tbl_ref_gon
+    End Function
+    Private Sub btnPrintGonCurSell_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPrintGonCurSell.Click
+        Try
+            If IsNothing(Me.grdDetail.SelectedItems) Then
+                MessageBox.Show("Plese select the GON data to print", "Choose GON data", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            ElseIf Me.grdDetail.SelectedItems.Count <= 0 Then
+                MessageBox.Show("Plese select the GON data to print", "Choose GON data", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+            'getTable GON
+            Dim listHeaders As New List(Of String)
+            listHeaders.Add(Me.grdDetail.GetValue("GON_HEADER_ID"))
+            Dim tbl As DataTable = Me.clsSPPBGON.GetGonReportData(listHeaders)
+            If tbl.Rows.Count <= 0 Then
+                Return
+            End If
+            Me.Cursor = Cursors.WaitCursor
+            'colum yang wajib di isi
+            'GON_NO,TRANSPORTER_NAME,BRANDPACK_NAME,QUANTITY,COLLY_BOX,COLLY_PACKSIZE,BATCH_NO,VAR_DIST_ADDRESS,POREF_NO_AND_DATE,
+            'SPPB_NO_AND_DATE, VAR_GON_DATE_STR, POLICE_NO_TRANS, DRIVER_TRANS, VAR_WARHOUSE
+            Dim info As New CultureInfo("id-ID")
+
+            'VAR_DIST_ADDRESS
+            Dim Address As String = tbl.Rows(0)("ADDRESS").ToString()
+            Dim DistributorName As String = tbl.Rows(0)("DISTRIBUTOR_NAME").ToString()
+            'POREF_NO_AND_DATE
+            Dim PORefNO As String = tbl.Rows(0)("PO_REF_NO"), PoRefDate As Date = tbl.Rows(0)("PO_REF_DATE")
+            'SPPB_NO_AND_DATE
+            Dim SppbNo As String = tbl.Rows(0)("SPPB_NO"), SppbDate As Date = tbl.Rows(0)("SPPB_DATE")
+            'VAR_GON_DATE_STR
+            Dim gonDate As Date = tbl.Rows(0)("GON_DATE")
+            For i As Integer = 0 To tbl.Rows.Count - 1
+                Dim row As DataRow = tbl.Rows(i)
+                row.BeginEdit()
+                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, Address)
+                row("POREF_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", PORefNO, PoRefDate)
+                row("SPPB_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", SppbNo, SppbDate)
+                row("VAR_GON_DATE_STR") = String.Format(info, "Date : {0:dd/MM/yyyy}", gonDate)
+                Dim BrandPackName As String = row("BRANDPACK_NAME")
+                Dim GonQty As Decimal = Convert.ToDecimal(row("GON_QTY"))
+                Dim oUOM As Object = row("UnitOfMeasure")
+                Dim oVol1 As Object = row("VOL1"), oVol2 As Object = row("VOL2")
+                Dim oUnit1 As Object = row("UNIT1"), oUnit2 As Object = row("UNIT2")
+                Dim ValidData As Boolean = True
+                If oUOM Is Nothing Or oUOM Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tbl.Rows(0)("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", Unit of Measure has not been set yet")
+                        ValidData = False
+                    Else
+                        oUOM = Me.DVMConversiProduct(0)("UnitOfMeasure")
+                    End If
+                End If
+                If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tbl.Rows(0)("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for Volume 1 has not been set yet")
+                        ValidData = False
+                    Else
+                        oVol1 = Me.DVMConversiProduct(0)("VOL1")
+                    End If
+                End If
+                If oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tbl.Rows(0)("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for Volume 2 has not been set yet")
+                        ValidData = False
+                    Else
+                        oVol2 = Me.DVMConversiProduct(0)("VOL2")
+                    End If
+                End If
+                If oUnit1 Is Nothing Or oUnit1 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tbl.Rows(0)("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for unit 1 has not been set yet")
+                        ValidData = False
+                    Else
+                        oUnit1 = Me.DVMConversiProduct(0)("UNIT1")
+                    End If
+                End If
+                If oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & tbl.Rows(0)("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for unit 1 has not been set yet")
+                        ValidData = False
+                    Else
+                        oUnit2 = Me.DVMConversiProduct(0)("UNIT2")
+                    End If
+                End If
+                If ValidData Then
+                    Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
+                    Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
+                    Dim col1 As Integer = 0
+                    Dim collyBox As String = "", collyPackSize As String = ""
+                    If GonQty >= Dvol1 Then
+                        col1 = Convert.ToInt32(Decimal.Truncate(GonQty / Dvol1))
+                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
+                        Dim lqty As Decimal = GonQty Mod Dvol1
+                        Dim ilqty As Integer = 0
+                        If lqty > 0 Then
+                            'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
+                            ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                            'ElseIf lqty > 0 And lqty < 1 Then
+                            '    'ilqty = ilqty + DVol2
+                            '    ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                        End If
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    ElseIf GonQty > 0 Then ''gon kurang dari 1 coly
+                        Dim ilqty As Integer = Convert.ToInt32((GonQty / Dvol1) * DVol2)
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    End If
+                    'QUANTITY,COLLY_BOX,COLLY_PACKSIZE,
+                    row("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", GonQty, oUOM.ToString())
+                    row("COLLY_BOX") = collyBox
+                    row("COLLY_PACKSIZE") = collyPackSize
+                End If
+                row("BATCH_NO") = tbl.Rows(i)("BATCH_NO")
+                row.EndEdit()
+            Next
+            'colum yang diupdate
+            'QUANTITY,COLLY_BOX,COLLY_PACK_SIZE,VAR_DIST_ADDRESS,POREF_NO_AND_DATE,SPPB_NO_AND_DATE,VAR_GON_DATE_STR
+            tbl.AcceptChanges()
+            Me.frmGonReport = New FrmGonReport()
+            With Me.frmGonReport
+                .isSingleReport = True
+                .StartPosition = FormStartPosition.CenterScreen
+                .ShowInTaskbar = False
+                'Dim frmGonReport As New FrmGonReport()
+                Dim IsDotMatrixPrint As Boolean = CBool(ConfigurationManager.AppSettings("DotMatrixPrint"))
+                Dim IsImmediatePrint As Boolean = CBool(ConfigurationManager.AppSettings("DotMatrixImmediatePrint"))
+                If Not IsDotMatrixPrint Then
+                    Dim G2 As New GonRpt2()
+                    G2.SetDataSource(tbl)
+                    .ReportDoc = G2
+                    '.IsImmediatePrint = IsImmediatePrint
+                Else
+                    Dim g As New GonRpt()
+                    g.SetDataSource(tbl)
+                    .ReportDoc = g
+                End If
+                .crvGON.ReportSource = .ReportDoc
+                .crvGON.DisplayGroupTree = False
+
+                '.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable
+                If Not IsDotMatrixPrint And Not IsImmediatePrint Then
+                    .ShowDialog(Me)
+                ElseIf IsDotMatrixPrint And IsImmediatePrint Then
+                    .crvGON.PrintReport()
+                    Application.DoEvents()
+                ElseIf IsDotMatrixPrint And Not IsImmediatePrint Then
+                    .ShowDialog(Me)
+                ElseIf Not IsDotMatrixPrint And IsImmediatePrint Then
+                    .crvGON.PrintReport()
+                    Application.DoEvents()
+                End If
+            End With
+            Me.Cursor = Cursors.Default
+        Catch ex As Exception
+            Me.Cursor = Cursors.Default
+            MessageBox.Show(ex.Message)
+        End Try
+    End Sub
+
+    Private Sub btnPrinCustoms_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPrinCustoms.Click
+        Try
+            Me.listGONHeaderIDs = New List(Of String)
+            Me.frmGonReport = New FrmGonReport()
+            With Me.frmGonReport
+                .isSingleReport = False
+                .ShowInTaskbar = False
+                Me.OriginalWaterMarkText = Me.frmGonReport.txtSearch.WaterMarkText
+                .StartPosition = FormStartPosition.CenterScreen
+                Dim tblHeader As DataTable = Me.clsSPPBGON.getGonHeader("")
+                Me.IsLoadding = True
+                .GridEX1.SetDataBinding(tblHeader, "")
+                .GridEX1.UnCheckAllRecords()
+                Me.IsLoadding = False
+                .FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable
+                .ShowDialog()
+                Me.IsLoadding = False
+            End With
+        Catch ex As Exception
+            Me.Cursor = Cursors.Default : Me.IsLoadding = False
+            MessageBox.Show(ex.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+    End Sub
+
+    Private Sub frmGonReport_Grid_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles frmGonReport.Grid_KeyDown
+        If e.KeyCode = Keys.F7 Then
+            Cursor = Cursors.WaitCursor
+            Try
+                Dim FE As New Janus.Windows.GridEX.Export.GridEXExporter()
+                Me.Cursor = Cursors.WaitCursor
+                FE.IncludeHeaders = True
+                FE.SheetName = "GON_HEADER_DATA"
+                FE.IncludeFormatStyle = False
+                FE.IncludeExcelProcessingInstruction = True
+                FE.ExportMode = Janus.Windows.GridEX.ExportMode.AllRows
+                Dim SD As New SaveFileDialog()
+                SD.OverwritePrompt = True
+                SD.DefaultExt = ".xls"
+                SD.Filter = "All Files|*.*"
+                SD.RestoreDirectory = True
+                SD.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                If SD.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+                    Using FS As New System.IO.FileStream(SD.FileName, IO.FileMode.Create)
+                        FE.GridEX = Me.frmGonReport.GridEX1
+                        FE.Export(FS)
+                        FS.Close()
+                        MessageBox.Show("Data Exported to " & SD.FileName, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End Using
+                End If
+                Me.Cursor = Cursors.Default
+            Catch ex As Exception
+                Cursor = Cursors.Default
+                MessageBox.Show(ex.Message)
+            End Try
+        End If
+        Cursor = Cursors.Default
+    End Sub
+
+    Private Sub frmGonReport_Grid_RowCheckStateChanged(ByVal sender As Object, ByVal e As Janus.Windows.GridEX.RowCheckStateChangeEventArgs) Handles frmGonReport.Grid_RowCheckStateChanged
+        Try
+            If Me.IsLoadding Then : Return : End If
+            If Not Me.frmGonReport.hasLoadForm Then : Return : End If
+            Cursor = Cursors.WaitCursor
+            Me.IsLoadding = True
+            Dim GonHeaderID As String = ""
+            If e.CheckState = Janus.Windows.GridEX.RowCheckState.Checked Then
+                GonHeaderID = e.Row.Cells("GON_HEADER_ID").Value
+                If Not listGONHeaderIDs.Contains(GonHeaderID) Then
+                    listGONHeaderIDs.Add(GonHeaderID)
+                End If
+            End If
+            Dim tbl As DataTable = Me.clsSPPBGON.GetGonReportData(listGONHeaderIDs)
+
+            'Me.frmGonReport = New FrmGonReport()
+            For i As Integer = 0 To tbl.Rows.Count - 1
+                Dim row As DataRow = tbl.Rows(i)
+                Dim info As New CultureInfo("id-ID")
+
+                'VAR_DIST_ADDRESS
+                Dim Address As String = row("ADDRESS").ToString()
+                Dim DistributorName As String = row("DISTRIBUTOR_NAME").ToString()
+                'POREF_NO_AND_DATE
+                Dim PORefNO As String = row("PO_REF_NO"), PoRefDate As Date = row("PO_REF_DATE")
+                'SPPB_NO_AND_DATE
+                Dim SppbNo As String = row("SPPB_NO"), SppbDate As Date = row("SPPB_DATE")
+                'VAR_GON_DATE_STR
+                Dim gonDate As Date = row("GON_DATE")
+
+                row.BeginEdit()
+                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, Address)
+                row("POREF_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", PORefNO, PoRefDate)
+                row("SPPB_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", SppbNo, SppbDate)
+                row("VAR_GON_DATE_STR") = String.Format(info, "Date : {0:dd/MM/yyyy}", gonDate)
+                Dim BrandPackName As String = row("BRANDPACK_NAME")
+                Dim GonQty As Decimal = Convert.ToDecimal(row("GON_QTY"))
+                Dim oUOM As Object = row("UnitOfMeasure")
+                Dim oVol1 As Object = row("VOL1"), oVol2 As Object = row("VOL2")
+                Dim oUnit1 As Object = row("UNIT1"), oUnit2 As Object = row("UNIT2")
+                Dim ValidData As Boolean = True
+                If oUOM Is Nothing Or oUOM Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & row("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", Unit of Measure has not been set yet")
+                        ValidData = False
+                    Else
+                        oUOM = Me.DVMConversiProduct(0)("UnitOfMeasure")
+                    End If
+                End If
+                If oVol1 Is Nothing Or oVol2 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & row("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for Volume 1 has not been set yet")
+                        ValidData = False
+                    Else
+                        oVol1 = Me.DVMConversiProduct(0)("VOL1")
+                    End If
+                End If
+                If oVol2 Is Nothing Or oVol2 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & row("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for Volume 2 has not been set yet")
+                        ValidData = False
+                    Else
+                        oVol2 = Me.DVMConversiProduct(0)("VOL2")
+                    End If
+                End If
+                If oUnit1 Is Nothing Or oUnit1 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & row("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for unit 1 has not been set yet")
+                        ValidData = False
+                    Else
+                        oUnit1 = Me.DVMConversiProduct(0)("UNIT1")
+                    End If
+                End If
+                If oUnit2 Is Nothing Or oUnit2 Is DBNull.Value Then
+                    Me.DVMConversiProduct.RowFilter = "BRANDPACK_ID = '" & row("BRANDPACK_ID") & "'"
+                    If Me.DVMConversiProduct.Count <= 0 Then
+                        MessageBox.Show(BrandPackName & ", colly for unit 1 has not been set yet")
+                        ValidData = False
+                    Else
+                        oUnit2 = Me.DVMConversiProduct(0)("UNIT2")
+                    End If
+                End If
+                If ValidData Then
+                    Dim Dvol1 As Decimal = Convert.ToDecimal(oVol1), DVol2 As Decimal = Convert.ToDecimal(oVol2)
+                    Dim strUnit1 As String = CStr(oUnit1), strUnit2 As String = CStr(oUnit2)
+                    Dim col1 As Integer = 0
+                    Dim collyBox As String = "", collyPackSize As String = ""
+                    If GonQty >= Dvol1 Then
+                        col1 = Convert.ToInt32(Decimal.Truncate(GonQty / Dvol1))
+                        collyBox = IIf(col1 <= 0, "", String.Format("{0:g} {1}", col1, strUnit1))
+                        Dim lqty As Decimal = GonQty Mod Dvol1
+
+                        Dim ilqty As Integer = 0
+                        If lqty > 0 Then
+                            'Dim c As Decimal = Decimal.Remainder(GonQty, Dvol1)
+                            ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                            'ElseIf lqty > 0 And lqty < 1 Then
+                            '    'ilqty = ilqty + DVol2
+                            '    ilqty = Convert.ToInt32((lqty / Dvol1) * DVol2)
+                        End If
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    ElseIf GonQty > 0 Then ''gon kurang dari 1 coly
+                        Dim ilqty As Integer = Convert.ToInt32((GonQty / Dvol1) * DVol2)
+                        collyPackSize = IIf(ilqty <= 0, "", String.Format("{0:g} " & strUnit2, ilqty))
+                    End If
+                    'QUANTITY,COLLY_BOX,COLLY_PACKSIZE,
+                    row("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", GonQty, oUOM.ToString())
+                    row("COLLY_BOX") = collyBox
+                    row("COLLY_PACKSIZE") = collyPackSize
+                End If
+                row("BATCH_NO") = tbl.Rows(i)("BATCH_NO")
+                row.EndEdit()
+            Next
+            tbl.AcceptChanges()
+            With Me.frmGonReport
+                .ReportDoc = Nothing
+                Application.DoEvents()
+                '.crvGON.ReportSource = Nothing
+                'Application.DoEvents()
+                Dim IsDotMatrixPrint As Boolean = CBool(ConfigurationManager.AppSettings("DotMatrixPrint"))
+                Dim IsImmediatePrint As Boolean = CBool(ConfigurationManager.AppSettings("DotMatrixImmediatePrint"))
+                If Not IsDotMatrixPrint Then
+                    Dim G2 As New GonRpt2()
+                    G2.SetDataSource(tbl)
+                    .ReportDoc = G2
+                    '.IsImmediatePrint = IsImmediatePrint
+                Else
+                    Dim g As New GonRpt()
+                    g.SetDataSource(tbl)
+                    .ReportDoc = g
+                End If
+                .crvGON.ReportSource = .ReportDoc
+                .crvGON.DisplayGroupTree = False
+
+                'If Not IsDotMatrixPrint And Not IsImmediatePrint Then
+                '    .ShowDialog(Me)
+                'ElseIf IsDotMatrixPrint And IsImmediatePrint Then
+                '    .crvGON.PrintReport()
+                'ElseIf IsDotMatrixPrint And Not IsImmediatePrint Then
+                '    .ShowDialog(Me)
+                'ElseIf Not IsDotMatrixPrint And IsImmediatePrint Then
+                '    .crvGON.PrintReport()
+                'End If
+            End With
+            Application.DoEvents()
+            Me.IsLoadding = False
+            Cursor = Cursors.Default
+        Catch ex As Exception
+            Me.IsLoadding = False
+            Cursor = Cursors.Default
+            e.Row.CheckState = e.OldCheckState
+            MessageBox.Show(ex.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+    End Sub
+
+    Private Sub frmGonReport_Search_Enter(ByVal sender As Object, ByVal e As System.EventArgs) Handles frmGonReport.Search_Enter
+        If Me.frmGonReport.txtSearch.WaterMarkText.Equals(Me.OriginalWaterMarkText) Then
+            Me.frmGonReport.txtSearch.Text = String.Empty
+            Me.frmGonReport.txtSearch.WaterMarkText = String.Empty
+        End If
+    End Sub
+
+    Private Sub frmGonReport_Search_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles frmGonReport.Search_KeyDown
+        If e.KeyCode = Keys.Enter Then
+            Try
+                Me.Cursor = Cursors.WaitCursor
+                Me.IsLoadding = True
+                'get sppb data
+                Dim SearchGON As String = Me.frmGonReport.txtSearch.Text.Trim()
+                Dim tblHeader As DataTable = Me.clsSPPBGON.getGonHeader(SearchGON)
+                frmGonReport.GridEX1.SetDataBinding(tblHeader, "")
+                For Each row As Janus.Windows.GridEX.GridEXRow In frmGonReport.GridEX1.GetRows()
+                    Dim GonHeaderID As String = row.Cells("GON_HEADER_ID").Value
+                    If Me.listGONHeaderIDs.Contains(GonHeaderID) Then
+                        row.CheckState = Janus.Windows.GridEX.RowCheckState.Checked
+                    Else
+                        row.CheckState = Janus.Windows.GridEX.RowCheckState.Unchecked
+                    End If
+                Next
+                Me.IsLoadding = False
+                Me.Cursor = Cursors.Default
+            Catch ex As Exception
+                Me.IsLoadding = False
+                Cursor = Cursors.Default
+                MessageBox.Show(ex.Message)
+            End Try
+        End If
+    End Sub
+
+    Private Sub frmGonReport_Search_Leave(ByVal sender As Object, ByVal e As System.EventArgs) Handles frmGonReport.Search_Leave
+        If Me.frmGonReport.txtSearch.Text = String.Empty Then
+            Me.frmGonReport.txtSearch.WaterMarkText = Me.OriginalWaterMarkText
+        End If
+    End Sub
+
+    Private Sub PrintGONToolStripMenuItem_DropDownOpening(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PrintGONToolStripMenuItem.DropDownOpening
+        Dim IsDotMatrixPrint As Boolean = CBool(ConfigurationManager.AppSettings("DotMatrixPrint"))
+        Me.btnPrintcustoms.Visible = Not IsDotMatrixPrint
     End Sub
 End Class

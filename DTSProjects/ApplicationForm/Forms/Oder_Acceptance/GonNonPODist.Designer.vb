@@ -25,12 +25,12 @@ Partial Class GonNonPODist
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim GridEX1_DesignTimeLayout_Reference_0 As Janus.Windows.Common.Layouts.JanusLayoutReference = New Janus.Windows.Common.Layouts.JanusLayoutReference("GridEXLayoutData.RootTable.Columns.Column2.ButtonImage")
         Dim grdGon_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
-        Dim UiComboBoxItem7 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem8 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem9 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem10 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem11 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem12 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem1 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem2 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem3 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem4 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem5 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem6 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
         Dim chkProduct_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbGonArea_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbTransporter_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
@@ -47,11 +47,12 @@ Partial Class GonNonPODist
         Me.Label10 = New System.Windows.Forms.Label
         Me.txtSPPBNo = New System.Windows.Forms.TextBox
         Me.UiGroupBox1 = New Janus.Windows.EditControls.UIGroupBox
+        Me.btnPrintPrevSPPB = New Janus.Windows.EditControls.UIButton
+        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.Label7 = New System.Windows.Forms.Label
         Me.txtDefShipto = New System.Windows.Forms.TextBox
         Me.grpItemDetail = New Janus.Windows.EditControls.UIGroupBox
         Me.GridEX1 = New Janus.Windows.GridEX.GridEX
-        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.ExpandableSplitter1 = New DevComponents.DotNetBar.ExpandableSplitter
         Me.grpGON = New Janus.Windows.EditControls.UIGroupBox
         Me.grpGonDetail = New Janus.Windows.EditControls.UIGroupBox
@@ -87,7 +88,6 @@ Partial Class GonNonPODist
         Me.Label5 = New System.Windows.Forms.Label
         Me.lblCustomerName = New System.Windows.Forms.Label
         Me.txtCustomerName = New System.Windows.Forms.TextBox
-        Me.btnPrintPrevSPPB = New Janus.Windows.EditControls.UIButton
         CType(Me.grpDetail, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpDetail.SuspendLayout()
         CType(Me.mcbCustomer, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -241,6 +241,27 @@ Partial Class GonNonPODist
         Me.UiGroupBox1.Text = "PO  SPPB HEADER"
         Me.UiGroupBox1.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
         '
+        'btnPrintPrevSPPB
+        '
+        Me.btnPrintPrevSPPB.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
+        Me.btnPrintPrevSPPB.ImageIndex = 3
+        Me.btnPrintPrevSPPB.ImageList = Me.ImageList1
+        Me.btnPrintPrevSPPB.Location = New System.Drawing.Point(219, 150)
+        Me.btnPrintPrevSPPB.Name = "btnPrintPrevSPPB"
+        Me.btnPrintPrevSPPB.Size = New System.Drawing.Size(123, 23)
+        Me.btnPrintPrevSPPB.TabIndex = 19
+        Me.btnPrintPrevSPPB.Text = "Print Preview SPPB"
+        Me.btnPrintPrevSPPB.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'ImageList1
+        '
+        Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
+        Me.ImageList1.Images.SetKeyName(0, "Add.bmp")
+        Me.ImageList1.Images.SetKeyName(1, "CK.ico.ico")
+        Me.ImageList1.Images.SetKeyName(2, "Close.ico")
+        Me.ImageList1.Images.SetKeyName(3, "printer.ico")
+        '
         'Label7
         '
         Me.Label7.AutoSize = True
@@ -293,15 +314,6 @@ Partial Class GonNonPODist
         Me.GridEX1.TabIndex = 1
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.GridEX1.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
-        '
-        'ImageList1
-        '
-        Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
-        Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
-        Me.ImageList1.Images.SetKeyName(0, "Add.bmp")
-        Me.ImageList1.Images.SetKeyName(1, "CK.ico.ico")
-        Me.ImageList1.Images.SetKeyName(2, "Close.ico")
-        Me.ImageList1.Images.SetKeyName(3, "printer.ico")
         '
         'ExpandableSplitter1
         '
@@ -595,31 +607,31 @@ Partial Class GonNonPODist
         'cmdWarhouse
         '
         Me.cmdWarhouse.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        UiComboBoxItem7.FormatStyle.Alpha = 0
-        UiComboBoxItem7.IsSeparator = False
-        UiComboBoxItem7.Text = "---Select---"
-        UiComboBoxItem7.Value = "UnSelect"
-        UiComboBoxItem8.FormatStyle.Alpha = 0
-        UiComboBoxItem8.IsSeparator = False
-        UiComboBoxItem8.Text = "JAKARTA"
-        UiComboBoxItem8.Value = "JKT"
-        UiComboBoxItem9.FormatStyle.Alpha = 0
-        UiComboBoxItem9.IsSeparator = False
-        UiComboBoxItem9.Text = "MERAK"
-        UiComboBoxItem9.Value = "MRK"
-        UiComboBoxItem10.FormatStyle.Alpha = 0
-        UiComboBoxItem10.IsSeparator = False
-        UiComboBoxItem10.Text = "SURABAYA"
-        UiComboBoxItem10.Value = "SBY"
-        UiComboBoxItem11.FormatStyle.Alpha = 0
-        UiComboBoxItem11.IsSeparator = False
-        UiComboBoxItem11.Text = "TANGERANG"
-        UiComboBoxItem11.Value = "TGR"
-        UiComboBoxItem12.FormatStyle.Alpha = 0
-        UiComboBoxItem12.IsSeparator = False
-        UiComboBoxItem12.Text = "SERANG"
-        UiComboBoxItem12.Value = "SRG"
-        Me.cmdWarhouse.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem7, UiComboBoxItem8, UiComboBoxItem9, UiComboBoxItem10, UiComboBoxItem11, UiComboBoxItem12})
+        UiComboBoxItem1.FormatStyle.Alpha = 0
+        UiComboBoxItem1.IsSeparator = False
+        UiComboBoxItem1.Text = "---Select---"
+        UiComboBoxItem1.Value = "UnSelect"
+        UiComboBoxItem2.FormatStyle.Alpha = 0
+        UiComboBoxItem2.IsSeparator = False
+        UiComboBoxItem2.Text = "JAKARTA"
+        UiComboBoxItem2.Value = "JKT"
+        UiComboBoxItem3.FormatStyle.Alpha = 0
+        UiComboBoxItem3.IsSeparator = False
+        UiComboBoxItem3.Text = "MERAK"
+        UiComboBoxItem3.Value = "MRK"
+        UiComboBoxItem4.FormatStyle.Alpha = 0
+        UiComboBoxItem4.IsSeparator = False
+        UiComboBoxItem4.Text = "SURABAYA"
+        UiComboBoxItem4.Value = "SBY"
+        UiComboBoxItem5.FormatStyle.Alpha = 0
+        UiComboBoxItem5.IsSeparator = False
+        UiComboBoxItem5.Text = "TANGERANG"
+        UiComboBoxItem5.Value = "TGR"
+        UiComboBoxItem6.FormatStyle.Alpha = 0
+        UiComboBoxItem6.IsSeparator = False
+        UiComboBoxItem6.Text = "SERANG"
+        UiComboBoxItem6.Value = "SRG"
+        Me.cmdWarhouse.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3, UiComboBoxItem4, UiComboBoxItem5, UiComboBoxItem6})
         Me.cmdWarhouse.ItemsFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.cmdWarhouse.Location = New System.Drawing.Point(466, 76)
         Me.cmdWarhouse.Name = "cmdWarhouse"
@@ -782,18 +794,6 @@ Partial Class GonNonPODist
         Me.txtCustomerName.Name = "txtCustomerName"
         Me.txtCustomerName.Size = New System.Drawing.Size(102, 20)
         Me.txtCustomerName.TabIndex = 37
-        '
-        'btnPrintPrevSPPB
-        '
-        Me.btnPrintPrevSPPB.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
-        Me.btnPrintPrevSPPB.ImageIndex = 3
-        Me.btnPrintPrevSPPB.ImageList = Me.ImageList1
-        Me.btnPrintPrevSPPB.Location = New System.Drawing.Point(219, 150)
-        Me.btnPrintPrevSPPB.Name = "btnPrintPrevSPPB"
-        Me.btnPrintPrevSPPB.Size = New System.Drawing.Size(123, 23)
-        Me.btnPrintPrevSPPB.TabIndex = 19
-        Me.btnPrintPrevSPPB.Text = "Print Preview SPPB"
-        Me.btnPrintPrevSPPB.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
         '
         'GonNonPODist
         '

@@ -40,6 +40,7 @@ Partial Class Distributor
         Dim Label11 As System.Windows.Forms.Label
         Dim Label12 As System.Windows.Forms.Label
         Dim Label13 As System.Windows.Forms.Label
+        Dim Label14 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Distributor))
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbHolding_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
@@ -64,6 +65,7 @@ Partial Class Distributor
         Me.btnCardView = New DevComponents.DotNetBar.ButtonItem
         Me.btnSingleCard = New DevComponents.DotNetBar.ButtonItem
         Me.grpEdit = New Janus.Windows.EditControls.UIGroupBox
+        Me.txtEmailAddress = New System.Windows.Forms.TextBox
         Me.txtContactMobile1 = New System.Windows.Forms.TextBox
         Me.dtPicJonDate = New Janus.Windows.CalendarCombo.CalendarCombo
         Me.txtResponsiblePerson = New System.Windows.Forms.TextBox
@@ -104,6 +106,7 @@ Partial Class Distributor
         Label11 = New System.Windows.Forms.Label
         Label12 = New System.Windows.Forms.Label
         Label13 = New System.Windows.Forms.Label
+        Label14 = New System.Windows.Forms.Label
         CType(Me.GridEX1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpEdit, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpEdit.SuspendLayout()
@@ -179,7 +182,7 @@ Partial Class Distributor
         'Label7
         '
         Label7.AutoSize = True
-        Label7.Location = New System.Drawing.Point(50, 215)
+        Label7.Location = New System.Drawing.Point(56, 247)
         Label7.Name = "Label7"
         Label7.Size = New System.Drawing.Size(59, 13)
         Label7.TabIndex = 12
@@ -244,6 +247,15 @@ Partial Class Distributor
         Label13.Size = New System.Drawing.Size(107, 13)
         Label13.TabIndex = 35
         Label13.Text = "CONTACT MOBILE2"
+        '
+        'Label14
+        '
+        Label14.AutoSize = True
+        Label14.Location = New System.Drawing.Point(50, 213)
+        Label14.Name = "Label14"
+        Label14.Size = New System.Drawing.Size(73, 13)
+        Label14.TabIndex = 38
+        Label14.Text = "Email Address"
         '
         'ImageList1
         '
@@ -435,6 +447,8 @@ Partial Class Distributor
         'grpEdit
         '
         Me.grpEdit.BackColor = System.Drawing.Color.Transparent
+        Me.grpEdit.Controls.Add(Label14)
+        Me.grpEdit.Controls.Add(Me.txtEmailAddress)
         Me.grpEdit.Controls.Add(Label13)
         Me.grpEdit.Controls.Add(Me.txtContactMobile1)
         Me.grpEdit.Controls.Add(Me.dtPicJonDate)
@@ -470,9 +484,18 @@ Partial Class Distributor
         Me.grpEdit.Image = CType(resources.GetObject("grpEdit.Image"), System.Drawing.Image)
         Me.grpEdit.Location = New System.Drawing.Point(12, 5)
         Me.grpEdit.Name = "grpEdit"
-        Me.grpEdit.Size = New System.Drawing.Size(782, 243)
+        Me.grpEdit.Size = New System.Drawing.Size(733, 294)
         Me.grpEdit.TabIndex = 6
         Me.grpEdit.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
+        '
+        'txtEmailAddress
+        '
+        Me.txtEmailAddress.Location = New System.Drawing.Point(176, 208)
+        Me.txtEmailAddress.MaxLength = 150
+        Me.txtEmailAddress.Multiline = True
+        Me.txtEmailAddress.Name = "txtEmailAddress"
+        Me.txtEmailAddress.Size = New System.Drawing.Size(349, 21)
+        Me.txtEmailAddress.TabIndex = 37
         '
         'txtContactMobile1
         '
@@ -486,7 +509,8 @@ Partial Class Distributor
         '
         Me.dtPicJonDate.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.dtPicJonDate.BorderStyle = Janus.Windows.CalendarCombo.BorderStyle.Flat
-        Me.dtPicJonDate.DateFormat = Janus.Windows.CalendarCombo.DateFormat.[Long]
+        Me.dtPicJonDate.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicJonDate.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
         '
         '
         '
@@ -532,7 +556,8 @@ Partial Class Distributor
         '
         Me.dtPicBirtDate.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.dtPicBirtDate.BorderStyle = Janus.Windows.CalendarCombo.BorderStyle.Flat
-        Me.dtPicBirtDate.DateFormat = Janus.Windows.CalendarCombo.DateFormat.[Long]
+        Me.dtPicBirtDate.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicBirtDate.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
         '
         '
         '
@@ -606,7 +631,7 @@ Partial Class Distributor
         '
         'txtContactFax
         '
-        Me.txtContactFax.Location = New System.Drawing.Point(518, 173)
+        Me.txtContactFax.Location = New System.Drawing.Point(518, 177)
         Me.txtContactFax.MaxLength = 20
         Me.txtContactFax.Name = "txtContactFax"
         Me.txtContactFax.Size = New System.Drawing.Size(177, 20)
@@ -622,7 +647,7 @@ Partial Class Distributor
         '
         'txtContactPerson
         '
-        Me.txtContactPerson.Location = New System.Drawing.Point(518, 71)
+        Me.txtContactPerson.Location = New System.Drawing.Point(518, 69)
         Me.txtContactPerson.MaxLength = 30
         Me.txtContactPerson.Name = "txtContactPerson"
         Me.txtContactPerson.Size = New System.Drawing.Size(144, 20)
@@ -630,16 +655,16 @@ Partial Class Distributor
         '
         'txtAddress
         '
-        Me.txtAddress.Location = New System.Drawing.Point(176, 201)
+        Me.txtAddress.Location = New System.Drawing.Point(176, 237)
         Me.txtAddress.MaxLength = 150
         Me.txtAddress.Multiline = True
         Me.txtAddress.Name = "txtAddress"
-        Me.txtAddress.Size = New System.Drawing.Size(519, 35)
+        Me.txtAddress.Size = New System.Drawing.Size(519, 46)
         Me.txtAddress.TabIndex = 6
         '
         'txtNPWP
         '
-        Me.txtNPWP.Location = New System.Drawing.Point(518, 45)
+        Me.txtNPWP.Location = New System.Drawing.Point(518, 40)
         Me.txtNPWP.MaxLength = 30
         Me.txtNPWP.Name = "txtNPWP"
         Me.txtNPWP.Size = New System.Drawing.Size(144, 20)
@@ -810,5 +835,6 @@ Partial Class Distributor
     Private WithEvents txtResponsiblePerson As System.Windows.Forms.TextBox
     Private WithEvents dtPicJonDate As Janus.Windows.CalendarCombo.CalendarCombo
     Private WithEvents txtContactMobile1 As System.Windows.Forms.TextBox
+    Private WithEvents txtEmailAddress As System.Windows.Forms.TextBox
 
 End Class
