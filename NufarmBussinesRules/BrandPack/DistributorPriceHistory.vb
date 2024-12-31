@@ -134,14 +134,21 @@ Namespace Brandpack
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
-        Public Function GetBrandPack(ByVal SearchString As String) As DataView
+        Public Function GetBrandPack(ByVal SearchString As String, ByVal StartDate As Date, ByVal endDate As Date) As DataView
             Try
-                Dim Query As String = "SET NOCOUNT ON;SELECT BRANDPACK_ID,BRANDPACK_NAME FROM BRND_BRANDPACK " & vbCrLf & _
-                    " WHERE BRANDPACK_NAME LIKE '%" & SearchString & "%' AND IsActive = 1 AND (IsObsolete = 0 or IsObsolete IS NULL);"
-                Me.CreateCommandSql("sp_executesql", "")
-                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Dim Query As String = "SET NOCOUNT ON;SELECT BP.BRANDPACK_ID,BP.BRANDPACK_NAME FROM BRND_BRANDPACK BP " & vbCrLf & _
+                    " WHERE BP.BRANDPACK_NAME LIKE '%'+@SearchString+'%' AND BP.IsActive = 1 AND (BP.IsObsolete = 0 or BP.IsObsolete IS NULL) " & vbCrLf & _
+                    " AND EXISTS(SELECT BRANDPACK_ID FROM AGREE_BRANDPACK_INCLUDE ABI INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
+                    " WHERE ABI.BRANDPACK_ID = BP.BRANDPACK_ID AND AA.START_DATE <= @START_DATE AND AA.END_DATE >= @END_DATE)"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@SearchString", SqlDbType.NVarChar, SearchString)
+                Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
+                Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, endDate)
+                Me.OpenConnection()
                 Dim dtTable As New DataTable("T_BrandPack")
-                dtTable.Clear() : Me.FillDataTable(dtTable)
+                dtTable.Clear() : Me.setDataAdapter(Me.SqlCom).Fill(dtTable)
                 Return dtTable.DefaultView()
             Catch ex As Exception
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
@@ -166,15 +173,8 @@ Namespace Brandpack
                     End If
                 Next
                 Query &= ")DPP INNER JOIN PLANTATION PL ON PL.PLANTATION_ID = DPP.PLANTATION_ID " & vbCrLf & _
-                " LEFT OUTER JOIN PLANTATION_GROUP PG ON PL.PLANT_GROUP_ID = PG.PLANT_GROUP_ID LEFT OUTER JOIN TERRITORY TER ON TER.TERRITORY_ID = PL.TERRITORY_ID "
-                '" UNION " & vbCrLf & _
-                '" SELECT PLANTATION_ID,PLANTATION_NAME FROM PLANTATION WHERE "
-                'For i As Integer = 0 To ListPlants.Count - 1
-                '    Query &= " PLANTATION_ID LIKE '" & ListPlants(i) & "%' "
-                '    If i < ListPlants.Count - 1 Then
-                '        Query &= " OR " & vbCrLf
-                '    End If
-                'Next
+                " LEFT OUTER JOIN PLANTATION_GROUP PG ON PL.PLANT_GROUP_ID = PG.PLANT_GROUP_ID LEFT OUTER JOIN TERRITORY TER ON TER.TERRITORY_ID = PL.TERRITORY_ID " & vbCrLf & _
+                " WHERE TER.INACTIVE = 0"
                 Query &= " OPTION(KEEP PLAN) ;"
                 Me.CreateCommandSql(CommandType.Text, Query, ConnectionTo.Nufarm)
                 'Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)

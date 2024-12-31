@@ -158,18 +158,29 @@ Namespace Brandpack
                 Throw ex
             End Try
         End Function
-        Public Function HasReference(ByVal IDApp As Integer, ByVal mustCloseConnection As Boolean) As Boolean
+        Public Function HasReference(ByVal IDApps As List(Of Integer), ByVal mustCloseConnection As Boolean) As Boolean
             Dim hasRef As Boolean = False
             Try
-                Query = "SET NOCOUNT ON;" & vbCrLf & _
-                " SELECT 1 WHERE EXISTS(SELECT RefOther FROM ORDR_OA_BRANDPACK_DISC WHERE RefOther = @IDApp) " & vbCrLf & _
-                "          OR EXISTS(SELECT RefOther FROM ORDR_OA_REMAINDING WHERE RefOther = @IDApp) " & vbCrLf & _
-                "          OR EXISTS(SELECT FK_BRND_DISC_PROG FROM ORDR_OA_BRANDPACK_DISC WHERE FK_BRND_DISC_PROG = @IDApp) " & vbCrLf & _
-                "          OR EXISTS(SELECT FK_BRND_DISC_PROG FROM ORDR_OA_REMAINDING WHERE FK_BRND_DISC_PROG = @IDApp);"
-                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
-                Else : Me.ResetCommandText(CommandType.Text, Query)
+                Dim strlistIDApps As String = "IN("
+                For i As Integer = 0 To IDApps.Count - 1
+                    strlistIDApps = strlistIDApps & IDApps(i).ToString() & ""
+                    If i < IDApps.Count - 1 Then
+                        strlistIDApps = strlistIDApps & ","
+                    End If
+                Next
+                strlistIDApps = strlistIDApps & ")"
+                If strlistIDApps = "IN()" Then
+                    Throw New Exception("No Product choosed")
                 End If
-                Me.AddParameter("@IDApp", SqlDbType.Int, IDApp)
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " SELECT 1 WHERE EXISTS(SELECT RefOther FROM ORDR_OA_BRANDPACK_DISC WHERE RefOther " & strlistIDApps & ") " & vbCrLf & _
+                "          OR EXISTS(SELECT RefOther FROM ORDR_OA_REMAINDING WHERE RefOther " & strlistIDApps & ") " & vbCrLf & _
+                "          OR EXISTS(SELECT FK_BRND_DISC_PROG FROM ORDR_OA_BRANDPACK_DISC WHERE FK_BRND_DISC_PROG " & strlistIDApps & " ) " & vbCrLf & _
+                "          OR EXISTS(SELECT FK_BRND_DISC_PROG FROM ORDR_OA_REMAINDING WHERE FK_BRND_DISC_PROG " & strlistIDApps & ");"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 OpenConnection()
                 Dim retval = Me.SqlCom.ExecuteScalar()
                 Me.ClearCommandParameters()

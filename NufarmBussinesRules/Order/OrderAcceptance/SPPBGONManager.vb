@@ -56,6 +56,124 @@ Namespace OrderAcceptance
                 Me.OpenConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Sub
+        Public Function GetGonReportData(ByVal listGonHeader As List(Of String)) As System.Data.DataTable
+            Dim dataTable As System.Data.DataTable
+            Try
+                Dim str As String = "IN('"
+                Dim count As Integer = listGonHeader.Count - 1
+                Dim num As Integer = 0
+                Do
+                    str = String.Concat(str, listGonHeader(num), "'")
+                    If (num < listGonHeader.Count - 1) Then
+                        str = String.Concat(str, ",'")
+                    End If
+                    num = num + 1
+                Loop While num <= count
+                str = String.Concat(str, ")")
+                Me.Query = String.Concat("SELECT DR.DISTRIBUTOR_NAME,GH.GON_NO,ISNULL(GT.TRANSPORTER_NAME,'')AS TRANSPORTER_NAME,GD.BRANDPACK_ID,BB.BRANDPACK_NAME,GD.GON_QTY,QUANTITY = '',COLLY_BOX = '',COLLY_PACKSIZE = ''," & VbCrLf & "GD.UnitOfMeasure,GD.BatchNo AS BATCH_NO,GD.UNIT1,GD.UNIT2,GD.VOL1,GD.VOL2,GD.UnitOfMeasure,VAR_DIST_ADDRESS = '',ADDRESS = CASE " & VbCrLf & " WHEN (GH.SHIP_TO IS NOT NULL AND GH.SHIP_TO != '') THEN GH.SHIP_TO " & VbCrLf & " ELSE ISNULL(DR.ADDRESS,'UNKNOWN DISTRIBUTOR / CUSTOMER ADDRESS') END,POREF_NO_AND_DATE = '',PO.PO_REF_NO,PO.PO_REF_DATE, " & VbCrLf & " SPPB_NO_AND_DATE = '',SH.SPPB_NO,SH.SPPB_DATE,VAR_GON_DATE_STR = '',GH.GON_DATE,GH.POLICE_NO_TRANS,GH.DRIVER_TRANS, " & VbCrLf & " VAR_WARHOUSE = CONCAT('Gudang : ', ISNULL(GH.WARHOUSE,'')) " & VbCrLf & "FROM GON_HEADER GH INNER JOIN GON_DETAIL GD ON GH.GON_HEADER_ID = GD.GON_HEADER_ID " & VbCrLf & "INNER JOIN SPPB_HEADER SH ON SH.SPPB_NO = GH.SPPB_NO " & VbCrLf & "INNER JOIN ORDR_PURCHASE_ORDER PO ON PO.PO_REF_NO = SH.PO_REF_NO " & VbCrLf & "INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID " & VbCrLf & "INNER JOIN BRND_BRANDPACK BB ON BB.BRANDPACK_ID = GD.BRANDPACK_ID " & VbCrLf & "INNER JOIN GON_TRANSPORTER GT ON GT.GT_ID = GH.GT_ID " & VbCrLf & "WHERE CONCAT(GH.SPPB_NO,'|',GH.GON_NO) ", str)
+                If (Not Information.IsNothing(Me.SqlCom)) Then
+                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Else
+                    Me.CreateCommandSql("sp_executesql", "")
+                End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Me.Query)
+                Me.OpenConnection()
+                Dim dataTable1 As System.Data.DataTable = New System.Data.DataTable("tbl_rep_gon")
+                Me.setDataAdapter(Me.SqlCom).Fill(dataTable1)
+                'Me.CloseConnection()
+                dataTable = dataTable1
+            Catch exception1 As System.Exception
+                Dim exception As System.Exception = exception1
+                Me.OpenConnection() : Me.ClearCommandParameters()
+                Throw exception
+            End Try
+            Return dataTable
+        End Function
+        Public Function getGonHeader(ByVal SearchString As String) As System.Data.DataTable
+            Dim dataTable As System.Data.DataTable
+            Try
+                If SearchString <> "" Then
+                    Me.Query = "SET NOCOUNT ON;" & vbCrLf & "SELECT TOP 200 GH.GON_HEADER_ID,GH.GON_NO,GH.GON_DATE,SH.SPPB_NO,SH.SPPB_DATE " & vbCrLf & "FROM GON_HEADER GH INNER JOIN SPPB_HEADER SH ON GH.SPPB_NO = SH.SPPB_NO" & vbCrLf & " WHERE GH.GON_NO LIKE '%'+@SearchString+'%' OR GH.SPPB_NO LIKE '%'+@SearchString+'%'" & vbCrLf & "ORDER BY GH.GON_DATE DESC ;"
+                Else
+                    Me.Query = "SET NOCOUNT ON;" & vbCrLf & "SELECT TOP 200 GH.GON_HEADER_ID,GH.GON_NO,GH.GON_DATE,SH.SPPB_NO,SH.SPPB_DATE " & vbCrLf & "FROM GON_HEADER GH INNER JOIN SPPB_HEADER SH ON GH.SPPB_NO = SH.SPPB_NO" & vbCrLf & "ORDER BY GH.GON_DATE DESC ;"
+                End If
+                If SearchString <> "" Then
+                    If (Not Information.IsNothing(Me.SqlCom)) Then
+                        Me.ResetCommandText(CommandType.Text, Me.Query)
+                    Else
+                        Me.CreateCommandSql("", Me.Query)
+                    End If
+                    Me.AddParameter("@SearchString", SqlDbType.VarChar, SearchString)
+                Else
+                    If (Not Information.IsNothing(Me.SqlCom)) Then
+                        Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                    Else
+                        Me.CreateCommandSql("sp_executesql", "")
+                    End If
+                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Me.Query)
+                End If
+                Me.OpenConnection()
+                Dim dataTable1 As System.Data.DataTable = New System.Data.DataTable("T_HEADER")
+                Me.setDataAdapter(Me.SqlCom).Fill(dataTable1)
+                Me.ClearCommandParameters()
+                Me.CloseConnection()
+                dataTable = dataTable1
+            Catch exception1 As System.Exception
+                Dim exception As System.Exception = exception1
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw exception
+            End Try
+            Return dataTable
+        End Function
+
+        Public Function getDailyGonReport(ByVal Year As Integer, ByVal Month As Integer, Optional ByVal theDate As Object = Nothing) As System.Data.DataTable
+            Dim tbl As New DataTable("DAILY GON_REPORT")
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                        " SELECT DR.DISTRIBUTOR_NAME,PO.PO_REF_NO,BR.BRAND_NAME,BP.BRANDPACK_NAME,OPB.PO_PRICE_PERQTY AS PRICE," & vbCrLf & _
+                        " OPB.PO_ORIGINAL_QTY,PO_CATEGORY = CASE WHEN (OPB.PLANTATION_ID IS NOT NULL) THEN 'PLANTATION'" & vbCrLf & _
+                        " WHEN (OPB.PROJ_BRANDPACK_ID IS NOT NULL) THEN 'PROJECT' ELSE 'FREE MARKET' END,SH.SPPB_NO,SH.SPPB_DATE," & vbCrLf & _
+                        " SB.STATUS,SB.SPPB_QTY,SB.REMARK,GH.GON_NO,GH.GON_DATE,GA.AREA,GT.TRANSPORTER_NAME,GD.GON_QTY," & vbCrLf & _
+                        " COLLY_BOX = '',COLLY_PACKSIZE = '',QUANTITY = '',GD.BatcHNO AS BATCH_NO,GD.UnitOfMeasure, GD.UNIT1, GD.VOL1," & vbCrLf & _
+                        " GD.UNIT2, GD.VOL2, GH.WARHOUSE, GH.POLICE_NO_TRANS, GH.DRIVER_TRANS " & vbCrLf & _
+                        " FROM DIST_DISTRIBUTOR DR INNER JOIN ORDR_PURCHASE_ORDER PO ON PO.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID " & vbCrLf & _
+                        " INNER JOIN ORDR_PO_BRANDPACK OPB ON OPB.PO_REF_NO = PO.PO_REF_NO " & vbCrLf & _
+                        " INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = OPB.BRANDPACK_ID " & vbCrLf & _
+                        " INNER JOIN SPPB_HEADER SH ON SH.PO_REF_NO = PO.PO_REF_NO " & vbCrLf & _
+                        " INNER JOIN SPPB_BRANDPACK SB ON SB.SPPB_NO = SH.SPPB_NO " & vbCrLf & _
+                        " AND SB.BRANDPACK_ID = OPB.BRANDPACK_ID " & vbCrLf & _
+                        " INNER JOIN GON_HEADER GH ON GH.SPPB_NO = SH.SPPB_NO " & vbCrLf & _
+                        " INNER JOIN GON_AREA GA ON GA.GON_ID_AREA = GH.GON_ID_AREA " & vbCrLf & _
+                        " INNER JOIN GON_TRANSPORTER GT ON GT.GT_ID = GH.GT_ID " & vbCrLf & _
+                        " INNER JOIN GON_DETAIL GD ON GD.GON_HEADER_ID = GH.GON_HEADER_ID " & vbCrLf & _
+                        " AND GD.BRANDPACK_ID = SB.BRANDPACK_ID " & vbCrLf & _
+                        " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = BP.BRAND_ID "
+                If Not IsNothing(theDate) Then
+                    Query &= " WHERE GD.CreatedDate = @CreatedDate ; "
+                Else
+                    Query &= " WHERE YEAR(GD.CreatedDate) = @TheYear AND MONTH(GD.CreatedDate) = @TheMonth ; "
+                End If
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+
+                If Not IsNothing(theDate) Then
+                    Me.AddParameter("@CreatedDate", SqlDbType.SmallDateTime, New DateTime(Year, Month, theDate))
+                Else
+                    Me.AddParameter("@TheMonth", SqlDbType.Int, Month)
+                    Me.AddParameter("@TheYear", SqlDbType.Int, Year)
+                End If
+
+                Me.setDataAdapter(Me.SqlCom).Fill(tbl)
+                Me.CloseConnection() : Me.ClearCommandParameters()
+            Catch exception As System.Exception
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw exception
+            End Try
+            Return tbl
+        End Function
         Public Function GetSalesReport(ByVal StartDate As DateTime, ByVal EndDate As DateTime) As DataTable
             Try
                 Query = " SET NOCOUNT ON ; SET ARITHABORT OFF; SET ANSI_WARNINGS OFF ; " & vbCrLf & _

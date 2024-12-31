@@ -191,7 +191,7 @@ Public Class PlantationPrice
     End Sub
     Private Sub FillComboBrandPack(ByVal SearchString As String)
         Me.IsLoadingCombo = True
-        Me.mcbBrandPack.DataSource = Me.clsPrice.GetBrandPack(SearchString)
+        Me.mcbBrandPack.DataSource = Me.clsPrice.GetBrandPack(SearchString, Me.dtPicStartDate.Value, Me.dtPicEndDate.Value)
         With Me.mcbBrandPack
             .Text = ""
             .DropDownList.RetrieveStructure()

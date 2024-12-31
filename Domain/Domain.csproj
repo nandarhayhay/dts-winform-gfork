@@ -42,6 +42,7 @@
     <Compile Include="DomainObject.cs" />
     <Compile Include="GONHeader.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="OtherProduct.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RetailerContact.cs" />
     <Compile Include="RSMTM.cs" />

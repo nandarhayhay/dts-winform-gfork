@@ -28,6 +28,7 @@ Namespace DistributorRegistering
         Public RESPONSIBLE_PERSON As String
         Public JOIN_DATE As Object = DBNull.Value
         Public HP1 As String = ""
+        Public email As Object = DBNull.Value
         'Public Function getShipToDistributor(ByVal DistributorID As String)
 
         'End Function
@@ -354,6 +355,7 @@ Namespace DistributorRegistering
                 Me.AddParameter("@BIRTH_DATE", SqlDbType.DateTime, Me.BIRTHDATE)
                 Me.AddParameter("@JOIN_DATE", SqlDbType.SmallDateTime, Me.JOIN_DATE)
                 Me.AddParameter("@HP1", SqlDbType.VarChar, Me.HP1, 20)
+                Me.AddParameter("@Email", SqlDbType.NVarChar, Me.email, 150)
                 Me.OpenConnection()
                 Me.ExecuteNonQuery()
             Catch ex As Exception
@@ -395,6 +397,7 @@ Namespace DistributorRegistering
                 Me.AddParameter("@BIRTH_DATE", SqlDbType.DateTime, Me.BIRTHDATE)
                 Me.AddParameter("@JOIN_DATE", SqlDbType.SmallDateTime, Me.JOIN_DATE)
                 Me.AddParameter("@HP1", SqlDbType.VarChar, Me.HP1, 20)
+                Me.AddParameter("@Email", SqlDbType.NVarChar, Me.email, 150)
                 Me.OpenConnection()
                 Me.ExecuteNonQuery()
             Catch ex As Exception

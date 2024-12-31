@@ -458,7 +458,7 @@ Public Class GonSample
             If col.Key.Contains("App") Then
                 col.Visible = False
             End If
-            If col.Key = "ITEM_OTHER" Then
+            If col.Key = "ITEM_OTHER" Or col.Key = "ITEM" Then
                 col.Visible = False
             End If
             'If col.Key = "ITEM_OTHER" Then
@@ -571,8 +571,9 @@ Public Class GonSample
 
         Dim HasChangedHeaderPO As Boolean = Me.HasChangedHeaderPO(), HasChangedPODetail As Boolean = Me.HasChangedPODetail(), _
         HasChangedGONHeader As Boolean = Me.HasChangedGONHeader(), HasChangeGonDetail As Boolean = Me.HasChangeGonDetail()
+        Dim dummyOSPPBHeader As New NuFarm.Domain.SPPBHeader()
         If HasChangedHeaderPO Then
-            With Me.OSPPBHeader
+            With dummyOSPPBHeader 'Me.OSPPBHeader
                 .PONumber = Me.txtPORefNo.Text.Trim()
                 .PODate = Convert.ToDateTime(Me.dtPicPODate.Value.ToShortDateString())
                 .SPPBNO = Me.txtSPPBNo.Text.Trim()
@@ -586,6 +587,7 @@ Public Class GonSample
             End With
         End If
         Dim UserFrom = ConfigurationManager.AppSettings("WarhouseCode")
+        Dim DummyOGonHeader As New NuFarm.Domain.GONHeader()
         If HasChangedGONHeader Then
             If Not IsNothing(Me.grdGon.DataSource) Then
                 If Me.grdGon.RecordCount > 0 Then
@@ -595,7 +597,7 @@ Public Class GonSample
             End If
             validData = Me.ValidateGONHeader(False)
             If Not validData Then : Return False : End If
-            With Me.OGONHeader
+            With DummyOGonHeader 'Me.OGONHeader
                 .GON_DATE = Convert.ToDateTime(Me.dtPicGONDate.Value.ToShortDateString())
                 If Not IsNothing(Me.mcbGonArea.Value) Then
                     .GON_ID_AREA = Me.mcbGonArea.Value
@@ -627,7 +629,14 @@ Public Class GonSample
         If Not HasChangedHeaderPO And Not HasChangedGONHeader And Not HasChangedPODetail And Not HasChangeGonDetail Then
             Return False
         End If
-        Return Me.clsGonNonPO.SaveData(Me.SForm, HasChangedHeaderPO, HasChangedPODetail, HasChangedGONHeader, HasChangeGonDetail, Me.OGONHeader, Me.OSPPBHeader, Me.dtGonPODetail, Me.dtGonDetail)
+        Dim B As Boolean = Me.clsGonNonPO.SaveData(Me.SForm, HasChangedHeaderPO, HasChangedPODetail, HasChangedGONHeader, HasChangeGonDetail, DummyOGonHeader, dummyOSPPBHeader, Me.dtGonPODetail, Me.dtGonDetail)
+        If HasChangedHeaderPO Then
+            Me.OSPPBHeader = dummyOSPPBHeader
+        End If
+        If HasChangedGONHeader Then
+            Me.OGONHeader = DummyOGonHeader
+        End If
+        Return B
     End Function
     Private Sub GonNonPODist_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try

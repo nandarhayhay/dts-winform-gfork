@@ -792,13 +792,13 @@ Namespace Brandpack
         Public Function getProdConvertion(ByVal closeConnection As Boolean) As DataTable
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                "SELECT * FROM BRND_PROD_CONV;"
-                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                         "SELECT * FROM BRND_PROD_CONV;"
                 Dim dtProdConvertion As New DataTable("T_ProdConvertion")
                 Me.OpenConnection()
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 dtProdConvertion.Clear()
                 setDataAdapter(Me.SqlCom).Fill(dtProdConvertion)
                 Me.ClearCommandParameters()

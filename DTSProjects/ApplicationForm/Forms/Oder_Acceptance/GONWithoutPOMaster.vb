@@ -1180,7 +1180,10 @@ Public Class GONWithoutPOMaster
                 End If
                 Me.SetStatusRecord()
                 Me.SetButtonStatus()
+            Else
+                Me.AdvancedTManager1_ButonClick(Me.AdvancedTManager1.btnSearch, New EventArgs())
             End If
+
         Catch ex As Exception
             e.Cancel = True : Me.Cursor = Cursors.Default : Me.LogMyEvent(ex.Message, Me.Name + "_AdvancedTManager1_DeleteGridRecord")
         Finally

@@ -87,6 +87,8 @@ Namespace User
             Public GONWithoutPOMaster As Boolean
             Public ConvertionProduct As Boolean
             Public GonDetailData As Boolean
+            Public OtherProduct As Boolean
+            Public QtyConvertion As Boolean
         End Structure
 
         Public Structure ALLOW_VIEW
@@ -147,6 +149,8 @@ Namespace User
             Public GONWithoutPOMaster As Boolean
             Public ConvertionProduct As Boolean
             Public GonDetailData As Boolean
+            Public OtherProduct As Boolean
+            Public QtyConvertion As Boolean
         End Structure
 
         Public Structure ALLOW_UPDATE
@@ -204,6 +208,8 @@ Namespace User
             Public GONWithoutPOMaster As Boolean
             Public ConvertionProduct As Boolean
             Public GonDetailData As Boolean
+            Public OtherProduct As Boolean
+            Public QtyConvertion As Boolean
         End Structure
 
         Public Structure ALLOW_DELETE
@@ -254,6 +260,8 @@ Namespace User
             Public GONWithoutPOMaster As Boolean
             Public ConvertionProduct As Boolean
             Public GonDetailData As Boolean
+            Public OtherProduct As Boolean
+            Public QtyConvertion As Boolean
         End Structure
     End Class
 

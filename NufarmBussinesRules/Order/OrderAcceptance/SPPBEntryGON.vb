@@ -1,8 +1,19 @@
-Imports NufarmBussinesRules.common.Helper
-Imports System.Data
-Imports System.Data.SqlClient
+Imports Microsoft.VisualBasic
+Imports Microsoft.VisualBasic.CompilerServices
 Imports Nufarm.Domain
+Imports NufarmBussinesRules
+Imports NufarmBussinesRules.common
+Imports NufarmBussinesRules.User
+Imports NufarmDataAccesLayer.DataAccesLayer
+Imports System
+Imports System.Collections.Generic
+Imports System.Data
+Imports System.Data.Common
+Imports System.Data.SqlClient
+Imports System.Diagnostics
 Imports System.Globalization
+Imports System.Runtime.CompilerServices
+Imports NufarmBussinesRules.common.Helper
 Namespace OrderAcceptance
     Public Class SPPBEntryGON
         Inherits SPPB
@@ -28,7 +39,160 @@ Namespace OrderAcceptance
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
-
+        Public Function getGOnDataBySPPB(ByVal SPPB_NO As String, ByVal mustCloseConnection As Boolean) As System.Data.DataTable
+            Dim dataTable As System.Data.DataTable
+            Try
+                Me.Query = "SET NOCOUNT ON;" & VbCrLf & " SELECT GD.GON_DETAIL_ID,GD.GON_HEADER_ID,SB.SPPB_BRANDPACK_ID,GD.BRANDPACK_ID,BR.BRANDPACK_NAME,GD.GON_QTY,GD.IsOpen,GD.IsCompleted,GD.BatchNo,GD.UnitOfMeasure,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsUpdatedBySystem," & VbCrLf & "GD.CreatedBy,GD.CreatedDate,GD.ModifiedBy,GD.ModifiedDate FROM GON_DETAIL GD INNER JOIN SPPB_BRANDPACK SB ON SB.SPPB_BRANDPACK_ID = GD.SPPB_BRANDPACK_ID " & VbCrLf & " INNER JOIN BRND_BRANDPACK BR ON BR.BRANDPACK_ID = GD.BRANDPACK_ID WHERE SB.SPPB_NO = @SPPB_NO ;"
+                If (Not Information.IsNothing(Me.SqlCom)) Then
+                    Me.ResetCommandText(CommandType.Text, Me.Query)
+                Else
+                    Me.CreateCommandSql("", Me.Query)
+                End If
+                Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPB_NO, 30)
+                Dim dataTable1 As System.Data.DataTable = New System.Data.DataTable("GON_DETAIL_INFO")
+                dataTable1.Clear()
+                Me.OpenConnection()
+                Me.setDataAdapter(Me.SqlCom).Fill(dataTable1)
+                Me.ClearCommandParameters()
+                If (mustCloseConnection) Then
+                    Me.CloseConnection()
+                End If
+                dataTable = dataTable1
+            Catch exception1 As System.Exception
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw exception1
+            End Try
+            Return dataTable
+        End Function
+        Public Function getGonDataByGONNumber(ByVal GON_NO As String, ByVal SPPB_NO As String, ByVal mustCloseConnection As Boolean) As System.Data.DataTable
+            Dim dataTable As System.Data.DataTable
+            Try
+                Me.Query = "SET NOCOUNT ON;" & VbCrLf & " SELECT GD.GON_DETAIL_ID,GD.GON_HEADER_ID,GD.SPPB_BRANDPACK_ID,GD.BRANDPACK_ID,BR.BRANDPACK_NAME,GD.GON_QTY,GD.IsOpen,GD.IsCompleted,GD.BatchNo,GD.UnitOfMeasure,GD.UNIT1,GD.VOL1,GD.UNIT2,GD.VOL2,GD.IsUpdatedBySystem," & VbCrLf & "GD.CreatedBy,GD.CreatedDate,GD.ModifiedBy,GD.ModifiedDate FROM GON_DETAIL GD INNER JOIN GON_HEADER GH ON GD.GON_HEADER_ID = GH.GON_HEADER_ID " & VbCrLf & " INNER JOIN BRND_BRANDPACK BR ON BR.BRANDPACK_ID = GD.BRANDPACK_ID WHERE GH.GON_NO = @GON_NO AND GH.SPPB_NO = @SPPB_NO ;"
+                If (Not Information.IsNothing(Me.SqlCom)) Then
+                    Me.ResetCommandText(CommandType.Text, Me.Query)
+                Else
+                    Me.CreateCommandSql("", Me.Query)
+                End If
+                Me.AddParameter("@GON_NO", SqlDbType.VarChar, GON_NO, 30)
+                Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPB_NO, 30)
+                Dim dataTable1 As System.Data.DataTable = New System.Data.DataTable("GON_DETAIL_INFO")
+                dataTable1.Clear()
+                Me.OpenConnection()
+                Me.setDataAdapter(Me.SqlCom).Fill(dataTable1)
+                Me.ClearCommandParameters()
+                If (mustCloseConnection) Then
+                    Me.CloseConnection()
+                End If
+                dataTable = dataTable1
+            Catch exception1 As System.Exception
+                Me.CloseConnection()
+                Me.ClearCommandParameters()
+                Throw exception1
+            End Try
+            Return dataTable
+        End Function
+        Public Function getGONDescriptionByGONNumber(ByVal GON_NO As String, ByVal SPPB_NO As String, ByRef status As String, ByVal mustCloseConnection As Boolean) As NuFarm.Domain.GONHeader
+            Dim gONHeader As Nufarm.Domain.GONHeader
+            Try
+                Me.Query = "SET NOCOUNT ON;" & VbCrLf & " SELECT * FROM GON_HEADER WHERE GON_NO = @GON_NO AND SPPB_NO = @SPPB_NO;"
+                If (Not Information.IsNothing(Me.SqlCom)) Then
+                    Me.ResetCommandText(CommandType.Text, Me.Query)
+                Else
+                    Me.CreateCommandSql("", Me.Query)
+                End If
+                Me.AddParameter("@GON_NO", SqlDbType.VarChar, GON_NO, 25)
+                Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, SPPB_NO, 16)
+                Me.OpenConnection()
+                Me.ExecuteReader()
+                Dim gONHeader1 As Nufarm.Domain.GONHeader = New Nufarm.Domain.GONHeader()
+                While Me.SqlRe.Read()
+                    Dim objectValue As Nufarm.Domain.GONHeader = gONHeader1
+                    objectValue.GON_DATE = RuntimeHelpers.GetObjectValue(Me.SqlRe("GON_DATE"))
+                    objectValue.GON_ID_AREA = Conversions.ToString(Interaction.IIf(Information.IsDBNull(RuntimeHelpers.GetObjectValue(Me.SqlRe("GON_ID_AREA"))) Or Information.IsNothing(RuntimeHelpers.GetObjectValue(Me.SqlRe("GON_ID_AREA"))), "", Me.SqlRe("GON_ID_AREA").ToString()))
+                    objectValue.GON_NO = Me.SqlRe("GON_NO").ToString()
+                    objectValue.GT_ID = Conversions.ToString(Interaction.IIf(Information.IsDBNull(RuntimeHelpers.GetObjectValue(Me.SqlRe("GT_ID"))) Or Information.IsNothing(RuntimeHelpers.GetObjectValue(Me.SqlRe("GT_ID"))), "", Me.SqlRe("GT_ID").ToString()))
+                    objectValue.ModifiedBy = Conversions.ToString(Interaction.IIf(Information.IsDBNull(RuntimeHelpers.GetObjectValue(Me.SqlRe("ModifiedBy"))) Or Information.IsNothing(RuntimeHelpers.GetObjectValue(Me.SqlRe("ModifiedBy"))), "", Me.SqlRe("ModifiedBy").ToString()))
+                    objectValue.ModifiedDate = RuntimeHelpers.GetObjectValue(Me.SqlRe("ModifiedDate"))
+                    objectValue.SPPBNO = Me.SqlRe("SPPB_NO").ToString()
+                    Dim obj As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("DRIVER_TRANS"))
+                    Dim objectValue1 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("POLICE_NO_TRANS"))
+                    Dim obj1 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("CreatedBy"))
+                    Dim objectValue2 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("CreatedDate"))
+                    Dim obj2 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("SHIP_TO"))
+                    Dim objectValue3 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("GT_ID"))
+                    Dim obj3 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("ModifiedBy"))
+                    Dim objectValue4 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("ModifiedDate"))
+                    Dim obj4 As Object = RuntimeHelpers.GetObjectValue(Me.SqlRe("WARHOUSE"))
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(objectValue3)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(objectValue3))) Then
+                        objectValue.GT_ID = objectValue3.ToString()
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(objectValue4)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(objectValue4))) Then
+                        objectValue.ModifiedDate = RuntimeHelpers.GetObjectValue(objectValue4)
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(obj3)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(obj3))) Then
+                        objectValue.ModifiedBy = obj3.ToString()
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(obj)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(obj))) Then
+                        objectValue.DriverTrans = obj.ToString()
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(objectValue1)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(objectValue1))) Then
+                        objectValue.PoliceNoTrans = objectValue1.ToString()
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(obj1)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(obj1))) Then
+                        objectValue.CreatedBy = obj1.ToString()
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(objectValue2)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(objectValue2))) Then
+                        objectValue.CreatedDate = RuntimeHelpers.GetObjectValue(objectValue2)
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(obj2)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(obj2))) Then
+                        objectValue.ShipTo = obj2.ToString()
+                    End If
+                    If (Not Information.IsNothing(RuntimeHelpers.GetObjectValue(obj4)) And Not Information.IsDBNull(RuntimeHelpers.GetObjectValue(obj4))) Then
+                        objectValue.WarhouseCode = obj4.ToString()
+                    End If
+                    objectValue = Nothing
+                End While
+                Me.SqlRe.Close()
+                If (Not String.IsNullOrEmpty(gONHeader1.SPPBNO)) Then
+                    Me.Query = "SET NOCOUNT ON; " & VbCrLf & " SELECT STATUS FROM SPPB_BRANDPACK WHERE SPPB_NO = @SPPB_NO "
+                    Me.ResetCommandText(CommandType.Text, Me.Query)
+                    Me.AddParameter("@SPPB_NO", SqlDbType.VarChar, gONHeader1.SPPBNO)
+                    Dim strs As List(Of String) = New List(Of String)()
+                    Me.ExecuteReader()
+                    While Me.SqlRe.Read()
+                        If (strs.Contains(Me.SqlRe.GetString(0))) Then
+                            Continue While
+                        End If
+                        strs.Add(Conversions.ToString(Me.SqlRe(0)))
+                    End While
+                    Me.SqlRe.Close()
+                    If (strs.Count <= 0) Then
+                        status = strs(0)
+                    Else
+                        status = ""
+                    End If
+                End If
+                If (mustCloseConnection) Then
+                    Me.CloseConnection()
+                End If
+                Me.ClearCommandParameters()
+                gONHeader = gONHeader1
+            Catch exception1 As System.Exception
+                ProjectData.SetProjectError(exception1)
+                Dim exception As System.Exception = exception1
+                Me.ClearCommandParameters()
+                If (Not Information.IsNothing(Me.SqlRe) AndAlso Not Me.SqlRe.IsClosed) Then
+                    Me.SqlRe.Close()
+                    Me.SqlRe = Nothing
+                End If
+                If (mustCloseConnection) Then
+                    Me.CloseConnection()
+                End If
+                Throw exception
+            End Try
+            Return gONHeader
+        End Function
         Public Function getGONDescriptionBySPPB(ByVal SPPB_NO As String, ByRef status As String, ByVal mustCloseConnection As Boolean) As GONHeader
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
@@ -1059,15 +1223,10 @@ Namespace OrderAcceptance
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
-        Public Function getProdConvertion(ByVal mode As SaveMode, ByVal closeConnection As Boolean) As DataView
+        Public Function getProdConvertion(ByVal closeConnection As Boolean) As DataView
             Try
-                If mode = SaveMode.Insert Then
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
-                Else
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV ;"
-                End If
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                             "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If

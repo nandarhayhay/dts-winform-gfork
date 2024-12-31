@@ -271,10 +271,13 @@ Public Class OtherProduct
                     Me.GetData()
                     Me.SFG = StateFillingGrid.HasFilled
             End Select
+            Me.isLoadingRow = False
+            Me.SFG = StateFillingGrid.HasFilled
             Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.ShowMessageError(ex.Message)
             Me.Cursor = Cursors.Default
+            Me.isLoadingRow = False
             Me.SFG = StateFillingGrid.HasFilled
         End Try
     End Sub

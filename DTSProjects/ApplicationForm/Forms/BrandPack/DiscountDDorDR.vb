@@ -305,7 +305,9 @@ Public Class DiscountDDOrDR
         Try
             Dim IDApp As Integer = CInt(Me.TManager1.GridEX1.GetValue("IDApp"))
             Cursor = Cursors.WaitCursor
-            If Me.clsDiscountPrice.HasReference(IDApp, True) Then
+            Dim listIDApp As New List(Of Integer)
+            listIDApp.Add(IDApp)
+            If Me.clsDiscountPrice.HasReference(listIDApp, True) Then
                 Me.ShowMessageError(Me.MessageCantDeleteData) : e.Cancel = True
             End If
             e.Cancel = clsDiscountPrice.Delete(IDApp, True)
@@ -934,7 +936,18 @@ Public Class DiscountDDOrDR
             Me.txtDescriptions.Text = Me.TManager1.GridEX1.GetValue("PROGRAM_DESC")
         End With
         'Mode Edit Periode harus disabled, karena terlalu kompleks logic nya
-        Dim HasRef As Boolean = (Me.clsDiscountPrice.HasReference(IDApp, True) Or NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.DiscDDorDR = False)
+        'get listIDApp
+        Dim listIDApp As New List(Of Integer)
+        For i As Integer = 0 To domPrice.DsProgDesc.Tables(0).Rows.Count - 1
+            Dim IDAppProgB As Object = domPrice.DsProgDesc.Tables(0).Rows(i)("IDApp")
+            If Not IsNothing(IDAppProgB) And Not IsDBNull(IDAppProgB) Then
+                If CInt(IDAppProgB) > 0 Then
+                    listIDApp.Add(IDAppProgB)
+                End If
+            End If
+        Next
+
+        Dim HasRef As Boolean = Me.clsDiscountPrice.HasReference(listIDApp, True)
         Me.dtPicFrom.ReadOnly = HasRef
         Me.dtPicEndDate.ReadOnly = HasRef
         If HasRef Then

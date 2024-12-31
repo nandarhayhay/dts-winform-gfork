@@ -229,6 +229,7 @@ Namespace common
         Public Enum SaveMode
             Insert
             Update
+            Open
             None
         End Enum
     End Class

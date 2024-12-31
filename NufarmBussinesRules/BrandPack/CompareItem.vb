@@ -66,7 +66,9 @@ Namespace Brandpack
                         For i As Integer = 0 To DtTable.Rows.Count - 1
                             Me.AddParameter("@BRAND_ID_DTS", SqlDbType.VarChar, DtTable.Rows(i)("BRAND_ID_DTS"), 7)
                             Me.AddParameter("@BRAND_ID_ACCPAC", SqlDbType.VarChar, DtTable.Rows(i)("BRAND_ID_ACCPAC"), 7)
-                            Me.AddParameter("@BRAND_ACCPAC", SqlDbType.VarChar, DtTable.Rows(i)("BRAND_ACCPAC"), 100)
+                            Dim BrandName As String = DtTable.Rows(i)("BRANDPACK_NAME").ToString()
+                            BrandName = BrandName.Substring(0, BrandName.IndexOf("@"))
+                            Me.AddParameter("@BRAND_ACCPAC", SqlDbType.VarChar, BrandName, 100)
                             Me.AddParameter("@BRANDPACK_ID_DTS", SqlDbType.VarChar, DtTable.Rows(i)("BRANDPACK_ID_DTS"), 14)
                             Me.AddParameter("@BRANDPACK_ID_ACCPAC", SqlDbType.VarChar, DtTable.Rows(i)("BRANDPACK_ID_ACCPAC"), 14)
                             Me.AddParameter("@BRANDPACK_NAME", SqlDbType.VarChar, DtTable.Rows(i)("BRANDPACK_NAME"), 100)

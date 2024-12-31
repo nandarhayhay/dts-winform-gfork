@@ -11,21 +11,17 @@ Namespace OrderAcceptance
             MyBase.New()
             GonMaster = New NufarmBussinesRules.OrderAcceptance.SPPBEntryGON()
         End Sub
-        Public Function getProdConvertion(ByVal mode As SaveMode, ByVal closeConnection As Boolean) As DataView
+        Public Function getProdConvertion(ByVal closeConnection As Boolean) As DataView
             Try
-                If mode = SaveMode.Insert Then
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
-                Else
-                    Query = "SET NOCOUNT ON;" & vbCrLf & _
-                    "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV;"
+
+                Query = "SET NOCOUNT ON;" & vbCrLf & "SELECT BP.BRANDPACK_NAME,BPC.BRANDPACK_ID,BPC.UnitOfMeasure,BPC.UNIT1,BPC.VOL1,BPC.UNIT2,BPC.VOL2,BPC.INACTIVE,BP.DEVIDED_QUANTITY FROM BRND_PROD_CONV BPC " & vbCrLf & _
+                " INNER JOIN BRND_BRANDPACK BP ON BPC.BRANDPACK_ID = BP.BRANDPACK_ID WHERE BPC.INACTIVE = 0;"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Dim dtProdConvertion As New DataTable("T_ProdConvertion")
                 Me.OpenConnection()
-                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
-                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                End If
                 dtProdConvertion.Clear()
                 setDataAdapter(Me.SqlCom).Fill(dtProdConvertion)
                 Me.ClearCommandParameters()
@@ -961,9 +957,10 @@ Namespace OrderAcceptance
         Public Function getGOnDetail(ByVal GON_NO As String, ByVal closeConnection As Boolean) As DataTable
             Try
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UnitOfMeasure,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
-                " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader LEFT OUTER JOIN BRND_PROD_CONV BPC ON BPC.BRANDPACK_ID = GSD.ITEM " & vbCrLf & _
-                " INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER;"
+                        " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UnitOfMeasure,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
+                        " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader LEFT OUTER JOIN " & vbCrLf & _
+                        "(SELECT TOP 1 BRANDPACK_ID,UnitOfMeasure FROM BRND_PROD_CONV WHERE INACTIVE = 0 ORDER BY CreatedDate DESC)" & vbCrLf & _
+                        " BPC ON BPC.BRANDPACK_ID = GSD.ITEM INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If
