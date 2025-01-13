@@ -143,6 +143,26 @@ Namespace PurchaseOrder
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
+        Public Function isPOPlantation(ByVal POBrandPackID As String) As Boolean
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                "SELECT PLANTATION_ID FROM ORDR_PO_BRANDPACK WHERE PO_BRANDPACK_ID = @PO_BRANDPACK_ID;"
+                If IsNothing(Me.SqlCom) Then
+                    Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@PO_BRANDPACK_ID", SqlDbType.VarChar, POBrandPackID)
+                Me.OpenConnection()
+                Dim retval As Object = Me.SqlCom.ExecuteScalar()
+                Me.ClearCommandParameters()
+                'Me.CloseConnection()
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    Return CInt(retval) > 0
+                End If
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
         Public Overloads Function CreateViewBrandPackByDistributorID(ByVal FilterDatePO As FilterDatePOWith, Optional ByVal DistributorID As Object = Nothing, Optional ByVal StartDate As Object = Nothing, _
         Optional ByVal EndDate As Object = Nothing) As DataView
             Try

@@ -708,6 +708,16 @@ Public Class DiscountDDOrDR
         ColDiscType.EditTarget = Janus.Windows.GridEX.EditTarget.Value
         ColDiscType.DefaultGroupInterval = Janus.Windows.GridEX.GroupInterval.Text
     End Sub
+    'Private Sub AddReformatStyle()
+    '    Dim _style As Janus.Windows.GridEX.GridEXFormatStyle = New Janus.Windows.GridEX.GridEXFormatStyle()
+    '    _style.ForeColor = Color.Red
+    '    Dim _f As Janus.Windows.GridEX.GridEXFormatCondition = New Janus.Windows.GridEX.GridEXFormatCondition()
+    '    _f.TargetColumn = grdProgDisc.RootTable.Columns("TypeApp")
+    '    _f.Column = grdProgDisc.RootTable.Columns("TypeAp")
+    '    _f.FilterCondition = New Janus.Windows.GridEX.GridEXFilterCondition(grdProgDisc.RootTable.Columns("TypeApp"), Janus.Windows.GridEX.ConditionOperator.Equal, "DK")
+    '    _f.FormatStyle = _style
+    '    grdProgDisc.RootTable.FormatConditions.Add(_f)
+    'End Sub
     Private Sub FormatDataGrid()
         For Each col As Janus.Windows.GridEX.GridEXColumn In TManager1.GridEX1.RootTable.Columns
             col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
@@ -1506,6 +1516,12 @@ Public Class DiscountDDOrDR
             End If
             Me.grdProgDisc.Focus()
             'check all value
+            If grdProgDisc.GetValue("TypeApp") = "DK" Then
+                Me.ShowMessageError("Can not enter value DK" & vbCrLf & "Please choose another type")
+                e.Cancel = True
+                Me.grdProgDisc.MoveToNewRecord()
+                Return
+            End If
             Dim MoreThanQty As Object = Me.grdProgDisc.GetValue("MoreThanQty")
             Dim Disc As Object = Me.grdProgDisc.GetValue("Disc")
             Dim DiscType As Object = Me.grdProgDisc.GetValue("TypeApp")
@@ -2414,6 +2430,13 @@ Public Class DiscountDDOrDR
     Private Sub grdProgDisc_CellUpdated(ByVal sender As Object, ByVal e As Janus.Windows.GridEX.ColumnActionEventArgs) Handles grdProgDisc.CellUpdated
         If Me.isLoadingCombo Then : Return : End If
         If Me.Isloadingrow Then : Return : End If
+        If e.Column.Key = "TypeApp" Then
+            If grdProgDisc.GetValue(e.Column) = "DK" Then
+                Me.ShowMessageError("Can not enter value DK" & vbCrLf & "Please choose another type")
+                Me.grdProgDisc.CancelCurrentEdit() : Return
+            End If
+
+        End If
         If Me.grdProgDisc.GetRow.RowType = Janus.Windows.GridEX.RowType.Record Then
             'BRAND_ID,BRANDPACK_ID,MoreThanQty,Disc,TypeApp
             If e.Column.Key = "BRAND_ID" Or e.Column.Key = "BRANDPACK_ID" Or e.Column.Key = "MoreThanQty" Or e.Column.Key = "Disc" Or e.Column.Key = "TypeApp" Then

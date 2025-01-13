@@ -748,7 +748,7 @@ Namespace DistributorAgreement
                 Me.ClearCommandParameters() : Me.m_AgDistributorView = dtAgreement.DefaultView()
                 Me.m_AgDistributorView.Sort = "AGREEMENT_NO"
                 If (IsNothing(Me.m_ViewDistributor)) Then
-                    Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR"
+                    Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME FROM DIST_DISTRIBUTOR WHERE INACTIVE = 0;"
                     Me.SqlCom.CommandType = CommandType.StoredProcedure
                     Me.SqlCom.CommandText = "sp_executesql"
                     Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)

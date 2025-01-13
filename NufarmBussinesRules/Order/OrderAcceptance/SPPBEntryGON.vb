@@ -1225,8 +1225,8 @@ Namespace OrderAcceptance
         End Function
         Public Function getProdConvertion(ByVal closeConnection As Boolean) As DataView
             Try
-                Query = "SET NOCOUNT ON;" & vbCrLf & _
-                             "SELECT BRANDPACK_ID,UnitOfMeasure,UNIT1,VOL1,UNIT2,VOL2,INACTIVE FROM BRND_PROD_CONV WHERE INACTIVE = 0;"
+                Query = "SET NOCOUNT ON;" & vbCrLf & "SELECT BP.BRANDPACK_NAME,BPC.BRANDPACK_ID,BPC.UnitOfMeasure,BPC.UNIT1,BPC.VOL1,BPC.UNIT2,BPC.VOL2,BPC.INACTIVE,BP.DEVIDED_QUANTITY FROM BRND_PROD_CONV BPC " & vbCrLf & _
+                " INNER JOIN BRND_BRANDPACK BP ON BPC.BRANDPACK_ID = BP.BRANDPACK_ID WHERE BPC.INACTIVE = 0;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If

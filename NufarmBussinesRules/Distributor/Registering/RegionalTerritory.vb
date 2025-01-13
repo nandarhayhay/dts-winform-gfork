@@ -288,12 +288,12 @@ Namespace DistributorRegistering
                     Query = " SET NOCOUNT ON ;" & vbCrLf & _
                             " IF NOT EXISTS(SELECT TERRITORY_ID FROM TERRITORY WHERE TERRITORY_ID = @TERRITORY_ID) " & vbCrLf & _
                             " BEGIN " & vbCrLf & _
-                            " INSERT INTO TERRITORY(TERRITORY_ID,TERRITORY_AREA,PARENT_TERRITORY,REGIONAL_ID,TERRITORY_DESCRIPTION,CREATE_BY,CREATE_DATE,INACTIVE) " & vbCrLf & _
-                            " VALUES(@TERRITORY_ID,@TERRITORY_AREA,@PARENT_TERRITORY,@REGIONAL_ID,@TERRITORY_DESCRIPTION,@CREATE_BY,@CREATE_DATE,0) " & vbCrLf & _
+                            " INSERT INTO TERRITORY(TERRITORY_ID,TERRITORY_AREA,PARENT_TERRITORY,REGIONAL_ID,TERRITORY_DESCRIPTION,TERRITORY_FOR,CREATE_BY,CREATE_DATE,INACTIVE) " & vbCrLf & _
+                            " VALUES(@TERRITORY_ID,@TERRITORY_AREA,@PARENT_TERRITORY,@REGIONAL_ID,@TERRITORY_DESCRIPTION,@TERRITORY_FOR,@CREATE_BY,@CREATE_DATE,0) " & vbCrLf & _
                             " END " & vbCrLf & _
                             " ELSE " & vbCrLf & _
                             " BEGIN " & vbCrLf & _
-                            " UPDATE TERRITORY SET TERRITORY_AREA = @TERRITORY_AREA,REGIONAL_ID = @REGIONAL_ID,TERRITORY_DESCRIPTION = @TERRITORY_DESCRIPTION,PARENT_TERRITORY = @PARENT_TERRITORY,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE,INACTIVE = @INACTIVE " & vbCrLf & _
+                            " UPDATE TERRITORY SET TERRITORY_AREA = @TERRITORY_AREA,REGIONAL_ID = @REGIONAL_ID,TERRITORY_DESCRIPTION = @TERRITORY_DESCRIPTION,PARENT_TERRITORY = @PARENT_TERRITORY,TERRITORY_FOR = @TERRITORY_FOR,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE,INACTIVE = @INACTIVE " & vbCrLf & _
                             " WHERE TERRITORY_ID = @TERRITORY_ID " & vbCrLf & _
                             " END "
                     With commandInsert
@@ -304,6 +304,7 @@ Namespace DistributorRegistering
                         .Parameters.Add("@REGIONAL_ID", SqlDbType.VarChar, 16, "REGIONAL_ID")
                         .Parameters.Add("@TERRITORY_AREA", SqlDbType.VarChar, 100, "TERRITORY_AREA")
                         .Parameters.Add("@TERRITORY_DESCRIPTION", SqlDbType.VarChar, 150, "TERRITORY_DESCRIPTION")
+                        .Parameters.Add("@TERRITORY_FOR", SqlDbType.VarChar, 5, "TERRITORY_FOR")
                         .Parameters.Add("@CREATE_DATE", SqlDbType.SmallDateTime, 0, "CREATE_DATE")
                         .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 100, "CREATE_BY")
                         .Parameters.Add("@INACTIVE", SqlDbType.Bit, 0, "INACTIVE")
@@ -317,7 +318,7 @@ Namespace DistributorRegistering
                     Query = " SET NOCOUNT ON ;" & vbCrLf & _
                             " IF EXISTS(SELECT TERRITORY_ID FROM TERRITORY WHERE TERRITORY_ID = @O_TERRITORY_ID) " & vbCrLf & _
                             " BEGIN " & vbCrLf & _
-                            " UPDATE TERRITORY SET TERRITORY_AREA = @TERRITORY_AREA,REGIONAL_ID = @REGIONAL_ID,TERRITORY_DESCRIPTION = @TERRITORY_DESCRIPTION,PARENT_TERRITORY = @PARENT_TERRITORY,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE,INACTIVE = @INACTIVE " & vbCrLf & _
+                            " UPDATE TERRITORY SET TERRITORY_AREA = @TERRITORY_AREA,REGIONAL_ID = @REGIONAL_ID,TERRITORY_DESCRIPTION = @TERRITORY_DESCRIPTION,PARENT_TERRITORY = @PARENT_TERRITORY, TERRITORY_FOR = @TERRITORY_FOR, MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE,INACTIVE = @INACTIVE " & vbCrLf & _
                             " WHERE TERRITORY_ID = @O_TERRITORY_ID ;" & vbCrLf & _
                             " END "
                     With commandUpdate
@@ -329,6 +330,7 @@ Namespace DistributorRegistering
                         .Parameters.Add("@REGIONAL_ID", SqlDbType.VarChar, 16, "REGIONAL_ID")
                         .Parameters.Add("@TERRITORY_DESCRIPTION", SqlDbType.VarChar, 150, "TERRITORY_DESCRIPTION")
                         .Parameters.Add("@INACTIVE", SqlDbType.Bit, 0, "INACTIVE")
+                        .Parameters.Add("@TERRITORY_FOR", SqlDbType.VarChar, 5, "TERRITORY_FOR")
                         .Parameters.Add("@MODIFY_BY", SqlDbType.VarChar, 100, "MODIFY_BY")
                         .Parameters.Add("@MODIFY_DATE", SqlDbType.SmallDateTime, 0, "MODIFY_DATE")
                         .Parameters.Add("@PARENT_TERRITORY", SqlDbType.VarChar, 16, "PARENT_TERRITORY")

@@ -134,6 +134,11 @@ Public Class Distributor
         Else
             Me.txtEmailAddress.Text = ""
         End If
+        If Not IsDBNull(Me.GridEX1.GetValue("ALT_EMAIL")) Then
+            Me.txtAltImail.Text = Me.GridEX1.GetValue("ALT_EMAIL")
+        Else
+            Me.txtAltImail.Text = ""
+        End If
 
         Me.txtContactMobile1.Text = IIf((IsNothing(Me.GridEX1.GetValue("HP1")) Or IsDBNull(Me.GridEX1.GetValue("HP1"))), "", Me.GridEX1.GetValue("HP1").ToString())
     End Sub
@@ -327,7 +332,8 @@ Public Class Distributor
                     Me.SaveFileDialog1.OverwritePrompt = True
                     Me.SaveFileDialog1.DefaultExt = ".xls"
                     Me.SaveFileDialog1.Filter = "All Files|*.*"
-                    Me.SaveFileDialog1.InitialDirectory = "C:\"
+                    Me.SaveFileDialog1.RestoreDirectory = True
+                    Me.SaveFileDialog1.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
                     If Me.SaveFileDialog1.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
                         Dim FS As New System.IO.FileStream(Me.SaveFileDialog1.FileName, IO.FileMode.Create)
                         Me.GridEXExporter1.GridEX = Me.GridEX1
@@ -436,6 +442,12 @@ Public Class Distributor
                     Else
                         Me.clsDitributor.Email = DBNull.Value
                     End If
+                    If Me.txtAltImail.Text <> "" Then
+                        Me.clsDitributor.AltEmail = Me.txtAltImail.Text.Trim()
+                    Else
+                        Me.clsDitributor.AltEmail = DBNull.Value
+                    End If
+
                     Me.clsDitributor.HP1 = Me.txtContactMobile1.Text.TrimStart().TrimEnd()
                     Me.clsDitributor.RESPONSIBLE_PERSON = Me.txtResponsiblePerson.Text
                     Me.clsDitributor.JOIN_DATE = IIf(Me.dtPicJonDate.Text = "", DBNull.Value, Convert.ToDateTime(Me.dtPicJonDate.Value.ToShortDateString()))
@@ -459,7 +471,6 @@ Public Class Distributor
                     'Me.GridEX1.Dock = DockStyle.Fill
                     Me.ClearControl(Me.grpEdit)
                     Me.Mode = ModeSaving.Save
-
             End Select
             Me.isLoadingRow = False
         Catch ex As Exception
@@ -665,13 +676,49 @@ Public Class Distributor
     End Sub
 
     Private Sub txtEmailAddress_Validating(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtEmailAddress.Validating
-        Dim pattern As String = "^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$"
-        Dim match As System.Text.RegularExpressions.Match = Regex.Match(txtEmailAddress.Text.Trim(), pattern, RegexOptions.IgnoreCase)
-        If (match.Success) Then
-            'MessageBox.Show("Success", "Checking")
-        Else
-            MessageBox.Show("Please enter a valid email id", "Checking")
-            txtEmailAddress.Clear()
+        If Not String.IsNullOrEmpty(txtEmailAddress.Text) Then
+            Dim pattern As String = "^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$"
+            Dim match As System.Text.RegularExpressions.Match = Regex.Match(txtEmailAddress.Text.Trim(), pattern, RegexOptions.IgnoreCase)
+            If (match.Success) Then
+                'MessageBox.Show("Success", "Checking")
+            Else
+                MessageBox.Show("Please enter a valid email id", "Checking")
+                txtEmailAddress.Clear()
+            End If
         End If
+    End Sub
+
+    Private Sub txtAltImail_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtAltImail.KeyPress
+        Dim ac As String = "@"
+        If e.KeyChar <> ChrW(Keys.Back) Then
+            If Asc(e.KeyChar) < 97 Or Asc(e.KeyChar) > 122 Then
+                If Asc(e.KeyChar) <> 46 And Asc(e.KeyChar) <> 95 Then
+                    If Asc(e.KeyChar) < 48 Or Asc(e.KeyChar) > 57 Then
+                        If ac.IndexOf(e.KeyChar) = -1 Then
+                            e.Handled = True
+                        Else
+                            If txtAltImail.Text.Contains("@") And e.KeyChar = "@" Then
+                                e.Handled = True
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+
+        End If
+    End Sub
+
+    Private Sub txtAltImail_Validating(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtAltImail.Validating
+        If Not String.IsNullOrEmpty(txtAltImail.Text) Then
+            Dim pattern As String = "^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$"
+            Dim match As System.Text.RegularExpressions.Match = Regex.Match(txtAltImail.Text.Trim(), pattern, RegexOptions.IgnoreCase)
+            If (match.Success) Then
+                'MessageBox.Show("Success", "Checking")
+            Else
+                MessageBox.Show("Please enter a valid email id", "Checking")
+                txtAltImail.Clear()
+            End If
+        End If
+
     End Sub
 End Class

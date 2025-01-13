@@ -356,13 +356,13 @@ Partial Class SPPBManager
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GetDataToolStripMenuItem, Me.EditGONToolStripMenuItem, Me.PrintGONToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(153, 92)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(129, 70)
         '
         'GetDataToolStripMenuItem
         '
         Me.GetDataToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SalesReportSummaryToolStripMenuItem, Me.SalesReportToolStripMenuItem, Me.SPPBEntryToolStripMenuItem})
         Me.GetDataToolStripMenuItem.Name = "GetDataToolStripMenuItem"
-        Me.GetDataToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.GetDataToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.GetDataToolStripMenuItem.Text = "Get Data"
         '
         'SalesReportSummaryToolStripMenuItem
@@ -386,14 +386,14 @@ Partial Class SPPBManager
         'EditGONToolStripMenuItem
         '
         Me.EditGONToolStripMenuItem.Name = "EditGONToolStripMenuItem"
-        Me.EditGONToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.EditGONToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.EditGONToolStripMenuItem.Text = "Edit GON"
         '
         'PrintGONToolStripMenuItem
         '
         Me.PrintGONToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnPrintGonCurSell, Me.btnPrinCustoms})
         Me.PrintGONToolStripMenuItem.Name = "PrintGONToolStripMenuItem"
-        Me.PrintGONToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.PrintGONToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.PrintGONToolStripMenuItem.Text = "Print GON"
         '
         'btnPrintGonCurSell

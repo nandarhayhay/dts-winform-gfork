@@ -243,7 +243,8 @@ Namespace PurchaseOrder
         Public Function CreateViewDistributor(ByVal mustCloseConnection As Boolean) As DataView
             Try
                 Query = "SET NOCOUNT ON;SELECT DISTRIBUTOR_ID,DISTRIBUTOR_NAME,ISNULL(CONTACT,'')AS CONTACT, " & vbCrLf & _
-                "ISNULL(PHONE,'') AS PHONE,ISNULL(TERRITORY_AREA,'')AS TERRITORY_AREA,ISNULL(REGIONAL_AREA,'') AS REGIONAL_AREA FROM VIEW_DISTRIBUTOR ;"
+                "ISNULL(PHONE,'') AS PHONE,ISNULL(TERRITORY_AREA,'')AS TERRITORY_AREA,ISNULL(REGIONAL_AREA,'') AS REGIONAL_AREA FROM VIEW_DISTRIBUTOR " & vbCrLf & _
+                " WHERE (INACTIVE = 0 OR INACTIVE IS NULL);"
                 'Me.CreateCommandSql("", "SELECT * FROM VIEW_DISTRIBUTOR")
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")

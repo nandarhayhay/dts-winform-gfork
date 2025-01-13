@@ -239,8 +239,8 @@ Public Class DailyGON
             Me.cbDate.Items.Add(i + 1)
         Next
         'get data convertion
-        Using clsProd As New NufarmBussinesRules.Brandpack.BrandPack
-            Me.DVMConversiProduct = clsProd.getProdConvertion(True).DefaultView()
+        Using clsSepGon As New NufarmBussinesRules.OrderAcceptance.SeparatedGON()
+            Me.DVMConversiProduct = clsSepGon.getProdConvertion(True)
         End Using
         Me.IsLoadingRow = False
     End Sub

@@ -71,7 +71,7 @@ Partial Class Distributor_PO_Dispro
         Me.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
         Me.GridEX1.FilterRowButtonStyle = Janus.Windows.GridEX.FilterRowButtonStyle.ConditionOperatorDropDown
         Me.GridEX1.FilterRowFormatStyle.BackColor = System.Drawing.SystemColors.Window
-        Me.GridEX1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridEX1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
         Me.GridEX1.GroupByBoxVisible = False
         Me.GridEX1.GroupMode = Janus.Windows.GridEX.GroupMode.Collapsed
         Me.GridEX1.GroupRowVisualStyle = Janus.Windows.GridEX.GroupRowVisualStyle.Outlook2003

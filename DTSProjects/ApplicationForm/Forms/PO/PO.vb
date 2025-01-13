@@ -1131,14 +1131,20 @@ Public Class PO
             Me.Cursor = Cursors.WaitCursor
             If (e.Column.Key = "ExcludeDPD") Then
                 ''UPDATE data
+                'Dim IsPlantationPO As Boolean = Me.grdPurchaseOrder.GetValue("PLANTATION_ID")
                 Dim C As Boolean = IIf(IsDBNull(Me.grdPurchaseOrder.GetValue(e.Column)), False, CBool(Me.grdPurchaseOrder.GetValue(e.Column)))
-
-                Me.clsPO.SetExecludeDPD(C, Me.grdPurchaseOrder.GetValue("PO_BRANDPACK_ID").ToString())
+                Dim POBrandPackID As String = Me.grdPurchaseOrder.GetValue("PO_BRANDPACK_ID")
+                If Not Me.CMain.IsSystemAdministrator Then
+                    If Not Me.clsPO.isPOPlantation(POBrandPackID) Then
+                        Me.grdPurchaseOrder.CancelCurrentEdit() : Me.Cursor = Cursors.Default : Return
+                    End If
+                End If
+                Me.clsPO.SetExecludeDPD(C, POBrandPackID)
                 Me.SFG = StateFillingGrid.Filling : Me.grdPurchaseOrder.UpdateData() : Me.SFG = StateFillingGrid.HasFilled : Me.Cursor = Cursors.Default
             Else
                 Me.grdPurchaseOrder.CancelCurrentEdit()
             End If
-
+            Me.Cursor = Cursors.Default
         Catch ex As Exception
             Me.ShowMessageInfo(ex.Message)
             Me.Cursor = Cursors.Default

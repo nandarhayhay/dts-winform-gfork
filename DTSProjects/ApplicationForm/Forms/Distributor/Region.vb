@@ -28,8 +28,7 @@ Public Class Region
             Else
                 Me.GridEX1.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
             End If
-            If (NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Region = True) And (NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.Region = True) Then
-            ElseIf NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Region = True Then
+            If NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Region = True And NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.Region = True Then
                 Me.btnAddNew.Visible = True
                 Me.grpViewMode.Text = "Data View Mode"
                 Me.Bar1.Visible = True
@@ -118,9 +117,11 @@ Public Class Region
         For Each col As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
             col.AutoSize()
         Next
-        Me.FillFilterColumn()
+        'Me.FillFilterColumn()
+        Me.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
         Me.GridEX1.Update()
         Me.SFG = StateFillingGrid.HasFilled
+
     End Sub
     Private Sub FillFilterColumn()
         For Each Item As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
@@ -143,57 +144,59 @@ Public Class Region
 
     End Sub
     Private Sub FillCategoriesValueList()
+        Me.clsRegion.ViewRegional.RowFilter = ""
         Dim DVActiveRegional As DataView = Me.clsRegion.ViewRegional().ToTable().Copy().DefaultView
-        DVActiveRegional.RowFilter = "INACTIVE = " & False
-        If Not Me.GridEX1.DropDowns.Contains("DRegional") Then
-            Dim colDrReg As New Janus.Windows.GridEX.GridEXDropDown()
-            colDrReg.EditMode = Janus.Windows.GridEX.EditMode.EditOn
-            'colGrpTerritory.FilterRowUpdateMode = Janus.Windows.GridEX.FilterRowUpdateMode.WhenValueChanges
-            'colGrpTerritory.DisplayMember = "TERRITORY_AREA"
-            'colGrpTerritory.ValueMember = "TERRITORY_ID"
-            colDrReg.Key = "DRegional"
-            'colGrpTerritory.Columns.Add(New Janus.Windows.GridEX.GridEXColumn("TERRITORY_ID"))
-            'colGrpTerritory.Columns.Add(New Janus.Windows.GridEX.GridEXColumn("TERRITORY_AREA"))
-            Me.GridEX1.DropDowns.Add("DRegional")
-            Me.GridEX1.DropDowns("DRegional").Columns.Add(New Janus.Windows.GridEX.GridEXColumn("REGIONAL_ID"))
-            Me.GridEX1.DropDowns("DRegional").Columns.Add(New Janus.Windows.GridEX.GridEXColumn("REGIONAL_AREA"))
-        End If
-        Me.GridEX1.DropDowns("DRegional").SetDataBinding(DVActiveRegional, "")
-        'Me.GridEX1.DropDowns(0).RetrieveStructure()
-        Me.GridEX1.DropDowns("DRegional").Columns("REGIONAL_AREA").Width = 200
-        Me.GridEX1.DropDowns("DRegional").VisibleRows = 30
-        Me.GridEX1.DropDowns("DRegional").RowFormatStyle.BackColor = Color.FromArgb(158, 190, 245)
+        'DVActiveRegional.RowFilter = "INACTIVE = " & False
+        'clear dropdowns
+        Me.GridEX1.DropDowns.Clear()
+        Me.GridEX1.DropDowns.Add("DRegional")
+        With Me.GridEX1.DropDowns("DRegional")
+            .Columns.Add(New Janus.Windows.GridEX.GridEXColumn("REGIONAL_ID"))
+            .Columns.Add(New Janus.Windows.GridEX.GridEXColumn("REGIONAL_AREA"))
+            .DisplayMember = "REGIONAL_AREA"
+            .ValueMember = "REGIONAL_ID"
+            .EditMode = Janus.Windows.GridEX.EditMode.EditOn
+            .SetDataBinding(DVActiveRegional, "")
+            '.RetrieveStructure()
+            .Columns("REGIONAL_AREA").Width = 200
+            .VisibleRows = 30
+            .ReplaceValues = True
+            .RowFormatStyle.BackColor = Color.FromArgb(158, 190, 245)
+        End With
         Me.GridEX1.RootTable.Columns("REGIONAL_ID").EditType = Janus.Windows.GridEX.EditType.MultiColumnDropDown
         Me.GridEX1.RootTable.Columns("REGIONAL_ID").ColumnType = Janus.Windows.GridEX.ColumnType.Text
-        Me.GridEX1.RootTable.Columns("REGIONAL_ID").EditTarget = Janus.Windows.GridEX.EditTarget.Value
-        'Me.GridEX1.RootTable.Columns("REGIONAL_ID").CompareTarget = Janus.Windows.GridEX.ColumnCompareTarget.Text
-        Me.GridEX1.RootTable.Columns("REGIONAL_ID").FilterEditType = Janus.Windows.GridEX.FilterEditType.SameAsEditType
-        Me.GridEX1.DropDowns("DRegional").DisplayMember = "REGIONAL_AREA"
-        Me.GridEX1.DropDowns("DRegional").ValueMember = "REGIONAL_ID"
-        Me.GridEX1.DropDowns("DRegional").ReplaceValues = True
+        Me.GridEX1.RootTable.Columns("REGIONAL_ID").EditTarget = Janus.Windows.GridEX.EditTarget.Text
+        Me.GridEX1.RootTable.Columns("REGIONAL_ID").CompareTarget = Janus.Windows.GridEX.ColumnCompareTarget.Text
+
         GridEX1.RootTable.Columns("REGIONAL_ID").DropDown = Me.GridEX1.DropDowns("DRegional")
-        If Not Me.GridEX1.DropDowns.Contains("ParentTerritory") Then
-            Dim colGrpTerritory As New Janus.Windows.GridEX.GridEXDropDown()
-            colGrpTerritory.EditMode = Janus.Windows.GridEX.EditMode.EditOn
-            colGrpTerritory.Key = "ParentTerritory"
-            Me.GridEX1.DropDowns.Add("ParentTerritory")
-            Me.GridEX1.DropDowns("ParentTerritory").Columns.Add(New Janus.Windows.GridEX.GridEXColumn("TERRITORY_ID"))
-            Me.GridEX1.DropDowns("ParentTerritory").Columns.Add(New Janus.Windows.GridEX.GridEXColumn("TERRITORY_AREA"))
-        End If
-        Me.GridEX1.DropDowns("ParentTerritory").SetDataBinding(Me.clsRegion.ViewTerritory, "")
-        'Me.GridEX1.DropDowns(0).RetrieveStructure()
-        Me.GridEX1.DropDowns("ParentTerritory").Columns("TERRITORY_AREA").Width = 200
-        Me.GridEX1.DropDowns("ParentTerritory").VisibleRows = 30
-        Me.GridEX1.DropDowns("ParentTerritory").RowFormatStyle.BackColor = Color.FromArgb(158, 190, 245)
-        Me.GridEX1.RootTable.Columns("PARENT_TERRITORY").EditType = Janus.Windows.GridEX.EditType.MultiColumnDropDown
+        Me.GridEX1.DropDowns.Add("ParentTerritory")
+        With Me.GridEX1.DropDowns("ParentTerritory")
+            .Columns.Add(New Janus.Windows.GridEX.GridEXColumn("TERRITORY_ID"))
+            .Columns.Add(New Janus.Windows.GridEX.GridEXColumn("TERRITORY_AREA"))
+            .DisplayMember = "TERRITORY_AREA"
+            .ValueMember = "TERRITORY_ID"
+            .ReplaceValues = True
+            .EditMode = Janus.Windows.GridEX.EditMode.EditOn
+            .SetDataBinding(Me.clsRegion.ViewTerritory, "")
+            '.RetrieveStructure()
+            .Columns("TERRITORY_AREA").Width = 200
+            .VisibleRows = 30
+            .RowFormatStyle.BackColor = Color.FromArgb(158, 190, 245)
+        End With
+        Me.GridEX1.RootTable.Columns("PARENT_TERRITORY").EditType = Janus.Windows.GridEX.EditType.MultiColumnCombo
         Me.GridEX1.RootTable.Columns("PARENT_TERRITORY").ColumnType = Janus.Windows.GridEX.ColumnType.Text
         Me.GridEX1.RootTable.Columns("PARENT_TERRITORY").EditTarget = Janus.Windows.GridEX.EditTarget.Text
         Me.GridEX1.RootTable.Columns("PARENT_TERRITORY").CompareTarget = Janus.Windows.GridEX.ColumnCompareTarget.Text
-        Me.GridEX1.RootTable.Columns("PARENT_TERRITORY").FilterEditType = Janus.Windows.GridEX.FilterEditType.SameAsEditType
-        Me.GridEX1.DropDowns("ParentTerritory").DisplayMember = "TERRITORY_AREA"
-        Me.GridEX1.DropDowns("ParentTerritory").ValueMember = "TERRITORY_ID"
-        Me.GridEX1.DropDowns("ParentTerritory").ReplaceValues = True
         GridEX1.RootTable.Columns("PARENT_TERRITORY").DropDown = Me.GridEX1.DropDowns("ParentTerritory")
+
+        Dim VList() As String = {"DR", "SP"}
+        Dim colTerritoryFor As Janus.Windows.GridEX.GridEXColumn = Me.GridEX1.RootTable.Columns("TERRITORY_FOR")
+        colTerritoryFor.EditType = Janus.Windows.GridEX.EditType.DropDownList
+        colTerritoryFor.AutoComplete = True : colTerritoryFor.HasValueList = True
+        Dim ValueListUnit As Janus.Windows.GridEX.GridEXValueListItemCollection = colTerritoryFor.ValueList
+        ValueListUnit.PopulateValueList(VList, "TERRITORY_FOR")
+        colTerritoryFor.EditTarget = Janus.Windows.GridEX.EditTarget.Value
+        colTerritoryFor.DefaultGroupInterval = Janus.Windows.GridEX.GroupInterval.Text
     End Sub
     Private Sub fillCategoriesterritory()
         Dim colTerritoryID As Janus.Windows.GridEX.GridEXColumn = Me.GridEX1.RootTable.Columns("CUR_TERRITORY_ID")
@@ -313,7 +316,7 @@ Public Class Region
                         Case BarSelect.Regional
                             Select Case item.Text
                                 Case "Add New"
-                                    Me.clsRegion.ViewRegional().RowStateFilter = Data.DataViewRowState.CurrentRows
+                                    'Me.clsRegion.ViewRegional().RowStateFilter = Data.DataViewRowState.CurrentRows
                                     Me.Bindgrid(Me.clsRegion.ViewRegional())
                                     'Me.lblLastID.Text = Me.clsBrand.ViewBrand(Me.clsBrand.ViewBrand.Count - 1)("BRAND_ID").ToString()
                                     'Me.grpLastID.Visible = True
@@ -329,7 +332,7 @@ Public Class Region
                                     If Me.clsRegion.GetDataSet().HasChanges() Then
                                         Me.clsRegion.GetDataSet().RejectChanges()
                                     End If
-                                    Me.clsRegion.ViewRegional().RowStateFilter = Data.DataViewRowState.OriginalRows
+                                    'Me.clsRegion.ViewRegional().RowStateFilter = Data.DataViewRowState.OriginalRows
                                     Me.Bindgrid(Me.clsRegion.ViewRegional())
                                     item.Text = "Add New"
                                     Me.GetStateCheckedBar2(Me.btnOriginalRows)
@@ -345,10 +348,7 @@ Public Class Region
                         Case BarSelect.Territory
                             Select Case item.Text
                                 Case "Add New"
-                                    Me.clsRegion.ViewTerritory().RowStateFilter = Data.DataViewRowState.CurrentRows
-                                    Me.Bindgrid(Me.clsRegion.ViewTerritory())
-                                    'Me.lblLastID.Text = Me.clsBrand.ViewBrand(Me.clsBrand.ViewBrand.Count - 1)("BRAND_ID").ToString()
-                                    'Me.grpLastID.Visible = True
+                                    'Me.clsRegion.ViewTerritory().RowStateFilter = Data.DataViewRowState.CurrentRows
                                     Me.GetStateCheckedBar2(Me.btnCurrent)
                                     Me.GridEX1.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.True
                                     Me.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.None
@@ -357,16 +357,21 @@ Public Class Region
                                     Me.GridEX1.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.False
                                     Me.GridEX1.MoveToNewRecord()
                                     item.Text = "Cancel Changes"
+                                    Me.Bindgrid(Me.clsRegion.ViewTerritory())
+                                    'Me.lblLastID.Text = Me.clsBrand.ViewBrand(Me.clsBrand.ViewBrand.Count - 1)("BRAND_ID").ToString()
+                                    'Me.grpLastID.Visible = True
+
                                 Case "Cancel Changes"
                                     If Me.clsRegion.GetDataSet().HasChanges() Then
                                         Me.clsRegion.GetDataSet().RejectChanges()
                                     End If
-                                    Me.clsRegion.ViewTerritory().RowStateFilter = Data.DataViewRowState.OriginalRows
+                                    'Me.clsRegion.ViewTerritory().RowStateFilter = Data.DataViewRowState.OriginalRows
                                     Me.Bindgrid(Me.clsRegion.ViewTerritory())
                                     item.Text = "Add New"
                                     Me.GetStateCheckedBar2(Me.btnOriginalRows)
                                     'Me.grpLastID.Visible = False
                                     Me.GridEX1.FilterMode = Janus.Windows.GridEX.FilterMode.Automatic
+
                                     Me.GridEX1.AllowAddNew = Janus.Windows.GridEX.InheritableBoolean.False
                                     Me.GridEX1.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
                                     Me.GridEX1.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.True
@@ -377,7 +382,7 @@ Public Class Region
                         Case BarSelect.Territory_Manager
                             Select Case item.Text
                                 Case "Add New"
-                                    Me.clsRegion.ViewTerritoryManager().RowStateFilter = Data.DataViewRowState.CurrentRows
+                                    'Me.clsRegion.ViewTerritoryManager().RowStateFilter = Data.DataViewRowState.CurrentRows
                                     Me.Bindgrid(Me.clsRegion.ViewTerritoryManager())
                                     'Me.lblLastID.Text = Me.clsBrand.ViewBrand(Me.clsBrand.ViewBrand.Count - 1)("BRAND_ID").ToString()
                                     'Me.grpLastID.Visible = True
@@ -393,7 +398,7 @@ Public Class Region
                                     If Me.clsRegion.GetDataSet().HasChanges() Then
                                         Me.clsRegion.GetDataSet().RejectChanges()
                                     End If
-                                    Me.clsRegion.ViewTerritory().RowStateFilter = Data.DataViewRowState.OriginalRows
+                                    'Me.clsRegion.ViewTerritory().RowStateFilter = Data.DataViewRowState.OriginalRows
                                     Me.Bindgrid(Me.clsRegion.ViewTerritoryManager())
                                     item.Text = "Add New"
                                     Me.GetStateCheckedBar2(Me.btnOriginalRows)
@@ -409,7 +414,7 @@ Public Class Region
                         Case BarSelect.FieldSupervisor
                             Select Case item.Text
                                 Case "Add New"
-                                    Me.clsRegion.ViewFS().RowStateFilter = Data.DataViewRowState.CurrentRows
+                                    'Me.clsRegion.ViewFS().RowStateFilter = Data.DataViewRowState.CurrentRows
                                     Me.Bindgrid(Me.clsRegion.ViewFS())
                                     'Me.lblLastID.Text = Me.clsBrand.ViewBrand(Me.clsBrand.ViewBrand.Count - 1)("BRAND_ID").ToString()
                                     ''Me.grpLastID.Visible = True
@@ -425,7 +430,7 @@ Public Class Region
                                     If Me.clsRegion.GetDataSet().HasChanges() Then
                                         Me.clsRegion.GetDataSet().RejectChanges()
                                     End If
-                                    Me.clsRegion.ViewFS().RowStateFilter = Data.DataViewRowState.OriginalRows
+                                    'Me.clsRegion.ViewFS().RowStateFilter = Data.DataViewRowState.OriginalRows
                                     Me.Bindgrid(Me.clsRegion.ViewFS())
                                     item.Text = "Add New"
                                     Me.GetStateCheckedBar2(Me.btnOriginalRows)
@@ -1497,11 +1502,11 @@ Public Class Region
                 If Me.GridEX1.GetRow().RowType = Janus.Windows.GridEX.RowType.NewRecord Then
                     For Each col As Janus.Windows.GridEX.GridEXColumn In Me.GridEX1.RootTable.Columns
                         If col.Key = "REGIONAL_ID" Then
-                            If Me.SelectBar = BarSelect.Territory Then
-                                Me.GridEX1.RootTable.Columns("REGIONAL_ID").EditType = Janus.Windows.GridEX.EditType.DropDownList
-                            Else
-                                col.EditType = Janus.Windows.GridEX.EditType.TextBox
-                            End If
+                            'If Me.SelectBar = BarSelect.Territory Then
+                            '    Me.GridEX1.RootTable.Columns("REGIONAL_ID").EditType = Janus.Windows.GridEX.EditType.MultiColumnDropDown
+                            'Else
+                            '    col.EditType = Janus.Windows.GridEX.EditType.TextBox
+                            'End If
                         ElseIf col.Key = "PARENT_REGIONAL" Or col.Key = "PARENT_TERRITORY" Then
                         Else
                             col.EditType = Janus.Windows.GridEX.EditType.TextBox

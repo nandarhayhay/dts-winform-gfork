@@ -45,6 +45,7 @@ Partial Class Distributor
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbHolding_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbTerritoryID_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
+        Dim Label15 As System.Windows.Forms.Label
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.GridEX1 = New Janus.Windows.GridEX.GridEX
         Me.ItemPanel1 = New DevComponents.DotNetBar.ItemPanel
@@ -93,6 +94,7 @@ Partial Class Distributor
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
         Me.XpGradientPanel1 = New SteepValley.Windows.Forms.XPGradientPanel
+        Me.txtAltImail = New System.Windows.Forms.TextBox
         DISTRIBUTOR_IDLabel = New System.Windows.Forms.Label
         DISTRIBUTOR_NAMELabel = New System.Windows.Forms.Label
         Label3 = New System.Windows.Forms.Label
@@ -107,6 +109,7 @@ Partial Class Distributor
         Label12 = New System.Windows.Forms.Label
         Label13 = New System.Windows.Forms.Label
         Label14 = New System.Windows.Forms.Label
+        Label15 = New System.Windows.Forms.Label
         CType(Me.GridEX1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpEdit, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpEdit.SuspendLayout()
@@ -182,7 +185,7 @@ Partial Class Distributor
         'Label7
         '
         Label7.AutoSize = True
-        Label7.Location = New System.Drawing.Point(56, 247)
+        Label7.Location = New System.Drawing.Point(56, 274)
         Label7.Name = "Label7"
         Label7.Size = New System.Drawing.Size(59, 13)
         Label7.TabIndex = 12
@@ -299,7 +302,7 @@ Partial Class Distributor
         Me.GridEX1.GroupRowVisualStyle = Janus.Windows.GridEX.GroupRowVisualStyle.Outlook2003
         Me.GridEX1.GroupTotals = Janus.Windows.GridEX.GroupTotals.ExpandedGroup
         Me.GridEX1.ImageList = Me.ImageList1
-        Me.GridEX1.Location = New System.Drawing.Point(0, 350)
+        Me.GridEX1.Location = New System.Drawing.Point(0, 374)
         Me.GridEX1.Name = "GridEX1"
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
@@ -307,7 +310,7 @@ Partial Class Distributor
         Me.GridEX1.RowFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.GridEX1.RowFormatStyle.ForeColor = System.Drawing.SystemColors.InfoText
         Me.GridEX1.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.GridEX1.Size = New System.Drawing.Size(820, 377)
+        Me.GridEX1.Size = New System.Drawing.Size(820, 353)
         Me.GridEX1.TabIndex = 0
         Me.GridEX1.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.GridEX1.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
@@ -447,6 +450,8 @@ Partial Class Distributor
         'grpEdit
         '
         Me.grpEdit.BackColor = System.Drawing.Color.Transparent
+        Me.grpEdit.Controls.Add(Label15)
+        Me.grpEdit.Controls.Add(Me.txtAltImail)
         Me.grpEdit.Controls.Add(Label14)
         Me.grpEdit.Controls.Add(Me.txtEmailAddress)
         Me.grpEdit.Controls.Add(Label13)
@@ -484,7 +489,7 @@ Partial Class Distributor
         Me.grpEdit.Image = CType(resources.GetObject("grpEdit.Image"), System.Drawing.Image)
         Me.grpEdit.Location = New System.Drawing.Point(12, 5)
         Me.grpEdit.Name = "grpEdit"
-        Me.grpEdit.Size = New System.Drawing.Size(733, 294)
+        Me.grpEdit.Size = New System.Drawing.Size(733, 318)
         Me.grpEdit.TabIndex = 6
         Me.grpEdit.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
         '
@@ -655,7 +660,7 @@ Partial Class Distributor
         '
         'txtAddress
         '
-        Me.txtAddress.Location = New System.Drawing.Point(176, 237)
+        Me.txtAddress.Location = New System.Drawing.Point(176, 264)
         Me.txtAddress.MaxLength = 150
         Me.txtAddress.Multiline = True
         Me.txtAddress.Name = "txtAddress"
@@ -759,9 +764,27 @@ Partial Class Distributor
         Me.XpGradientPanel1.EndColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.XpGradientPanel1.Location = New System.Drawing.Point(0, 45)
         Me.XpGradientPanel1.Name = "XpGradientPanel1"
-        Me.XpGradientPanel1.Size = New System.Drawing.Size(820, 305)
+        Me.XpGradientPanel1.Size = New System.Drawing.Size(820, 329)
         Me.XpGradientPanel1.StartColor = System.Drawing.SystemColors.MenuBar
         Me.XpGradientPanel1.TabIndex = 9
+        '
+        'Label15
+        '
+        Label15.AutoSize = True
+        Label15.Location = New System.Drawing.Point(50, 240)
+        Label15.Name = "Label15"
+        Label15.Size = New System.Drawing.Size(76, 13)
+        Label15.TabIndex = 40
+        Label15.Text = "Alternatif Email"
+        '
+        'txtAltImail
+        '
+        Me.txtAltImail.Location = New System.Drawing.Point(176, 235)
+        Me.txtAltImail.MaxLength = 150
+        Me.txtAltImail.Multiline = True
+        Me.txtAltImail.Name = "txtAltImail"
+        Me.txtAltImail.Size = New System.Drawing.Size(349, 21)
+        Me.txtAltImail.TabIndex = 39
         '
         'Distributor
         '
@@ -836,5 +859,6 @@ Partial Class Distributor
     Private WithEvents dtPicJonDate As Janus.Windows.CalendarCombo.CalendarCombo
     Private WithEvents txtContactMobile1 As System.Windows.Forms.TextBox
     Private WithEvents txtEmailAddress As System.Windows.Forms.TextBox
+    Private WithEvents txtAltImail As System.Windows.Forms.TextBox
 
 End Class
