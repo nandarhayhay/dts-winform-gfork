@@ -102,6 +102,12 @@ Public Class Region
             ElseIf Item.DataMember = "MODIFY_DATE" Then
                 Item.EditType = Janus.Windows.GridEX.EditType.NoEdit
                 Item.Visible = False
+            ElseIf Item.DataMember = "INACTIVE" Or Item.Type Is Type.GetType("System.Boolean") Then
+                Item.EditType = Janus.Windows.GridEX.EditType.CheckBox
+                Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.CheckBox
+            ElseIf Item.DataMember = "TERRITORY_FOR" Then
+                Item.EditType = Janus.Windows.GridEX.EditType.Combo
+                Item.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
             End If
         Next
         If dtview.Table.TableName = "Territory" Then

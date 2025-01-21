@@ -85,11 +85,11 @@ Namespace DistributorRegistering
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom)
                 Me.SqlDat.Fill(tblShip_To) : Me.ClearCommandParameters()
                 'bikin territory_area
-                Query = "SET NOCOUNT ON ;SELECT TERRITORY_ID,TERRITORY_AREA FROM TERRITORY ;"
+                Query = "SET NOCOUNT ON ;SELECT TERRITORY_ID,TERRITORY_AREA FROM TERRITORY WHERE (INACTIVE = 0 OR INACTIVE IS NULL);"
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Me.SqlDat.Fill(tblTerritory) : Me.ClearCommandParameters()
                 'bikin view Manager
-                Query = "SET NOCOUNT ON ;SELECT TM_ID,MANAGER FROM TERRITORY_MANAGER ;"
+                Query = "SET NOCOUNT ON ;SELECT TM_ID,MANAGER FROM TERRITORY_MANAGER WHERE (INACTIVE = 0 OR INACTIVE IS NULL) ;"
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Me.SqlDat.Fill(tblManager) : Me.ClearCommandParameters()
                 'bikin distributor
