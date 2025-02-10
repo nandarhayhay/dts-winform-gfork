@@ -25,7 +25,6 @@ Partial Class PlantationPrice
         Dim chkDistributor_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbBrandPack_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Me.Panel1 = New System.Windows.Forms.Panel
-        Me.dtPicEndDate = New Janus.Windows.CalendarCombo.CalendarCombo
         Me.chkIncludeDPD = New System.Windows.Forms.CheckBox
         Me.XpGradientPanel1 = New SteepValley.Windows.Forms.XPGradientPanel
         Me.btnSave = New Janus.Windows.EditControls.UIButton
@@ -65,6 +64,7 @@ Partial Class PlantationPrice
         Me.GridEXExporter1 = New Janus.Windows.GridEX.Export.GridEXExporter(Me.components)
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.TManager1 = New DTSProjects.AdvancedTManager
+        Me.dtPicEndDate = New Janus.Windows.CalendarCombo.CalendarCombo
         Me.Panel1.SuspendLayout()
         Me.XpGradientPanel1.SuspendLayout()
         CType(Me.grpKebun, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -95,21 +95,6 @@ Partial Class PlantationPrice
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(243, 399)
         Me.Panel1.TabIndex = 0
-        '
-        'dtPicEndDate
-        '
-        Me.dtPicEndDate.CustomFormat = "dd MMMM yyyy"
-        Me.dtPicEndDate.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
-        '
-        '
-        '
-        Me.dtPicEndDate.DropDownCalendar.Name = ""
-        Me.dtPicEndDate.DropDownCalendar.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2007
-        Me.dtPicEndDate.Location = New System.Drawing.Point(13, 67)
-        Me.dtPicEndDate.Name = "dtPicEndDate"
-        Me.dtPicEndDate.Size = New System.Drawing.Size(200, 20)
-        Me.dtPicEndDate.TabIndex = 16
-        Me.dtPicEndDate.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2007
         '
         'chkIncludeDPD
         '
@@ -216,7 +201,7 @@ Partial Class PlantationPrice
         Me.txtPrice.Name = "txtPrice"
         Me.txtPrice.Size = New System.Drawing.Size(142, 20)
         Me.txtPrice.TabIndex = 11
-        Me.txtPrice.Text = "0,00"
+        Me.txtPrice.Text = "0.00"
         Me.txtPrice.Value = New Decimal(New Integer() {0, 0, 0, 131072})
         '
         'btnSearchDistributor
@@ -513,6 +498,21 @@ Partial Class PlantationPrice
         Me.TManager1.Name = "TManager1"
         Me.TManager1.Size = New System.Drawing.Size(607, 399)
         Me.TManager1.TabIndex = 29
+        '
+        'dtPicEndDate
+        '
+        Me.dtPicEndDate.CustomFormat = "dd MMMM yyyy"
+        Me.dtPicEndDate.DateFormat = Janus.Windows.CalendarCombo.DateFormat.Custom
+        '
+        '
+        '
+        Me.dtPicEndDate.DropDownCalendar.Name = ""
+        Me.dtPicEndDate.DropDownCalendar.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2007
+        Me.dtPicEndDate.Location = New System.Drawing.Point(13, 67)
+        Me.dtPicEndDate.Name = "dtPicEndDate"
+        Me.dtPicEndDate.Size = New System.Drawing.Size(200, 20)
+        Me.dtPicEndDate.TabIndex = 16
+        Me.dtPicEndDate.VisualStyle = Janus.Windows.CalendarCombo.VisualStyle.Office2007
         '
         'PlantationPrice
         '

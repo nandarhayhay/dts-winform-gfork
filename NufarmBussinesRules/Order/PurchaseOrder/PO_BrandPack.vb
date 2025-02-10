@@ -321,7 +321,7 @@ Namespace PurchaseOrder
         '    End Try
         'End Function
         'procedure untuk mengambil price bila ada harga khusus
-        Public Function GetPriceValue(ByVal distributorID As String, ByVal brandpack_id As String, ByVal PO_DATE As String, ByRef IsPriceHK As Boolean, ByRef DescriptionPrice As String, ByRef PriceTag As String) As Object
+        Public Function GetPriceValue(ByVal distributorID As String, ByVal brandpack_id As String, ByVal PO_DATE As String, ByRef IsPriceHK As Boolean, ByRef DescriptionPrice As String, ByRef PriceTag As String, ByRef isSPrice As Boolean, ByRef IsGenPrice As Boolean) As Object
             Try
                 'check apakah distributor ikutan harga khusus diantara waktu stardate
                 Dim IsHK As Object = Nothing
@@ -332,54 +332,77 @@ Namespace PurchaseOrder
                 Dim PriceHK As Object = Nothing
                 Query = "SET NOCOUNT ON;SELECT TOP 1 ISHK,START_DATE,ISNULL(TARGET_HK,0) AS TARGET_HK,ISNULL(PRICE_HK,0) AS PRICE_HK " & _
                                  " FROM MRKT_BRANDPACK_DISTRIBUTOR WHERE START_DATE <= '" & PO_DATE & "' AND END_DATE >= '" & PO_DATE & "'" & _
-                                 " AND ISHK = 1 AND DISTRIBUTOR_ID = '" & distributorID & "' AND PROG_BRANDPACK_ID IN(" & _
-                                 "SELECT PROG_BRANDPACK_ID FROM MRKT_BRANDPACK WHERE BRANDPACK_ID = '" & brandpack_id & _
-                                 "' AND START_DATE <= '" & PO_DATE & "' AND END_DATE >= '" & PO_DATE & "');"
-                Me.CreateCommandSql("sp_executesql", "")
-                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query) : Me.ExecuteReader()
+                                 " AND ISHK = 1 AND DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND PROG_BRANDPACK_ID IN(" & _
+                                 "SELECT PROG_BRANDPACK_ID FROM MRKT_BRANDPACK WHERE BRANDPACK_ID = @BRANDPACK_ID " & vbCrLf & _
+                                 " AND START_DATE <= '" & PO_DATE & "' AND END_DATE >= '" & PO_DATE & "');"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                'Me.CreateCommandSql("sp_executesql", "")
+                'me.AddParameter("@
+                Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, distributorID)
+                Me.AddParameter("@BRANDPACK_ID", SqlDbType.VarChar, brandpack_id)
+                Me.ExecuteReader()
                 While Me.SqlRe.Read()
                     IsHK = Me.SqlRe("ISHK") : START_DATE = Me.SqlRe("START_DATE")
                     TargetHK = Me.SqlRe("TARGET_HK") : PriceHK = Me.SqlRe("PRICE_HK")
                 End While
-                Me.SqlRe.Close() : Me.ClearCommandParameters()
-
+                Me.SqlRe.Close()
+                Dim retval As Object = Nothing
                 If CBool(IsHK) = True Then
                     If CDec(TargetHK) <= 0 Then
                         Me.CloseConnection()
                         Throw New Exception("DISTRIBUTOR_ID " & distributorID & " TARGET_HK = 0")
-
                     End If
                     IsPriceHK = True
                     StartDateString = Convert.ToDateTime(START_DATE).Month.ToString() + "/" & _
                     Convert.ToDateTime(START_DATE).Day.ToString() + "/" & Convert.ToDateTime(START_DATE).Year.ToString()
                     'jika ya sum po_qty berdasarkan PO_date >= start_Date program  po_date <= startdate
                     Query = "SET NOCOUNT ON;SELECT ISNULL(SUM(PO_ORIGINAL_QTY),0) FROM ORDR_PO_BRANDPACK WHERE PO_REF_NO IN(SELECT PO_REF_NO" & _
-                            " FROM ORDR_PURCHASE_ORDER WHERE DISTRIBUTOR_ID = '" & distributorID & "' AND PO_REF_DATE >= '" & StartDateString & _
-                            "' AND PO_REF_DATE <= '" & PO_DATE & "') AND BRANDPACK_ID = '" & brandpack_id & "';"
-                    Me.AddParameter("stmt", SqlDbType.NVarChar, Query)
-                    Dim SumPOQTY As Decimal = Convert.ToDecimal(Me.SqlCom.ExecuteScalar) : Me.ClearCommandParameters()
+                            " FROM ORDR_PURCHASE_ORDER WHERE DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND PO_REF_DATE >= '" & StartDateString & _
+                            "' AND PO_REF_DATE <= '" & PO_DATE & "') AND BRANDPACK_ID = @BRANDPACK_ID ;"
+                    Me.ResetCommandText(CommandType.Text, Query)
+                    Dim SumPOQTY As Decimal = Convert.ToDecimal(Me.SqlCom.ExecuteScalar)
                     If SumPOQTY >= TargetHK Then 'TARGET_TERCAPAI
                         'Me.CloseConnection()
                         'Throw New Exception("TARGET_HK for DistributorID " & distributorID & " has Reached" & vbCrLf & _
                         '"Please Select Another BRANDPACK.")
                         ''ambil ke harga
                         Query = "SET NOCOUNT ON;" & vbCrLf & _
-                           " SELECT 1 WHERE EXISTS(SELECT TOP 1 BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
-                           " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID" & vbCrLf & _
-                           " WHERE BPH.BRANDPACK_ID = '" & brandpack_id & "' AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
-                           " AND DPP.DISTRIBUTOR_ID = '" & distributorID & "' ORDER BY BPH.START_DATE DESC);"
-                        Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                        If (Not IsNothing(Me.SqlCom.ExecuteScalar)) Then
-                            Me.ClearCommandParameters() : Me.CloseConnection() : Return Nothing
+                           " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                           " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID " & vbCrLf & _
+                           " WHERE BPH.BRANDPACK_ID = @BRANDPACK_ID AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                           " AND DPP.END_DATE >= '" & PO_DATE & "' " & vbCrLf & _
+                           " AND DPP.DISTRIBUTOR_ID = @DISTRIBUTOR_ID);"
+                        Me.ResetCommandText(CommandType.Text, Query)
+                        retval = Me.SqlCom.ExecuteScalar
+                        If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                            Me.ClearCommandParameters() : Me.CloseConnection() : isSPrice = True : Return Nothing
                         End If
+                        ''sekarang chek apakah BRANDPACK_ID di table general price
                         Query = "SET NOCOUNT ON;" & vbCrLf & _
-                                "IF NOT EXISTS(SELECT TOP 1 PRICE FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = '" & brandpack_id & "' AND START_DATE <= '" & PO_DATE & "') " & vbCrLf & _
-                                " SELECT TOP 1 PRICE, PRICE_TAG FROM DIST_PLANT_PRICE WHERE BRANDPACK_ID = '" & brandpack_id & "' " & vbCrLf & _
-                                " AND DISTRIBUTOR_ID = '" & distributorID & "' AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC;" & vbCrLf & _
+                                " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                                " GEN_PLANT_PRICE GPL ON GPL.BRANDPACK_ID = BPH.BRANDPACK_ID " & vbCrLf & _
+                                " WHERE BPH.BRANDPACK_ID = @BRANDPACK_ID AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                                " AND GPL.START_DATE <= '" & PO_DATE & "') "
+                        Me.ResetCommandText(CommandType.Text, Query)
+                        retval = Me.SqlCom.ExecuteScalar
+                        If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                            Me.ClearCommandParameters() : IsGenPrice = True
+                            Me.CloseConnection()
+                            'DescriptionPrice = "PRICE FROM GENERAL PL PRICE"
+                            Return Nothing
+                        End If
+
+                        Query = "SET NOCOUNT ON;" & vbCrLf & _
+                                "IF NOT EXISTS(SELECT PRICE FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = @BRANDPACK_ID AND START_DATE <= '" & PO_DATE & "') " & vbCrLf & _
+                                " SELECT TOP 1 PRICE, PRICE_TAG FROM DIST_PLANT_PRICE WHERE BRANDPACK_ID = @BRANDPACK_ID " & vbCrLf & _
+                                " AND DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC;" & vbCrLf & _
                                 "ELSE " & vbCrLf & _
-                                " SELECT TOP 1 PRICE, PRICE_TAG FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = '" & brandpack_id & _
-                                "' AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC;"
-                        Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                                " SELECT TOP 1 PRICE, PRICE_TAG FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = @BRANDPACK_ID " & vbCrLf & _
+                                " AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC ;"
+                        Me.ResetCommandText(CommandType.Text, Query)
+
                         Me.SqlRe = Me.SqlCom.ExecuteReader()
                         While Me.SqlRe.Read()
                             Price = Me.SqlRe.GetDecimal(0)
@@ -395,24 +418,53 @@ Namespace PurchaseOrder
                         DescriptionPrice = "PRICE FROM SPECIAL PRICE"
                     End If
                 Else
-                    ''sekarang chek apakah BRANDPACK_ID
+                    ''sekarang chek apakah BRANDPACK_ID di table special price
+                    'Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    '        " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                    '        " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID" & vbCrLf & _
+                    '        " WHERE BPH.BRANDPACK_ID = '" & brandpack_id & "' AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                    '        " AND DPP.END_DATE >= '" & PO_DATE & "' " & vbCrLf & _
+                    '        " AND DPP.DISTRIBUTOR_ID = '" & distributorID & "');"
+                    'Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                    'If (Not IsNothing(Me.SqlCom.ExecuteScalar)) Then
+                    '    Me.ClearCommandParameters() : Me.CloseConnection() : isSPrice = True : Return Nothing
+                    'End If
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                            " SELECT 1 WHERE EXISTS(SELECT TOP 1 BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
-                            " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID" & vbCrLf & _
-                            " WHERE BPH.BRANDPACK_ID = '" & brandpack_id & "' AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
-                            " AND DPP.DISTRIBUTOR_ID = '" & distributorID & "' ORDER BY BPH.START_DATE DESC);"
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                    If (Not IsNothing(Me.SqlCom.ExecuteScalar)) Then
-                        Me.ClearCommandParameters() : Me.CloseConnection() : Return Nothing
+                             " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                             " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID " & vbCrLf & _
+                             " WHERE BPH.BRANDPACK_ID = @BRANDPACK_ID AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                             " AND DPP.END_DATE >= '" & PO_DATE & "' " & vbCrLf & _
+                             " AND DPP.DISTRIBUTOR_ID = @DISTRIBUTOR_ID);"
+                    Me.ResetCommandText(CommandType.Text, Query)
+                    retval = Me.SqlCom.ExecuteScalar
+                    If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                        Me.ClearCommandParameters() : Me.CloseConnection() : isSPrice = True : Return Nothing
                     End If
+
+                    ''sekarang chek apakah BRANDPACK_ID di table general price
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
-                            "IF NOT EXISTS(SELECT TOP 1 PRICE FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = '" & brandpack_id & "' AND START_DATE <= '" & PO_DATE & "') " & vbCrLf & _
-                            " SELECT TOP 1 PRICE, PRICE_TAG FROM DIST_PLANT_PRICE WHERE BRANDPACK_ID = '" & brandpack_id & "' " & vbCrLf & _
-                            " AND DISTRIBUTOR_ID = '" & distributorID & "' AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC;" & vbCrLf & _
+                            " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                            " GEN_PLANT_PRICE GPL ON GPL.BRANDPACK_ID = BPH.BRANDPACK_ID " & vbCrLf & _
+                            " WHERE BPH.BRANDPACK_ID = @BRANDPACK_ID AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                            " AND GPL.START_DATE <= '" & PO_DATE & "') "
+                    Me.ResetCommandText(CommandType.Text, Query)
+                    retval = Me.SqlCom.ExecuteScalar
+                    If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                        Me.ClearCommandParameters() : IsGenPrice = True
+                        Me.CloseConnection()
+                        'DescriptionPrice = "PRICE FROM GENERAL PL PRICE"
+                        Return Nothing
+                    End If
+
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "IF NOT EXISTS(SELECT PRICE FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = @BRANDPACK_ID AND START_DATE <= '" & PO_DATE & "') " & vbCrLf & _
+                            " SELECT TOP 1 PRICE, PRICE_TAG FROM DIST_PLANT_PRICE WHERE BRANDPACK_ID = @BRANDPACK_ID " & vbCrLf & _
+                            " AND DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC;" & vbCrLf & _
                             "ELSE " & vbCrLf & _
-                            " SELECT TOP 1 PRICE, PRICE_TAG FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = '" & brandpack_id & _
-                            "' AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC;"
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                            " SELECT TOP 1 PRICE, PRICE_TAG FROM BRND_PRICE_HISTORY WHERE BRANDPACK_ID = @BRANDPACK_ID " & vbCrLf & _
+                            " AND START_DATE <= '" & PO_DATE & "' ORDER BY START_DATE DESC;"
+                    Me.ResetCommandText(CommandType.Text, Query)
+
                     Me.SqlRe = Me.SqlCom.ExecuteReader()
                     While Me.SqlRe.Read()
                         Price = Me.SqlRe.GetDecimal(0)
@@ -464,30 +516,33 @@ Namespace PurchaseOrder
             Try
                 Query = "SET NOCOUNT ON;SELECT TOP 1 ISHK,START_DATE,ISNULL(TARGET_HK,0) AS TARGET_HK " & _
                            " FROM MRKT_BRANDPACK_DISTRIBUTOR WHERE START_DATE <= '" & PODate & "' AND END_DATE >= '" & PODate & "'" & _
-                           " AND ISHK = 1 AND DISTRIBUTOR_ID = '" & DistributorID & "' AND PROG_BRANDPACK_ID IN(" & _
-                           "SELECT PROG_BRANDPACK_ID FROM MRKT_BRANDPACK WHERE BRANDPACK_ID = '" & BrandPackID & _
-                           "' AND START_DATE <= '" & PODate & "' AND END_DATE >= '" & PODate & "');"
-                Me.CreateCommandSql("sp_executesql", "")
-                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query) : Me.ExecuteReader()
+                           " AND ISHK = 1 AND DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND PROG_BRANDPACK_ID IN(" & _
+                           "SELECT PROG_BRANDPACK_ID FROM MRKT_BRANDPACK WHERE BRANDPACK_ID = @BRANDPACK_ID AND START_DATE <= '" & PODate & "' AND END_DATE >= '" & PODate & "');"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@BRANDPACK_ID", SqlDbType.VarChar, BrandPackID)
+                Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DistributorID)
+                Me.ExecuteReader()
                 While Me.SqlRe.Read()
                     IsHK = Me.SqlRe("ISHK") : START_DATE = Me.SqlRe("START_DATE")
                     TargetHK = Me.SqlRe("TARGET_HK")
                 End While
-                Me.SqlRe.Close() : Me.ClearCommandParameters()
+                Me.SqlRe.Close()
                 If CBool(IsHK) = True Then
                     StartDateString = Convert.ToDateTime(START_DATE).Month.ToString() + "/" & _
                                       Convert.ToDateTime(START_DATE).Day.ToString() + "/" & Convert.ToDateTime(START_DATE).Year.ToString()
                     If POBrandPackID = "" Then
                         Query = "SET NOCOUNT ON;SELECT ISNULL(SUM(PO_ORIGINAL_QTY),0) FROM ORDR_PO_BRANDPACK WHERE PO_REF_NO = ANY(SELECT PO_REF_NO" & _
-                                 " FROM ORDR_PURCHASE_ORDER WHERE DISTRIBUTOR_ID = '" & DistributorID & "' AND PO_REF_DATE >= '" & StartDateString & _
-                                 "' ) AND BRANDPACK_ID = '" & BrandPackID & "';"
+                                 " FROM ORDR_PURCHASE_ORDER WHERE DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND PO_REF_DATE >= '" & StartDateString & _
+                                 "' ) AND BRANDPACK_ID = @BRANDPACK_ID ;"
                     Else
                         Query = "SET NOCOUNT ON;SELECT ISNULL(SUM(PO_ORIGINAL_QTY),0) FROM ORDR_PO_BRANDPACK WHERE PO_REF_NO = ANY(SELECT PO_REF_NO" & _
-                                 " FROM ORDR_PURCHASE_ORDER WHERE DISTRIBUTOR_ID = '" & DistributorID & "' AND PO_REF_DATE >= '" & StartDateString & _
-                                 "' ) AND BRANDPACK_ID = '" & BrandPackID & "' AND PO_BRANDPACK_ID != '" & POBrandPackID & "' ;"
+                                 " FROM ORDR_PURCHASE_ORDER WHERE DISTRIBUTOR_ID = @DISTRIBUTOR_ID AND PO_REF_DATE >= '" & StartDateString & _
+                                 "' ) AND BRANDPACK_ID = @BRANDPACK_ID AND PO_BRANDPACK_ID != @PO_BRANDPACK_ID ;"
+                        Me.AddParameter("@PO_BRANDPACK_ID", SqlDbType.VarChar, POBrandPackID)
                     End If
-
-                    Me.AddParameter("stmt", SqlDbType.NVarChar, Query)
+                    Me.ResetCommandText(CommandType.Text, Query)
                     Dim SumPOQTY As Decimal = Convert.ToDecimal(Me.SqlCom.ExecuteScalar) : Me.ClearCommandParameters()
                     If SumPOQTY < TargetHK Then 'TARGET_TERCAPAI
                         Return SumPOQTY
@@ -599,7 +654,7 @@ Namespace PurchaseOrder
                         .Columns("TERRITORY_ID").DefaultValue = DBNull.Value
                         .Columns.Add("DESCRIPTIONS", Type.GetType("System.String"))
                         .Columns.Add("DESCRIPTIONS2", Type.GetType("System.String"))
-
+                        .Columns.Add("PRICE_CATEGORY", Type.GetType("System.String"))
                         .Columns.Add("CREATE_DATE", Type.GetType("System.DateTime"))
                         .Columns.Add("CREATE_BY", Type.GetType("System.String"))
                         .Columns.Add("MODIFY_DATE", Type.GetType("System.DateTime"))
@@ -1376,8 +1431,8 @@ Namespace PurchaseOrder
                     Dim UpdatedRows() As DataRow = Nothing, DeletedRows() As DataRow = Nothing
 
                     Dim CommandInsert As SqlCommand = Me.SqlConn.CreateCommand()
-                    CommandInsert.CommandText = "SET NOCOUNT ON;INSERT INTO ORDR_PO_BRANDPACK(PO_BRANDPACK_ID,BRANDPACK_ID,PO_REF_NO,PO_ORIGINAL_QTY,PO_PRICE_PERQTY,PRICE_TAG,PROJ_BRANDPACK_ID,DESCRIPTIONS,DESCRIPTIONS2,PLANTATION_ID,TERRITORY_ID,CREATE_BY,CREATE_DATE)" _
-                                                & " VALUES(@PO_BRANDPACK_ID,@BRANDPACK_ID,@PO_REF_NO,@PO_ORIGINAL_QTY,@PO_PRICE_PERQTY,@PRICE_TAG,@PROJ_BRANDPACK_ID,@DESCRIPTIONS,@DESCRIPTIONS2,@PLANTATION_ID,@TERRITORY_ID,@CREATE_BY,@CREATE_DATE);"
+                    CommandInsert.CommandText = "SET NOCOUNT ON;INSERT INTO ORDR_PO_BRANDPACK(PO_BRANDPACK_ID,BRANDPACK_ID,PO_REF_NO,PO_ORIGINAL_QTY,PO_PRICE_PERQTY,PRICE_TAG,PROJ_BRANDPACK_ID,DESCRIPTIONS,DESCRIPTIONS2,PLANTATION_ID,TERRITORY_ID,PRICE_CATEGORY,CREATE_BY,CREATE_DATE)" _
+                                                & " VALUES(@PO_BRANDPACK_ID,@BRANDPACK_ID,@PO_REF_NO,@PO_ORIGINAL_QTY,@PO_PRICE_PERQTY,@PRICE_TAG,@PROJ_BRANDPACK_ID,@DESCRIPTIONS,@DESCRIPTIONS2,@PLANTATION_ID,@TERRITORY_ID,@PRICE_CATEGORY,@CREATE_BY,@CREATE_DATE);"
                     With CommandInsert
                         .Parameters.Add("@PO_BRANDPACK_ID", SqlDbType.VarChar, 39).SourceColumn = "PO_BRANDPACK_ID"
                         .Parameters.Add("@BRANDPACK_ID", SqlDbType.VarChar, 14).SourceColumn = "BRANDPACK_ID"
@@ -1392,12 +1447,13 @@ Namespace PurchaseOrder
                         .Parameters.Add("@PROJ_BRANDPACK_ID", SqlDbType.VarChar, 30, "PROJ_BRANDPACK_ID")
                         .Parameters.Add("@CREATE_BY", SqlDbType.VarChar, 50).SourceColumn = "CREATE_BY"
                         .Parameters.Add("@CREATE_DATE", SqlDbType.SmallDateTime).SourceColumn = "CREATE_DATE"
+                        .Parameters.Add("@PRICE_CATEGORY", SqlDbType.Char).SourceColumn = "PRICE_CATEGORY"
                     End With
                     Dim CommandUpdate As SqlCommand = Me.SqlConn.CreateCommand()
                     CommandUpdate.CommandText = "SET NOCOUNT ON;UPDATE ORDR_PO_BRANDPACK SET PO_ORIGINAL_QTY = @PO_ORIGINAL_QTY, " & vbCrLf & _
                                                  " PLANTATION_ID = @PLANTATION_ID,TERRITORY_ID = @TERRITORY_ID,PROJ_BRANDPACK_ID = @PROJ_BRANDPACK_ID," & vbCrLf & _
                                                  " PO_PRICE_PERQTY = @PO_PRICE_PERQTY, PRICE_TAG = @PRICE_TAG,DESCRIPTIONS = @DESCRIPTIONS,DESCRIPTIONS2 = @DESCRIPTIONS2," & vbCrLf & _
-                                                 " MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE " _
+                                                 " PRICE_CATEGORY = @PRICE_CATEGORY,MODIFY_BY = @MODIFY_BY,MODIFY_DATE = @MODIFY_DATE " _
                                                 & " WHERE PO_BRANDPACK_ID = @PO_BRANDPACK_ID ;"
                     With CommandUpdate
                         .Parameters.Add("@PO_BRANDPACK_ID", SqlDbType.VarChar, 39).SourceColumn = "PO_BRANDPACK_ID"
@@ -1416,7 +1472,7 @@ Namespace PurchaseOrder
                         .Parameters.Add("@MODIFY_BY", SqlDbType.VarChar, 50)
                         .Parameters("@MODIFY_BY").Value = NufarmBussinesRules.User.UserLogin.UserName
                         .Parameters.Add("@MODIFY_DATE", SqlDbType.SmallDateTime).SourceColumn = "MODIFY_DATE"
-
+                        .Parameters.Add("@PRICE_CATEGORY", SqlDbType.Char).SourceColumn = "PRICE_CATEGORY"
                     End With
                     Dim CommandDelete As SqlCommand = Me.SqlConn.CreateCommand()
                     CommandDelete.CommandText = "SET NOCOUNT ON;" & vbCrLf & _

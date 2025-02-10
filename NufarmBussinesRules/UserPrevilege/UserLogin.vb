@@ -89,6 +89,7 @@ Namespace User
             Public GonDetailData As Boolean
             Public OtherProduct As Boolean
             Public QtyConvertion As Boolean
+            Public GeneralPlantationPrice As Boolean
         End Structure
 
         Public Structure ALLOW_VIEW
@@ -151,6 +152,7 @@ Namespace User
             Public GonDetailData As Boolean
             Public OtherProduct As Boolean
             Public QtyConvertion As Boolean
+
         End Structure
 
         Public Structure ALLOW_UPDATE
@@ -210,6 +212,7 @@ Namespace User
             Public GonDetailData As Boolean
             Public OtherProduct As Boolean
             Public QtyConvertion As Boolean
+
         End Structure
 
         Public Structure ALLOW_DELETE
@@ -262,6 +265,7 @@ Namespace User
             Public GonDetailData As Boolean
             Public OtherProduct As Boolean
             Public QtyConvertion As Boolean
+
         End Structure
     End Class
 

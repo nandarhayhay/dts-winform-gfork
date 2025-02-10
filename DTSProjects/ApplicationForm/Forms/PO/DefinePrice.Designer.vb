@@ -24,6 +24,7 @@ Partial Class DefinePrice
         Me.ItemPanel1 = New DevComponents.DotNetBar.ItemPanel
         Me.btnCatFreeMarket = New DevComponents.DotNetBar.ButtonItem
         Me.btnCatPlantation = New DevComponents.DotNetBar.ButtonItem
+        Me.btnGeneralPlantation = New DevComponents.DotNetBar.ButtonItem
         Me.btnOK = New Janus.Windows.EditControls.UIButton
         Me.btnCancel = New Janus.Windows.EditControls.UIButton
         Me.ListView1 = New System.Windows.Forms.ListView
@@ -71,10 +72,10 @@ Partial Class DefinePrice
         Me.ItemPanel1.BackgroundStyle.PaddingRight = 1
         Me.ItemPanel1.BackgroundStyle.PaddingTop = 1
         Me.ItemPanel1.Dock = System.Windows.Forms.DockStyle.Left
-        Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCatFreeMarket, Me.btnCatPlantation})
+        Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCatFreeMarket, Me.btnCatPlantation, Me.btnGeneralPlantation})
         Me.ItemPanel1.Location = New System.Drawing.Point(0, 0)
         Me.ItemPanel1.Name = "ItemPanel1"
-        Me.ItemPanel1.Size = New System.Drawing.Size(161, 28)
+        Me.ItemPanel1.Size = New System.Drawing.Size(334, 28)
         Me.ItemPanel1.TabIndex = 10
         Me.ItemPanel1.Text = "ItemPanel1"
         '
@@ -85,9 +86,13 @@ Partial Class DefinePrice
         '
         'btnCatPlantation
         '
-        Me.btnCatPlantation.Checked = True
         Me.btnCatPlantation.Name = "btnCatPlantation"
-        Me.btnCatPlantation.Text = "Plantation Price"
+        Me.btnCatPlantation.Text = "Spesial Plantation Price"
+        '
+        'btnGeneralPlantation
+        '
+        Me.btnGeneralPlantation.Name = "btnGeneralPlantation"
+        Me.btnGeneralPlantation.Text = "General Plantation Price"
         '
         'btnOK
         '
@@ -201,8 +206,9 @@ Partial Class DefinePrice
     Friend WithEvents ColumnHeader5 As System.Windows.Forms.ColumnHeader
     Friend WithEvents ColumnHeader6 As System.Windows.Forms.ColumnHeader
     Private WithEvents txtSearchPlantationName As WatermarkTextBox.WaterMarkTextBox
-    Private WithEvents ItemPanel1 As DevComponents.DotNetBar.ItemPanel
-    Private WithEvents btnCatFreeMarket As DevComponents.DotNetBar.ButtonItem
-    Private WithEvents btnCatPlantation As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnGeneralPlantation As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ItemPanel1 As DevComponents.DotNetBar.ItemPanel
+    Friend WithEvents btnCatFreeMarket As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnCatPlantation As DevComponents.DotNetBar.ButtonItem
 
 End Class

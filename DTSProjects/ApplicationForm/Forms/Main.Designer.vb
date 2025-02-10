@@ -41,6 +41,7 @@ Partial Class Main
         Me.btnPlantation = New DevComponents.DotNetBar.ButtonItem
         Me.btnPlantationBrandPack = New DevComponents.DotNetBar.ButtonItem
         Me.btnBrandPackPlantation = New DevComponents.DotNetBar.ButtonItem
+        Me.btnGeneralPricePlantation = New DevComponents.DotNetBar.ButtonItem
         Me.btnCompareBrandPack = New DevComponents.DotNetBar.ButtonItem
         Me.btnClasification = New DevComponents.DotNetBar.ButtonItem
         Me.btnProductClass = New DevComponents.DotNetBar.ButtonItem
@@ -322,7 +323,7 @@ Partial Class Main
         'btnPlantation
         '
         Me.btnPlantation.Name = "btnPlantation"
-        Me.btnPlantation.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPlantationBrandPack, Me.btnBrandPackPlantation})
+        Me.btnPlantation.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnPlantationBrandPack, Me.btnBrandPackPlantation, Me.btnGeneralPricePlantation})
         Me.btnPlantation.Text = "Plantation"
         '
         'btnPlantationBrandPack
@@ -335,12 +336,18 @@ Partial Class Main
         '
         Me.btnBrandPackPlantation.ImageIndex = 28
         Me.btnBrandPackPlantation.Name = "btnBrandPackPlantation"
-        Me.btnBrandPackPlantation.Text = "Price Plantation"
+        Me.btnBrandPackPlantation.Text = "Special Price Plantation"
+        '
+        'btnGeneralPricePlantation
+        '
+        Me.btnGeneralPricePlantation.ImageIndex = 28
+        Me.btnGeneralPricePlantation.Name = "btnGeneralPricePlantation"
+        Me.btnGeneralPricePlantation.Text = "General Price Plantation"
         '
         'btnCompareBrandPack
         '
         Me.btnCompareBrandPack.Name = "btnCompareBrandPack"
-        Me.btnCompareBrandPack.Text = "Compare ID Product"
+        Me.btnCompareBrandPack.Text = "Mapping AccPac Product"
         '
         'btnClasification
         '
@@ -855,4 +862,5 @@ Partial Class Main
     Friend WithEvents btnGonDetailData As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnOtherProduct As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnManualQtyConv As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnGeneralPricePlantation As DevComponents.DotNetBar.ButtonItem
 End Class

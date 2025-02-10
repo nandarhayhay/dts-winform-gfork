@@ -992,7 +992,7 @@ Public Class GONWithoutPOMaster
                     .btnCriteria.CompareOperator = CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
                 Case NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
-                    .btnCriteria.Text = "<>"
+                    .btnCriteria.Text = "=><="
                     .btnCriteria.CompareOperator = CompareOperator.Between
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
             End Select
@@ -1081,24 +1081,34 @@ Public Class GONWithoutPOMaster
             Select Case Me.AdvancedTManager1.btnCriteria.CompareOperator
                 Case CompareOperator.BeginWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BeginWith
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.EndWith
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.EndWith
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.Equal
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Equal
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.Greater
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Greater
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.GreaterOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.GreaterOrEqual
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.In
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.In
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.Less
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Less
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.LessOrEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.LessOrEqual
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.Like
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.NotEqual
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.NotEqual
+                    Me.setVisibleDateControl(False)
                 Case CompareOperator.Between
                     Me.m_Criteria = NufarmBussinesRules.common.Helper.CriteriaSearch.BetWeen
                     Me.AdvancedTManager1.txtSearch.Text = ""

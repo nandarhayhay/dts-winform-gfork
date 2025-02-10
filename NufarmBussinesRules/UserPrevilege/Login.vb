@@ -299,7 +299,6 @@ Namespace User
             NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.OtherProduct = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_INSERT.OtherProduct = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_DELETE.OtherProduct = InitBool
-
         End Sub
 
         Private Sub SetPriviledge(ByVal tblPrivilege As DataTable)
@@ -579,6 +578,7 @@ Namespace User
                         NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.QtyConvertion = CBool(tblPrivilege.Rows(i)("ALLOW_UPDATE"))
                         NufarmBussinesRules.User.Privilege.ALLOW_INSERT.QtyConvertion = CBool(tblPrivilege.Rows(i)("ALLOW_INSERT"))
                         NufarmBussinesRules.User.Privilege.ALLOW_DELETE.QtyConvertion = CBool(tblPrivilege.Rows(i)("ALLOW_DELETE"))
+
                 End Select
             Next
         End Sub

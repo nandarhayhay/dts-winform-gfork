@@ -1,8 +1,10 @@
+Imports NufarmBussinesRules.Brandpack.PriceHistory.Category
 Public Class DefinePrice
     Private isloadingRow As Boolean = True : Private clsPriceHistory As New NufarmBussinesRules.Brandpack.PriceHistory()
-    Private Enum Category
+    Friend Enum Category
         FM
-        Plantation
+        SPlantation
+        GPlantation
     End Enum
     Private IsloadedForm As Boolean = False
     Public DistributorID As String = ""
@@ -21,12 +23,12 @@ Public Class DefinePrice
             If dtTable.Rows.Count > 0 Then
                 .Columns.Add("BRANDPACK_ID", 100, HorizontalAlignment.Left)
                 .Columns.Add("BRANDPACK_NAME", 170, HorizontalAlignment.Left)
-                If cat = Category.Plantation Then
+                If cat = Category.SPlantation Then
                     .Columns.Add("PLANTATION_NAME", 170, HorizontalAlignment.Left)
                 End If
                 .Columns.Add("PRICE", 100, HorizontalAlignment.Right)
                 .Columns.Add("START_DATE", 100, HorizontalAlignment.Left)
-                If cat = Category.Plantation Then
+                If cat = Category.SPlantation Then
                     .Columns.Add("END_DATE", 100, HorizontalAlignment.Left)
                     .Columns.Add("PLANTATION_ID", 1, HorizontalAlignment.Left)
                 End If
@@ -35,12 +37,12 @@ Public Class DefinePrice
                     Dim LVItem As New ListViewItem(dtTable.Rows(I)("BRANDPACK_ID").ToString())
                     With LVItem
                         .SubItems.Add(dtTable.Rows(I)("BRANDPACK_NAME").ToString())
-                        If cat = Category.Plantation Then
+                        If cat = Category.SPlantation Then
                             .SubItems.Add(dtTable.Rows(I)("PLANTATION_NAME"))
                         End If
                         .SubItems.Add(String.Format("{0:#,##0.00}", Convert.ToDecimal(dtTable.Rows(I)("PRICE"))))
                         .SubItems.Add(String.Format("{0:dd MMMM yyyy}", Convert.ToDateTime(dtTable.Rows(I)("START_DATE"))))
-                        If cat = Category.Plantation Then
+                        If cat = Category.SPlantation Then
                             If Not IsNothing(dtTable.Rows(I)("END_DATE")) And Not IsDBNull(dtTable.Rows(I)("END_DATE")) Then
                                 .SubItems.Add(String.Format("{0:dd MMMM yyyy}", Convert.ToDateTime(dtTable.Rows(I)("END_DATE"))))
                             Else
@@ -52,7 +54,6 @@ Public Class DefinePrice
                     End With
                     .Items.Add(LVItem)
                 Next
-
             End If
         End With
     End Sub
@@ -94,7 +95,7 @@ Public Class DefinePrice
     '        isloadingRow = False : Me.Cursor = Cursors.Default
     '    End Try
     'End Sub
-  
+
     Public Overloads Function ShowDialog(ByRef Price As Object, ByRef Description As String, ByRef PlantationID As String, ByRef TerritoryID As String, ByRef Pricetag As String) As DialogResult
         Dim DgResult As DialogResult = Windows.Forms.DialogResult.Cancel
         If Me.ShowDialog() = Windows.Forms.DialogResult.OK Then
@@ -137,9 +138,13 @@ Public Class DefinePrice
             Me.PriceTag = Me.ListView1.FocusedItem.SubItems(4).Text
         ElseIf Me.btnCatPlantation.Checked Then
             m_price = Me.ListView1.FocusedItem.SubItems(3).Text
-            m_Descriptions = "PRICE FROM PLANTATION  " & Me.ListView1.FocusedItem.SubItems(2).Text
+            m_Descriptions = "PRICE FROM SPECIAL PLANTATION " & Me.ListView1.FocusedItem.SubItems(2).Text
             Me.m_PlantationID = Me.ListView1.FocusedItem.SubItems(6).Text
             Me.PriceTag = Me.ListView1.FocusedItem.SubItems(7).Text
+        ElseIf Me.btnGeneralPlantation.Checked Then
+            m_price = Me.ListView1.FocusedItem.SubItems(2).Text
+            m_Descriptions = "PRICE FROM GENERAL PLANTATION"
+            Me.PriceTag = Me.ListView1.FocusedItem.SubItems(4).Text
         End If
         'check apakah plantationid ada territorynya atau tidak 
         'bila tidak ambil territory distributor
@@ -156,7 +161,9 @@ Public Class DefinePrice
             '    Me.rdbPlantation_CheckedChanged(Me.rdbPlantation, New EventArgs())
             'End If
             If Me.btnCatPlantation.Checked Then
-                Me.ShowPlantation()
+                Me.ShowSpecialPlantation()
+            ElseIf Me.btnGeneralPlantation.Checked Then
+                Me.ShowGeneralPlantationPrice()
             ElseIf Me.btnCatFreeMarket.Checked Then
                 Me.ShowFreemarketPrice()
             End If
@@ -170,12 +177,11 @@ Public Class DefinePrice
     End Sub
     Private Sub ShowFreemarketPrice()
         isloadingRow = True
-        Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(NufarmBussinesRules.Brandpack.PriceHistory.Category.FreeMarket, _
-                 Me.BrandPackID, Me.DistributorID, Me.StartDate)
+        Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(FreeMarket, BrandPackID, Me.DistributorID, Me.StartDate)
         Me.FillListView(Category.FM, dtTable)
         isloadingRow = False
     End Sub
-    Private Sub ShowPlantation()
+    Private Sub ShowSpecialPlantation()
         isloadingRow = True
         Dim SearchString As String = ""
         If Me.txtSearchPlantationName.Text <> "" Then
@@ -183,50 +189,31 @@ Public Class DefinePrice
                 SearchString = RTrim(Me.txtSearchPlantationName.Text)
             End If
         End If
-        Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(NufarmBussinesRules.Brandpack.PriceHistory.Category.Plantation, _
+        Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(SpecialPlantation, _
                            Me.BrandPackID, Me.DistributorID, Me.StartDate, SearchString)
-        Me.FillListView(Category.Plantation, dtTable)
+        Me.FillListView(Category.SPlantation, dtTable)
+        isloadingRow = False
+    End Sub
+    Private Sub ShowGeneralPlantationPrice()
+        Me.isloadingRow = True
+        'Dim SearchString As String = ""
+        'If Me.txtSearchPlantationName.Text <> "" Then
+        '    If Me.txtSearchPlantationName.WaterMarkText <> Me.originalWaterMaxTextBox Then
+        '        SearchString = RTrim(Me.txtSearchPlantationName.Text)
+        '    End If
+        'End If
+        Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(NufarmBussinesRules.Brandpack.PriceHistory.Category.GeneralPricePlantation, _
+                           Me.BrandPackID, "", Me.StartDate, "")
+        Me.FillListView(Category.GPlantation, dtTable)
         isloadingRow = False
     End Sub
     Private Sub ItemPanel1_ItemClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ItemPanel1.ItemClick
         Try
             Me.Cursor = Cursors.WaitCursor
             Dim item As DevComponents.DotNetBar.BaseItem = CType(sender, DevComponents.DotNetBar.BaseItem)
-            Select Case item.Name
-                Case "btnCatFreeMarket"
-                    If Me.btnCatFreeMarket.Checked Then
-                        If Me.btnCatPlantation.Checked = False Then
-                            'clear listview
-                            Me.ListView1.Items.Clear() : Me.m_Descriptions = "" : Me.m_PlantationID = "" : Me.m_price = ""
-                            Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = ""
-                            Me.btnCatFreeMarket.Checked = False : Me.txtSearchPlantationName.Enabled = False : Return
-                        Else
-                            Me.txtSearchPlantationName.Enabled = True : Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = Me.originalWaterMaxTextBox
-                            Me.ShowPlantation()
-                        End If
-                        Me.btnCatFreeMarket.Checked = False
-                    Else
-                        Me.btnCatPlantation.Checked = False : Me.txtSearchPlantationName.Enabled = False
-                        Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = ""
-                        Me.btnCatFreeMarket.Checked = True : Me.ShowFreemarketPrice()
-                    End If
-                Case "btnCatPlantation"
-                    If Me.btnCatPlantation.Checked Then
-                        If Me.btnCatFreeMarket.Checked = False Then
-                            Me.ListView1.Items.Clear() : Me.m_Descriptions = "" : Me.m_PlantationID = "" : Me.m_price = ""
-                            Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = ""
-                            Me.btnCatPlantation.Checked = False : Me.txtSearchPlantationName.Enabled = False : Return
-                        Else
-                            Me.btnCatPlantation.Checked = False : Me.txtSearchPlantationName.Enabled = False
-                            Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = ""
-                            Me.ShowFreemarketPrice()
-                        End If
-                        Me.btnCatPlantation.Checked = False
-                    Else
-                        Me.txtSearchPlantationName.Enabled = True : Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = Me.originalWaterMaxTextBox
-                        Me.btnCatPlantation.Checked = True : Me.btnCatFreeMarket.Checked = False : Me.ShowPlantation()
-                    End If
-            End Select
+            If TypeOf item Is DevComponents.DotNetBar.ButtonItem Then
+                CType(item, DevComponents.DotNetBar.ButtonItem).Checked = Not CType(item, DevComponents.DotNetBar.ButtonItem).Checked
+            End If
         Catch ex As Exception
             Me.ShowMessageInfo(ex.Message)
         Finally
@@ -248,9 +235,7 @@ Public Class DefinePrice
             If Me.txtSearchPlantationName.Text = "" Then
                 Me.txtSearchPlantationName.WaterMarkText = Me.originalWaterMaxTextBox
             Else
-                If Me.btnCatPlantation.Checked Then
-                    Me.ShowPlantation()
-                End If
+                Me.ShowSpecialPlantation()
             End If
             Me.AcceptButton = Me.btnOK
         Catch ex As Exception
@@ -265,9 +250,7 @@ Public Class DefinePrice
         Try
             Me.Cursor = Cursors.WaitCursor
             If e.KeyCode = Keys.Enter Then
-                If Me.btnCatPlantation.Checked Then
-                    Me.ShowPlantation()
-                End If
+                Me.ShowSpecialPlantation()
             End If
             Me.AcceptButton = Nothing
         Catch ex As Exception
@@ -279,7 +262,6 @@ Public Class DefinePrice
 
     'Private Sub DefinePrice_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs)
     '    Dim a As String = ""
-
     'End Sub
 
     Private Sub ListView1_MouseDoubleClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ListView1.MouseDoubleClick
@@ -287,5 +269,50 @@ Public Class DefinePrice
             Me.DialogResult = Windows.Forms.DialogResult.OK
             Me.Close()
         End If
+    End Sub
+
+    Private Sub ItemPanel1_ButtonCheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ItemPanel1.ButtonCheckedChanged
+        If Me.isloadingRow Then : Return : End If
+        Dim c As DevComponents.DotNetBar.ButtonItem = CType(sender, DevComponents.DotNetBar.ButtonItem)
+        Me.Cursor = Cursors.WaitCursor
+
+        'clear semua item yg di checked
+        Try
+            Me.isloadingRow = True
+            For Each b As DevComponents.DotNetBar.BaseItem In Me.ItemPanel1.Items
+                If TypeOf b Is DevComponents.DotNetBar.ButtonItem Then
+                    If CType(b, DevComponents.DotNetBar.ButtonItem).Name <> c.Name Then
+                        CType(b, DevComponents.DotNetBar.ButtonItem).Checked = False
+                    End If
+                End If
+            Next
+            'c.Checked = Not c.Checked
+            Me.ListView1.Items.Clear() : Me.m_Descriptions = "" : Me.m_PlantationID = "" : Me.m_price = ""
+
+            If c.Checked Then
+                Select Case c.Name
+                    Case "btnCatFreeMarket"
+                        Me.txtSearchPlantationName.Enabled = False
+                        Me.txtSearchPlantationName.WaterMarkText = ""
+                        Me.ShowFreemarketPrice()
+                    Case "btnCatPlantation"
+                        Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = Me.originalWaterMaxTextBox
+                        Me.txtSearchPlantationName.Enabled = True
+                        Me.ShowSpecialPlantation()
+                    Case "btnGeneralPlantation"
+                        'Me.txtSearchPlantationName.Text = "" : Me.txtSearchPlantationName.WaterMarkText = Me.originalWaterMaxTextBox
+                        'Me.txtSearchPlantationName.Enabled = True
+                        Me.ShowGeneralPlantationPrice()
+                End Select
+            End If
+            Me.isloadingRow = False
+            Cursor = Cursors.Default
+        Catch ex As Exception
+            Me.ShowMessageInfo(ex.Message)
+            Me.ListView1.Items.Clear() : Me.m_Descriptions = "" : Me.m_PlantationID = "" : Me.m_price = ""
+            c.Checked = Not c.Checked
+            Me.isloadingRow = False
+            Me.Cursor = Cursors.Default
+        End Try
     End Sub
 End Class

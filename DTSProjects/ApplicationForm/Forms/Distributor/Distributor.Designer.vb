@@ -41,11 +41,11 @@ Partial Class Distributor
         Dim Label12 As System.Windows.Forms.Label
         Dim Label13 As System.Windows.Forms.Label
         Dim Label14 As System.Windows.Forms.Label
+        Dim Label15 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Distributor))
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbHolding_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim mcbTerritoryID_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
-        Dim Label15 As System.Windows.Forms.Label
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.GridEX1 = New Janus.Windows.GridEX.GridEX
         Me.ItemPanel1 = New DevComponents.DotNetBar.ItemPanel
@@ -66,6 +66,7 @@ Partial Class Distributor
         Me.btnCardView = New DevComponents.DotNetBar.ButtonItem
         Me.btnSingleCard = New DevComponents.DotNetBar.ButtonItem
         Me.grpEdit = New Janus.Windows.EditControls.UIGroupBox
+        Me.txtAltImail = New System.Windows.Forms.TextBox
         Me.txtEmailAddress = New System.Windows.Forms.TextBox
         Me.txtContactMobile1 = New System.Windows.Forms.TextBox
         Me.dtPicJonDate = New Janus.Windows.CalendarCombo.CalendarCombo
@@ -94,7 +95,6 @@ Partial Class Distributor
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.PageSetupDialog1 = New System.Windows.Forms.PageSetupDialog
         Me.XpGradientPanel1 = New SteepValley.Windows.Forms.XPGradientPanel
-        Me.txtAltImail = New System.Windows.Forms.TextBox
         DISTRIBUTOR_IDLabel = New System.Windows.Forms.Label
         DISTRIBUTOR_NAMELabel = New System.Windows.Forms.Label
         Label3 = New System.Windows.Forms.Label
@@ -259,6 +259,15 @@ Partial Class Distributor
         Label14.Size = New System.Drawing.Size(73, 13)
         Label14.TabIndex = 38
         Label14.Text = "Email Address"
+        '
+        'Label15
+        '
+        Label15.AutoSize = True
+        Label15.Location = New System.Drawing.Point(50, 240)
+        Label15.Name = "Label15"
+        Label15.Size = New System.Drawing.Size(76, 13)
+        Label15.TabIndex = 40
+        Label15.Text = "Alternatif Email"
         '
         'ImageList1
         '
@@ -492,6 +501,15 @@ Partial Class Distributor
         Me.grpEdit.Size = New System.Drawing.Size(733, 318)
         Me.grpEdit.TabIndex = 6
         Me.grpEdit.VisualStyle = Janus.Windows.UI.Dock.PanelVisualStyle.Office2007
+        '
+        'txtAltImail
+        '
+        Me.txtAltImail.Location = New System.Drawing.Point(176, 235)
+        Me.txtAltImail.MaxLength = 150
+        Me.txtAltImail.Multiline = True
+        Me.txtAltImail.Name = "txtAltImail"
+        Me.txtAltImail.Size = New System.Drawing.Size(349, 21)
+        Me.txtAltImail.TabIndex = 39
         '
         'txtEmailAddress
         '
@@ -767,24 +785,6 @@ Partial Class Distributor
         Me.XpGradientPanel1.Size = New System.Drawing.Size(820, 329)
         Me.XpGradientPanel1.StartColor = System.Drawing.SystemColors.MenuBar
         Me.XpGradientPanel1.TabIndex = 9
-        '
-        'Label15
-        '
-        Label15.AutoSize = True
-        Label15.Location = New System.Drawing.Point(50, 240)
-        Label15.Name = "Label15"
-        Label15.Size = New System.Drawing.Size(76, 13)
-        Label15.TabIndex = 40
-        Label15.Text = "Alternatif Email"
-        '
-        'txtAltImail
-        '
-        Me.txtAltImail.Location = New System.Drawing.Point(176, 235)
-        Me.txtAltImail.MaxLength = 150
-        Me.txtAltImail.Multiline = True
-        Me.txtAltImail.Name = "txtAltImail"
-        Me.txtAltImail.Size = New System.Drawing.Size(349, 21)
-        Me.txtAltImail.TabIndex = 39
         '
         'Distributor
         '

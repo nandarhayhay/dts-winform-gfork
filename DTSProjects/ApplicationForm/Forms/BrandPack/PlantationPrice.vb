@@ -100,33 +100,7 @@ Public Class PlantationPrice
         'Dim DVCopyOriginal As DataView = CType(Me.TManager1.GridEX1.DataSource, DataView).ToTable().Copy().DefaultView()
         For i As Integer = 0 To Me.chkDistributor.CheckedValues.Length - 1
             ListDistributor.Add(Me.chkDistributor.CheckedValues.GetValue(i).ToString())
-            'Dim StartDate As String = "", EndDate As String = ""
-            'If Not IsNothing(START_DATE) Then
-            '    StartDate = START_DATE.Day.ToString() + "/" + START_DATE.Month.ToString + "/" + START_DATE.Year.ToString()
-            'End If
-            'If Not IsNothing(END_DATE) And Not IsDBNull(END_DATE) Then
-            '    EndDate = Convert.ToDateTime(END_DATE).Day.ToString() + "/" + Convert.ToDateTime(END_DATE).Month.ToString + "/" + Convert.ToDateTime(END_DATE).Year.ToString()
-            'End If
-
-            'If Not IsNothing(END_DATE) And Not IsDBNull(END_DATE) Then
-            '    PRICE_TAG = BRANDPACK_ID + "|" + StartDate + "|" + EndDate + "|" + ListDistributor(i).ToString() + "|" + PLANTATION_ID
-            'Else
-            '    PRICE_TAG = BRANDPACK_ID + "|" + StartDate + "|" + ListDistributor(i).ToString() + "|" + PLANTATION_ID
-            'End If
-            'Dim PRICE_TAG As String = ""
-            'If Not ListOriginalPriceTag.Contains(PRICE_TAG) Then
-            '    ListOriginalPriceTag.Add(PRICE_TAG)
-            'End If
         Next
-        'DVCopyOriginal.RowFilter = "PLANTATION_ID = '" & Me.TManager1.GridEX1.GetValue("PLANTATION_ID").ToString() & "'"
-        'If DVCopyOriginal.Count > 0 Then
-        '    For i As Integer = 0 To DVCopyOriginal.Count - 1
-        '        Dim PRICE_TAG As String = DVCopyOriginal(i)("PRICE_TAG").ToString()
-        '        If Not ListOriginalPriceTag.Contains(PRICE_TAG) Then
-        '            ListOriginalPriceTag.Add(PRICE_TAG)
-        '        End If
-        '    Next
-        'End If
         Dim PRICE_TAG As String = Me.TManager1.GridEX1.GetValue("PRICE_TAG").ToString() 'DVCopyOriginal(i)("PRICE_TAG").ToString()
         If Not ListOriginalPriceTag.Contains(PRICE_TAG) Then
             ListOriginalPriceTag.Add(PRICE_TAG)
@@ -197,8 +171,7 @@ Public Class PlantationPrice
             .DropDownList.RetrieveStructure()
             .DroppedDown = True
             .DisplayMember = "BRANDPACK_NAME" : .ValueMember = "BRANDPACK_ID"
-            .DropDownList().Columns("BRANDPACK_ID").AutoSize()
-            .DropDownList().Columns("BRANDPACK_NAME").AutoSize()
+            .DropDownList().AutoSizeColumns()
             .DroppedDown = False
         End With
         Me.IsLoadingCombo = False
@@ -421,14 +394,6 @@ Public Class PlantationPrice
 
             Me.btnSave.Text = "&Update"
 
-            'ambil listOkriginalPriceTag
-
-            'dim BRANDPACK_ID AS String = ME.mcbBrandPack.Value.ToString();
-            'For i As Integer = 0 To Me.chkDistributor.CheckedValues.Length - 1
-            '    ListDistributors.Add(Me.chkDistributor.CheckedValues.GetValue(i).ToString())
-            'Next
-            'Dim PRICE_TAG As String = BRANDPACK_ID + "|" + Me.START_DATE + "|" + ListDistributors(i).ToString() _
-            '                  + "|" + Me.PLANTATION_ID
         Catch ex As Exception
             Me.btnNewKebun.PictureBox1.Image = Me.btnNewKebun.ImageList1.Images(0)
             Me.btnNewKebun.isEditMode = False
@@ -587,11 +552,12 @@ Public Class PlantationPrice
         Me.btnNewKebun.isEditMode = False
         Me.btnNewKebun.PictureBox1.Image = Me.btnNewKebun.ImageList1.Images(0)
         Me.chkIncludeDPD.Checked = False
-
+        Me.txtPrice.ReadOnly = False
         Me.chkDistributor.ReadOnly = False
         Me.mcbBrandPack.ReadOnly = False
         Me.mcbPlantation.ReadOnly = False
-
+        Me.dtPicStartDate.ReadOnly = False
+        Me.dtPicEndDate.ReadOnly = False
         Me.Mode = NufarmBussinesRules.common.Helper.SaveMode.Insert
 
         Me.IsLoadingCombo = False
@@ -676,10 +642,10 @@ Public Class PlantationPrice
                 Me.Isloadingrow = True
                 Me.GetData() : Me.SetOriginalCriteria() : Me.ListOriginalPriceTag.Clear()
                 'FILTER DATA BERDASARKAN DATA YANG DI INPUT
-                Dim DV As DataView = CType(Me.TManager1.GridEX1.DataSource, DataView)
-                DV.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND PLANTATION_ID = '" & PlantationID & "'"
-                Me.TManager1.GridEX1.DataSource = DV : Me.TManager1.GridEX1.RetrieveStructure()
-                If Not Me.IsloadedForm Then : Me.FormatDataGrid() : End If
+                'Dim DV As DataView = CType(Me.TManager1.GridEX1.DataSource, DataView)
+                'DV.RowFilter = "BRANDPACK_ID = '" & BrandPackID & "' AND PLANTATION_ID = '" & PlantationID & "'"
+                'Me.TManager1.GridEX1.DataSource = DV : Me.TManager1.GridEX1.RetrieveStructure()
+                'If Not Me.IsloadedForm Then : Me.FormatDataGrid() : End If
                 Dim fc As New Janus.Windows.GridEX.GridEXFilterCondition()
                 fc.Value1 = PlantationID
                 fc.ConditionOperator = Janus.Windows.GridEX.ConditionOperator.Equal

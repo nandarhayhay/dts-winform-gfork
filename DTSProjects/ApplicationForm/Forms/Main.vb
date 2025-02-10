@@ -42,6 +42,7 @@ Public Class Main
     Private frmGonNonPO As GONWithoutPOMaster
     Private frmOtherProd As OtherProduct
     Private frmQtyConv As QtyConvertion
+    Private frmGenPlantPrice As GeneralPricePlantation
 private frmGonDetailData as GonDetailData 
 #End Region
 
@@ -216,7 +217,7 @@ private frmGonDetailData as GonDetailData
         Me.btnGonDetailData.Visible = Me.IsHasPrivilege("GonDetailData")
         Me.btnOtherProduct.Visible = Me.IsHasPrivilege("OtherProduct")
         Me.btnManualQtyConv.Visible = Me.IsHasPrivilege("QtyConvertion")
-
+        Me.btnGeneralPricePlantation.Visible = Me.IsHasPrivilege("PlantationPrice")
         Me.btnCompareBrandPack.Visible = False
         Me.btnManageUser.Visible = False
     End Sub
@@ -1536,6 +1537,38 @@ private frmGonDetailData as GonDetailData
             End If
         End If
     End Sub
+    Private Sub ShowGeneralPlantPrice()
+        If NufarmBussinesRules.User.UserLogin.HasLogin Then
+            If IsNothing(Me.frmGenPlantPrice) OrElse Me.frmGenPlantPrice.IsDisposed() Then
+                Me.FormLoading = StatusForm.Loading
+                Me.frmGenPlantPrice = New GeneralPricePlantation()
+            End If
+            With Me.frmGenPlantPrice
+                .ShowInTaskbar = False
+                .CMain = Me
+                .MdiParent = Me
+                .LoadData()
+                .Show()
+                Me.ReadAcces()
+            End With
+            FrmActive = Me.frmGenPlantPrice
+        Else : Me.DOLogin()
+            If NufarmBussinesRules.User.UserLogin.HasLogin Then
+                Me.frmGenPlantPrice = New GeneralPricePlantation()
+                With Me.frmGenPlantPrice
+                    .ShowInTaskbar = False
+                    .CMain = Me
+                    .MdiParent = Me
+                    .LoadData()
+                    .Show()
+                End With
+                Me.Timer1.Enabled = True : Me.Timer1.Start()
+                Me.FrmActive = Me.frmGenPlantPrice
+            End If
+            Me.Timer1.Enabled = True : Me.Timer1.Start()
+            Me.FrmActive = Me.frmGenPlantPrice
+        End If
+    End Sub
     Private Sub RenewObjectForm(ByVal OForm As Form)
         If Not IsNothing(OForm) Then
             If Not OForm.IsDisposed() Then
@@ -1606,6 +1639,7 @@ private frmGonDetailData as GonDetailData
                 Case "btnGonDetailData" : Me.ShowGonDetailData()
                 Case "btnOtherProduct" : Me.ShowOtherProduct()
                 Case "btnManualQtyConv" : Me.ShowQtyConv()
+                Case "btnGeneralPricePlantation" : Me.ShowGeneralPlantPrice()
             End Select
         Catch ex As Exception
             Me.StatProg = StatusProgress.None : MessageBox.Show(ex.Message)
@@ -1685,6 +1719,7 @@ private frmGonDetailData as GonDetailData
                     Case "btnManualQtyConv" : Me.Timer1.Enabled = False : Me.Timer1.Stop()
                         Me.frmQtyConv.Owner = Me
                         Me.frmQtyConv.Show()
+                    Case "btnGeneralPricePlantation" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmGenPlantPrice.Show()
                 End Select
             End If
             Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.HoldLoadForm = 0 : Me.ReadAcces()

@@ -1,8 +1,6 @@
 Imports System.Threading
 Public Class AchievementF
-
     Friend CMain As Main = Nothing
-
     Private isLoadingCombo As Boolean = True
     Private SelectGrid As SelectedGrid = SelectedGrid.Header
     Private Grid As Janus.Windows.GridEX.GridEX = Nothing
@@ -38,9 +36,6 @@ Public Class AchievementF
     Private Sub ReadAcces()
         If Not CMain.IsSystemAdministrator Then
             btnFlag.Enabled = NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Achievement
-            'If Not NufarmBussinesRules.User.Privilege.ALLOW_INSERT.Achievement Then
-            '    Me.btnFlag.Enabled = False
-            'End If
             If NufarmBussinesRules.User.Privilege.ALLOW_DELETE.Achievement Then
                 Me.GridEX1.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.True
             Else

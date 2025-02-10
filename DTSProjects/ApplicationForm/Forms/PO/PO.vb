@@ -1149,7 +1149,6 @@ Public Class PO
             Me.ShowMessageInfo(ex.Message)
             Me.Cursor = Cursors.Default
         End Try
-
     End Sub
 #End Region
 

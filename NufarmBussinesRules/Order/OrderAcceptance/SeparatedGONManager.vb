@@ -25,16 +25,10 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                If value = "" Then
-                    Query = "SET NOCOUNT ON; " & vbCrLf & _
-                            "SELECT SUM (row_count) FROM Nufarm.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('GON_SEPARATED_DETAIL') AND (index_id=0 or index_id=1) ;"
-                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                Else
-                    Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Pending_Gon WHERE " & SearchBy
-                    Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                End If
+                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Pending_Gon WHERE " & SearchBy
+                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                 If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
                 Return dtTable.DefaultView()
@@ -65,16 +59,9 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                If value = "" Then
-                    Query = "SET NOCOUNT ON; " & vbCrLf & _
-                            "SELECT SUM (row_count) FROM Nufarm.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('GON_SEPARATED_DETAIL') AND (index_id=0 or index_id=1) ;"
-                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                Else
-                    Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Status_Completed WHERE " & SearchBy
-                    Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                End If
+                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Status_Completed WHERE " & SearchBy
+                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                 If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
                 Return dtTable.DefaultView()
@@ -105,16 +92,10 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                If value = "" Then
-                    Query = "SET NOCOUNT ON; " & vbCrLf & _
-                            "SELECT SUM (row_count) FROM Nufarm.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('GON_SEPARATED_DETAIL') AND (index_id=0 or index_id=1) ;"
-                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                Else
-                    Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO WHERE " & SearchBy
-                    Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                End If
+                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO WHERE " & SearchBy
+                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                 If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
                 Return dtTable.DefaultView()
@@ -145,16 +126,9 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                If value = "" Then
-                    Query = "SET NOCOUNT ON; " & vbCrLf & _
-                            "SELECT SUM (row_count) FROM Nufarm.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('GON_SEPARATED_DETAIL') AND (index_id=0 or index_id=1) ;"
-                    Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                Else
-                    Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_All WHERE " & SearchBy
-                    Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                    Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
-                End If
+                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_All WHERE " & SearchBy
+                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                 If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
                 Return dtTable.DefaultView()

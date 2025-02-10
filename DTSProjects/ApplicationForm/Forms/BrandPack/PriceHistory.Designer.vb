@@ -39,6 +39,7 @@ Partial Class PriceHistory
         Me.grdPanel1 = New SteepValley.Windows.Forms.XPGradientPanel
         Me.ItemPanel1 = New DevComponents.DotNetBar.ItemPanel
         Me.btnCatPlantation = New DevComponents.DotNetBar.ButtonItem
+        Me.btnGenPrice = New DevComponents.DotNetBar.ButtonItem
         Me.btnCatFreeOrOther = New DevComponents.DotNetBar.ButtonItem
         Me.FilterEditor1 = New Janus.Windows.FilterEditor.FilterEditor
         Me.PrintPreviewDialog1 = New System.Windows.Forms.PrintPreviewDialog
@@ -228,22 +229,27 @@ Partial Class PriceHistory
         Me.ItemPanel1.BackgroundStyle.PaddingTop = 1
         Me.ItemPanel1.Dock = System.Windows.Forms.DockStyle.Left
         Me.ItemPanel1.Images = Me.ImageList1
-        Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCatPlantation, Me.btnCatFreeOrOther})
+        Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnCatPlantation, Me.btnGenPrice, Me.btnCatFreeOrOther})
         Me.ItemPanel1.Location = New System.Drawing.Point(0, 0)
         Me.ItemPanel1.Name = "ItemPanel1"
-        Me.ItemPanel1.Size = New System.Drawing.Size(187, 28)
+        Me.ItemPanel1.Size = New System.Drawing.Size(273, 28)
         Me.ItemPanel1.TabIndex = 1
         Me.ItemPanel1.Text = "ItemPanel1"
         '
         'btnCatPlantation
         '
         Me.btnCatPlantation.Name = "btnCatPlantation"
-        Me.btnCatPlantation.Text = "Plantation"
+        Me.btnCatPlantation.Text = "Special Plantation"
+        '
+        'btnGenPrice
+        '
+        Me.btnGenPrice.Name = "btnGenPrice"
+        Me.btnGenPrice.Text = "General Plantation"
         '
         'btnCatFreeOrOther
         '
         Me.btnCatFreeOrOther.Name = "btnCatFreeOrOther"
-        Me.btnCatFreeOrOther.Text = "Free Market / Other"
+        Me.btnCatFreeOrOther.Text = "Free Market"
         '
         'FilterEditor1
         '
@@ -330,5 +336,6 @@ Partial Class PriceHistory
     Private WithEvents btnCatPlantation As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnCatFreeOrOther As DevComponents.DotNetBar.ButtonItem
     Private WithEvents ItemPanel1 As DevComponents.DotNetBar.ItemPanel
+    Private WithEvents btnGenPrice As DevComponents.DotNetBar.ButtonItem
 
 End Class

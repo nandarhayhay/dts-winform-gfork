@@ -164,7 +164,7 @@ Partial Class BrandPackHistory
         Me.Bar4.DockSide = DevComponents.DotNetBar.eDockSide.Document
         Me.Bar4.Location = New System.Drawing.Point(265, 220)
         Me.Bar4.Name = "Bar4"
-        Me.Bar4.Size = New System.Drawing.Size(35, 51)
+        Me.Bar4.Size = New System.Drawing.Size(35, 57)
         Me.Bar4.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2003
         Me.Bar4.TabIndex = 19
         Me.Bar4.TabStop = False

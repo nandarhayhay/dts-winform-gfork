@@ -1775,10 +1775,13 @@ Namespace DistributorAgreement
                      " SELECT PO_REF_NO,PO_REF_DATE,DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,SPPB_QTY,PO_ORIGINAL_QTY,PO_AMOUNT = PO_ORIGINAL_QTY * PO_PRICE_PERQTY,RUN_NUMBER,IncludeDPD INTO tempdb..##T_MASTER_PO_" & Me.ComputerName & " FROM ( " & vbCrLf & _
                      "  SELECT PO.PO_REF_NO,PO.PO_REF_DATE,PO.DISTRIBUTOR_ID,ABI.BRAND_ID,ABP.BRANDPACK_ID,OPB.PO_ORIGINAL_QTY,OPB.PO_PRICE_PERQTY,OOAB.QTY_EVEN + ISNULL(SB.TOTAL_DISC_QTY,0) AS SPPB_QTY,OOA.RUN_NUMBER ," & vbCrLf & _
                      "  IncludeDPD = CASE WHEN (OPB.ExcludeDPD = 0) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
-                     "  WHEN (EXISTS(SELECT PROJ.PROJ_REF_NO, PB.BRANDPACK_ID FROM PROJ_PROJECT PROJ INNER JOIN PROJ_BRANDPACK PB ON PROJ.PROJ_REF_NO = PB.PROJ_REF_NO WHERE PROJ.PROJ_REF_NO = PO.PROJ_REF_NO AND PB.BRANDPACK_ID = OPB.BRANDPACK_ID AND PROJ.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID)) THEN 'NO' " & vbCrLf & _
-                     "  WHEN (OPB.PLANTATION_ID IS NULL) THEN 'YESS' ELSE 'NO' END " & vbCrLf & _
+                     "  WHEN (OPB.ExcludeDPD = 1) THEN 'NO'" & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'SP') AND EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'SP') AND EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'GP') AND EXISTS(SELECT PRICE_TAG FROM GEN_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'GP') AND EXISTS(SELECT PRICE_TAG FROM GEN_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN (OPB.PRICE_CATEGORY = 'FM') THEN 'YESS' " & vbCrLf & _
+                     "  ELSE 'NO' END " & vbCrLf & _
                      "  FROM Nufarm.dbo.AGREE_BRAND_INCLUDE ABI " & vbCrLf & _
                      "  INNER JOIN Nufarm.DBO.AGREE_BRANDPACK_INCLUDE ABP ON ABI.AGREE_BRAND_ID = ABP.AGREE_BRAND_ID" & vbCrLf & _
                      "  INNER JOIN Nufarm.dbo.ORDR_PO_BRANDPACK OPB ON OPB.BRANDPACK_ID = ABP.BRANDPACK_ID " & vbCrLf & _
@@ -2883,7 +2886,6 @@ Namespace DistributorAgreement
                         Query &= " WHERE ACRH.AGREEMENT_NO = ANY(SELECT AGREEMENT_NO FROM AGREE_AGREEMENT WHERE YEAR(END_DATE) >= YEAR(@GETDATE) - 2 " & vbCrLf & _
                                 "         )  AND ACRH.FLAG = '" & Flag & "' OPTION(KEEP PLAN);"
                     End If
-
                 ElseIf (DISTRIBUTOR_ID <> "") Then
                     Query &= " WHERE ACRH.DISTRIBUTOR_ID = @DISTRIBUTOR_ID  AND ACRH.AGREEMENT_NO " & vbCrLf & _
                              " = ANY(SELECT DA.AGREEMENT_NO FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_AGREEMENT AA " & vbCrLf & _
@@ -2912,7 +2914,6 @@ Namespace DistributorAgreement
                 Next
                 tblBrand.AcceptChanges()
                 Me.baseDataSet.Tables.Add(tblBrand)
-
             Catch ex As Exception
                 If Not IsNothing(Me.SqlRe) Then
                     If Not Me.SqlRe.IsClosed Then
@@ -3024,7 +3025,10 @@ Namespace DistributorAgreement
                 Next
                 If MessageDetail <> "" Then
                     Me.MessageError = MessageHeader & vbCrLf & MessageDetail
-                    System.Windows.Forms.MessageBox.Show(Me.MessageError, "Information", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Information)
+                    'System.Windows.Forms.MessageBox.Show(Me.MessageError, "Information", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Information)
+                    Me.ClearCommandParameters()
+                    Me.DisposeTempDB()
+                    Throw New System.Exception(Me.MessageError)
                 End If
                 ''drop table ''tempd db
                 Me.ClearCommandParameters()
@@ -3919,11 +3923,13 @@ Namespace DistributorAgreement
                      " SELECT PO_REF_NO,PO_REF_DATE,DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID,SPPB_QTY,PO_ORIGINAL_QTY,PO_AMOUNT = PO_ORIGINAL_QTY * PO_PRICE_PERQTY,RUN_NUMBER,IncludeDPD INTO tempdb..##T_MASTER_PO_" & Me.ComputerName & " FROM ( " & vbCrLf & _
                      "  SELECT PO.PO_REF_NO,PO.PO_REF_DATE,PO.DISTRIBUTOR_ID,ABI.BRAND_ID,ABP.BRANDPACK_ID,OPB.PO_ORIGINAL_QTY,OPB.PO_PRICE_PERQTY,OOAB.QTY_EVEN + ISNULL(SB.TOTAL_DISC_QTY,0) AS SPPB_QTY,OOA.RUN_NUMBER ," & vbCrLf & _
                      "  IncludeDPD = CASE WHEN (OPB.ExcludeDPD = 0) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN (OPB.ExcludeDPD = 1) THEN 'NO' " & vbCrLf & _
-                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
-                     "  WHEN (EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PLANTATION_ID = OPB.PLANTATION_ID AND BRANDPACK_ID = OPB.BRANDPACK_ID AND DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
-                     "  WHEN (EXISTS(SELECT PROJ.PROJ_REF_NO, PB.BRANDPACK_ID FROM PROJ_PROJECT PROJ INNER JOIN PROJ_BRANDPACK PB ON PROJ.PROJ_REF_NO = PB.PROJ_REF_NO WHERE PROJ.PROJ_REF_NO = PO.PROJ_REF_NO AND PB.BRANDPACK_ID = OPB.BRANDPACK_ID AND PROJ.DISTRIBUTOR_ID = PO.DISTRIBUTOR_ID)) THEN 'NO' " & vbCrLf & _
-                     "  WHEN (OPB.PLANTATION_ID IS NULL) THEN 'YESS' ELSE 'NO' END " & vbCrLf & _
+                     "  WHEN (OPB.ExcludeDPD = 1) THEN 'NO'" & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'SP') AND EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'SP') AND EXISTS(SELECT PRICE_TAG FROM DIST_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND PRICE = OPB.PO_PRICE_PERQTY AND START_DATE >= DATEADD(MONTH,-6,@START_DATE) AND END_DATE <= @END_DATE AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'GP') AND EXISTS(SELECT PRICE_TAG FROM GEN_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND IncludeDPD = 1)) THEN 'YESS' " & vbCrLf & _
+                     "  WHEN ((OPB.PRICE_CATEGORY = 'GP') AND EXISTS(SELECT PRICE_TAG FROM GEN_PLANT_PRICE WHERE PRICE_TAG = OPB.PRICE_TAG AND IncludeDPD = 0)) THEN 'NO' " & vbCrLf & _
+                     "  WHEN (OPB.PRICE_CATEGORY = 'FM') THEN 'YESS' " & vbCrLf & _
+                     "  ELSE 'NO' END " & vbCrLf & _
                      "  FROM Nufarm.dbo.AGREE_BRAND_INCLUDE ABI " & vbCrLf & _
                      "  INNER JOIN Nufarm.DBO.AGREE_BRANDPACK_INCLUDE ABP ON ABI.AGREE_BRAND_ID = ABP.AGREE_BRAND_ID" & vbCrLf & _
                      "  INNER JOIN Nufarm.dbo.ORDR_PO_BRANDPACK OPB ON OPB.BRANDPACK_ID = ABP.BRANDPACK_ID " & vbCrLf & _

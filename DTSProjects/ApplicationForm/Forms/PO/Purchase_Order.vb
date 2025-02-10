@@ -951,7 +951,8 @@ Public Class Purchase_Order
             Dim Price As Object = Nothing
             Dim BrandPackID As String = ""
             Dim PO_BRANDPACKID As String = ""
-            'PO_BRANDPACKID = Me.txtPOReference.Text + "" + BrandPackID
+            Dim DescriptionPrice As String = "PRICE FROM FREE MARKET", PlantationID As String = "", TerritoryID As String = "", PriceTag As String = ""
+            Dim isSPrice As Boolean = False, isGPrice As Boolean = False
             If e.Column.Key = "BRANDPACK_ID" Then
                 If Me.MultiColumnCombo1.Value Is Nothing Then
                     Me.baseTooltip.Show("Please define distributor first", Me.MultiColumnCombo1, 2500)
@@ -993,12 +994,13 @@ Public Class Purchase_Order
                 BrandPackID = Me.grdPOBrandPack.GetValue("BRANDPACK_ID").ToString()
                 Dim PO_DateString As String = Me.dtPicRefDate.Value.Month.ToString() & "/" & Me.dtPicRefDate.Value.Day.ToString() & "/" & Me.dtPicRefDate.Value.Year.ToString()
                 IsPriceHK = False
+
                 ''CHECK APAKAH PROJ_REF_NO ADA 
-                Dim DescriptionPrice As String = "PRICE FROM FREE MARKET", PlantationID As String = "", TerritoryID As String = "", PriceTag As String = ""
+                Dim ProjBrandPackID As Object = Nothing
                 If Not IsNothing(Me.mcbProject.Value) Then
                     If Me.mcbProject.Text <> "" And Me.mcbProject.SelectedIndex <> -1 Then
                         'check price ke project
-                        Dim ProjBrandPackID As Object = Me.grdPOBrandPack.DropDowns(0).GetValue("PROJ_BRANDPACK_ID")
+                        ProjBrandPackID = Me.grdPOBrandPack.DropDowns(0).GetValue("PROJ_BRANDPACK_ID")
                         If Not IsNothing(ProjBrandPackID) And Not IsDBNull(ProjBrandPackID) Then
                             Price = Me.grdPOBrandPack.DropDowns(0).GetValue("PRICE")
                             If Not IsNothing(Price) And Not IsDBNull(Price) Then
@@ -1009,19 +1011,27 @@ Public Class Purchase_Order
                         End If
                     End If
                 ElseIf Not IsNothing(Me.MultiColumnCombo1.Value) Then
-                    Price = Me.clsPO.GetPriceValue(Me.MultiColumnCombo1.Value.ToString(), Me.grdPOBrandPack.GetValue("BRANDPACK_ID").ToString(), PO_DateString, IsPriceHK, DescriptionPrice, PriceTag)
+                    Price = Me.clsPO.GetPriceValue(Me.MultiColumnCombo1.Value.ToString(), Me.grdPOBrandPack.GetValue("BRANDPACK_ID").ToString(), PO_DateString, IsPriceHK, DescriptionPrice, PriceTag, isSPrice, isGPrice)
                     If IsNothing(Price) Then
+                        If isSPrice Or isGPrice Then
+                            Dim frmDP As New DefinePrice()
+                            With frmDP
+                                .StartDate = PO_DateString
+                                .BrandPackID = Me.grdPOBrandPack.GetValue(e.Column).ToString()
+                                .DistributorID = Me.MultiColumnCombo1.Value.ToString()
+                                If isSPrice Then
+                                    .btnCatPlantation.Checked = True
+                                Else
+                                    .btnGeneralPlantation.Checked = True
+                                End If
+                                If (.ShowDialog(Price, DescriptionPrice, PlantationID, TerritoryID, PriceTag) = Windows.Forms.DialogResult.OK) Then
+                                Else
+                                    Me.grdPOBrandPack.CancelCurrentEdit() : Me.grdPOBrandPack.MoveToNewRecord() : Cursor = Cursors.Default : Return
+                                End If
+                            End With
+                        End If
                         'shw form choose price
-                        Dim frmDP As New DefinePrice()
-                        With frmDP
-                            .StartDate = PO_DateString
-                            .BrandPackID = Me.grdPOBrandPack.GetValue(e.Column).ToString()
-                            .DistributorID = Me.MultiColumnCombo1.Value.ToString()
-                            If (.ShowDialog(Price, DescriptionPrice, PlantationID, TerritoryID, PriceTag) = Windows.Forms.DialogResult.OK) Then
-                            Else
-                                Me.grdPOBrandPack.CancelCurrentEdit() : Me.grdPOBrandPack.MoveToNewRecord()
-                            End If
-                        End With
+                        If PriceTag = "" Then : ShowMessageError("Unknown PriceTag") : Me.grdPOBrandPack.CancelCurrentEdit() : Return : End If
                     End If
                 End If
                 'Price = Me.clsPO.GetPriceValue(Me.grdPOBrandPack.GetValue("BRANDPACK_ID"), Convert.ToDateTime(Me.dtPicRefDate.Value.ToShortDateString()))
@@ -1032,6 +1042,7 @@ Public Class Purchase_Order
                     'Me.clsPO.ViewPriceHistory().RowFilter = ""
                     Return
                 End If
+
                 'Dim ValuePrice As Decimal = Convert.ToDecimal(Me.clsPO.ViewPriceHistory()(Me.clsPO.ViewPriceHistory().Count - 1)("PRICE"))
                 Dim ValuePrice As Decimal = Convert.ToDecimal(Price) 'Me.clsPO.GetPriceValue(Me.grdPOBrandPack.GetValue("BRANDPACK_ID").ToString())
                 Me.grdPOBrandPack.SetValue("PO_PRICE_PERQTY", ValuePrice)
@@ -1048,7 +1059,7 @@ Public Class Purchase_Order
                     Me.grdPOBrandPack.SetValue("TERRITORY_ID", TerritoryID)
                 End If
                 If String.IsNullOrEmpty(PriceTag) Then
-                    Me.grdPOBrandPack.SetValue("PRICE_TAG", DBNull.Value )
+                    Me.grdPOBrandPack.SetValue("PRICE_TAG", DBNull.Value)
                 Else
                     Me.grdPOBrandPack.SetValue("PRICE_TAG", PriceTag)
                 End If
@@ -1059,6 +1070,15 @@ Public Class Purchase_Order
                     Me.grdPOBrandPack.SetValue("TOTAL", Total1)
                 Else
                     Me.grdPOBrandPack.SetValue("TOTAL", 0)
+                End If
+                If isSPrice Then
+                    Me.grdPOBrandPack.SetValue("PRICE_CATEGORY", "SP")
+                ElseIf isGPrice Then
+                    Me.grdPOBrandPack.SetValue("PRICE_CATEGORY", "GP")
+                ElseIf Not IsNothing(ProjBrandPackID) Then
+                    Me.grdPOBrandPack.SetValue("PRICE_CATEGORY", "PR")
+                Else
+                    Me.grdPOBrandPack.SetValue("PRICE_CATEGORY", "FM")
                 End If
                 PO_BRANDPACKID = Me.txtPOReference.Text.TrimEnd().TrimStart() + "" + BrandPackID
                 Me.grdPOBrandPack.SetValue("PO_BRANDPACK_ID", PO_BRANDPACKID)
@@ -1463,4 +1483,5 @@ Public Class Purchase_Order
 
 
     End Sub
+
 End Class

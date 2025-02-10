@@ -505,6 +505,11 @@ Public Class DiscountDDOrDR
                 Me.baseTooltip.Show("Pleas mark distributor groups", Me.chkGroupDist, 2500) : Me.chkGroupDist.Focus() : Return False
             End If
         End If
+        'check date time
+        If Convert.ToDateTime(Me.dtPicFrom.Value.ToShortDateString()) >= Convert.ToDateTime(Me.dtPicEndDate.Value.ToShortDateString()) Then
+            Me.ShowMessageError("either Start date or endate value is not valid")
+            Return False
+        End If
         Return True
     End Function
     Private Function hasChanged() As Boolean  'mode harus update
@@ -785,7 +790,6 @@ Public Class DiscountDDOrDR
             'get listBrands
             Me.txtProgramID.Text = strProgID
             'reset dulu
-
             Me.chkTargetPOPerBrand.Checked = False
             Me.chkTargetPOPerPackSize.Checked = False
 
@@ -1726,6 +1730,7 @@ Public Class DiscountDDOrDR
     Private Sub dtPicEndDate_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles dtPicEndDate.ValueChanged
         If Me.Isloadingrow Then : Return : End If
         If Me.isLoadingCombo Then : Return : End If
+
         Try
             Cursor = Cursors.WaitCursor
             'get distributor

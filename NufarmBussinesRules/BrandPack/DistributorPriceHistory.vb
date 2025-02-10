@@ -422,9 +422,9 @@ Namespace Brandpack
                 For i As Integer = 0 To ListDistributors.Count - 1
                     Dim PRICE_TAG As String = ""
                     If Not IsNothing(Me.END_DATE) Then
-                        PRICE_TAG = BRANDPACK_ID + "|" + Me.START_DATE + "|" + Me.END_DATE + "|" + Me.PLANTATION_ID + "|" + ListDistributors(i).ToString()
+                        PRICE_TAG = "SP|" + BRANDPACK_ID + "|" + Me.START_DATE + "|" + Me.END_DATE + "|" + Me.PLANTATION_ID + "|" + ListDistributors(i).ToString()
                     Else
-                        PRICE_TAG = BRANDPACK_ID + "|" + Me.START_DATE + "|" + ListDistributors(i).ToString() + "|" + Me.PLANTATION_ID
+                        PRICE_TAG = "SP|" + BRANDPACK_ID + "|" + Me.START_DATE + "|" + ListDistributors(i).ToString() + "|" + Me.PLANTATION_ID
                     End If
                     'Query = "SET NOCOUNT ON; \n" +
                     Me.AddParameter("@PRICE_TAG", SqlDbType.VarChar, PRICE_TAG, 100)
@@ -432,8 +432,8 @@ Namespace Brandpack
                     Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, ListDistributors(i), 14)
                     Me.AddParameter("@PLANTATION_ID", SqlDbType.VarChar, Me.PLANTATION_ID, 50)
                     Me.AddParameter("@PRICE", SqlDbType.Decimal, Me.PRICE)
-                    Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
                     Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDate)
+                    Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
                     Me.AddParameter("@CREATE_BY", SqlDbType.VarChar, NufarmBussinesRules.User.UserLogin.UserName, 50)
                     Me.AddParameter("@CREATE_DATE", SqlDbType.SmallDateTime, NufarmBussinesRules.SharedClass.ServerDate)
                     Me.AddParameter("@MODIFY_BY", SqlDbType.VarChar, NufarmBussinesRules.User.UserLogin.UserName, 50)
@@ -441,7 +441,7 @@ Namespace Brandpack
                     Me.AddParameter("@IncludeDPD", SqlDbType.Bit, Me.MustIncludeDPD)
                     Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
                 Next
-                Me.CommiteTransaction() : Me.CloseConnection()
+                Me.CommiteTransaction()
             Catch ex As Exception
                 Me.RollbackTransaction() : Me.CloseConnection() : Me.ClearCommandParameters()
                 Throw ex

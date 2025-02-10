@@ -6,6 +6,7 @@ Public Class PriceHistory
     Private m_Criteria As NufarmBussinesRules.common.Helper.CriteriaSearch = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
     Private OriginalCriteria As NufarmBussinesRules.common.Helper.CriteriaSearch = NufarmBussinesRules.common.Helper.CriteriaSearch.Like
     Private isUndoingCriteria As Boolean = False : Friend CMain As Main = Nothing
+    Private isLoadingRow As Boolean = False
     Private Sub FormatDataGrid()
         For Each col As Janus.Windows.GridEX.GridEXColumn In TManager1.GridEX1.RootTable.Columns
             If col.Type Is Type.GetType("System.Int32") Then
@@ -18,15 +19,13 @@ Public Class PriceHistory
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CalendarCombo
             End If
             With Me.TManager1.GridEX1.RootTable
+                .Columns("PRICE_TAG").Visible = False
+                .Columns("IDApp").Visible = False
+
+                .Columns("BRANDPACK_ID").Visible = True
                 If Me.btnCatPlantation.Checked Then
-                    .Columns("IDApp").Visible = False
-                    .Columns("PRICE_TAG").Visible = False
-                    .Columns("BRANDPACK_ID").Visible = False
                     .Columns("DISTRIBUTOR_ID").Visible = False
                     .Columns("PLANTATION_ID").Visible = False
-                ElseIf Me.btnCatFreeOrOther.Checked Then
-                    .Columns("PRICE_TAG").Visible = False
-                    .Columns("IDApp").Visible = False
                 End If
             End With
             col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
@@ -108,8 +107,12 @@ Public Class PriceHistory
         If Me.btnCatFreeOrOther.Checked Then
             Dv = Me.clsPriceHistory.PopulateQuery(NufarmBussinesRules.Brandpack.PriceHistory.Category.FreeMarket, _
                      SearchBy, SearchString, Me.PageIndex, Me.PageSize, Me.RowCount, Me.m_Criteria, Me.m_DataType)
+
         ElseIf Me.btnCatPlantation.Checked Then
-            Dv = Me.clsPriceHistory.PopulateQuery(NufarmBussinesRules.Brandpack.PriceHistory.Category.Plantation, _
+            Dv = Me.clsPriceHistory.PopulateQuery(NufarmBussinesRules.Brandpack.PriceHistory.Category.SpecialPlantation, _
+                             SearchBy, SearchString, Me.PageIndex, Me.PageSize, Me.RowCount, Me.m_Criteria, Me.m_DataType)
+        ElseIf Me.btnGenPrice.Checked Then
+            Dv = Me.clsPriceHistory.PopulateQuery(NufarmBussinesRules.Brandpack.PriceHistory.Category.GeneralPricePlantation, _
                              SearchBy, SearchString, Me.PageIndex, Me.PageSize, Me.RowCount, Me.m_Criteria, Me.m_DataType)
         End If
         If Not IsNothing(Dv) Then
@@ -126,7 +129,6 @@ Public Class PriceHistory
                 Me.TManager1.GridEX1.RootTable.Columns.Clear()
             End If
         End If
-
     End Sub
     Private Sub ButtonClick(ByVal sender As Object, ByVal e As EventArgs) Handles TManager1.ButonClick
         Try
@@ -141,7 +143,11 @@ Public Class PriceHistory
                 End Select
             End If
             Me.GetData() : Me.SetOriginalCriteria()
+            Me.IsLoadingCombo = False
+            Me.isLoadingRow = False
         Catch ex As Exception
+            Me.IsLoadingCombo = False
+            Me.isLoadingRow = False
             Me.UndoCriteria() : MessageBox.Show(ex.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Finally
             Cursor = Cursors.Default
@@ -154,6 +160,8 @@ Public Class PriceHistory
                 Me.ButtonClick(Me.TManager1.btnSearch, New EventArgs())
             End If
         Catch ex As Exception
+            Me.IsLoadingCombo = False
+            Me.isLoadingRow = False
             MessageBox.Show(ex.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Finally
             Me.Cursor = Cursors.Default
@@ -173,6 +181,8 @@ Public Class PriceHistory
             End Select
             Me.ButtonClick(Me.TManager1.btnSearch, New EventArgs())
         Catch ex As Exception
+            Me.IsLoadingCombo = False
+            Me.isLoadingRow = False
             Me.LogMyEvent(ex.Message, Me.Name + "_TManager1_CmbSelectedIndexChanged")
             Me.ShowMessageInfo(ex.Message)
         Finally
@@ -368,31 +378,75 @@ Public Class PriceHistory
     Private Sub ItemPanel1_ItemClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ItemPanel1.ItemClick
         Try
             Me.Cursor = Cursors.WaitCursor
-            Dim btn As DevComponents.DotNetBar.BaseItem = CType(sender, DevComponents.DotNetBar.BaseItem)
-            Select Case btn.Name
-                Case "btnCatPlantation"
-                    If Me.btnCatPlantation.Checked Then 'btnCatPlantation check nya dilepaskan
-                        If Me.btnCatFreeOrOther.Checked Then
-                            Me.TManager1.Enabled = True
-                            Me.IsLoadingCombo = True
-                            With Me.TManager1.cbCategory
-                                .Text = "" : .Items.Clear()
-                                .Items.Add("BRANDPACK_NAME")
-                                .Items.Add("START_DATE")
-                            End With
-                        Else
-                            Me.TManager1.GridEX1.SetDataBinding(Nothing, "")
-                            Me.TManager1.GridEX1.Update() : Me.btnCatPlantation.Checked = False
-                            With Me.TManager1
-                                .btnGoFirst.Enabled = False : .btnGoLast.Enabled = False : .btnNext.Enabled = False : .btnGoPrevios.Enabled = False
-                                .lblResult.Text = ""
-                                .lblPosition.Text = ""
-                            End With
-                            Me.TManager1.Enabled = False
-                            Return
-                        End If
-                        Me.btnCatPlantation.Checked = False
-                    Else
+            Dim item As DevComponents.DotNetBar.BaseItem = CType(sender, DevComponents.DotNetBar.BaseItem)
+            If TypeOf item Is DevComponents.DotNetBar.ButtonItem Then
+                CType(item, DevComponents.DotNetBar.ButtonItem).Checked = Not CType(item, DevComponents.DotNetBar.ButtonItem).Checked
+            End If
+
+            Cursor = Cursors.Default
+        Catch ex As Exception
+            Me.ShowMessageInfo(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_ItemPanel1_ItemClick")
+        Finally
+            Me.isLoadingRow = False : Me.IsLoadingCombo = False : Me.Cursor = Cursors.Default
+        End Try
+
+    End Sub
+
+    Private Sub TManager1_Enter(ByVal sender As Object, ByVal e As System.EventArgs) Handles TManager1.Enter
+        Me.AcceptButton = Me.TManager1.btnSearch
+    End Sub
+
+    Private Sub ItemPanel1_ButtonCheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ItemPanel1.ButtonCheckedChanged
+        Try
+            If Me.isLoadingRow Or Me.IsLoadingCombo Then : Return : End If
+            Me.Cursor = Cursors.WaitCursor
+            Dim item As DevComponents.DotNetBar.BaseItem = CType(sender, DevComponents.DotNetBar.BaseItem)
+
+            Me.isLoadingRow = True
+            For Each b As DevComponents.DotNetBar.BaseItem In Me.ItemPanel1.Items
+                If TypeOf b Is DevComponents.DotNetBar.ButtonItem Then
+                    If CType(b, DevComponents.DotNetBar.ButtonItem).Name <> item.Name Then
+                        CType(b, DevComponents.DotNetBar.ButtonItem).Checked = False
+                    End If
+                End If
+            Next
+            Dim c As DevComponents.DotNetBar.ButtonItem = CType(sender, DevComponents.DotNetBar.ButtonItem)
+            If c.Checked Then
+                Select Case item.Name
+                    Case "btnCatPlantation"
+                        'If Me.btnCatPlantation.Checked Then 'btnCatPlantation check nya dilepaskan
+                        'If Me.btnCatFreeOrOther.Checked Then
+                        '    Me.TManager1.Enabled = True
+                        '    Me.IsLoadingCombo = True
+                        '    With Me.TManager1.cbCategory
+                        '        .Text = "" : .Items.Clear()
+                        '        .Items.Add("BRANDPACK_NAME")
+                        '        .Items.Add("START_DATE")
+                        '    End With
+                        'Else
+                        '    Me.TManager1.GridEX1.SetDataBinding(Nothing, "")
+                        '    Me.TManager1.GridEX1.Update() : Me.btnCatPlantation.Checked = False
+                        '    With Me.TManager1
+                        '        .btnGoFirst.Enabled = False : .btnGoLast.Enabled = False : .btnNext.Enabled = False : .btnGoPrevios.Enabled = False
+                        '        .lblResult.Text = ""
+                        '        .lblPosition.Text = ""
+                        '    End With
+                        '    Me.TManager1.Enabled = False
+                        '    Return
+                        'End If
+                        'Me.btnCatPlantation.Checked = False
+                        'Else
+                        '    Me.TManager1.Enabled = True
+                        '    Me.IsLoadingCombo = True
+                        '    With Me.TManager1.cbCategory
+                        '        .Text = "" : .Items.Clear()
+                        '        .Items.Add("BRANDPACK_NAME")
+                        '        .Items.Add("DISTRIBUTOR_NAME")
+                        '        .Items.Add("PLANTATION_NAME")
+                        '        .Items.Add("START_DATE")
+                        '    End With
+                        '    Me.btnCatPlantation.Checked = True : Me.btnCatFreeOrOther.Checked = False
+                        'End If
                         Me.TManager1.Enabled = True
                         Me.IsLoadingCombo = True
                         With Me.TManager1.cbCategory
@@ -402,33 +456,7 @@ Public Class PriceHistory
                             .Items.Add("PLANTATION_NAME")
                             .Items.Add("START_DATE")
                         End With
-                        Me.btnCatPlantation.Checked = True : Me.btnCatFreeOrOther.Checked = False
-                    End If
-                Case "btnCatFreeOrOther"
-                    If Me.btnCatFreeOrOther.Checked Then
-                        If Me.btnCatPlantation.Checked Then
-                            Me.TManager1.Enabled = True
-                            Me.IsLoadingCombo = True
-                            With Me.TManager1.cbCategory
-                                .Text = "" : .Items.Clear()
-                                .Items.Add("BRANDPACK_NAME")
-                                .Items.Add("DISTRIBUTOR_NAME")
-                                .Items.Add("PLANTATION_NAME")
-                                .Items.Add("START_DATE")
-                            End With
-                        Else
-                            Me.TManager1.GridEX1.SetDataBinding(Nothing, "") : Me.TManager1.GridEX1.Update()
-                            Me.btnCatFreeOrOther.Checked = False
-                            With Me.TManager1
-                                .btnGoFirst.Enabled = False : .btnGoLast.Enabled = False : .btnNext.Enabled = False : .btnGoPrevios.Enabled = False
-                                .lblResult.Text = ""
-                                .lblPosition.Text = ""
-                            End With
-                            Me.TManager1.Enabled = False
-                            Return
-                        End If
-                        Me.btnCatFreeOrOther.Checked = False
-                    Else
+                    Case "btnGenPrice", "btnCatFreeOrOther"
                         Me.TManager1.Enabled = True
                         Me.IsLoadingCombo = True
                         With Me.TManager1.cbCategory
@@ -436,19 +464,64 @@ Public Class PriceHistory
                             .Items.Add("BRANDPACK_NAME")
                             .Items.Add("START_DATE")
                         End With
-                        Me.btnCatFreeOrOther.Checked = True : Me.btnCatPlantation.Checked = False
-                    End If
-            End Select
+                        'Case 
+                        '    Me.TManager1.Enabled = True
+                        '    Me.IsLoadingCombo = True
+                        '    With Me.TManager1.cbCategory
+                        '        .Text = "" : .Items.Clear()
+                        '        .Items.Add("BRANDPACK_NAME")
+                        '        .Items.Add("START_DATE")
+                        '    End With
+                        'If Me.btnCatFreeOrOther.Checked Then
+                        '    If Me.btnCatPlantation.Checked Then
+                        '        Me.TManager1.Enabled = True
+                        '        Me.IsLoadingCombo = True
+                        '        With Me.TManager1.cbCategory
+                        '            .Text = "" : .Items.Clear()
+                        '            .Items.Add("BRANDPACK_NAME")
+                        '            .Items.Add("DISTRIBUTOR_NAME")
+                        '            .Items.Add("PLANTATION_NAME")
+                        '            .Items.Add("START_DATE")
+                        '        End With
+                        '    Else
+                        '        Me.TManager1.GridEX1.SetDataBinding(Nothing, "") : Me.TManager1.GridEX1.Update()
+                        '        Me.btnCatFreeOrOther.Checked = False
+                        '        With Me.TManager1
+                        '            .btnGoFirst.Enabled = False : .btnGoLast.Enabled = False : .btnNext.Enabled = False : .btnGoPrevios.Enabled = False
+                        '            .lblResult.Text = ""
+                        '            .lblPosition.Text = ""
+                        '        End With
+                        '        Me.TManager1.Enabled = False
+                        '        Return
+                        '    End If
+                        '    Me.btnCatFreeOrOther.Checked = False
+                        'Else
+                        '    Me.TManager1.Enabled = True
+                        '    Me.IsLoadingCombo = True
+                        '    With Me.TManager1.cbCategory
+                        '        .Text = "" : .Items.Clear()
+                        '        .Items.Add("BRANDPACK_NAME")
+                        '        .Items.Add("START_DATE")
+                        '    End With
+                        '    Me.btnCatFreeOrOther.Checked = True : Me.btnCatPlantation.Checked = False
+                        'End If
+                End Select
+            Else
+                With Me.TManager1
+                    .GridEX1.SetDataBinding(Nothing, "")
+                    .btnGoFirst.Enabled = False
+                    .btnGoLast.Enabled = False
+                    .btnNext.Enabled = False
+                    .btnGoPrevios.Enabled = False
+                    .lblResult.Text = ""
+                    .lblPosition.Text = ""
+                End With
+            End If
             Me.ButtonClick(Me.TManager1.btnSearch, New EventArgs())
         Catch ex As Exception
-            Me.ShowMessageInfo(ex.Message) : Me.LogMyEvent(ex.Message, Me.Name + "_ItemPanel1_ItemClick")
+            Me.ShowMessageInfo(ex.Message)
         Finally
-            Me.IsLoadingCombo = False : Me.Cursor = Cursors.Default
+            Me.isloadingRow = False : Me.Cursor = Cursors.Default
         End Try
-
-    End Sub
-
-    Private Sub TManager1_Enter(ByVal sender As Object, ByVal e As System.EventArgs) Handles TManager1.Enter
-        Me.AcceptButton = Me.TManager1.btnSearch
     End Sub
 End Class
