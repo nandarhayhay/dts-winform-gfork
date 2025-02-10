@@ -93,7 +93,9 @@ Namespace Brandpack
                 Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate)
                 Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDate)
                 Me.AddParameter("@PAR_COLUMNS", SqlDbType.VarChar, ParColumns, 50)
-                Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DBNull.Value, 50)
+                If CategoryDisc = "CERTAIN_DISTRIBUTORS" Then
+                    Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, DBNull.Value, 50)
+                End If
                 OpenConnection()
                 Dim tblDDDR As New DataTable("REPORT DD_DR_CBD")
                 setDataAdapter(Me.SqlCom).Fill(tblDDDR)

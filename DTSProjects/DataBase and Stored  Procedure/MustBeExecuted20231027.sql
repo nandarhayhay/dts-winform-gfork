@@ -578,7 +578,7 @@ IF NOT EXISTS(SELECT ColumnName FROM (
 GO
 
 EXEC sys.sp_addextendedproperty @name = N'MS_Description', 
-@value = N'Kode Sales Person = SP, Distributor = DT', 
+@value = N'Kode Sales Person = SP, Distributor = DR', 
 @level0type = N'SCHEMA',
 @level0name = N'dbo',
 @level1type = N'TABLE',
@@ -880,9 +880,8 @@ IF NOT EXISTS(SELECT ColumnName FROM (
    ALTER TABLE ORDR_PO_BRANDPACK ADD PRICE_CATEGORY char(2) NULL;
 GO
 
-USE [Nufarm]
-GO
-/****** Object:  Table [dbo].[GEN_PLANT_PRICE]    Script Date: 1/28/2025 4:29:42 PM ******/
+
+/****** Object:  Table [dbo].[GEN_PLANT_PRICE]    Script Date: 2/10/2025 10:03:47 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -919,7 +918,6 @@ GO
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_GEN_PLANT_PRICE_BRND_BRANDPACK]') AND parent_object_id = OBJECT_ID(N'[dbo].[GEN_PLANT_PRICE]'))
 ALTER TABLE [dbo].[GEN_PLANT_PRICE] CHECK CONSTRAINT [FK_GEN_PLANT_PRICE_BRND_BRANDPACK]
 GO
-
 IF NOT EXISTS (SELECT * FROM sys.fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'GEN_PLANT_PRICE', NULL,NULL))
 	EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Table General Plantation Price' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'GEN_PLANT_PRICE'
 GO
@@ -1074,6 +1072,7 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 	COMMIT TRANSACTION	
 END
 GO
+
 IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = 'Uv_Price_General')
   DROP VIEW Uv_Price_General
 GO

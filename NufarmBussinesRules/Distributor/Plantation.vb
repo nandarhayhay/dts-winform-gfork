@@ -222,6 +222,43 @@ Namespace Plantation
                 Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
             Next
         End Sub
+        Private Function CheckExisting(ByVal PlantationName As String, Optional ByVal PlantGroupID As String = "", Optional ByVal TerritoryID As String = "") As Boolean
+            Try
+                'CHECK existing
+                'jika plant_group_id & TerritoryID ada
+                'check existing plantation_name + plant_group_id + TerritoryID
+
+                If PlantGroupID <> "" And TerritoryID <> "" Then
+                    Query = "SET NOCOUNT ON;" & _
+                    "SELECT PLANTATION_NAME FROM PLANTATION WHERE PLANT_GROUP_ID = @PLANT_GROUP_ID AND TERRITORY_ID = @TERRITORY_ID AND PLANTATION_NAME = @PLANTATION_NAME ;"
+                ElseIf TerritoryID <> "" Then
+                    Query = "SET NOCOUNT ON;" & _
+                    "SELECT PLANTATION_NAME FROM PLANTATION WHERE TERRITORY_ID = @TERRITORY_ID AND PLANTATION_NAME = @PLANTATION_NAME ;"
+                Else
+                    Query = "SET NOCOUNT ON;" & _
+                             "SELECT PLANTATION_NAME FROM PLANTATION WHERE PLANTATION_NAME = @PLANTATION_NAME ;"
+                End If
+
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                End If
+                Me.AddParameter("@PLANTATION_NAME", SqlDbType.VarChar, PlantationName)
+                If PlantGroupID <> "" And TerritoryID <> "" Then
+                    Me.AddParameter("@PLANT_GROUP_ID", SqlDbType.VarChar, PlantGroupID)
+                    Me.AddParameter("@TERRITORY_ID", SqlDbType.VarChar, TerritoryID)
+                ElseIf TerritoryID <> "" Then
+                    Me.AddParameter("@TERRITORY_ID", SqlDbType.VarChar, TerritoryID)
+                End If
+                Me.OpenConnection()
+                Dim retval As Object = Me.SqlCom.ExecuteScalar()
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    Return (retval.ToString() <> "")
+                End If
+                Return False
+            Catch ex As Exception
+                Return False
+            End Try
+        End Function
         Public Sub SaveData(ByVal Mode As common.Helper.SaveMode, ByVal MustCloseConnection As Boolean, Optional ByVal PlantID As String = "")
             Try
                 'RUMUS UNTUK BIKIN PLANTATION_ID
@@ -234,6 +271,12 @@ Namespace Plantation
                     Me.insertPlantation(Mode, PlantID)
                 Else
                     Dim RecCountGroupID As Integer = 0, PlantationID As String = ""
+                    'CHECK existing
+                    'jika plant_group_id & TerritoryID ada
+                    'check existing plantation_name + plant_group_id + TerritoryID
+                    If Me.CheckExisting(Me.PlantationName, Me.PlantGroupID, Me.TerritoryID) Then
+                        Throw New Exception("Data has existed")
+                    End If
                     If (Mode = common.Helper.SaveMode.Insert) Then
                         Query = "SET NOCOUNT ON; " & vbCrLf & _
                                 "SELECT SUM (row_count) + 1 FROM Nufarm.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('PLANTATION')  AND (index_id=0 or index_id=1) ;"
