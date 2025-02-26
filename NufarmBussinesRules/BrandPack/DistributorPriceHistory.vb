@@ -295,7 +295,7 @@ Namespace Brandpack
                 " LEFT OUTER JOIN(SELECT TER1.TERRITORY_AREA,PL1.PLANTATION_ID FROM TERRITORY TER1 INNER JOIN PLANTATION PL1 ON PL1.TERRITORY_ID = TER1.TERRITORY_ID)TER0 " & vbCrLf & _
                 " ON TER0.PLANTATION_ID = PL.PLANTATION_ID LEFT OUTER JOIN(SELECT DR1.DISTRIBUTOR_ID,TER2.TERRITORY_AREA FROM DIST_DISTRIBUTOR DR1 INNER JOIN TERRITORY TER2 ON TER2.TERRITORY_ID = DR1.TERRITORY_ID)DR2 " & vbCrLf & _
                 " ON DR2.DISTRIBUTOR_ID = DR.DISTRIBUTOR_ID ;" & vbCrLf & _
-                " CREATE CLUSTERED INDEX IX_T_Plantation ON TEMPDB..##T_Price_Distributor(CREATE_DATE,IDApp) ;" & vbCrLf & _
+                " --CREATE CLUSTERED INDEX IX_T_Plantation ON TEMPDB..##T_Price_Distributor(CREATE_DATE,IDApp) ;" & vbCrLf & _
                 " END "
                 Me.CreateCommandSql("", Query)
                 Me.AddParameter("@StartDate", SqlDbType.SmallDateTime, StartDate)
@@ -303,15 +303,22 @@ Namespace Brandpack
                 Me.OpenConnection()
                 Me.SqlCom.ExecuteScalar() : ClearCommandParameters()
 
-                Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & _
-                        " FROM TEMPDB..##T_Price_Distributor " & vbCrLf & _
-                        " WHERE IDApp < ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                        " FROM TEMPDB..##T_Price_Distributor WHERE (" & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= ") ORDER BY IDApp DESC)"
-                Query &= " AND " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                'Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & _
+                '        " FROM TEMPDB..##T_Price_Distributor " & vbCrLf & _
+                '        " WHERE IDApp < ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                '        " FROM TEMPDB..##T_Price_Distributor WHERE (" & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= ") ORDER BY IDApp DESC)"
+                'Query &= " AND " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PRICE_TAG,BRANDPACK_ID,BRANDPACK_NAME,DISTRIBUTOR_ID,DISTRIBUTOR_NAME," & vbCrLf & _
+                        " PLANTATION_ID,PLANTATION_NAME,PLANTATION_AREA,PRICE, START_DATE, END_DATE, IncludeDPD, CREATE_DATE, IsNew FROM TEMPDB..##T_Price_Distributor  " & vbCrLf & _
+                        " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
+
+
                 Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
 
@@ -322,8 +329,11 @@ Namespace Brandpack
                     Query = "SET NOCOUNT ON; " & vbCrLf & _
                             "SELECT SUM (row_count) FROM Nufarm.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('DIST_PLANT_PRICE') AND (index_id=0 or index_id=1) ;"
                 Else
-                    Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price_Distributor WHERE " & SearchBy
-                    Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                    'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price_Distributor WHERE " & SearchBy
+                    'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                    Query = "SET NOCOUNT ON; " & vbCrLf & _
+                            "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM TEMPDB..##T_Price_Distributor WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
+
                 End If
                 Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)

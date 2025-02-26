@@ -253,7 +253,7 @@ private frmGonDetailData as GonDetailData
             Me.btnAVGPrice.Visible = True
             Me.btnCPDAuto.Visible = True
             Me.btnAjdustmentPKD.Visible = True
-            Me.btnManageUser.Visible = False
+            Me.btnManageUser.Visible = True
             Me.btnDiscDDAndDR.Visible = True
             Me.btnAchievementDPDR.Visible = True
             Me.btnGONNonPODistributor.Visible = True

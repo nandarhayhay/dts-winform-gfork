@@ -9,15 +9,21 @@ Namespace OrderAcceptance
                 Dim dtTable As New DataTable("GON_OTHERS") : dtTable.Clear()
                 Me.OpenConnection()
                 common.CommonClass.columnKey = SearchBy
-                Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
-                   " FROM uv_gon_separated_PO_Pending_Gon " & vbCrLf & _
-                   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                   " FROM uv_gon_separated_PO_Pending_Gon WHERE (" & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= ") ORDER BY IDApp DESC)"
-                Query &= " AND " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                'Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
+                '   " FROM uv_gon_separated_PO_Pending_Gon " & vbCrLf & _
+                '   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                '   " FROM uv_gon_separated_PO_Pending_Gon WHERE (" & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= ") ORDER BY IDApp DESC)"
+                'Query &= " AND " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PO_NUMBER,SPPB_NUMBER,PO_DATE,SPPB_DATE,ITEM,PO_ORIGINAL,PO_CATEGORY,STATUS,GON_NUMBER,SHIP_TO_CUSTOMER,GON_DATE," & vbCrLf & _
+                        "WARHOUSE,TRANSPORTER_NAME,POLICE_NO_TRANS,DRIVER_TRANS,QUANTITY,QUANTITY_UNIT,COLLY_BOX,COLLY_PACKSIZE,BATCH_NO FROM uv_gon_separated_PO_Pending_Gon  " & vbCrLf & _
+                        " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
+
 
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
@@ -25,8 +31,10 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Pending_Gon WHERE " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Pending_Gon WHERE " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM uv_gon_separated_PO_Pending_Gon WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
 
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
@@ -43,15 +51,21 @@ Namespace OrderAcceptance
                 Dim dtTable As New DataTable("GON_OTHERS") : dtTable.Clear()
                 Me.OpenConnection()
                 common.CommonClass.columnKey = SearchBy
-                Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
-                   " FROM uv_gon_separated_PO_Status_Completed " & vbCrLf & _
-                   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                   " FROM uv_gon_separated_PO_Status_Completed WHERE (" & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= ") ORDER BY IDApp DESC)"
-                Query &= " AND " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                'Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
+                '   " FROM uv_gon_separated_PO_Status_Completed " & vbCrLf & _
+                '   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                '   " FROM uv_gon_separated_PO_Status_Completed WHERE (" & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= ") ORDER BY IDApp DESC)"
+                'Query &= " AND " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PO_NUMBER,SPPB_NUMBER,PO_DATE,SPPB_DATE,ITEM,PO_ORIGINAL,PO_CATEGORY,STATUS,GON_NUMBER,SHIP_TO_CUSTOMER,GON_DATE," & vbCrLf & _
+                        "WARHOUSE,TRANSPORTER_NAME,POLICE_NO_TRANS,DRIVER_TRANS,QUANTITY,QUANTITY_UNIT,COLLY_BOX,COLLY_PACKSIZE,BATCH_NO FROM uv_gon_separated_PO_Status_Completed  " & vbCrLf & _
+                        " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
 
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
@@ -59,8 +73,11 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Status_Completed WHERE " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_Status_Completed WHERE " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM uv_gon_separated_PO_Status_Completed WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
+
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                 If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
@@ -76,15 +93,21 @@ Namespace OrderAcceptance
                 Dim dtTable As New DataTable("GON_OTHERS") : dtTable.Clear()
                 Me.OpenConnection()
                 common.CommonClass.columnKey = SearchBy
-                Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
-                   " FROM uv_gon_separated_PO " & vbCrLf & _
-                   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                   " FROM uv_gon_separated_PO WHERE (" & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= ") ORDER BY IDApp DESC)"
-                Query &= " AND " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PO_NUMBER,SPPB_NUMBER,PO_DATE,SPPB_DATE,ITEM,PO_ORIGINAL,PO_CATEGORY,STATUS,GON_NUMBER,SHIP_TO_CUSTOMER,GON_DATE," & vbCrLf & _
+                "WARHOUSE,TRANSPORTER_NAME,POLICE_NO_TRANS,DRIVER_TRANS,QUANTITY,QUANTITY_UNIT,COLLY_BOX,COLLY_PACKSIZE,BATCH_NO FROM uv_gon_separated_PO  " & vbCrLf & _
+                " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
+
+                'Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
+                '   " FROM uv_gon_separated_PO " & vbCrLf & _
+                '   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                '   " FROM uv_gon_separated_PO WHERE (" & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= ") ORDER BY IDApp DESC)"
+                'Query &= " AND " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
 
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
@@ -92,8 +115,11 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO WHERE " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM uv_gon_separated_PO WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
+
+                'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO WHERE " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
 
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
@@ -110,15 +136,21 @@ Namespace OrderAcceptance
                 Dim dtTable As New DataTable("GON_OTHERS") : dtTable.Clear()
                 Me.OpenConnection()
                 common.CommonClass.columnKey = SearchBy
-                Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
-                   " FROM uv_gon_separated_PO_All " & vbCrLf & _
-                   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                   " FROM uv_gon_separated_PO_All WHERE (" & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= ") ORDER BY IDApp DESC)"
-                Query &= " AND " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                'Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
+                '   " FROM uv_gon_separated_PO_All " & vbCrLf & _
+                '   " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                '   " FROM uv_gon_separated_PO_All WHERE (" & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= ") ORDER BY IDApp DESC)"
+                'Query &= " AND " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query &= " ORDER BY IDApp DESC OPTION(KEEP PLAN);"
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PO_NUMBER,SPPB_NUMBER,PO_DATE,SPPB_DATE,ITEM,PO_ORIGINAL,PO_CATEGORY,STATUS,GON_NUMBER,SHIP_TO_CUSTOMER,GON_DATE," & vbCrLf & _
+                "WARHOUSE,TRANSPORTER_NAME,POLICE_NO_TRANS,DRIVER_TRANS,QUANTITY,QUANTITY_UNIT,COLLY_BOX,COLLY_PACKSIZE,BATCH_NO FROM uv_gon_separated_PO_All  " & vbCrLf & _
+                " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
+
 
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
@@ -126,8 +158,11 @@ Namespace OrderAcceptance
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 'Me.SqlCom.ExecuteScalar()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_All WHERE " & SearchBy
-                Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM uv_gon_separated_PO_All WHERE " & SearchBy
+                'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                Query = "SET NOCOUNT ON; " & vbCrLf & _
+                        "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM uv_gon_separated_PO_All WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
+
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                 If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If

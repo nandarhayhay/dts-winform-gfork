@@ -15,35 +15,48 @@ Namespace Brandpack
                 Dim dtTable As New DataTable("PRICE_HISTORY") : dtTable.Clear()
                 Select Case Cat
                     Case Category.SpecialPlantation
-                        Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
-                        " FROM Uv_Price_Distributor " & vbCrLf & _
-                        " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                        " FROM Uv_Price_Distributor WHERE (" & SearchBy
-                        Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                        Query &= ") ORDER BY IDApp ASC)"
-                        Query &= " AND " & SearchBy
-                        Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                        Query &= " ORDER BY IDApp ASC OPTION(KEEP PLAN);"
+                        'Query = "SET NOCOUNT ON; SELECT TOP " & PageSize & " * " & vbCrLf & _
+                        '" FROM Uv_Price_Distributor " & vbCrLf & _
+                        '" WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                        '" FROM Uv_Price_Distributor WHERE (" & SearchBy
+                        'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        'Query &= ") ORDER BY IDApp ASC)"
+                        'Query &= " AND " & SearchBy
+                        'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        'Query &= " ORDER BY IDApp ASC OPTION(KEEP PLAN);"
+                        Query = "SET NOCOUNT ON; " & vbCrLf & _
+                                "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PRICE_TAG,BRANDPACK_ID,BRANDPACK_NAME,DISTRIBUTOR_ID,DISTRIBUTOR_NAME,PLANTATION_ID,PLANTATION_NAME," & vbCrLf & _
+                                "PLANTATION_AREA,PRICE,START_DATE,END_DATE,IncludeDPD,CREATE_DATE FROM Uv_Price_Distributor  " & vbCrLf & _
+                                " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                        Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
 
                         Me.CreateCommandSql("sp_executesql", "")
                         Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                         Me.OpenConnection()
                         Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(dtTable) : Me.ClearCommandParameters()
-                        Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price_Distributor WHERE " & SearchBy
-                        Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price_Distributor WHERE " & SearchBy
+                        'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        Query = "SET NOCOUNT ON; " & vbCrLf & _
+                                "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM Uv_Price_Distributor WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
+
                         Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                         Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                         If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
                     Case Category.GeneralPricePlantation
-                        Query = "SET NOCOUNT ON;" & vbCrLf & _
-                                "SELECT TOP " & PageSize & " * FROM Uv_Price_General " & vbCrLf & _
-                               " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                        " FROM Uv_Price_General WHERE (" & SearchBy
-                        Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                        Query &= ") ORDER BY IDApp ASC)"
-                        Query &= " AND " & SearchBy
-                        Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                        Query &= " ORDER BY IDApp ASC OPTION(KEEP PLAN);"
+                        'Query = "SET NOCOUNT ON;" & vbCrLf & _
+                        '        "SELECT TOP " & PageSize & " * FROM Uv_Price_General " & vbCrLf & _
+                        '       " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                        '" FROM Uv_Price_General WHERE (" & SearchBy
+                        'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        'Query &= ") ORDER BY IDApp ASC)"
+                        'Query &= " AND " & SearchBy
+                        'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        'Query &= " ORDER BY IDApp ASC OPTION(KEEP PLAN);"
+                        Query = "SET NOCOUNT ON; " & vbCrLf & _
+                                "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PRICE_TAG,BRANDPACK_ID,BRANDPACK_NAME,PRICE,START_DATE,IncludeDPD FROM Uv_Price_General  " & vbCrLf & _
+                                " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                        Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
+
 
                         Me.CreateCommandSql("sp_executesql", "")
                         Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
@@ -55,22 +68,30 @@ Namespace Brandpack
                             Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                             Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                         Else
-                            Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price_General WHERE " & SearchBy
-                            Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                            'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price_General WHERE " & SearchBy
+                            'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                            Query = "SET NOCOUNT ON; " & vbCrLf & _
+                                    "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM Uv_Price_General WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
+
                             Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                         End If
                         Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                         If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
                     Case Category.FreeMarket
-                        Query = "SET NOCOUNT ON;" & vbCrLf & _
-                                "SELECT TOP " & PageSize & " * FROM Uv_Price " & vbCrLf & _
-                               " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
-                        " FROM Uv_Price WHERE (" & SearchBy
-                        Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                        Query &= ") ORDER BY IDApp ASC)"
-                        Query &= " AND " & SearchBy
-                        Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
-                        Query &= " ORDER BY IDApp ASC OPTION(KEEP PLAN);"
+                        'Query = "SET NOCOUNT ON;" & vbCrLf & _
+                        '        "SELECT TOP " & PageSize & " * FROM Uv_Price " & vbCrLf & _
+                        '       " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
+                        '" FROM Uv_Price WHERE (" & SearchBy
+                        'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        'Query &= ") ORDER BY IDApp ASC)"
+                        'Query &= " AND " & SearchBy
+                        'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                        'Query &= " ORDER BY IDApp ASC OPTION(KEEP PLAN);"
+                        Query = "SET NOCOUNT ON; " & vbCrLf & _
+                                   "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM,IDApp,PRICE_TAG,BRANDPACK_ID,BRANDPACK_NAME,PRICE,START_DATE FROM Uv_Price " & vbCrLf & _
+                                   " WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ) " & vbCrLf
+                        Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
+
 
                         Me.CreateCommandSql("sp_executesql", "")
                         Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
@@ -82,8 +103,11 @@ Namespace Brandpack
                             Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                             Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                         Else
-                            Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price WHERE " & SearchBy
-                            Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                            'Query = "SET NOCOUNT ON;SELECT COUNT(IDApp) FROM Uv_Price WHERE " & SearchBy
+                            'Query &= common.CommonClass.ResolveCriteria(Criteria, DataType, value)
+                            Query = "SET NOCOUNT ON; " & vbCrLf & _
+                                    "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM Uv_Price WHERE (" & SearchBy & " " & common.CommonClass.ResolveCriteria(Criteria, DataType, value) & " ))Result "
+
                             Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                         End If
                         Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()

@@ -14,10 +14,12 @@ Namespace Plantation
         Public Function GetTerritory(ByVal searchString As String) As DataView
             Try
                 Query = "SET NOCOUNT ON ;" & vbCrLf & _
-                        "SELECT TERRITORY_ID,TERRITORY_AREA FROM TERRITORY ;"
+                        "SELECT TERRITORY_ID,TERRITORY_AREA FROM TERRITORY "
                 If Not String.IsNullOrEmpty(searchString) Then
                     Query &= vbCrLf
-                    Query &= " WHERE TERRITORY_AREA LIKE '%" & searchString & "%' ;"
+                    Query &= " WHERE TERRITORY_AREA LIKE '%" & searchString & "%' AND TERRITORY_FOR = 'DR';"
+                Else
+                    Query &= " WHERE TERRITORY_FOR = 'DR';"
                 End If
                 If IsNothing(Me.SqlCom) Then
                     Me.CreateCommandSql("sp_executesql", "")
@@ -378,7 +380,7 @@ Namespace Plantation
                         Case "PLANT_GROUP_NAME" : Query &= " WHERE PG.PLANT_GROUP_NAME " & ResolvedCriteria & vbCrLf
                         Case "TERRITORY_AREA" : Query &= " WHERE TER.TERRITORY_AREA " & ResolvedCriteria & vbCrLf
                     End Select
-                    Query &= " CREATE CLUSTERED INDEX IX_T_Plantation ON ##T_PLANTATION_" & Me.ComputerName & "(IDApp,PLANTATION_NAME,TERRITORY_AREA) ;"
+                    'Query &= " CREATE CLUSTERED INDEX IX_T_Plantation ON ##T_PLANTATION_" & Me.ComputerName & "(IDApp,PLANTATION_NAME,TERRITORY_AREA) ;"
                     If IsNothing(Me.SqlCom) Then
                         Me.CreateCommandSql("sp_executesql", "")
                     Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
@@ -390,11 +392,10 @@ Namespace Plantation
                 Query = "SET NOCOUNT ON ;" & vbCrLf & _
                         "IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_PLANTATION_" & Me.ComputerName & "' AND TYPE = 'U') " & vbCrLf & _
                         " BEGIN " & vbCrLf & _
-                        " SELECT TOP " & PageSize & " PLANTATION_ID,PLANTATION_NAME,PLANT_GROUP_ID AS GROUP_ID,PLANT_GROUP_NAME AS GROUP_NAME,DESCRIPTIONS,CREATE_DATE,TERRITORY_ID,TERRITORY_AREA FROM ##T_PLANTATION_" & Me.ComputerName & " " & vbCrLf & _
-                        " WHERE IDApp < ALL(SELECT TOP " & (PageSize * (PageIndex - 1)).ToString() & " IDApp FROM ##T_PLANTATION_" & Me.ComputerName & " " & vbCrLf & _
-                        " WHERE (" & SearchBy & " " & ResolvedCriteria & " ) ORDER BY IDApp DESC) " & vbCrLf & _
-                        " AND " & SearchBy & " " & ResolvedCriteria & " ORDER BY IDApp DESC OPTION(KEEP PLAN); " & vbCrLf & _
-                        " END "
+                          "SELECT TOP " & PageSize.ToString() & " * FROM(SELECT ROW_NUMBER() OVER(ORDER BY IDApp DESC) AS ROW_NUM, PLANTATION_ID,PLANTATION_NAME,PLANT_GROUP_ID AS GROUP_ID,PLANT_GROUP_NAME AS GROUP_NAME,DESCRIPTIONS,CREATE_DATE,TERRITORY_ID,TERRITORY_AREA FROM ##T_PLANTATION_" & Me.ComputerName & vbCrLf & _
+                        " WHERE (" & SearchBy & " " & ResolvedCriteria & " ) " & vbCrLf
+                Query &= ")Result WHERE ROW_NUM >= " & ((PageSize * (PageIndex - 1)) + 1).ToString() & " AND ROW_NUM <= " & (PageSize * PageIndex).ToString()
+                Query &= " END "
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
                 Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 End If
@@ -402,8 +403,14 @@ Namespace Plantation
                 Dim Dt As New DataTable("PLANTATION_DATA") : Dt.Clear()
                 Me.SqlDat = New SqlDataAdapter(Me.SqlCom) : Me.SqlDat.Fill(Dt) : Me.ClearCommandParameters()
 
-                Query = "SET NOCOUNT ON; " & vbCrLf & _
-                        "SELECT SUM (row_count) FROM Tempdb.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('tempdb..##T_PLANTATION_" & Me.ComputerName & "')  AND (index_id=0 or index_id=1) ;"
+                If value = "" Then
+                    Query = "SET NOCOUNT ON; " & vbCrLf & _
+                            "SELECT SUM (row_count) FROM Tempdb.sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('tempdb..##T_PLANTATION_" & Me.ComputerName & "')  AND (index_id=0 or index_id=1) ;"
+                Else
+                    Query = "SET NOCOUNT ON; " & vbCrLf & _
+                            "SELECT COUNT(ROW_NUM) FROM(SELECT ROW_NUMBER() OVER(ORDER BY " & SearchBy & " DESC)AS ROW_NUM FROM TEMPDB..##T_PLANTATION_" & Me.ComputerName & " WHERE (" & SearchBy & " " & ResolvedCriteria & " ))Result "
+                End If
+
                 'Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
                 Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                 Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters()
