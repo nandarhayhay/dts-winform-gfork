@@ -112,7 +112,7 @@ Public Class PriceHistory
             Dv = Me.clsPriceHistory.PopulateQuery(NufarmBussinesRules.Brandpack.PriceHistory.Category.SpecialPlantation, _
                              SearchBy, SearchString, Me.PageIndex, Me.PageSize, Me.RowCount, Me.m_Criteria, Me.m_DataType)
         ElseIf Me.btnGenPrice.Checked Then
-            Dv = Me.clsPriceHistory.PopulateQuery(NufarmBussinesRules.Brandpack.PriceHistory.Category.GeneralPricePlantation, _
+            Dv = Me.clsPriceHistory.PopulateQuery(NufarmBussinesRules.Brandpack.PriceHistory.Category.GenPricePlantation, _
                              SearchBy, SearchString, Me.PageIndex, Me.PageSize, Me.RowCount, Me.m_Criteria, Me.m_DataType)
         End If
         If Not IsNothing(Dv) Then

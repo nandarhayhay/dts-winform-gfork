@@ -424,6 +424,10 @@ Public Class DiscountDDOrDR
                     Me.baseTooltip.Show("BRAND NAME can not be null in discount progressive table", Me.grdProgDisc, 2500)
                     grdProgDisc.MoveTo(row)
                     Return False
+                ElseIf row.Cells("TypeApp").Value = "CB" Or row.Cells("TypeApp").Value = " CB" Or row.Cells("TypeApp").Value = "CB " Then
+                    Me.baseTooltip.Show("Please enter valid discount type" & vbCrLf & "there is no CB discount type" & vbCrLf & "Please change to CBD and then press enter", Me.grdProgDisc, 2500)
+                    grdProgDisc.MoveTo(row)
+                    Return False
                 End If
             Next
         End If

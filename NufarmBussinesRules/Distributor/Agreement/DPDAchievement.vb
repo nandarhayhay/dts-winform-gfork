@@ -100,9 +100,17 @@ Namespace DistributorAgreement
                 .Add(New DataColumn("TOTAL_CPF2", Type.GetType("System.Decimal")))
                 .Item("TOTAL_CPF2").DefaultValue = 0
 
+                'TOTAL_PBF2
+                .Add(New DataColumn("TOTAL_PBF2", Type.GetType("System.Decimal")))
+                .Item("TOTAL_PBF2").DefaultValue = 0
+
                 'TOTAL_PBF3
                 .Add(New DataColumn("TOTAL_PBF3", Type.GetType("System.Decimal")))
                 .Item("TOTAL_PBF3").DefaultValue = 0
+
+
+                .Add(New DataColumn("GPPBF2", Type.GetType("System.Decimal"))) ''diambil dari progressive discount sebelumnya
+                .Item("GPPBF2").DefaultValue = 0
 
                 .Add(New DataColumn("GPPBF3", Type.GetType("System.Decimal"))) ''diambil dari progressive discount sebelumnya
                 .Item("GPPBF3").DefaultValue = 0
@@ -146,6 +154,9 @@ Namespace DistributorAgreement
 
                 .Add(New DataColumn("CPF2_DIST", Type.GetType("System.Decimal")))
                 .Item("CPF2_DIST").DefaultValue = 0
+
+                .Add(New DataColumn("PBF2_DIST", Type.GetType("System.Decimal")))
+                .Item("PBF2_DIST").DefaultValue = 0
 
                 .Add(New DataColumn("PBF3_DIST", Type.GetType("System.Decimal")))
                 .Item("PBF3_DIST").DefaultValue = 0
@@ -221,6 +232,11 @@ Namespace DistributorAgreement
 
                 .Add(New DataColumn("TOTAL_CPF2", Type.GetType("System.Decimal")))
                 .Item("TOTAL_CPF2").DefaultValue = 0
+
+
+                .Add(New DataColumn("TOTAL_PBF2", Type.GetType("System.Decimal")))
+                .Item("TOTAL_PBF2").DefaultValue = 0
+
 
                 .Add(New DataColumn("TOTAL_PBF3", Type.GetType("System.Decimal")))
                 .Item("TOTAL_PBF3").DefaultValue = 0
@@ -372,7 +388,7 @@ Namespace DistributorAgreement
                         " ACRH.TOTAL_PO,ACRH.TOTAL_ACTUAL,ACRH.BALANCE,ACRH.ACH_BY_CAT/100 AS ACH_BY_CAT,ACRH.ACH_DISPRO/100 AS ACHIEVEMENT_DISPRO,ACRH.DISPRO/100 AS DISPRO,  " & vbCrLf & _
                         " ACRH.DISC_QTY, ACRH.TOTAL_CPQ1,ACRH.TOTAL_CPQ2, " & vbCrLf & _
                         " ACRH.TOTAL_CPQ3, " & vbCrLf & _
-                        " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,TOTAL_PBF3,ACRH.[DESCRIPTIONS],ACRH.ACTUAL_DIST,ACRH.PO_DIST,ACRH.PO_VALUE_DIST,ACRH.DISC_DIST,ACRH.CPQ1_DIST,ACRH.CPQ2_DIST,ACRH.CPQ3_DIST,ACRH.CPF1_DIST,ACRH.CPF2_DIST,ACRH.PBF3_DIST " & vbCrLf & _
+                        " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,ACRH.TOTAL_PBF2,ACRH.TOTAL_PBF3,ACRH.[DESCRIPTIONS],ACRH.ACTUAL_DIST,ACRH.PO_DIST,ACRH.PO_VALUE_DIST,ACRH.DISC_DIST,ACRH.CPQ1_DIST,ACRH.CPQ2_DIST,ACRH.CPQ3_DIST,ACRH.CPF1_DIST,ACRH.CPF2_DIST,ACRH.PBF2_DIST,ACRH.PBF3_DIST " & vbCrLf & _
                         " FROM ACHIEVEMENT_HEADER ACRH INNER JOIN AGREE_AGREEMENT AA ON ACRH.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN DIST_DISTRIBUTOR DR ON ACRH.DISTRIBUTOR_ID " & vbCrLf & _
                         " = DR.DISTRIBUTOR_ID INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ACRH.BRAND_ID " & vbCrLf & _
                         "  LEFT OUTER JOIN BRND_AVGPRICE AP ON AP.IDApp = ACRH.AvgPriceID " & vbCrLf
@@ -413,7 +429,7 @@ Namespace DistributorAgreement
                 '--------------------------Detail Query -->Achievement detail---------------------------------------
                 Query = " SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SELECT ACD.ACH_DETAIL_ID,ACD.ACH_HEADER_ID,ACRH.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ACRH.AGREEMENT_NO,ACD.BRANDPACK_ID,BP.BRANDPACK_NAME," & vbCrLf & _
                           "ACD.TOTAL_PO,ACD.TOTAL_ACTUAL, ACD.DISC_QTY," & vbCrLf & _
-                          " ACD.TOTAL_CPQ1,ACD.TOTAL_CPQ2,ACD.TOTAL_CPQ3,ACD.TOTAL_CPF1,ACD.TOTAL_CPF2,ACD.TOTAL_PBF3,ACD.[DESCRIPTIONS]" & vbCrLf & _
+                          " ACD.TOTAL_CPQ1,ACD.TOTAL_CPQ2,ACD.TOTAL_CPQ3,ACD.TOTAL_CPF1,ACD.TOTAL_CPF2,ACD.TOTAL_PBF2,ACD.TOTAL_PBF3,ACD.[DESCRIPTIONS]" & vbCrLf & _
                           " FROM ACHIEVEMENT_DETAIL ACD INNER JOIN ACHIEVEMENT_HEADER ACRH " & vbCrLf & _
                           " ON ACD.ACH_HEADER_ID = ACRH.ACH_HEADER_ID INNER JOIN BRND_BRANDPACK BP " & vbCrLf & _
                           "  ON ACD.BRANDPACK_ID = BP.BRANDPACK_ID " & vbCrLf & _
@@ -656,7 +672,7 @@ Namespace DistributorAgreement
             Me.CalculateHeaderRoundup(AgreementNO, FLAG, tblAchHeader)
             Me.ClearCommandParameters()
             'hitung disc detail sudah include penghitungan disc previos
-            Me.CalculateDetail(FLAG, tblAchDetail, tblAchHeader)
+            Me.CalculatePreviousDetail(FLAG, tblAchDetail, tblAchHeader)
 
             ''save to database
             Me.SaveToDataBase(AgreementNO, FLAG, tblAchHeader, tblAchDetail)
@@ -696,11 +712,11 @@ Namespace DistributorAgreement
             'INSERT HEADER
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " INSERT INTO ACHIEVEMENT_HEADER(ACH_HEADER_ID, AGREEMENT_NO, DISTRIBUTOR_ID, BRAND_ID, AvgPriceID, FLAG, TOTAL_TARGET, TARGET_FM, TARGET_PL, TOTAL_PO, " & vbCrLf & _
-                    " TOTAL_PO_VALUE, TOTAL_ACTUAL, BALANCE, ACH_DISPRO, ACH_BY_CAT,DISPRO, DISC_QTY, TOTAL_CPQ1, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3," & vbCrLf & _
-                    " DESCRIPTIONS, ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF3_DIST,GP_ID,CreatedDate, CreatedBy) " & vbCrLf & _
+                    " TOTAL_PO_VALUE, TOTAL_ACTUAL, BALANCE, ACH_DISPRO, ACH_BY_CAT,DISPRO, DISC_QTY, TOTAL_CPQ1, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2,TOTAL_PBF2, TOTAL_PBF3," & vbCrLf & _
+                    " DESCRIPTIONS, ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF2_DIST,PBF3_DIST,GP_ID,CreatedDate, CreatedBy) " & vbCrLf & _
                     " VALUES(@ACH_HEADER_ID, @AGREEMENT_NO, @DISTRIBUTOR_ID, @BRAND_ID, @AvgPriceID, @FLAG, @TOTAL_TARGET, @TARGET_FM, @TARGET_PL, @TOTAL_PO, " & vbCrLf & _
                     " @TOTAL_PO_VALUE, @TOTAL_ACTUAL, @BALANCE, @ACH_DISPRO, @ACH_BY_CAT,@DISPRO, @DISC_QTY, @TOTAL_CPQ1, @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, " & vbCrLf & _
-                    " @TOTAL_CPF2, @TOTAL_PBF3,@DESCRIPTIONS,@ACTUAL_DIST,@PO_DIST,@PO_VALUE_DIST,@DISC_DIST,@CPQ1_DIST,@CPQ2_DIST,@CPQ3_DIST,@CPF1_DIST,@CPF2_DIST,@PBF3_DIST,@GP_ID,@CreatedDate, @CreatedBy);"
+                    " @TOTAL_CPF2,@TOTAL_PBF2, @TOTAL_PBF3,@DESCRIPTIONS,@ACTUAL_DIST,@PO_DIST,@PO_VALUE_DIST,@DISC_DIST,@CPQ1_DIST,@CPQ2_DIST,@CPQ3_DIST,@CPF1_DIST,@CPF2_DIST,@PBF2_DIST,@PBF3_DIST,@GP_ID,@CreatedDate, @CreatedBy);"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.ResetAdapterCRUD()
             With Me.SqlCom
@@ -727,6 +743,7 @@ Namespace DistributorAgreement
                 .Parameters.Add("@TOTAL_CPQ3", SqlDbType.Decimal, 0, "TOTAL_CPQ3")
                 .Parameters.Add("@TOTAL_CPF1", SqlDbType.Decimal, 0, "TOTAL_CPF1")
                 .Parameters.Add("@TOTAL_CPF2", SqlDbType.Decimal, 0, "TOTAL_CPF2")
+                .Parameters.Add("@TOTAL_PBF2", SqlDbType.Decimal, 0, "TOTAL_PBF2")
                 .Parameters.Add("@TOTAL_PBF3", SqlDbType.Decimal, 0, "TOTAL_PBF3")
                 .Parameters.Add("@DESCRIPTIONS", SqlDbType.VarChar, 250, "DESCRIPTIONS")
                 .Parameters.Add("@ACTUAL_DIST", SqlDbType.Decimal, 0, "ACTUAL_DIST")
@@ -738,6 +755,7 @@ Namespace DistributorAgreement
                 .Parameters.Add("@CPQ3_DIST", SqlDbType.Decimal, 0, "CPQ3_DIST")
                 .Parameters.Add("@CPF1_DIST", SqlDbType.Decimal, 0, "CPF1_DIST")
                 .Parameters.Add("@CPF2_DIST", SqlDbType.Decimal, 0, "CPF2_DIST")
+                .Parameters.Add("@PBF2_DIST", SqlDbType.Decimal, 0, "PBF2_DIST")
                 .Parameters.Add("@PBF3_DIST", SqlDbType.Decimal, 0, "PBF3_DIST")
                 .Parameters.Add("@CreatedDate", SqlDbType.SmallDateTime, 0, "CreatedDate")
                 .Parameters.Add("@CreatedBy", SqlDbType.VarChar, 100, "CreatedBy")
@@ -747,9 +765,9 @@ Namespace DistributorAgreement
 
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " INSERT INTO ACHIEVEMENT_DETAIL (ACH_DETAIL_ID, ACH_HEADER_ID, BRANDPACK_ID, TOTAL_PO, TOTAL_ACTUAL, DISC_QTY, TOTAL_CPQ1," & vbCrLf & _
-                    " TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3, DESCRIPTIONS, CreatedDate, CreatedBy)" & vbCrLf & _
+                    " TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2,TOTAL_PBF2, TOTAL_PBF3, DESCRIPTIONS, CreatedDate, CreatedBy)" & vbCrLf & _
                     " VALUES(@ACH_DETAIL_ID, @ACH_HEADER_ID, @BRANDPACK_ID, @TOTAL_PO, @TOTAL_ACTUAL, @DISC_QTY, @TOTAL_CPQ1, " & vbCrLf & _
-                    " @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, @TOTAL_CPF2,@TOTAL_PBF3, @DESCRIPTIONS, @CreatedDate, @CreatedBy) ;"
+                    " @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, @TOTAL_CPF2,@TOTAL_PBF2,@TOTAL_PBF3, @DESCRIPTIONS, @CreatedDate, @CreatedBy) ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.ResetAdapterCRUD()
             With Me.SqlCom
@@ -764,6 +782,7 @@ Namespace DistributorAgreement
                 .Parameters.Add("@TOTAL_CPQ3", SqlDbType.Decimal, 0, "TOTAL_CPQ3")
                 .Parameters.Add("@TOTAL_CPF1", SqlDbType.Decimal, 0, "TOTAL_CPF1")
                 .Parameters.Add("@TOTAL_CPF2", SqlDbType.Decimal, 0, "TOTAL_CPF2")
+                .Parameters.Add("@TOTAL_PBF2", SqlDbType.Decimal, 0, "TOTAL_PBF2")
                 .Parameters.Add("@TOTAL_PBF3", SqlDbType.Decimal, 0, "TOTAL_PBF3")
                 .Parameters.Add("@DESCRIPTIONS", SqlDbType.VarChar, 250, "DESCRIPTIONS")
                 .Parameters.Add("@CreatedDate", SqlDbType.SmallDateTime, 0, "CreatedDate")
@@ -774,7 +793,7 @@ Namespace DistributorAgreement
             End With
             Me.CommiteTransaction()
         End Sub
-        Private Sub CalculateDetail(ByVal Flag As String, ByRef tblAchDetail As DataTable, ByVal tblAchHeader As DataTable)
+        Private Sub CalculatePreviousDetail(ByVal Flag As String, ByRef tblAchDetail As DataTable, ByVal tblAchHeader As DataTable)
             Dim DVPrevAch As DataView = Nothing, Descriptions As String = ""
             If Not IsNothing(Me.tblPrevAchievement) Then
                 DVPrevAch = tblPrevAchievement.DefaultView()
@@ -816,26 +835,6 @@ Namespace DistributorAgreement
                                 Dim AchHeaderIDQ2 As String, AchHeaderIDQ3 As String
                                 'Dim DiscQ1 As Decimal = 0, 
                                 Dim DiscQ2 As Decimal = 0, DiscQ3 As Decimal = 0
-                                'TOTAL_CPQ1
-                                'If CDec(totalInvoiceCurrentQ1) > 0 Then
-                                '    AchHeaderIDQ1 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
-                                '    AchHeaderIDQ1 = AchHeaderIDQ1 + "Q1"
-                                '    Index = DVGivenProg.Find(AchHeaderIDQ1)
-                                '    If Index <> -1 Then
-                                '        PrevDisPro = DVGivenProg(Index)("GPCPQ1")
-                                '    ElseIf Not IsNothing(DVCurAch) Then
-                                '        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDQ1 & "'"
-                                '        If DVCurAch.Count > 0 Then
-                                '            PrevDisPro = DVCurAch(0)("DISPRO")
-                                '        End If
-                                '    End If
-                                '    If PrevDisPro > 0 Then
-                                '        DiscQ1 = (PrevDisPro / 100) * totalInvoiceCurrentQ1
-                                '        DiscQtyBefore = DiscQ1
-                                '        Descriptions &= String.Format("Q1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ1, DiscQ1)
-                                '    End If
-                                'End If
-                                'TOTAL_CPQ2
                                 totalInvoiceCurrentQ2 = RowDetail("TOTAL_CPQ2")
                                 If CDec(totalInvoiceCurrentQ2) > 0 Then
                                     AchHeaderIDQ2 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
@@ -974,6 +973,26 @@ Namespace DistributorAgreement
                                 End If
                             End If
                         Case "F1"
+                            Dim totalInvoiceBeforeF2 = RowDetail("TOTAL_PBF2")
+                            Dim AchHeaderIDF2 As String = "", DiscF2 As Decimal = 0
+                            If CDec(totalInvoiceBeforeF2) > 0 And Not IsNothing(DVPrevAch) Then
+                                AchHeaderIDF2 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
+                                AchHeaderIDF2 = AchHeaderIDF2 + "F2"
+
+                                If CDec(RowHeader("GPPBF2")) > 0 Then
+                                    PrevDisPro = Convert.ToDecimal(RowHeader("GPPBF2"))
+                                ElseIf Not IsNothing(DVPrevAch) Then
+                                    DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF2 & "'"
+                                    If DVPrevAch.Count > 0 Then
+                                        PrevDisPro = DVPrevAch(0)("DISPRO")
+                                    End If
+                                End If
+                                If PrevDisPro > 0 Then
+                                    DiscF2 = (PrevDisPro / 100) * totalInvoiceBeforeF2
+                                    DiscQtyBefore = DiscF2
+                                    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF2, DiscF2)
+                                End If
+                            End If
                             totalInvoiceBeforeF3 = RowDetail("TOTAL_PBF3")
                             Dim AchHeaderIDF3 As String = "", DiscF3 As Decimal = 0
                             If CDec(totalInvoiceBeforeF3) > 0 And Not IsNothing(DVPrevAch) Then
@@ -990,20 +1009,12 @@ Namespace DistributorAgreement
                                 End If
                                 If PrevDisPro > 0 Then
                                     DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
-                                    DiscQtyBefore = DiscF3
+                                    DiscQtyBefore += DiscF3
+                                    If Descriptions <> "" Then
+                                        Descriptions &= ", "
+                                    End If
                                     Descriptions &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
                                 End If
-
-                                'DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF3 & "'"
-                                'If DVPrevAch.Count > 0 Then
-                                '    PrevDisPro = DVPrevAch(0)("DISPRO")
-                                '    DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
-                                '    DiscQtyBefore += DiscF3
-                                '    If Descriptions <> "" Then
-                                '        Descriptions &= ", "
-                                '    End If
-                                '    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", (PrevDisPro / 100), totalInvoiceBeforeF3, DiscF3)
-                                'End If
                             End If
                     End Select
                     Dim TotalActual As Decimal = Convert.ToDecimal(RowDetail("TOTAL_ACTUAL"))
@@ -1047,7 +1058,7 @@ Namespace DistributorAgreement
                 Dim rows() As DataRow = tblAchHeader.Select("AGREE_BRAND_ID = '" & listAgreeBrandIDs(i) & "'")
                 Dim TotalPO As Decimal = 0, TotalActual As Decimal = 0, TotalPOValue As Decimal = 0, _
                 TotalCPQ1 As Decimal = 0, TotalCPQ2 As Decimal = 0, TotalCPQ3 As Decimal = 0, TotalCPF1 As Decimal = 0, TotalCPF2 As Decimal = 0, _
-                TotalPBF3 As Decimal = 0
+                TotalPBF3 As Decimal = 0, TotalPBF2 As Decimal = 0
                 Dim row As DataRow = Nothing
                 For i1 As Integer = 0 To rows.Length - 1
                     row = rows(i1)
@@ -1060,6 +1071,7 @@ Namespace DistributorAgreement
                     TotalCPF1 += Convert.ToDecimal(row("CPF1_DIST"))
                     TotalCPF2 += Convert.ToDecimal(row("CPF2_DIST"))
                     TotalPBF3 += Convert.ToDecimal(row("PBF3_DIST"))
+                    TotalPBF2 += Convert.ToDecimal(row("PBF2_DIST"))
                 Next
                 For i1 As Integer = 0 To rows.Length - 1
                     row = rows(i1)
@@ -1074,6 +1086,7 @@ Namespace DistributorAgreement
                     row("TOTAL_CPF1") = TotalCPF1
                     row("TOTAL_CPF2") = TotalCPF2
                     row("TOTAL_PBF3") = TotalPBF3
+                    row("TOTAL_PBF2") = TotalPBF2
                     row.EndEdit()
                 Next
             Next
@@ -1475,7 +1488,6 @@ Namespace DistributorAgreement
             If Not IsNothing(Me.tblPrevAchievement) Then
                 DVPrevAch = tblPrevAchievement.DefaultView()
             End If
-
             Dim rowsCheck() As DataRow = Nothing
             Dim Index As Integer = -1
             'AGREE_BRAND_ID,UP_TO_PCT,PRGSV_DISC_PCT
@@ -1483,37 +1495,15 @@ Namespace DistributorAgreement
             Select Case Flag
                 Case "F3" 'Q1,Q2,Q3,F1,F2
                     If IsTransitionTime Then
-
                         If AchID.Contains("F3") Then
                             AchID = AchID.Replace("F3", "")
                         End If
-
                         Dim AchQ1 As String = AchID + "Q1" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
                         'AchQ1 = AchQ1 + "Q1"
                         'Dim DiscQ1 As Decimal = 0, 
                         Dim DiscQ2 As Decimal = 0, DiscQ3 As Decimal = 0
                         totalInvoiceCurrentQ1 = Row("TOTAL_CPQ1")
                         CPQ1Dist = Row("CPQ1_DIST")
-                        'PrevDisPro = 0
-                        'If CDec(totalInvoiceCurrentQ1) > 0 Then
-                        '    'check table given_progressive
-                        '    Index = DVGivenProg.Find(AchQ1)
-                        '    If Index <> -1 Then
-                        '        PrevDisPro = DVGivenProg(Index)("GPCPQ1")
-                        '    ElseIf Not IsNothing(DVCurAch) Then
-                        '        DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchQ1 & "'"
-                        '        If DVCurAch.Count > 0 Then
-                        '            PrevDisPro = DVCurAch(0)("DISPRO")
-                        '        End If
-                        '    End If
-                        '    If PrevDisPro > 0 Then
-                        '        DiscQ1 = (PrevDisPro / 100) * totalInvoiceCurrentQ1
-                        '        DiscDist += (PrevDisPro / 100) * CPQ1Dist
-                        '        BonusQty += DiscQ1
-                        '        Description &= String.Format("Q1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentQ1, DiscQ1)
-                        '    End If
-                        'End If
-
                         Dim AchQ2 As String = AchID + "Q2" 'AchID.Remove(AchID.LastIndexOf("|") + 1)
                         'AchQ2 = AchQ2 + "Q2"
                         totalInvoiceCurrentQ2 = Row("TOTAL_CPQ2")
@@ -1608,18 +1598,6 @@ Namespace DistributorAgreement
                             End If
                             Description &= String.Format("F1 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
                         End If
-
-                        'DVCurAch.RowFilter = "ACHIEVEMENT_ID = '" & AchF1 & "'"
-                        'If DVCurAch.Count > 0 Then
-                        '    PrevDisPro = DVCurAch(0)("DISPRO")
-                        '    DiscF1 = (PrevDisPro / 100) * totalInvoiceCurrentF1
-                        '    DiscDist += (PrevDisPro / 100) * CPF1Dist
-                        '    BonusQty += DiscF1
-                        '    If Description <> "" Then
-                        '        Description &= ", "
-                        '    End If
-                        '    Description &= String.Format("F1 {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceCurrentF1, DiscF1)
-                        'End If
                     End If
                 Case "F2" 'F1, PBF3
                     Dim AchF1 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
@@ -1668,6 +1646,27 @@ Namespace DistributorAgreement
                         End If
                     End If
                 Case "F1"
+                    Dim AchPBF2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    Dim DiscF2 As Decimal = 0
+                    Dim totalInvoiceBeforeF2 As Decimal = Row("TOTAL_PBF2"), PBF2Dist As Decimal = Row("PBF2_DIST")
+                    AchPBF2 = AchPBF2 + "F2"
+                    If totalInvoiceBeforeF2 > 0 Then
+                        If CDec(Row("GPPBF2")) > 0 Then
+                            PrevDisPro = Convert.ToDecimal(Row("GPPBF2"))
+                        ElseIf Not IsNothing(DVPrevAch) Then
+                            DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF2 & "'"
+                            If DVPrevAch.Count > 0 Then
+                                PrevDisPro = DVPrevAch(0)("DISPRO")
+                            End If
+                        End If
+                        If PrevDisPro > 0 Then
+                            DiscF2 = (PrevDisPro / 100) * totalInvoiceBeforeF2
+                            DiscDist += (PrevDisPro / 100) * PBF2Dist
+                            BonusQty += DiscF2
+                            Description &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF2, DiscF2)
+                        End If
+                    End If
+
                     Dim AchPBF3 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
                     Dim DiscF3 As Decimal = 0
                     totalInvoiceBeforeF3 = Row("TOTAL_PBF3")
@@ -1686,6 +1685,9 @@ Namespace DistributorAgreement
                             DiscF3 = (PrevDisPro / 100) * totalInvoiceBeforeF3
                             DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
+                            If Description <> "" Then
+                                Description &= ", "
+                            End If
                             Description &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
                         End If
                     End If
@@ -1799,10 +1801,10 @@ Namespace DistributorAgreement
                      "  WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO AND PO.PO_REF_DATE >= @START_DATE AND PO.PO_REF_DATE <= @END_DATE AND OPB.PO_ORIGINAL_QTY > 0 " & vbCrLf & _
                      "  AND PO.DISTRIBUTOR_ID = SOME(SELECT DISTRIBUTOR_ID FROM DISTRIBUTOR_AGREEMENT WHERE RTRIM(LTRIM(AGREEMENT_NO)) = @AGREEMENT_NO) " & vbCrLf & _
                      " )B ;" & vbCrLf & _
-                     " CREATE CLUSTERED INDEX IX_T_MASTER_PO ON ##T_MASTER_PO_" & Me.ComputerName & "(PO_REF_DATE,PO_REF_NO,RUN_NUMBER,DISTRIBUTOR_ID,BRANDPACK_ID) ;"
+                     " --CREATE CLUSTERED INDEX IX_T_MASTER_PO ON ##T_MASTER_PO_" & Me.ComputerName & "(PO_REF_DATE,PO_REF_NO,RUN_NUMBER,DISTRIBUTOR_ID,BRANDPACK_ID) ;"
             '============================= END UNCOMMENT THIS AFTER DEBUGGING =============================================================
             Me.ResetCommandText(CommandType.Text, Query)
-            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate.AddMonths(-8).AddDays(-1))
+            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDate.AddMonths(-10).AddDays(-1))
             Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDate)
 
             Me.SqlCom.ExecuteScalar()
@@ -2202,12 +2204,32 @@ Namespace DistributorAgreement
                         Dim PBF1 = PBStartDate
                         Dim PBEF1 = Convert.ToDateTime(PBF1).AddMonths(4).AddDays(-1)
                         Dim PBF2 = Convert.ToDateTime(PBEF1).AddDays(1)
-                        Dim FBEF2 = Convert.ToDateTime(PBF2).AddMonths(4).AddDays(-1)
-                        Dim PBF3 As Object = Convert.ToDateTime(FBEF2).AddDays(-1)
+                        Dim PBEF2 = Convert.ToDateTime(PBF2).AddMonths(4).AddDays(-1)
+                        Dim PBF3 As Object = Convert.ToDateTime(PBEF2).AddDays(1)
                         Dim PBEF3 As Object = PBEndDate
+                        'PBF2
+                        If Not IsNothing(PBF2) Then
+                            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBF2)
+                            Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBEF2))
+                            setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                            If tblTemp.Rows.Count > 0 Then
+                                SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "PBF2_DIST")
+                                Me.ResetCommandText(CommandType.Text, Query2)
+                                tblTemp = New DataTable("T_TEMP")
+                                tblTemp.Clear()
+                                setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                                If tblTemp.Rows.Count > 0 Then
+                                    SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_PBF2")
+                                End If
+                            End If
+                        End If
                         If Not IsNothing(PBF3) Then
+                            'PBF3
+                            Me.ResetCommandText(CommandType.Text, Query1)
                             Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBF3)
                             Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBEF3))
+                            tblTemp = New DataTable("T_TEMP")
+                            tblTemp.Clear()
                             setDataAdapter(Me.SqlCom).Fill(tblTemp)
                             If tblTemp.Rows.Count > 0 Then
                                 SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "PBF3_DIST")
@@ -2222,9 +2244,59 @@ Namespace DistributorAgreement
                         End If
                     End If
                 Case "F2"
+                    If tblStartDate.Rows.Count > 0 Then
+                        Dim PBStartDate As Object = Nothing
+                        Dim PBEndDate As Object = Nothing
+                        PBStartDate = Convert.ToDateTime(tblStartDate.Rows(0)("START_DATE"))
+                        PBEndDate = Convert.ToDateTime(tblStartDate.Rows(0)("END_DATE"))
+                        Dim PBFlag As String = tblStartDate.Rows(0)("QS_TREATMENT_FLAG").ToString()
+                        If PBFlag = "S" Then
+                            Dim PBS2 As Object = Convert.ToDateTime(PBEndDate).AddMonths(-6).AddDays(-1) 'ambil cuma 6 bulan startdate hanya agustus dan enddate po sampai 
+                            Dim PBSES2 = PBEndDate
+                            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBS2)
+                            Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBSES2))
+                            setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                            If tblTemp.Rows.Count > 0 Then
+                                SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "PBS2_DIST")
+                                Me.ResetCommandText(CommandType.Text, Query2)
+                                tblTemp = New DataTable("T_TEMP")
+                                tblTemp.Clear()
+                                setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                                If tblTemp.Rows.Count > 0 Then
+                                    SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_PBS2")
+                                End If
+                            End If
+                        ElseIf PBFlag = "F" Then
+                            Dim PBF1 = PBStartDate
+                            Dim PBEF1 = Convert.ToDateTime(PBF1).AddMonths(4).AddDays(-1)
+                            Dim PBF2 = Convert.ToDateTime(PBEF1).AddDays(1)
+                            Dim FBEF2 = Convert.ToDateTime(PBF2).AddMonths(4).AddDays(-1)
+                            Dim PBF3 As Object = Convert.ToDateTime(FBEF2).AddDays(1)
+                            Dim PBEF3 As Object = PBEndDate
+                            'PBF3
+                            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBF3)
+                            Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBEF3))
+                            tblTemp = New DataTable("T_TEMP")
+                            tblTemp.Clear()
+                            setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                            If tblTemp.Rows.Count > 0 Then
+                                SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "PBF3_DIST")
+                                Me.ResetCommandText(CommandType.Text, Query2)
+                                tblTemp = New DataTable("T_TEMP")
+                                tblTemp.Clear()
+                                setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                                If tblTemp.Rows.Count > 0 Then
+                                    SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_PBF3")
+                                End If
+                            End If
+                        End If
+                    End If
                     If Not IsNothing(CPF1) Then
+                        Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPF1)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF1))
+                        tblTemp = New DataTable("T_TEMP")
+                        tblTemp.Clear()
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPF1_DIST")
@@ -2237,6 +2309,7 @@ Namespace DistributorAgreement
                             End If
                         End If
                     End If
+
                 Case "F3"
                     If Not IsNothing(CPF2) Then
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPF2)
@@ -2254,10 +2327,11 @@ Namespace DistributorAgreement
                         End If
                     End If
                     If Not IsNothing(CPF1) Then
-                        tblTemp = New DataTable("T_TEMP")
                         Me.ResetCommandText(CommandType.Text, Query1)
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPF1)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEF1))
+                        tblTemp = New DataTable("T_TEMP")
+                        tblTemp.Clear()
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPF1_DIST")
@@ -2275,6 +2349,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPQ1)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ1))
                         tblTemp = New DataTable("T_TEMP")
+                        tblTemp.Clear()
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ1_DIST")
@@ -2292,6 +2367,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPQ2)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ2))
                         tblTemp = New DataTable("T_TEMP")
+                        tblTemp.Clear()
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ2_DIST")
@@ -2309,6 +2385,7 @@ Namespace DistributorAgreement
                         Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, CPQ3)
                         Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(CPEQ3))
                         tblTemp = New DataTable("T_TEMP")
+                        tblTemp.Clear()
                         setDataAdapter(Me.SqlCom).Fill(tblTemp)
                         If tblTemp.Rows.Count > 0 Then
                             SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "CPQ3_DIST")
@@ -2324,7 +2401,7 @@ Namespace DistributorAgreement
             End Select
             'AMBIL DATA POTENSI BERDASARKAN AGREEMENTNO,DENGAN COLUM DISTRIBUTOR_ID,BRAND_ID,
             Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
-                    "SELECT GP.IDApp,ACHIEVEMENT_ID = DA.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|' + @FLAG,GP.CPF1,GP.CPF2,GP.PBF3,GP.CPQ2,GP.CPQ3 " & vbCrLf & _
+                    "SELECT GP.IDApp,ACHIEVEMENT_ID = DA.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|' + @FLAG,GP.CPF1,GP.CPF2,GP.PBF2,GP.PBF3,GP.CPQ2,GP.CPQ3 " & vbCrLf & _
                     " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
                     " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
@@ -2341,18 +2418,41 @@ Namespace DistributorAgreement
                     If rows.Length > 0 Then
                         rows(0).BeginEdit()
                         rows(0)("GP_ID") = tblGP.Rows(i)("IDApp")
-                        'rows(0)("GPPBQ4") = Convert.ToDecimal(tblGP.Rows(i)("PBQ4"))
-                        'rows(0)("GPPBS2") = Convert.ToDecimal(tblGP.Rows(i)("PBS2"))
-                        'rows(0)("GPPBQ3") = Convert.ToDecimal(tblGP.Rows(i)("PBQ3"))
-                        'rows(0)("GPCPQ1") = Convert.ToDecimal(tblGP.Rows(i)("CPQ1"))
-                        'rows(0)("GPCPQ2") = Convert.ToDecimal(tblGP.Rows(i)("CPQ2"))
-                        rows(0)("GPCPF1") = Convert.ToDecimal(tblGP.Rows(i)("CPF1"))
-                        rows(0)("GPCPF2") = Convert.ToDecimal(tblGP.Rows(i)("CPF2"))
-                        rows(0)("GPCPQ2") = Convert.ToDecimal(tblGP.Rows(i)("CPQ2"))
-                        rows(0)("GPCPQ3") = Convert.ToDecimal(tblGP.Rows(i)("CPQ3"))
-                        rows(0)("GPPBF3") = Convert.ToDecimal(tblGP.Rows(i)("PBF3"))
-                        'rows(0)("GPCPS1") = Convert.ToDecimal(tblGP.Rows(i)("CPS1"))
-                        'rows(0)("GPPBY") = Convert.ToDecimal(tblGP.Rows(i)("PBY"))
+                        If IsDBNull(tblGP.Rows(i)("CPF1")) Or IsNothing(tblGP.Rows(i)("CPF1")) Then
+                            rows(0)("GPCPF1") = 0
+                        Else
+                            rows(0)("GPCPF1") = Convert.ToDecimal(tblGP.Rows(i)("CPF1"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("CPF2")) Or IsNothing(tblGP.Rows(i)("CPF2")) Then
+                            rows(0)("GPCPF2") = 0
+                        Else
+                            rows(0)("GPCPF2") = Convert.ToDecimal(tblGP.Rows(i)("CPF2"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("CPQ2")) Or IsNothing(tblGP.Rows(i)("CPQ2")) Then
+                            rows(0)("GPCPQ2") = 0
+                        Else
+                            rows(0)("GPCPQ2") = Convert.ToDecimal(tblGP.Rows(i)("CPQ2"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("CPQ3")) Or IsNothing(tblGP.Rows(i)("CPQ3")) Then
+                            rows(0)("GPCPQ3") = 0
+                        Else
+                            rows(0)("GPCPQ3") = Convert.ToDecimal(tblGP.Rows(i)("CPQ3"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("PBF3")) Or IsNothing(tblGP.Rows(i)("PBF3")) Then
+                            rows(0)("GPPBF3") = 0
+                        Else
+                            rows(0)("GPPBF3") = Convert.ToDecimal(tblGP.Rows(i)("PBF3"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("PBF2")) Or IsNothing(tblGP.Rows(i)("PBF2")) Then
+                            rows(0)("GPPBF2") = 0
+                        Else
+                            rows(0)("GPPBF2") = Convert.ToDecimal(tblGP.Rows(i)("PBF2"))
+                        End If
                         rows(0).EndEdit()
                         rows(0).AcceptChanges()
                     End If
@@ -2538,6 +2638,10 @@ Namespace DistributorAgreement
                 .Add(New DataColumn("TOTAL_CPF2", Type.GetType("System.Decimal")))
                 .Item("TOTAL_CPF2").DefaultValue = 0
 
+                'TOTAL_PBF2
+                .Add(New DataColumn("TOTAL_PBF2", Type.GetType("System.Decimal")))
+                .Item("TOTAL_PBF2").DefaultValue = 0
+
                 'TOTAL_PBF3
                 .Add(New DataColumn("TOTAL_PBF3", Type.GetType("System.Decimal")))
                 .Item("TOTAL_PBF3").DefaultValue = 0
@@ -2545,6 +2649,10 @@ Namespace DistributorAgreement
                 'TOTAL_PBS2
                 .Add(New DataColumn("TOTAL_PBS2", Type.GetType("System.Decimal")))
                 .Item("TOTAL_PBS2").DefaultValue = 0
+
+
+                .Add(New DataColumn("GPPBF2", Type.GetType("System.Decimal"))) ''diambil dari progressive discount sebelumnya
+                .Item("GPPBF2").DefaultValue = 0
 
                 .Add(New DataColumn("GPPBF3", Type.GetType("System.Decimal"))) ''diambil dari progressive discount sebelumnya
                 .Item("GPPBF3").DefaultValue = 0
@@ -2592,6 +2700,10 @@ Namespace DistributorAgreement
 
                 .Add(New DataColumn("CPF2_DIST", Type.GetType("System.Decimal")))
                 .Item("CPF2_DIST").DefaultValue = 0
+
+
+                .Add(New DataColumn("PBF2_DIST", Type.GetType("System.Decimal")))
+                .Item("PBF2_DIST").DefaultValue = 0
 
                 .Add(New DataColumn("PBF3_DIST", Type.GetType("System.Decimal")))
                 .Item("PBF3_DIST").DefaultValue = 0
@@ -2671,6 +2783,10 @@ Namespace DistributorAgreement
 
                 .Add(New DataColumn("TOTAL_CPF2", Type.GetType("System.Decimal")))
                 .Item("TOTAL_CPF2").DefaultValue = 0
+
+
+                .Add(New DataColumn("TOTAL_PBF2", Type.GetType("System.Decimal")))
+                .Item("TOTAL_PBF2").DefaultValue = 0
 
                 .Add(New DataColumn("TOTAL_PBF3", Type.GetType("System.Decimal")))
                 .Item("TOTAL_PBF3").DefaultValue = 0
@@ -3121,7 +3237,7 @@ Namespace DistributorAgreement
             Me.CalculateHeaderNufarm(AgreementNO, FLAG, tblAchHeader)
             Me.ClearCommandParameters()
             'hitung disc detail sudah include penghitungan disc previos
-            Me.CalculateDetail(FLAG, tblAchDetail, tblAchHeader)
+            Me.CalculatePreviousDetail(FLAG, tblAchDetail, tblAchHeader)
 
             ''save to database
             Me.SaveToDataBase(AgreementNO, FLAG, tblAchHeader, tblAchDetail)
@@ -3161,11 +3277,11 @@ Namespace DistributorAgreement
             'INSERT HEADER
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " INSERT INTO ACHIEVEMENT_HEADER(ACH_HEADER_ID, AGREEMENT_NO, DISTRIBUTOR_ID, BRAND_ID, AvgPriceID, FLAG, TOTAL_TARGET, TARGET_FM, TARGET_PL, TOTAL_PO, " & vbCrLf & _
-                    " TOTAL_PO_VALUE, TOTAL_ACTUAL, BALANCE, ACH_DISPRO, ACH_BY_CAT,DISPRO, DISC_QTY, TOTAL_CPQ1, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3,TOTAL_PBS2,COMBINED_BRAND_ID,ISTARGET_GROUP," & vbCrLf & _
-                    " DESCRIPTIONS, ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF3_DIST,PBS2_DIST,GP_ID,CreatedDate, CreatedBy) " & vbCrLf & _
+                    " TOTAL_PO_VALUE, TOTAL_ACTUAL, BALANCE, ACH_DISPRO, ACH_BY_CAT,DISPRO, DISC_QTY, TOTAL_CPQ1, TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2,TOTAL_PBF2, TOTAL_PBF3,TOTAL_PBS2,COMBINED_BRAND_ID,ISTARGET_GROUP," & vbCrLf & _
+                    " DESCRIPTIONS, ACTUAL_DIST,PO_DIST,PO_VALUE_DIST,DISC_DIST,CPQ1_DIST,CPQ2_DIST,CPQ3_DIST,CPF1_DIST,CPF2_DIST,PBF2_DIST,PBF3_DIST,PBS2_DIST,GP_ID,CreatedDate, CreatedBy) " & vbCrLf & _
                     " VALUES(@ACH_HEADER_ID, @AGREEMENT_NO, @DISTRIBUTOR_ID, @BRAND_ID, @AvgPriceID, @FLAG, @TOTAL_TARGET, @TARGET_FM, @TARGET_PL, @TOTAL_PO, " & vbCrLf & _
                     " @TOTAL_PO_VALUE, @TOTAL_ACTUAL, @BALANCE, @ACH_DISPRO, @ACH_BY_CAT,@DISPRO, @DISC_QTY, @TOTAL_CPQ1, @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, " & vbCrLf & _
-                    " @TOTAL_CPF2, @TOTAL_PBF3,@TOTAL_PBS2,@COMBINED_BRAND_ID,@ISTARGET_GROUP,@DESCRIPTIONS,@ACTUAL_DIST,@PO_DIST,@PO_VALUE_DIST,@DISC_DIST,@CPQ1_DIST,@CPQ2_DIST,@CPQ3_DIST,@CPF1_DIST,@CPF2_DIST,@PBF3_DIST,@PBS2_DIST,@GP_ID,@CreatedDate, @CreatedBy);"
+                    " @TOTAL_CPF2,@TOTAL_PBF2, @TOTAL_PBF3,@TOTAL_PBS2,@COMBINED_BRAND_ID,@ISTARGET_GROUP,@DESCRIPTIONS,@ACTUAL_DIST,@PO_DIST,@PO_VALUE_DIST,@DISC_DIST,@CPQ1_DIST,@CPQ2_DIST,@CPQ3_DIST,@CPF1_DIST,@CPF2_DIST,@PBF2_DIST,@PBF3_DIST,@PBS2_DIST,@GP_ID,@CreatedDate, @CreatedBy);"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.ResetAdapterCRUD()
             With Me.SqlCom
@@ -3192,6 +3308,7 @@ Namespace DistributorAgreement
                 .Parameters.Add("@TOTAL_CPQ3", SqlDbType.Decimal, 0, "TOTAL_CPQ3")
                 .Parameters.Add("@TOTAL_CPF1", SqlDbType.Decimal, 0, "TOTAL_CPF1")
                 .Parameters.Add("@TOTAL_CPF2", SqlDbType.Decimal, 0, "TOTAL_CPF2")
+                .Parameters.Add("@TOTAL_PBF2", SqlDbType.Decimal, 0, "TOTAL_PBF2")
                 .Parameters.Add("@TOTAL_PBF3", SqlDbType.Decimal, 0, "TOTAL_PBF3")
                 .Parameters.Add("@TOTAL_PBS2", SqlDbType.Decimal, 0, "TOTAL_PBS2")
 
@@ -3205,6 +3322,7 @@ Namespace DistributorAgreement
                 .Parameters.Add("@CPQ3_DIST", SqlDbType.Decimal, 0, "CPQ3_DIST")
                 .Parameters.Add("@CPF1_DIST", SqlDbType.Decimal, 0, "CPF1_DIST")
                 .Parameters.Add("@CPF2_DIST", SqlDbType.Decimal, 0, "CPF2_DIST")
+                .Parameters.Add("@PBF2_DIST", SqlDbType.Decimal, 0, "PBF2_DIST")
                 .Parameters.Add("@PBF3_DIST", SqlDbType.Decimal, 0, "PBF3_DIST")
                 .Parameters.Add("@PBS2_DIST", SqlDbType.Decimal, 0, "PBS2_DIST")
 
@@ -3219,9 +3337,9 @@ Namespace DistributorAgreement
 
             Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; " & vbCrLf & _
                     " INSERT INTO ACHIEVEMENT_DETAIL (ACH_DETAIL_ID, ACH_HEADER_ID, BRANDPACK_ID, TOTAL_PO, TOTAL_ACTUAL, DISC_QTY, TOTAL_CPQ1," & vbCrLf & _
-                    " TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2, TOTAL_PBF3,TOTAL_PBS2, DESCRIPTIONS, CreatedDate, CreatedBy)" & vbCrLf & _
+                    " TOTAL_CPQ2, TOTAL_CPQ3, TOTAL_CPF1, TOTAL_CPF2,TOTAL_PBF2, TOTAL_PBF3,TOTAL_PBS2, DESCRIPTIONS, CreatedDate, CreatedBy)" & vbCrLf & _
                     " VALUES(@ACH_DETAIL_ID, @ACH_HEADER_ID, @BRANDPACK_ID, @TOTAL_PO, @TOTAL_ACTUAL, @DISC_QTY, @TOTAL_CPQ1, " & vbCrLf & _
-                    " @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, @TOTAL_CPF2,@TOTAL_PBF3,@TOTAL_PBS2,@DESCRIPTIONS, @CreatedDate, @CreatedBy) ;"
+                    " @TOTAL_CPQ2, @TOTAL_CPQ3, @TOTAL_CPF1, @TOTAL_CPF2,@TOTAL_PBF2,@TOTAL_PBF3,@TOTAL_PBS2,@DESCRIPTIONS, @CreatedDate, @CreatedBy) ;"
             Me.ResetCommandText(CommandType.Text, Query)
             Me.ResetAdapterCRUD()
             With Me.SqlCom
@@ -3236,6 +3354,7 @@ Namespace DistributorAgreement
                 .Parameters.Add("@TOTAL_CPQ3", SqlDbType.Decimal, 0, "TOTAL_CPQ3")
                 .Parameters.Add("@TOTAL_CPF1", SqlDbType.Decimal, 0, "TOTAL_CPF1")
                 .Parameters.Add("@TOTAL_CPF2", SqlDbType.Decimal, 0, "TOTAL_CPF2")
+                .Parameters.Add("@TOTAL_PBF2", SqlDbType.Decimal, 0, "TOTAL_PBF2")
                 .Parameters.Add("@TOTAL_PBF3", SqlDbType.Decimal, 0, "TOTAL_PBF3")
                 .Parameters.Add("@TOTAL_PBS2", SqlDbType.Decimal, 0, "TOTAL_PBS2")
                 .Parameters.Add("@DESCRIPTIONS", SqlDbType.VarChar, 250, "DESCRIPTIONS")
@@ -3247,7 +3366,7 @@ Namespace DistributorAgreement
             End With
             Me.CommiteTransaction()
         End Sub
-        Private Sub CalculateDetail(ByVal Flag As String, ByRef tblAchDetail As DataTable, ByVal tblAchHeader As DataTable)
+        Private Sub CalculatePreviousDetail(ByVal Flag As String, ByRef tblAchDetail As DataTable, ByVal tblAchHeader As DataTable)
             Dim DVPrevAch As DataView = Nothing, Descriptions As String = ""
             If Not IsNothing(Me.tblPrevAchievement) Then
                 DVPrevAch = tblPrevAchievement.DefaultView()
@@ -3397,6 +3516,7 @@ Namespace DistributorAgreement
                         Case "F1"
                             totalInvoiceBeforeF3 = RowDetail("TOTAL_PBF3")
                             Dim AchHeaderIDF3 As String = "", DiscF3 As Decimal = 0
+                            Dim totalInvoiceBeforeF2 = RowDetail("TOTAL_PBF2")
 
                             If CDec(totalInvoiceBeforeF3) > 0 And Not IsNothing(DVPrevAch) Then
                                 AchHeaderIDF3 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
@@ -3416,6 +3536,30 @@ Namespace DistributorAgreement
                                     Descriptions &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
                                 End If
                             End If
+                            Dim AchHeaderIDF2 As String = "", DiscF2 As Decimal = 0
+
+                            If CDec(totalInvoiceBeforeF2) > 0 And Not IsNothing(DVPrevAch) Then
+                                AchHeaderIDF2 = AchHeaderID.Remove(AchHeaderID.LastIndexOf("|") + 1)
+                                AchHeaderIDF2 = AchHeaderIDF2 + "F2"
+
+                                If CDec(RowHeader("GPPBF2")) > 0 Then
+                                    PrevDisPro = Convert.ToDecimal(RowHeader("GPPBF2"))
+                                ElseIf Not IsNothing(DVPrevAch) Then
+                                    DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchHeaderIDF2 & "'"
+                                    If DVPrevAch.Count > 0 Then
+                                        PrevDisPro = DVPrevAch(0)("DISPRO")
+                                    End If
+                                End If
+                                If PrevDisPro > 0 Then
+                                    DiscF2 = (PrevDisPro / 100) * totalInvoiceBeforeF2
+                                    DiscQtyBefore += DiscF2
+                                    If Descriptions <> "" Then
+                                        Descriptions &= ", "
+                                    End If
+                                    Descriptions &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF2, DiscF2)
+                                End If
+                            End If
+
                             totalInvoiceBeforeS2 = RowDetail("TOTAL_PBS2")
                             Dim AchHeaderIDPBS2 As String = "", DiscPBS2 As Decimal = 0
                             If CDec(totalInvoiceBeforeS2) > 0 Then
@@ -3466,7 +3610,7 @@ Namespace DistributorAgreement
                 Dim rows() As DataRow = tblAchHeader.Select("AGREE_BRAND_ID = '" & listAgreeBrandIDs(i) & "'")
                 Dim TotalPO As Decimal = 0, TotalActual As Decimal = 0, TotalPOValue As Decimal = 0, _
                 TotalCPQ1 As Decimal = 0, TotalCPQ2 As Decimal = 0, TotalCPQ3 As Decimal = 0, TotalCPF1 As Decimal = 0, TotalCPF2 As Decimal = 0, _
-                TotalPBF3 As Decimal = 0, TotalPBS2 As Decimal = 0
+                TotalPBF2 As Decimal = 0, TotalPBF3 As Decimal = 0, TotalPBS2 As Decimal = 0
                 Dim row As DataRow = Nothing
                 For i1 As Integer = 0 To rows.Length - 1
                     row = rows(i1)
@@ -3478,6 +3622,7 @@ Namespace DistributorAgreement
                     TotalCPQ3 += Convert.ToDecimal(row("CPQ3_DIST"))
                     TotalCPF1 += Convert.ToDecimal(row("CPF1_DIST"))
                     TotalCPF2 += Convert.ToDecimal(row("CPF2_DIST"))
+                    TotalPBF2 += Convert.ToDecimal(row("PBF2_DIST"))
                     TotalPBF3 += Convert.ToDecimal(row("PBF3_DIST"))
                     TotalPBS2 = Convert.ToDecimal(row("PBS2_DIST"))
                 Next
@@ -3493,6 +3638,7 @@ Namespace DistributorAgreement
                     row("TOTAL_CPQ3") = TotalCPQ3
                     row("TOTAL_CPF1") = TotalCPF1
                     row("TOTAL_CPF2") = TotalCPF2
+                    row("TOTAL_PBF2") = TotalPBF2
                     row("TOTAL_PBF3") = TotalPBF3
                     row("TOTAL_PBS2") = TotalPBS2
                     row.EndEdit()
@@ -3655,11 +3801,11 @@ Namespace DistributorAgreement
         ''' <remarks>Function to get and calculate Previos Actual PO, discount qty and descriptions to get</remarks>
         Private Sub CalculateDiscPrevious(ByVal Flag As String, ByVal Row As DataRow, ByRef Description As String, ByRef BonusQty As Decimal, ByRef DiscDist As Decimal)
 
-            Dim totalInvoiceBeforeF3 As Decimal = 0, totalInvoiceBeforeS2 As Decimal = 0, totalInvoiceCurrentF1 As Decimal = 0, totalInvoiceCurrentF2 As Decimal = 0, PrevDisPro As Decimal = 0, DVCurAch As DataView = tblCurAchiement.DefaultView, _
+            Dim totalInvoiceBeforeF3 As Decimal = 0, totalInvoiceBeforeF2 As Decimal = 0, totalInvoiceBeforeS2 As Decimal = 0, totalInvoiceCurrentF1 As Decimal = 0, totalInvoiceCurrentF2 As Decimal = 0, PrevDisPro As Decimal = 0, DVCurAch As DataView = tblCurAchiement.DefaultView, _
             DVPrevAch As DataView = Nothing
             'Dim DVGivenProg As DataView = Me.tblGP.DefaultView
             'DVGivenProg.Sort = "IDApp"
-            Dim PBF3Dist As Decimal = 0, PBS2Dist As Decimal = 0, CPF1Dist As Decimal = 0, CPF2Dist As Decimal = 0, CPQ1Dist As Decimal = 0, CPQ2Dist As Decimal = 0, _
+            Dim PBF3Dist As Decimal = 0, PBF2Dist As Decimal = 0, PBS2Dist As Decimal = 0, CPF1Dist As Decimal = 0, CPF2Dist As Decimal = 0, CPQ1Dist As Decimal = 0, CPQ2Dist As Decimal = 0, _
             CPQ3Dist As Decimal = 0
             Dim GPID As Object = Row("GP_ID")
             If Not IsNothing(Me.tblPrevAchievement) Then
@@ -3810,6 +3956,31 @@ Namespace DistributorAgreement
                             DiscDist += (PrevDisPro / 100) * PBF3Dist
                             BonusQty += DiscF3
                             Description &= String.Format("F3 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF3, DiscF3)
+                        End If
+                    End If
+
+                    Dim AchPBF2 As String = AchID.Remove(AchID.LastIndexOf("|") + 1)
+                    Dim DiscF2 As Decimal = 0
+                    totalInvoiceBeforeF2 = Row("TOTAL_PBF2")
+                    PBF2Dist = Row("PBF2_DIST")
+                    AchPBF2 = AchPBF2 + "F2"
+                    If totalInvoiceBeforeF2 > 0 Then
+                        If CDec(Row("GPPBF2")) > 0 Then
+                            PrevDisPro = Convert.ToDecimal(Row("GPPBF2"))
+                        ElseIf Not IsNothing(DVPrevAch) Then
+                            DVPrevAch.RowFilter = "ACHIEVEMENT_ID = '" & AchPBF2 & "'"
+                            If DVPrevAch.Count > 0 Then
+                                PrevDisPro = DVPrevAch(0)("DISPRO")
+                            End If
+                        End If
+                        If PrevDisPro > 0 Then
+                            DiscF2 = (PrevDisPro / 100) * totalInvoiceBeforeF2
+                            DiscDist += (PrevDisPro / 100) * PBF2Dist
+                            BonusQty += DiscF2
+                            If Description <> "" Then
+                                Description &= ", "
+                            End If
+                            Description &= String.Format("F2 = {0:p} of {1:#,##0.000} = {2:#,##0.000}", PrevDisPro / 100, totalInvoiceBeforeF2, DiscF2)
                         End If
                     End If
 
@@ -4252,12 +4423,6 @@ Namespace DistributorAgreement
             'TOTAL_CPQ1,TOTAL_CPQ2,TOTAL_CPQ2,
             'TOTAL_CPQ3,TOTAL_CPF1,TOTAL_CPF2,TOTAL_PBF3
 
-            'Dim PBQ1 As Object = Nothing, PBEQ1 As Object = Nothing, PBQ2 As Object = Nothing, PBEQ2 As Object = Nothing, _
-            '                   PBQ3 As Object = Nothing, PBEQ3 As Object = Nothing, PBQ4 As Object = Nothing, PBEQ4 As Object = Nothing, _
-            '                   PBS1 As Object = Nothing, PBES1 As Object = Nothing, PBS2 As Object = Nothing, PBES2 As Object = Nothing, _
-            '                   PBStartYear As Object = Nothing, PBEndyear As Object = Nothing
-            'Dim CPQ1 As Object = Nothing, CPEQ1 As Object = Nothing, CPQ2 As Object = Nothing, CPEQ2 As Object = Nothing, _
-            'CPQ3 As Object = Nothing, CPEQ3 As Object = Nothing, CPS1 As Object = Nothing, CPES1 As Object = Nothing
             Dim CPF1 As Object = Nothing, CPEF1 As Object = Nothing, CPF2 As Object = Nothing, CPEF2 As Object = Nothing, CPQ2 As Object = Nothing, CPQ3 As Object = Nothing, _
             CPEQ2 As Object = Nothing, CPEQ3 As Object = Nothing, CPQ1 As Object = Nothing, CPEQ1 As Object = Nothing
             Select Case Flag
@@ -4266,38 +4431,6 @@ Namespace DistributorAgreement
                     CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
                     'strFlag
                 Case "F3"
-                    'If IsTransitionTime Then
-
-                    '    'EndDateQ1 = StartDate.AddMonths(3).AddDays(-1)
-                    '    'StartDateQ2 = EndDateQ1.AddDays(1)
-                    '    'EndDateQ2 = StartDateQ2.AddMonths(3).AddDays(-1)
-                    '    'StartDateQ3 = EndDateQ2.AddDays(1)
-                    '    'EndDateQ3 = StartDateQ3.AddMonths(3).AddDays(-1)
-                    '    'StartDateQ4 = EndDateQ3.AddDays(1)
-                    '    CPQ1 = StartDatePKD
-                    '    CPEQ1 = StartDatePKD.AddMonths(3).AddDays(-1)
-                    '    CPQ2 = Convert.ToDateTime(CPEQ1).AddDays(1)
-                    '    CPEQ2 = Convert.ToDateTime(CPQ2).AddMonths(3).AddDays(-1)
-
-                    '    CPQ3 = Convert.ToDateTime(CPEQ2).AddDays(1) 'cuma dua bulan pebruari dan maret
-                    '    CPEQ3 = Convert.ToDateTime(CPQ3).AddMonths(2).AddDays(-1)
-
-                    '    'CPEQ3 = StartDate.AddDays(-1)
-                    '    'CPQ3 = Convert.ToDateTime(CPEQ3).AddMonths(-3).AddDays(1)
-                    '    'CPEQ2 = Convert.ToDateTime(CPQ3).AddDays(-1)
-                    '    'CPQ2 = Convert.ToDateTime(CPEQ2).AddMonths(-3).AddDays(1)
-                    '    'CPEQ1 = Convert.ToDateTime(CPQ2).AddDays(-1)
-                    '    'CPQ1 = Convert.ToDateTime(CPEQ1).AddMonths(-3).AddDays(1)
-                    'Else
-                    '    CPEF2 = StartDate.AddDays(-1)
-                    '    CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
-                    '    CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
-                    '    CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
-                    'End If
-                    'CPEF2 = StartDate.AddDays(-1)
-                    'CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
-                    'CPEF1 = Convert.ToDateTime(CPF2).AddDays(-1)
-                    'CPF1 = Convert.ToDateTime(CPEF1).AddMonths(-4).AddDays(1)
 
                     CPEF2 = StartDate.AddDays(-1)
                     CPF2 = Convert.ToDateTime(CPEF2).AddMonths(-4).AddDays(1)
@@ -4337,23 +4470,6 @@ Namespace DistributorAgreement
                                    "       AND PO.PO_REF_DATE >= @START_DATE AND PO_REF_DATE <= @END_DATE AND PO.IncludeDPD = 'YESS' " & vbCrLf & _
                                    "      )INV1   " & vbCrLf & _
                                    " GROUP BY DISTRIBUTOR_ID,BRAND_ID,BRANDPACK_ID OPTION(KEEP PLAN); "
-
-            '----------------QUERY UNTUK MENGECEK APAKAH ADA INVOICE DARI PO SEBELUM PERIODE FLAG USANG
-            'Dim Query3 As String = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
-            '                       " SELECT 1 WHERE EXISTS(SELECT PO.BRANDPACK_ID " & vbCrLf & _
-            '                       " FROM tempdb..##T_MASTER_PO_" & Me.ComputerName & " PO " & vbCrLf & _
-            '                       " INNER JOIN COMPARE_ITEM Tmbp ON PO.BRANDPACK_ID = Tmbp.BRANDPACK_ID_DTS " & vbCrLf & _
-            '                       " INNER JOIN ##T_SELECT_INVOICE_" & Me.ComputerName & " INV ON Tmbp.BRANDPACK_ID_ACCPAC = INV.BRANDPACK_ID " & vbCrLf & _
-            '                       " AND ((PO.RUN_NUMBER = INV.REFERENCE) OR (PO.PO_REF_NO = INV.PONUMBER)) " & vbCrLf & _
-            '                       " WHERE PO.DISTRIBUTOR_ID = SOME( " & vbCrLf & _
-            '                       " SELECT DISTRIBUTOR_ID FROM Nufarm.DBO.DISTRIBUTOR_AGREEMENT WHERE AGREEMENT_NO = @AGREEMENT_NO) " & vbCrLf & _
-            '                       " AND ((ISNULL(INV.QTY,0)/ISNULL(PO.SPPB_QTY,0)) * ISNULL(PO.PO_ORIGINAL_QTY,0) > 0 )" & vbCrLf & _
-            '                       " AND PO.PO_REF_DATE < @START_DATE AND PO.IncludeDPD = 'YESS') "
-
-            '-----------------QUERY UNTUK MENGECEK GIVEN PROGRESSIVE--- PERIODE SEBELUMNYA
-            'Dim Query4 As String = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ARITHABORT OFF ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
-            '        "SELECT 1 WHERE EXISTS(SELECT GP.IDApp FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
-            '        " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE ABI.AGREEMENT_NO = @AGREEMENT_NO) ;"
             Me.ResetCommandText(CommandType.Text, Query1)
             Select Case Flag
                 Case "F1"
@@ -4366,12 +4482,7 @@ Namespace DistributorAgreement
                         'PBFlag = tblStartDate.Rows(0)("QS_TREATMENT_FLAG").ToString()
                         If PBFlag = "S" Then
                             Dim PBS2 As Object = Convert.ToDateTime(PBStartDate).AddMonths(-6).AddDays(-1) 'tambah 2 bulan lagi karena ada transisi
-
                             Dim PBSES2 = PBEndDate
-                            'If NufarmBussinesRules.SharedClass.ServerDate.Year = 2021 Then 'agustus september di hitung jadi F1
-                            '    PBSES2 = Convert.ToDateTime(PBEndDate).AddMonths(2) 'tambah 2 bulan lagi karena ada transisi
-                            'End If
-                            'PBS2
                             Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBS2)
                             Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBSES2))
                             setDataAdapter(Me.SqlCom).Fill(tblTemp)
@@ -4392,8 +4503,23 @@ Namespace DistributorAgreement
                             Dim FBEF2 = Convert.ToDateTime(PBF2).AddMonths(4).AddDays(-1)
                             Dim PBF3 As Object = Convert.ToDateTime(FBEF2).AddDays(1)
                             Dim PBEF3 As Object = PBEndDate
-
+                            'PBF2
+                            Me.ResetCommandText(CommandType.Text, Query1)
+                            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBF2)
+                            Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(FBEF2))
+                            setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                            If tblTemp.Rows.Count > 0 Then
+                                SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "PBF2_DIST")
+                                Me.ResetCommandText(CommandType.Text, Query2)
+                                tblTemp = New DataTable("T_TEMP")
+                                tblTemp.Clear()
+                                setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                                If tblTemp.Rows.Count > 0 Then
+                                    SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_PBF2")
+                                End If
+                            End If
                             'PBF3
+                            Me.ResetCommandText(CommandType.Text, Query1)
                             Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBF3)
                             Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBEF3))
                             setDataAdapter(Me.SqlCom).Fill(tblTemp)
@@ -4407,6 +4533,7 @@ Namespace DistributorAgreement
                                     SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_PBF3")
                                 End If
                             End If
+              
                         End If
                     End If
                 Case "F2"
@@ -4435,6 +4562,28 @@ Namespace DistributorAgreement
                                 setDataAdapter(Me.SqlCom).Fill(tblTemp)
                                 If tblTemp.Rows.Count > 0 Then
                                     SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_PBS2")
+                                End If
+                            End If
+                        ElseIf PBFlag = "F" Then
+                            Dim PBF1 = PBStartDate
+                            Dim PBEF1 = Convert.ToDateTime(PBF1).AddMonths(4).AddDays(-1)
+                            Dim PBF2 = Convert.ToDateTime(PBEF1).AddDays(1)
+                            Dim FBEF2 = Convert.ToDateTime(PBF2).AddMonths(4).AddDays(-1)
+                            Dim PBF3 As Object = Convert.ToDateTime(FBEF2).AddDays(1)
+                            Dim PBEF3 As Object = PBEndDate
+                            'PBF3
+                            Me.ResetCommandText(CommandType.Text, Query1)
+                            Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, PBF3)
+                            Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, Convert.ToDateTime(PBEF3))
+                            setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                            If tblTemp.Rows.Count > 0 Then
+                                SetTotalPeriodBefore(tblTemp, AgreementNo, tblAchHeader, Flag, "PBF3_DIST")
+                                Me.ResetCommandText(CommandType.Text, Query2)
+                                tblTemp = New DataTable("T_TEMP")
+                                tblTemp.Clear()
+                                setDataAdapter(Me.SqlCom).Fill(tblTemp)
+                                If tblTemp.Rows.Count > 0 Then
+                                    SetTotalPeriodeBeforeDetail(tblTemp, tblAchDetail, AgreementNo, Flag, "TOTAL_PBF3")
                                 End If
                             End If
                         End If
@@ -4493,12 +4642,10 @@ Namespace DistributorAgreement
             End Select
             'AMBIL DATA POTENSI BERDASARKAN AGREEMENTNO,DENGAN COLUM DISTRIBUTOR_ID,BRAND_ID,
             Query = "SET DEADLOCK_PRIORITY NORMAL ;SET NOCOUNT ON ; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
-                    "SELECT GP.IDApp,ACHIEVEMENT_ID = DA.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|' + @FLAG,GP.CPF1,GP.CPF2,GP.PBF3,GP.PBS2 " & vbCrLf & _
+                    "SELECT GP.IDApp,ACHIEVEMENT_ID = DA.DISTRIBUTOR_ID + '|' + ABI.AGREE_BRAND_ID + '|' + @FLAG,GP.CPF1,GP.CPF2,GP.PBF2,GP.PBF3,GP.PBS2 " & vbCrLf & _
                     " FROM DISTRIBUTOR_AGREEMENT DA INNER JOIN AGREE_BRAND_INCLUDE ABI ON DA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
                     " INNER JOIN GIVEN_PROGRESSIVE GP ON GP.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID WHERE RTRIM(LTRIM(ABI.AGREEMENT_NO)) = @AGREEMENT_NO ;"
             Me.ResetCommandText(CommandType.Text, Query)
-            'Me.SqlCom.Parameters.RemoveAt("@START_DATE")
-            'Me.SqlCom.Parameters.RemoveAt("@END_DATE")
             Me.AddParameter("@FLAG", SqlDbType.VarChar, Flag)
             tblGP.Clear()
             setDataAdapter(Me.SqlCom).Fill(tblGP)
@@ -4510,18 +4657,34 @@ Namespace DistributorAgreement
                     If rows.Length > 0 Then
                         rows(0).BeginEdit()
                         rows(0)("GP_ID") = tblGP.Rows(i)("IDApp")
-                        'rows(0)("GPPBQ4") = Convert.ToDecimal(tblGP.Rows(i)("PBQ4"))
-                        rows(0)("GPPBS2") = Convert.ToDecimal(tblGP.Rows(i)("PBS2"))
-                        'rows(0)("GPPBQ3") = Convert.ToDecimal(tblGP.Rows(i)("PBQ3"))
-                        'rows(0)("GPCPQ1") = Convert.ToDecimal(tblGP.Rows(i)("CPQ1"))
-                        'rows(0)("GPCPQ2") = Convert.ToDecimal(tblGP.Rows(i)("CPQ2"))
-                        rows(0)("GPCPF1") = Convert.ToDecimal(tblGP.Rows(i)("CPF1"))
-                        rows(0)("GPCPF2") = Convert.ToDecimal(tblGP.Rows(i)("CPF2"))
-                        'rows(0)("GPCPQ2") = Convert.ToDecimal(tblGP.Rows(i)("CPQ2"))
-                        'rows(0)("GPCPQ3") = Convert.ToDecimal(tblGP.Rows(i)("CPQ3"))
-                        rows(0)("GPPBF3") = Convert.ToDecimal(tblGP.Rows(i)("PBF3"))
-                        'rows(0)("GPCPS1") = Convert.ToDecimal(tblGP.Rows(i)("CPS1"))
-                        'rows(0)("GPPBY") = Convert.ToDecimal(tblGP.Rows(i)("PBY"))
+                        If IsDBNull(tblGP.Rows(i)("PBS2")) Or IsNothing(tblGP.Rows(i)("PBS2")) Then
+                            rows(0)("GPPBS2") = 0
+                        Else
+                            rows(0)("GPPBS2") = Convert.ToDecimal(tblGP.Rows(i)("PBS2"))
+                        End If
+                        If IsDBNull(tblGP.Rows(i)("CPF1")) Or IsNothing(tblGP.Rows(i)("CPF1")) Then
+                            rows(0)("GPCPF1") = 0
+                        Else
+                            rows(0)("GPCPF1") = Convert.ToDecimal(tblGP.Rows(i)("CPF1"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("CPF2")) Or IsNothing(tblGP.Rows(i)("CPF2")) Then
+                            rows(0)("GPCPF2") = 0
+                        Else
+                            rows(0)("GPCPF2") = Convert.ToDecimal(tblGP.Rows(i)("CPF2"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("PBF3")) Or IsNothing(tblGP.Rows(i)("PBF3")) Then
+                            rows(0)("GPPBF3") = 0
+                        Else
+                            rows(0)("GPPBF3") = Convert.ToDecimal(tblGP.Rows(i)("PBF3"))
+                        End If
+
+                        If IsDBNull(tblGP.Rows(i)("PBF2")) Or IsNothing(tblGP.Rows(i)("PBF2")) Then
+                            rows(0)("GPPBF2") = 0
+                        Else
+                            rows(0)("GPPBF2") = Convert.ToDecimal(tblGP.Rows(i)("PBF2"))
+                        End If
                         rows(0).EndEdit()
                         rows(0).AcceptChanges()
                     End If

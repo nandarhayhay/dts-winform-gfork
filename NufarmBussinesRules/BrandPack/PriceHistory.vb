@@ -5,7 +5,7 @@ Namespace Brandpack
         Private Query As String = ""
         Public Enum Category
             SpecialPlantation
-            GeneralPricePlantation
+            GenPricePlantation
             FreeMarket
         End Enum
         Public Function PopulateQuery(ByVal Cat As Category, ByVal SearchBy As String, ByVal value As Object, _
@@ -42,7 +42,7 @@ Namespace Brandpack
                         Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
                         Rowcount = CInt(Me.SqlCom.ExecuteScalar()) : Me.ClearCommandParameters() : Me.CloseConnection()
                         If (dtTable.Rows.Count > 0) Then : Else : Return Nothing : End If
-                    Case Category.GeneralPricePlantation
+                    Case Category.GenPricePlantation
                         'Query = "SET NOCOUNT ON;" & vbCrLf & _
                         '        "SELECT TOP " & PageSize & " * FROM Uv_Price_General " & vbCrLf & _
                         '       " WHERE IDApp > ALL(SELECT TOP " + (PageSize * (PageIndex - 1)).ToString() & " IDApp " & _
@@ -164,7 +164,7 @@ Namespace Brandpack
                         Query &= " AND PL.PLANTATION_NAME LIKE '%'+@SearchPlant+'%'" & vbCrLf
                     End If
                     Query &= " ORDER BY DPP.START_DATE DESC ;"
-                ElseIf cat = Category.GeneralPricePlantation Then
+                ElseIf cat = Category.GenPricePlantation Then
                     Query = "SET NOCOUNT ON;" & vbCrLf & _
                     "SELECT TOP 10 GPL.PRICE_TAG,GPL.BRANDPACK_ID,BP.BRANDPACK_NAME,GPL.PRICE,GPL.START_DATE,IncludeDPD " & vbCrLf & _
                     " FROM GEN_PLANT_PRICE GPL INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GPL.BRANDPACK_ID " & vbCrLf & _

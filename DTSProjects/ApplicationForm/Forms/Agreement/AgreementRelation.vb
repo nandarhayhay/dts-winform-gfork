@@ -406,26 +406,46 @@ Public Class AgreementRelation
         Dim HasBigPS As Boolean = False, HasSmallPS As Boolean = False
         For i As Integer = 0 To Me.clsAgInclude.ViewBrand().Count - 1
             Dim ProdCat As String = ""
-            Dim BrandName As String = Me.clsAgInclude.ViewBrand(i)("BRAND_NAME").ToString()
-            If BrandName.Contains("POWERMAX") Then
-                ProdCat = "ROUNDUP POWERMAX"
-            ElseIf BrandName.Contains("TRANSORB") Then
-                ProdCat = "ROUNDUP TRANSORB"
-            ElseIf BrandName.Contains("ROUNDUP") Then
-                ProdCat = "ROUNDUP BIOSORB"
-            End If
+            Dim BrandID As String = Me.clsAgInclude.ViewBrand(i)("BRAND_ID").ToString()
+            Select Case BrandID
+                Case "00681", "00684"
+                    ProdCat = "ROUNDUP POWERMAX"
+                    HasSmallPS = True
+                Case "006820"
+                    ProdCat = "ROUNDUP POWERMAX"
+                    HasBigPS = True
+                Case "00601", "0060200", "00604"
+                    ProdCat = "ROUNDUP BIOSORB"
+                    HasSmallPS = True
+                Case "006020"
+                    ProdCat = "ROUNDUP BIOSORB"
+                    HasBigPS = True
+                Case "007801", "007804", "0078200"
+                    ProdCat = "ROUNDUP TRANSORB"
+                    HasSmallPS = True
+                Case "007820"
+                    ProdCat = "ROUNDUP TRANSORB"
+                    HasBigPS = True
+            End Select
+            'If BrandID = "" Then
+            '    ProdCat = "ROUNDUP POWERMAX"
+            'ElseIf BrandID.Contains("TRANSORB") Then
+            '    ProdCat = "ROUNDUP TRANSORB"
+            'ElseIf BrandID.Contains("BIOSORB") Then
+            '    ProdCat = "ROUNDUP BIOSORB"
+            'End If
             If ProdCat <> "" Then
                 If Not listCat.Contains(ProdCat) Then
                     listCat.Add(ProdCat)
                 End If
             End If
-            Select Case BrandName
-                Case "ROUNDUP POWERMAX 660 SL - 01", "ROUNDUP POWERMAX 660 SL - 04", "ROUNDUP SL-1", "ROUNDUP SL-200", "ROUNDUP SL-4", _
-                    "ROUNDUP TRANSORB 440 SL - 01", "ROUNDUP TRANSORB 440 SL - 04", "ROUNDUP TRANSORB 440 SL - 200"
-                    HasSmallPS = True
-                Case "ROUNDUP POWERMAX 660 SL - 20", "ROUNDUP SL-20", "ROUNDUP TRANSORB 440 SL - 20"
-                    HasBigPS = True
-            End Select
+            'Select Case BrandID
+            '    Case "ROUNDUP POWERMAX 660 SL - 01", "ROUNDUP POWERMAX 660 SL - 04", "ROUNDUP SL-1", "ROUNDUP SL-200", "ROUNDUP SL-4", _
+            '        "ROUNDUP TRANSORB 440 SL - 01", "ROUNDUP TRANSORB 440 SL - 04", "ROUNDUP TRANSORB 440 SL - 200"
+            '        HasSmallPS = True
+            '    Case "ROUNDUP POWERMAX 660 SL - 20", "ROUNDUP SL-20", "ROUNDUP TRANSORB 440 SL - 20"
+            '        HasBigPS = True
+            'End Select
         Next
 
         Dim ProList() As String = listCat.ToArray()

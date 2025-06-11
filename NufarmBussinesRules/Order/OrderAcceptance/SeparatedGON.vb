@@ -856,8 +856,8 @@ Namespace OrderAcceptance
                 If SaveGonDetail Then
                     QrySelectGonDetail = "SET NOCOUNT ON;" & vbCrLf & _
                                     " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UnitOfMeasure,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
-                                    " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader LEFT OUTER JOIN BRND_PROD_CONV BPC ON BPC.BRANDPACK_ID = GSD.ITEM " & vbCrLf & _
-                                    " INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER;"
+                                    " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader LEFT OUTER JOIN(SELECT BRANDPACK_ID,UnitOfMeasure FROM BRND_PROD_CONV WHERE INACTIVE = 0)BPC ON BPC.BRANDPACK_ID = GSD.ITEM  " & vbCrLf & _
+                                    " INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER; "
                     'QrySelectGonDetail = "SELECT GSD.* FROM GON_SEPARATED_DETAIL GSD INNER JOIN GON_SEPARATED_PO_DETAIL GSPD ON GSD.FKAppPODetail = GSPD.IDApp " & vbCrLf & _
                     '                " INNER JOIN GON_SEPARATED_PO_HEADER GSPH ON GSPH.IDApp = GSPD.FKApp " & vbCrLf & _
                     '                " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader AND GSH.FKApp = GSPH.IDApp " & vbCrLf & _
@@ -959,8 +959,8 @@ Namespace OrderAcceptance
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
                         " SELECT GSD.*,BP.BRANDPACK_NAME,QTY_UNIT = CONVERT(VARCHAR(100),QTY) + ISNULL(BPC.UnitOfMeasure,BP.UNIT) FROM GON_SEPARATED_DETAIL GSD " & vbCrLf & _
                         " INNER JOIN GON_SEPARATED_HEADER GSH ON GSH.IDApp = GSD.FKAppGonHeader LEFT OUTER JOIN " & vbCrLf & _
-                        "(SELECT TOP 1 BRANDPACK_ID,UnitOfMeasure FROM BRND_PROD_CONV WHERE INACTIVE = 0 ORDER BY CreatedDate DESC)" & vbCrLf & _
-                        " BPC ON BPC.BRANDPACK_ID = GSD.ITEM INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER;"
+                        "(SELECT BRANDPACK_ID,UnitOfMeasure FROM BRND_PROD_CONV WHERE INACTIVE = 0) BPC " & vbCrLf & _
+                        " ON BPC.BRANDPACK_ID = GSD.ITEM INNER JOIN BRND_BRANDPACK BP ON BP.BRANDPACK_ID = GSD.ITEM WHERE GSH.GON_NUMBER = @GON_NUMBER;"
                 If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
                 Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If

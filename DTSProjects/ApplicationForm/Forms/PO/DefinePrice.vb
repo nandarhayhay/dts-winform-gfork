@@ -1,7 +1,8 @@
 Imports NufarmBussinesRules.Brandpack.PriceHistory.Category
 Public Class DefinePrice
     Private isloadingRow As Boolean = True : Private clsPriceHistory As New NufarmBussinesRules.Brandpack.PriceHistory()
-    Friend Enum Category
+    Private cat As NufarmBussinesRules.Brandpack.PriceHistory.Category
+    Friend Enum DCategory
         FM
         SPlantation
         GPlantation
@@ -17,18 +18,18 @@ Public Class DefinePrice
     Private PriceTag As String = ""
     Private originalWaterMaxTextBox As String = ""
 
-    Private Sub FillListView(ByVal cat As Category, ByVal dtTable As DataTable)
+    Private Sub FillListView(ByVal cat As DCategory, ByVal dtTable As DataTable)
         With Me.ListView1
             .Items.Clear() : .Columns.Clear()
             If dtTable.Rows.Count > 0 Then
                 .Columns.Add("BRANDPACK_ID", 100, HorizontalAlignment.Left)
                 .Columns.Add("BRANDPACK_NAME", 170, HorizontalAlignment.Left)
-                If cat = Category.SPlantation Then
+                If cat = DCategory.SPlantation Then
                     .Columns.Add("PLANTATION_NAME", 170, HorizontalAlignment.Left)
                 End If
                 .Columns.Add("PRICE", 100, HorizontalAlignment.Right)
                 .Columns.Add("START_DATE", 100, HorizontalAlignment.Left)
-                If cat = Category.SPlantation Then
+                If cat = DCategory.SPlantation Then
                     .Columns.Add("END_DATE", 100, HorizontalAlignment.Left)
                     .Columns.Add("PLANTATION_ID", 1, HorizontalAlignment.Left)
                 End If
@@ -37,12 +38,12 @@ Public Class DefinePrice
                     Dim LVItem As New ListViewItem(dtTable.Rows(I)("BRANDPACK_ID").ToString())
                     With LVItem
                         .SubItems.Add(dtTable.Rows(I)("BRANDPACK_NAME").ToString())
-                        If cat = Category.SPlantation Then
+                        If cat = DCategory.SPlantation Then
                             .SubItems.Add(dtTable.Rows(I)("PLANTATION_NAME"))
                         End If
                         .SubItems.Add(String.Format("{0:#,##0.00}", Convert.ToDecimal(dtTable.Rows(I)("PRICE"))))
                         .SubItems.Add(String.Format("{0:dd MMMM yyyy}", Convert.ToDateTime(dtTable.Rows(I)("START_DATE"))))
-                        If cat = Category.SPlantation Then
+                        If cat = DCategory.SPlantation Then
                             If Not IsNothing(dtTable.Rows(I)("END_DATE")) And Not IsDBNull(dtTable.Rows(I)("END_DATE")) Then
                                 .SubItems.Add(String.Format("{0:dd MMMM yyyy}", Convert.ToDateTime(dtTable.Rows(I)("END_DATE"))))
                             Else
@@ -96,7 +97,7 @@ Public Class DefinePrice
     '    End Try
     'End Sub
 
-    Public Overloads Function ShowDialog(ByRef Price As Object, ByRef Description As String, ByRef PlantationID As String, ByRef TerritoryID As String, ByRef Pricetag As String) As DialogResult
+    Public Overloads Function ShowDialog(ByRef Price As Object, ByRef Description As String, ByRef PlantationID As String, ByRef TerritoryID As String, ByRef Pricetag As String, ByRef scat As NufarmBussinesRules.Brandpack.PriceHistory.Category) As DialogResult
         Dim DgResult As DialogResult = Windows.Forms.DialogResult.Cancel
         If Me.ShowDialog() = Windows.Forms.DialogResult.OK Then
             'If Me.ListView1.Items Is Nothing Then
@@ -113,6 +114,7 @@ Public Class DefinePrice
                 Price = Me.m_price : Description = Me.m_Descriptions : PlantationID = Me.m_PlantationID
                 TerritoryID = Me.m_territoryID
                 Pricetag = Me.PriceTag
+                scat = Me.cat
                 DgResult = Windows.Forms.DialogResult.OK
             Else
                 DgResult = Windows.Forms.DialogResult.None
@@ -136,15 +138,18 @@ Public Class DefinePrice
             m_price = Me.ListView1.FocusedItem.SubItems(2).Text
             m_Descriptions = "PRICE FROM FREE MARKET"
             Me.PriceTag = Me.ListView1.FocusedItem.SubItems(4).Text
+            Me.cat = FreeMarket
         ElseIf Me.btnCatPlantation.Checked Then
             m_price = Me.ListView1.FocusedItem.SubItems(3).Text
             m_Descriptions = "PRICE FROM SPECIAL PLANTATION " & Me.ListView1.FocusedItem.SubItems(2).Text
             Me.m_PlantationID = Me.ListView1.FocusedItem.SubItems(6).Text
             Me.PriceTag = Me.ListView1.FocusedItem.SubItems(7).Text
+            Me.cat = SpecialPlantation
         ElseIf Me.btnGeneralPlantation.Checked Then
             m_price = Me.ListView1.FocusedItem.SubItems(2).Text
             m_Descriptions = "PRICE FROM GENERAL PLANTATION"
             Me.PriceTag = Me.ListView1.FocusedItem.SubItems(4).Text
+            Me.cat = GenPricePlantation
         End If
         'check apakah plantationid ada territorynya atau tidak 
         'bila tidak ambil territory distributor
@@ -178,7 +183,7 @@ Public Class DefinePrice
     Private Sub ShowFreemarketPrice()
         isloadingRow = True
         Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(FreeMarket, BrandPackID, Me.DistributorID, Me.StartDate)
-        Me.FillListView(Category.FM, dtTable)
+        Me.FillListView(DCategory.FM, dtTable)
         isloadingRow = False
     End Sub
     Private Sub ShowSpecialPlantation()
@@ -191,7 +196,7 @@ Public Class DefinePrice
         End If
         Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(SpecialPlantation, _
                            Me.BrandPackID, Me.DistributorID, Me.StartDate, SearchString)
-        Me.FillListView(Category.SPlantation, dtTable)
+        Me.FillListView(DCategory.SPlantation, dtTable)
         isloadingRow = False
     End Sub
     Private Sub ShowGeneralPlantationPrice()
@@ -202,9 +207,9 @@ Public Class DefinePrice
         '        SearchString = RTrim(Me.txtSearchPlantationName.Text)
         '    End If
         'End If
-        Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(NufarmBussinesRules.Brandpack.PriceHistory.Category.GeneralPricePlantation, _
+        Dim dtTable As DataTable = Me.clsPriceHistory.getPlantation(NufarmBussinesRules.Brandpack.PriceHistory.Category.GenPricePlantation, _
                            Me.BrandPackID, "", Me.StartDate, "")
-        Me.FillListView(Category.GPlantation, dtTable)
+        Me.FillListView(DCategory.GPlantation, dtTable)
         isloadingRow = False
     End Sub
     Private Sub ItemPanel1_ItemClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ItemPanel1.ItemClick

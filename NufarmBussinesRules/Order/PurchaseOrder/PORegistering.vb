@@ -157,7 +157,7 @@ Namespace PurchaseOrder
                 Me.ClearCommandParameters()
                 'Me.CloseConnection()
                 If Not IsNothing(retval) And Not IsDBNull(retval) Then
-                    Return CInt(retval) > 0
+                    Return (retval.ToString() <> "")
                 End If
             Catch ex As Exception
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex

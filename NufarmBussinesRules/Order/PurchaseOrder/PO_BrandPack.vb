@@ -485,23 +485,70 @@ Namespace PurchaseOrder
                 Throw ex
             End Try
         End Function
-        Public Function hasPricePlantation(ByVal distributorID As String, ByVal brandpack_id As String, ByVal PO_DATE As String) As Boolean
+        Public Function hasPricePlantation(ByVal distributorID As String, ByVal brandpack_id As String, ByVal PO_DATE As String, ByRef isGenPrice As Boolean, ByRef isSPrice As Boolean) As Boolean
             Try
+                'Me.ClearCommandParameters()
+                'Query = "SET NOCOUNT ON;" & vbCrLf & _
+                '       " SELECT 1 WHERE EXISTS(SELECT TOP 1 BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                '       " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID" & vbCrLf & _
+                '       " WHERE BPH.BRANDPACK_ID = '" & brandpack_id & "' AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                '       " AND DPP.DISTRIBUTOR_ID = '" & distributorID & "' ORDER BY BPH.START_DATE DESC);"
+                'If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
+                'Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                'End If
+                'Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                'Me.OpenConnection()
+                'If (Not IsNothing(Me.SqlCom.ExecuteScalar)) Then
+                '    Me.ClearCommandParameters() : Me.CloseConnection() : Return True
+                'End If
+                'Me.ClearCommandParameters() : Me.CloseConnection()
+
+                ''sekarang chek apakah BRANDPACK_ID di table special price
+                'Query = "SET NOCOUNT ON;" & vbCrLf & _
+                '        " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                '        " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID" & vbCrLf & _
+                '        " WHERE BPH.BRANDPACK_ID = '" & brandpack_id & "' AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                '        " AND DPP.END_DATE >= '" & PO_DATE & "' " & vbCrLf & _
+                '        " AND DPP.DISTRIBUTOR_ID = '" & distributorID & "');"
+                'Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                'If (Not IsNothing(Me.SqlCom.ExecuteScalar)) Then
+                '    Me.ClearCommandParameters() : Me.CloseConnection() : isSPrice = True : Return Nothing
+                'End If
+                Dim retval As Object = Nothing
                 Me.ClearCommandParameters()
                 Query = "SET NOCOUNT ON;" & vbCrLf & _
-                       " SELECT 1 WHERE EXISTS(SELECT TOP 1 BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
-                       " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID" & vbCrLf & _
-                       " WHERE BPH.BRANDPACK_ID = '" & brandpack_id & "' AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
-                       " AND DPP.DISTRIBUTOR_ID = '" & distributorID & "' ORDER BY BPH.START_DATE DESC);"
-                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("sp_executesql", "")
-                Else : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                         " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                         " DIST_PLANT_PRICE DPP ON DPP.BRANDPACK_ID = BPH.BRANDPACK_ID " & vbCrLf & _
+                         " WHERE BPH.BRANDPACK_ID = @BRANDPACK_ID AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                         " AND DPP.END_DATE >= '" & PO_DATE & "' " & vbCrLf & _
+                         " AND DPP.DISTRIBUTOR_ID = @DISTRIBUTOR_ID);"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
                 End If
-                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+
+                Me.AddParameter("@DISTRIBUTOR_ID", SqlDbType.VarChar, distributorID)
+                Me.AddParameter("@BRANDPACK_ID", SqlDbType.VarChar, brandpack_id)
                 Me.OpenConnection()
-                If (Not IsNothing(Me.SqlCom.ExecuteScalar)) Then
-                    Me.ClearCommandParameters() : Me.CloseConnection() : Return True
+                retval = Me.SqlCom.ExecuteScalar
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    Me.ClearCommandParameters() : Me.CloseConnection() : isSPrice = True : Return True
                 End If
-                Me.ClearCommandParameters() : Me.CloseConnection()
+
+                ''sekarang chek apakah BRANDPACK_ID di table general price
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                        " SELECT 1 WHERE EXISTS(SELECT BPH.PRICE FROM BRND_PRICE_HISTORY BPH INNER JOIN " & vbCrLf & _
+                        " GEN_PLANT_PRICE GPL ON GPL.BRANDPACK_ID = BPH.BRANDPACK_ID " & vbCrLf & _
+                        " WHERE BPH.BRANDPACK_ID = @BRANDPACK_ID AND BPH.START_DATE <= '" & PO_DATE & "' " & vbCrLf & _
+                        " AND GPL.START_DATE <= '" & PO_DATE & "') "
+                Me.ResetCommandText(CommandType.Text, Query)
+                retval = Me.SqlCom.ExecuteScalar
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    Me.ClearCommandParameters() : isGenPrice = True
+                    Me.CloseConnection()
+                    'DescriptionPrice = "PRICE FROM GENERAL PL PRICE"
+                    Return True
+                End If
+
             Catch ex As Exception
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
