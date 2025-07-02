@@ -215,7 +215,14 @@ Public Class SPPBManager
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
                 col.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.None
             ElseIf col.DataMember.Contains("QTY") Or col.DataMember.Contains("BALANCE") Then
-                col.FormatString = "#,##0.000"
+                If col.DataMember = "SALES_QTY" Then
+                    col.FormatString = "#,##0.00"
+                    col.TotalFormatString = "#,##0.00"
+                Else
+                    col.FormatString = "#,##0.000"
+                    col.TotalFormatString = "#,##0.000"
+                End If
+
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
                 col.HeaderAlignment = Janus.Windows.GridEX.TextAlignment.Center
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo

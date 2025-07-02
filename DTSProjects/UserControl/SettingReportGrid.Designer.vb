@@ -35,6 +35,7 @@ Partial Class SettingReportGrid
         Me.XpGradientPanel1.Location = New System.Drawing.Point(0, 0)
         Me.XpGradientPanel1.Name = "XpGradientPanel1"
         Me.XpGradientPanel1.Size = New System.Drawing.Size(646, 331)
+        Me.XpGradientPanel1.StartColor = System.Drawing.SystemColors.GrayText
         Me.XpGradientPanel1.TabIndex = 0
         Me.XpGradientPanel1.Watermark = Global.DTSProjects.My.Resources.Resources.Splash
         '

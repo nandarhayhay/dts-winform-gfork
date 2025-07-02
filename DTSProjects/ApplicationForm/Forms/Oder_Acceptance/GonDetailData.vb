@@ -553,11 +553,11 @@ Public Class GonDetailData
                 col.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.Sum
                 col.TotalFormatString = "#,##0.00"
             ElseIf col.DataMember = "TOTAL_DISC" Or col.DataMember = "GON_PO" Or col.DataMember = "GON_DISC_INC" Then
-                col.FormatString = "#,##0.000"
+                col.FormatString = "#,##0.00"
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
                 col.HeaderAlignment = Janus.Windows.GridEX.TextAlignment.Center
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
-                col.TotalFormatString = "#,##0.000"
+                col.TotalFormatString = "#,##0.00"
             ElseIf col.Type Is Type.GetType("System.Boolean") Then
                 col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CheckBox

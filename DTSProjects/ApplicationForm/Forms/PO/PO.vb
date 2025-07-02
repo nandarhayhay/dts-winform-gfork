@@ -217,6 +217,9 @@ Public Class PO
         Me.grdPurchaseOrder.RootTable.Columns("PO_REF_NO").EditType = Janus.Windows.GridEX.EditType.NoEdit
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
+        Me.grdPurchaseOrder.RootTable.Columns("BRAND_NAME").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+        Me.grdPurchaseOrder.RootTable.Columns("BRAND_NAME").EditType = Janus.Windows.GridEX.EditType.NoEdit
+
         Me.grdPurchaseOrder.RootTable.TotalRow = Janus.Windows.GridEX.InheritableBoolean.True
 
         Me.grdPurchaseOrder.RootTable.Columns("QUANTITY").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
@@ -251,6 +254,11 @@ Public Class PO
 
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_ID").Visible = False
         Me.grdPurchaseOrder.RootTable.Columns("BRANDPACK_ID").EditType = Janus.Windows.GridEX.EditType.NoEdit
+        Me.grdPurchaseOrder.RootTable.Columns("BRAND_ID").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
+
+        Me.grdPurchaseOrder.RootTable.Columns("BRAND_ID").Visible = False
+        Me.grdPurchaseOrder.RootTable.Columns("BRAND_ID").EditType = Janus.Windows.GridEX.EditType.NoEdit
+
         Me.grdPurchaseOrder.GroupByBoxVisible = False
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS").FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
         Me.grdPurchaseOrder.RootTable.Columns("DESCRIPTIONS").EditType = Janus.Windows.GridEX.EditType.NoEdit

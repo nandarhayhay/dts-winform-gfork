@@ -1057,7 +1057,7 @@ Public Class Purchase_Order
                     Me.grdPOBrandPack.SetValue("PLANTATION_ID", PlantationID)
                 End If
                 If String.IsNullOrEmpty(TerritoryID) Then
-                    Me.grdPOBrandPack.SetValue("PLANTATION_ID", DBNull.Value)
+                    Me.grdPOBrandPack.SetValue("TERRITORY_ID", DBNull.Value)
                 Else
                     Me.grdPOBrandPack.SetValue("TERRITORY_ID", TerritoryID)
                 End If
@@ -1373,7 +1373,7 @@ Public Class Purchase_Order
                     Me.grdPOBrandPack.SetValue("PLANTATION_ID", PlantationID)
                 End If
                 If String.IsNullOrEmpty(TerritoryID) Then
-                    Me.grdPOBrandPack.SetValue("PLANTATION_ID", DBNull.Value)
+                    Me.grdPOBrandPack.SetValue("TERRITORY_ID", DBNull.Value)
                 Else
                     Me.grdPOBrandPack.SetValue("TERRITORY_ID", TerritoryID)
                 End If

@@ -790,6 +790,7 @@ Public Class GonNonPODist
                     Me.setEnabledGONEntry(False, True)
                     Me.GridEX1.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.False
                     Me.btnInsert.Enabled = False
+                    Me.btnAddNew.Enabled = False
                 Else
                     Me.setEnabledPOEntry(Not (Me.grdGon.RecordCount > 0), True)
                     Me.GridEX1.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.True
