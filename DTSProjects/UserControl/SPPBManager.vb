@@ -204,6 +204,7 @@ Public Class SPPBManager
             GridN.RetrieveStructure()
         End If
         For Each col As Janus.Windows.GridEX.GridEXColumn In GridN.RootTable.Columns
+            col.EditType = Janus.Windows.GridEX.EditType.NoEdit
             If col.DataMember.Contains("PRICE") Then
                 If Not Me.isHOUser Then
                     col.Visible = False
@@ -215,9 +216,13 @@ Public Class SPPBManager
                 col.FilterEditType = Janus.Windows.GridEX.FilterEditType.Combo
                 col.AggregateFunction = Janus.Windows.GridEX.AggregateFunction.None
             ElseIf col.DataMember.Contains("QTY") Or col.DataMember.Contains("BALANCE") Then
-                If col.DataMember = "SALES_QTY" Then
+                If col.DataMember = "SALES_QTY" Or col.DataMember = "GON_DISC_QTY" Then
                     col.FormatString = "#,##0.00"
                     col.TotalFormatString = "#,##0.00"
+                    If NufarmBussinesRules.SharedClass.IsUserHO = True Then
+                        col.EditType = Janus.Windows.GridEX.EditType.TextBox
+                        col.EditTarget = Janus.Windows.GridEX.EditTarget.Value
+                    End If
                 Else
                     col.FormatString = "#,##0.000"
                     col.TotalFormatString = "#,##0.000"
@@ -271,7 +276,6 @@ Public Class SPPBManager
             End If
             If col.DataMember = "IsUpdatedBySystem" Then : col.Visible = False : col.FilterEditType = Janus.Windows.GridEX.FilterEditType.CheckBox : col.EditType = Janus.Windows.GridEX.EditType.CheckBox : End If
             'col.AutoSize()
-            col.EditType = Janus.Windows.GridEX.EditType.NoEdit
         Next
         'Me.IsLoadding = False
         If GridN.Name = "grdHeader" Then
@@ -1281,8 +1285,8 @@ Public Class SPPBManager
         Try
             Me.Cursor = Cursors.WaitCursor
             Me.StatProg = StatusProgress.Processing
-            Me.ThreadProgress = New Thread(AddressOf Me.ShowProceed)
-            Me.ThreadProgress.Start()
+            'Me.ThreadProgress = New Thread(AddressOf Me.ShowProceed)
+            'Me.ThreadProgress.Start()
 
             Me.IsLoadding = True
             Dim tblSales As DataTable = Me.clsSPPBGON.getReportSales(True)

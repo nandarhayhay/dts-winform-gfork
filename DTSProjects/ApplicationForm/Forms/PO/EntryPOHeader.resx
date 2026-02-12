@@ -137,7 +137,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAO
-        GQAAAk1TRnQBSQFMAgEBEAEAARwBAAEcAQABEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        GQAAAk1TRnQBSQFMAgEBEAEAASQBAAEkAQABEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAAVADAAEBAQABCAYAARQYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -317,34 +317,6 @@
   </metadata>
   <data name="grdPO_DesignTimeLayout.LayoutString" xml:space="preserve">
     <value>&lt;GridEXLayoutData&gt;&lt;RootTable&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="PO_REF_NO"&gt;&lt;Caption&gt;PO_REF_NO&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_NO&lt;/DataMember&gt;&lt;FilterEditType&gt;Combo&lt;/FilterEditType&gt;&lt;Key&gt;PO_REF_NO&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Width&gt;151&lt;/Width&gt;&lt;/Column0&gt;&lt;Column1 ID="PO_REF_DATE"&gt;&lt;Caption&gt;PO_REF_DATE&lt;/Caption&gt;&lt;DataMember&gt;PO_REF_DATE&lt;/DataMember&gt;&lt;EditType&gt;CalendarCombo&lt;/EditType&gt;&lt;FormatString&gt;dd MMMM yyyy&lt;/FormatString&gt;&lt;Key&gt;PO_REF_DATE&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Width&gt;149&lt;/Width&gt;&lt;/Column1&gt;&lt;Column2 ID="DISTRIBUTOR_ID"&gt;&lt;Caption&gt;DISTRIBUTOR&lt;/Caption&gt;&lt;DataMember&gt;DISTRIBUTOR_ID&lt;/DataMember&gt;&lt;EditType&gt;MultiColumnCombo&lt;/EditType&gt;&lt;Key&gt;DISTRIBUTOR_ID&lt;/Key&gt;&lt;Position&gt;2&lt;/Position&gt;&lt;Width&gt;358&lt;/Width&gt;&lt;DropDownIndex&gt;0&lt;/DropDownIndex&gt;&lt;/Column2&gt;&lt;Column3 ID="CREATE_BY"&gt;&lt;Caption&gt;CreatedBy&lt;/Caption&gt;&lt;DataMember&gt;CREATE_BY&lt;/DataMember&gt;&lt;Key&gt;CREATE_BY&lt;/Key&gt;&lt;Position&gt;3&lt;/Position&gt;&lt;/Column3&gt;&lt;Column4 ID="CREATE_DATE"&gt;&lt;Caption&gt;CREATE_DATE&lt;/Caption&gt;&lt;DataMember&gt;CREATE_DATE&lt;/DataMember&gt;&lt;EditType&gt;CalendarCombo&lt;/EditType&gt;&lt;Key&gt;CREATE_DATE&lt;/Key&gt;&lt;Position&gt;4&lt;/Position&gt;&lt;/Column4&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;/RootTable&gt;&lt;DropDowns Collection="true" ElementName="DropDown"&gt;&lt;DropDown0 ID="Distributor"&gt;&lt;RootTable&gt;&lt;Columns Collection="true" ElementName="Column"&gt;&lt;Column0 ID="DISTRIBUTOR_ID"&gt;&lt;Caption&gt;DISTRIBUTOR_ID&lt;/Caption&gt;&lt;DataMember&gt;DISTRIBUTOR_ID&lt;/DataMember&gt;&lt;Key&gt;DISTRIBUTOR_ID&lt;/Key&gt;&lt;Position&gt;0&lt;/Position&gt;&lt;Width&gt;110&lt;/Width&gt;&lt;/Column0&gt;&lt;Column1 ID="DISTRIBUTOR_NAME"&gt;&lt;Caption&gt;DISTRIBUTOR_NAME&lt;/Caption&gt;&lt;DataMember&gt;DISTRIBUTOR_NAME&lt;/DataMember&gt;&lt;Key&gt;DISTRIBUTOR_NAME&lt;/Key&gt;&lt;Position&gt;1&lt;/Position&gt;&lt;Width&gt;200&lt;/Width&gt;&lt;/Column1&gt;&lt;/Columns&gt;&lt;GroupCondition /&gt;&lt;/RootTable&gt;&lt;RowWithErrorsFormatStyle&gt;&lt;PredefinedStyle&gt;RowWithErrorsFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowWithErrorsFormatStyle&gt;&lt;LinkFormatStyle&gt;&lt;PredefinedStyle&gt;LinkFormatStyle&lt;/PredefinedStyle&gt;&lt;/LinkFormatStyle&gt;&lt;CardCaptionFormatStyle&gt;&lt;PredefinedStyle&gt;CardCaptionFormatStyle&lt;/PredefinedStyle&gt;&lt;/CardCaptionFormatStyle&gt;&lt;GroupByBoxFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxFormatStyle&gt;&lt;GroupByBoxInfoFormatStyle&gt;&lt;PredefinedStyle&gt;GroupByBoxInfoFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupByBoxInfoFormatStyle&gt;&lt;GroupRowFormatStyle&gt;&lt;PredefinedStyle&gt;GroupRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/GroupRowFormatStyle&gt;&lt;HeaderFormatStyle&gt;&lt;PredefinedStyle&gt;HeaderFormatStyle&lt;/PredefinedStyle&gt;&lt;/HeaderFormatStyle&gt;&lt;PreviewRowFormatStyle&gt;&lt;PredefinedStyle&gt;PreviewRowFormatStyle&lt;/PredefinedStyle&gt;&lt;/PreviewRowFormatStyle&gt;&lt;RowFormatStyle&gt;&lt;PredefinedStyle&gt;RowFormatStyle&lt;/PredefinedStyle&gt;&lt;/RowFormatStyle&gt;&lt;SelectedFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedFormatStyle&gt;&lt;SelectedInactiveFormatStyle&gt;&lt;PredefinedStyle&gt;SelectedInactiveFormatStyle&lt;/PredefinedStyle&gt;&lt;/SelectedInactiveFormatStyle&gt;&lt;WatermarkImage /&gt;&lt;Font&gt;Microsoft Sans Serif, 8.25pt&lt;/Font&gt;&lt;VisualStyle&gt;Standard&lt;/VisualStyle&gt;&lt;AllowEdit&gt;False&lt;/AllowEdit&gt;&lt;ExpandableGroups&gt;False&lt;/ExpandableGroups&gt;&lt;GroupByBoxVisible&gt;False&lt;/GroupByBoxVisible&gt;&lt;HideSelection&gt;Highlight&lt;/HideSelection&gt;&lt;Key&gt;Distributor&lt;/Key&gt;&lt;DisplayMember&gt;DISTRIBUTOR_NAME&lt;/DisplayMember&gt;&lt;ValueMember&gt;DISTRIBUTOR_ID&lt;/ValueMember&gt;&lt;/DropDown0&gt;&lt;/DropDowns&gt;&lt;/GridEXLayoutData&gt;</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="grdPO.WatermarkImage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        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
-</value>
   </data>
   <metadata name="PanelEx1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

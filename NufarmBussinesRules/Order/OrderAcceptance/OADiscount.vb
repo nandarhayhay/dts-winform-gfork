@@ -2040,6 +2040,9 @@ Namespace OrderAcceptance
                     ElseIf MRKT_DISC_QTY < 0 Then
                         MRKT_DISC_QTY = DiscMustQty - TotalDiscQty
                     End If 'discmust_qty -  disc yang sudah di berikan
+
+                    'bulatkan disc jadi 2 decimal
+                    MRKT_DISC_QTY = Decimal.Round(MRKT_DISC_QTY, 2, MidpointRounding.AwayFromZero)
                     If MRKT_DISC_QTY > 0 Then
                         Me.ResetCommandText(CommandType.StoredProcedure, "Sp_Insert_MRKT_DISC_HISTORY")
                         Me.AddParameter("@MRKT_DISC_HIST_ID", SqlDbType.VarChar, MRKT_DISC_HIST_ID, 115) ' VARCHAR(66),

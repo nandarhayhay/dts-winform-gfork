@@ -1160,4 +1160,7 @@ Public Class PO
     End Sub
 #End Region
 
+    Private Sub grdPencapaian_FormattingRow(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.RowLoadEventArgs) Handles grdPencapaian.FormattingRow
+
+    End Sub
 End Class

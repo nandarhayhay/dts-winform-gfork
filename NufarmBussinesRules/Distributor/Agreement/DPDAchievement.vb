@@ -383,14 +383,14 @@ Namespace DistributorAgreement
 
                 '-----------------------------------Header Query -->achievement header--------------------------
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
-                        "SELECT ACRH.ACH_HEADER_ID,ACRH.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ACRH.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,ACRH.FLAG,ACRH.BRAND_ID,BB.BRAND_NAME," & vbCrLf & _
+                        "SELECT ACRH.ACH_HEADER_ID,REG.REGIONAL_AREA,TER.TERRITORY_AREA,ACRH.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ACRH.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,ACRH.FLAG,ACRH.BRAND_ID,BB.BRAND_NAME," & vbCrLf & _
                         "ISNULL(AP.AVGPRICE,0) AS AVG_PRICE_FM,ISNULL(AP.AVGPRICE_PL,0) AS AVG_PRICE_PL,ACRH.TARGET_FM,ACRH.TARGET_PL,ISNULL(AP.AVGPRICE,0) * ACRH.TOTAL_TARGET AS TARGET_VALUE,ACRH.TOTAL_PO_VALUE,ACRH.TOTAL_TARGET," & vbCrLf & _
                         " ACRH.TOTAL_PO,ACRH.TOTAL_ACTUAL,ACRH.BALANCE,ACRH.ACH_BY_CAT/100 AS ACH_BY_CAT,ACRH.ACH_DISPRO/100 AS ACHIEVEMENT_DISPRO,ACRH.DISPRO/100 AS DISPRO,  " & vbCrLf & _
                         " ACRH.DISC_QTY, ACRH.TOTAL_CPQ1,ACRH.TOTAL_CPQ2, " & vbCrLf & _
                         " ACRH.TOTAL_CPQ3, " & vbCrLf & _
                         " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,ACRH.TOTAL_PBF2,ACRH.TOTAL_PBF3,ACRH.[DESCRIPTIONS],ACRH.ACTUAL_DIST,ACRH.PO_DIST,ACRH.PO_VALUE_DIST,ACRH.DISC_DIST,ACRH.CPQ1_DIST,ACRH.CPQ2_DIST,ACRH.CPQ3_DIST,ACRH.CPF1_DIST,ACRH.CPF2_DIST,ACRH.PBF2_DIST,ACRH.PBF3_DIST " & vbCrLf & _
                         " FROM ACHIEVEMENT_HEADER ACRH INNER JOIN AGREE_AGREEMENT AA ON ACRH.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN DIST_DISTRIBUTOR DR ON ACRH.DISTRIBUTOR_ID " & vbCrLf & _
-                        " = DR.DISTRIBUTOR_ID INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ACRH.BRAND_ID " & vbCrLf & _
+                        " = DR.DISTRIBUTOR_ID INNER JOIN TERRITORY TER ON TER.TERRITORY_ID = DR.TERRITORY_ID INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TER.REGIONAL_ID INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ACRH.BRAND_ID " & vbCrLf & _
                         "  LEFT OUTER JOIN BRND_AVGPRICE AP ON AP.IDApp = ACRH.AvgPriceID " & vbCrLf
                 If ((DISTRIBUTOR_ID <> "") And (Not IsNothing(ListAGREEMENT_NO))) Then
                     If ListAGREEMENT_NO.Count > 0 Then
@@ -2488,6 +2488,248 @@ Namespace DistributorAgreement
             AchHeader.AcceptChanges()
         End Sub
 
+        Public Function getAchivementDPDByPO(ByVal Flag As String, Optional ByVal listAGree As List(Of String) = Nothing, Optional ByVal listDist As List(Of String) = Nothing) As DataSet
+            Try
+                Dim strListAgree As String = "", strListDist As String = "", strTargetFMP As String = "TARGET_FMP"
+                If Not IsNothing(listAGree) Then
+                    strListAgree = "IN('"
+                    For i As Integer = 0 To listAGree.Count - 1
+                        strListAgree &= listAGree(i)
+                        If i < listAGree.Count - 1 Then
+                            strListAgree &= "','"
+                        Else : strListAgree &= "'"
+                        End If
+                    Next
+                    strListAgree &= ")"
+
+                End If
+                If Not IsNothing(listDist) Then
+                    strListDist = "IN('"
+                    For i As Integer = 0 To listDist.Count - 1
+                        strListDist &= listDist(i)
+                        If i < listDist.Count - 1 Then
+                            strListDist &= "','"
+                        Else : strListDist &= "'"
+                        End If
+                    Next
+                    strListDist &= ")"
+                End If
+                Dim StartDate As DateTime = Nothing, EndDate As DateTime = Nothing, StartDateF1 As DateTime = Nothing, EndDateF1 As DateTime = Nothing, StartDateF2 As DateTime = Nothing, EndDateF2 As DateTime = Nothing, _
+                   StartDateF3 As DateTime = Nothing, EndDateF3 As DateTime = Nothing
+                If Not IsNothing(listAGree) And Not IsNothing(listDist) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID WHERE AA.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                    " AND BB.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                ElseIf Not IsNothing(listAGree) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            " SELECT TOP 1 START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO " & strListAgree
+                ElseIf Not IsNothing(listDist) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID INNER JOIN DISTRIBUTOR_AGREEMENT DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO WHERE DA.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+                            " AND BB.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1) " & vbCrLf & _
+                            " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101)"
+                ElseIf IsNothing(listAGree) And IsNothing(listDist) Then ''current agreement
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) " & vbCrLf & _
+                     " AND BB.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1) "
+                End If
+                If Not IsNothing(Me.SqlCom) Then : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Else : Me.CreateCommandSql("sp_executesql", "")
+                End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.OpenConnection()
+                SqlRe = Me.SqlCom.ExecuteReader()
+                While Me.SqlRe.Read()
+                    StartDate = SqlRe.GetDateTime(0)
+                    EndDate = SqlRe.GetDateTime(1)
+                End While : Me.SqlRe.Close() : Me.ClearCommandParameters()
+                If IsNothing(StartDate) Or IsNothing(EndDate) Then
+                    Me.CloseConnection()
+                    Throw New Exception("Can not find current and going agreement")
+                End If
+                Select Case Flag
+                    Case "F1"
+                        strTargetFMP &= "1"
+                    Case "F2"
+                        strTargetFMP &= "2"
+                    Case "F3"
+                        strTargetFMP &= "3"
+                End Select
+                StartDateF1 = StartDate
+                EndDateF1 = StartDateF1.AddMonths(4).AddDays(-1)
+                StartDateF2 = EndDateF1.AddDays(1)
+                EndDateF2 = StartDateF2.AddMonths(4).AddDays(-1)
+                StartDateF3 = EndDateF2.AddDays(1)
+                EndDateF3 = EndDate
+                ''hapus table temporari jika masih ada
+
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Ach_PODetail_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                " BEGIN " & vbCrLf & _
+                "   DROP TABLE tempdb..##T_Ach_PODetail_" & Me.ComputerName & ";" & vbCrLf & _
+                " END "
+                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                Query = "SET NOCOUNT ON;SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
+                        "SELECT REG.REGIONAL_AREA,TER.TERRITORY_AREA,DR.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,AA.AGREEMENT_NO,AA.END_DATE,ABI.BRAND_ID,BR_1.BRAND_NAME," & vbCrLf & _
+                        "ISCombined = CASE WHEN ABI.COMB_AGREE_BRAND_ID IS NOT NULL THEN 'YES' ELSE 'NO' END, FLAG = '" & Flag & "'," & vbCrLf & _
+                        "CASE BR_1.BRAND_ID WHEN '00601' THEN 'SMALL PACK SIZE' WHEN '0060200' THEN 'SMALL PACK SIZE' WHEN '00604' THEN 'SMALL PACK SIZE' WHEN '007801' THEN 'SMALL PACK SIZE' WHEN '007804' THEN 'SMALL PACK SIZE' WHEN '0078200' THEN 'SMALL PACK SIZE' WHEN '00681' THEN 'SMALL PACK SIZE' WHEN '00684' THEN 'SMALL PACK SIZE'" & vbCrLf & _
+                        " WHEN '007820' THEN 'BIG PACK SIZE' WHEN '006020' THEN 'BIG PACK SIZE' WHEN '006820' THEN 'BIG PACK SIZE' ELSE 'NON ROUNDUP' END AS PS_GROUP," & vbCrLf & _
+                        "ABI." & strTargetFMP & " AS TOTAL_TARGET,ISNULL(BR.ACTUAL,0)AS TOTAL_PO,ISNULL(BR.ACTUAL,0) - ABI.TARGET_FMP1 AS BALANCE, ABI." & strTargetFMP & " / ISNULL(BR.ACTUAL,0) AS ACHIEVEMENT_DISPRO FROM AGREE_BRAND_INCLUDE ABI INNER JOIN BRND_BRAND BR_1" & vbCrLf & _
+                        "ON ABI.BRAND_ID = BR_1.BRAND_ID" & vbCrLf & _
+                        "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO" & vbCrLf & _
+                        "INNER JOIN DISTRIBUTOR_AGREEMENT DA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO" & vbCrLf & _
+                        "INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = DA.DISTRIBUTOR_ID" & vbCrLf & _
+                        "INNER JOIN TERRITORY TER ON TER.TERRITORY_ID = DR.TERRITORY_ID " & vbCrLf & _
+                        "INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TER.REGIONAL_ID " & vbCrLf & _
+                        "LEFT OUTER JOIN(" & vbCrLf & _
+                        "               SELECT ABI_1.AGREE_BRAND_ID,ISNULL(SUM(OPO.ACTUAL),0)AS ACTUAL FROM AGREE_BRANDPACK_INCLUDE ABI_1" & vbCrLf & _
+                        "               INNER JOIN(" & vbCrLf & _
+                        "               SELECT ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS ACTUAL FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                        "               ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID " & vbCrLf & _
+                        "               INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO" & vbCrLf & _
+                        "               WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf
+                If Not IsNothing(listDist) Then
+                    Query &= "AND OPO.DISTRIBUTOR_ID " & strListDist & vbCrLf
+                    Query &= vbCrLf
+                End If
+                If Not IsNothing(listAGree) Then
+                    Query &= " AND ABI_2.AGREEMENT_NO "
+                    Query &= strListAgree
+                    Query &= vbCrLf
+                End If
+                Query &= " GROUP BY ABI_2.AGREE_BRANDPACK_ID" & vbCrLf & _
+                         "           )OPO " & vbCrLf & _
+                         "   ON OPO.AGREE_BRANDPACK_ID = ABI_1.AGREE_BRANDPACK_ID  GROUP BY ABI_1.AGREE_BRAND_ID " & vbCrLf & _
+                         " )BR " & vbCrLf & _
+                         " ON BR.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID  " & vbCrLf
+
+                If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+                    Query &= " WHERE ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf
+                    Query &= "AND BR_1.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+
+                ElseIf Not IsNothing(listDist) Then
+                    Query &= " WHERE DR.DISTRIBUTOR_ID "
+                    Query &= strListDist & vbCrLf
+                    Query &= "AND BR_1.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf & _
+                    " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) "
+                ElseIf Not IsNothing(listAGree) Then
+                    Query &= " WHERE ABI.AGREEMENT_NO "
+                    Query &= strListAgree & vbCrLf
+                    Query &= " AND BR_1.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                Else
+                    Query &= " WHERE BR_1.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf & _
+                    " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) "
+                End If
+                Me.ResetCommandText(CommandType.Text, Query)
+                Select Case Flag
+                    Case "F1"
+                        Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF1)
+                        Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF1)
+                    Case "F2"
+                        Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF2)
+                        Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF2)
+                    Case "F3"
+                        Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF3)
+                        Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF3)
+                End Select
+                Dim tblHeader As New DataTable("DPD_ACHIEVEMENT_NUFARM")
+                setDataAdapter(Me.SqlCom).Fill(tblHeader)
+
+
+                If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                            " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                            "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = OPO.DISTRIBUTOR_ID " & vbCrLf & _
+                            " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                            " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+                            " AND ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+                            " AND BR.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                    Query &= vbCrLf
+                ElseIf Not IsNothing(listDist) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                            " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                            "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = OPO.DISTRIBUTOR_ID " & vbCrLf & _
+                            " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                            " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+                            " AND BR.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                    Query &= vbCrLf
+                ElseIf Not IsNothing(listAGree) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                            " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                            " INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO " & vbCrLf & _
+                            " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                            " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+                            " AND ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND BR.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                    Query &= vbCrLf
+                Else
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                               "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                               " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                               " INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
+                               "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO " & vbCrLf & _
+                               " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                               " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) " & vbCrLf & _
+                               " AND BR.BRAND_NAME IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf
+                End If
+                Query &= " GROUP BY ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID;"
+                Me.ResetCommandText(CommandType.Text, Query)
+                Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " SELECT ABI.AGREEMENT_NO,DR.DISTRIBUTOR_NAME,BB.BRAND_ID,BB.BRANDPACK_NAME,TPO.AGREE_BRAND_ID,TPO.TOTAL_PO FROM DIST_DISTRIBUTOR DR INNER JOIN DISTRIBUTOR_AGREEMENT DA " & vbCrLf & _
+                " ON DR.DISTRIBUTOR_ID = DA.DISTRIBUTOR_ID INNER JOIN AGREE_BRANDPACK_INCLUDE ABI ON ABI.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
+                " INNER JOIN BRND_BRANDPACK BB ON BB.BRANDPACK_ID = ABI.BRANDPACK_ID INNER JOIN TEMPDB..##T_Ach_PODetail_" & Me.ComputerName & " TPO " & vbCrLf & _
+                " ON TPO.AGREE_BRANDPACK_ID = ABI.AGREE_BRANDPACK_ID " & vbCrLf
+                If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+                    Query &= "WHERE ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist
+                ElseIf Not IsNothing(listDist) Then
+                    Query &= "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) AND DR.DISTRIBUTOR_ID " & strListDist
+
+                ElseIf Not IsNothing(listAGree) Then
+                    Query &= "WHERE ABI.AGREEMENT_NO " & strListAgree
+                Else
+                    Query &= "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101);"
+                End If
+
+                ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Dim tblDetail As New DataTable("TOTAL_PO_DETAIL")
+                setDataAdapter(Me.SqlCom).Fill(tblDetail) : Me.ClearCommandParameters()
+                Dim ds As New DataSet()
+                ds.Tables.Add(tblHeader)
+                ds.Tables.Add(tblDetail)
+                Return ds
+                ''get data PO by BrandPack
+
+                'get startdate & 
+                'jika flag di pilih semua - aman langsung proses sesuai query diatas tinggal ambil startdate and enddate
+                'jika flag di pilih distributor di pilih - ambil agreement current(yg berlaku tahun ini)
+                'jika flag di pilih agreement di pilih - ambil startdate dan enddate dari agreement tsb
+
+                ''protect user jangan salah pilih(campur agreement sekarang dan tahun sebelumnya)     
+
+
+            Catch ex As Exception
+                If Not IsNothing(Me.SqlRe) Then
+                    If Not Me.SqlRe.IsClosed Then
+                        Me.SqlRe.Close()
+                    End If
+                End If
+                Me.DisposeTempDB()
+                Me.CloseConnection() : Me.ClearCommandParameters()
+                Throw ex
+            End Try
+        End Function
         Private disposedValue As Boolean = False        ' To detect redundant calls
 
         ' IDisposable
@@ -2914,8 +3156,248 @@ Namespace DistributorAgreement
                 Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
             End Try
         End Function
+        'Public Function getAchivementDPDByPO(ByVal Flag As String, Optional ByVal listAGree As List(Of String) = Nothing, Optional ByVal listDist As List(Of String) = Nothing) As DataSet
+        '    Try
+        '        Dim strListAgree As String = "", strListDist As String = "", strTargetFMP As String = "TARGET_FMP"
+        '        If Not IsNothing(listAGree) Then
+        '            strListAgree = "IN('"
+        '            For i As Integer = 0 To listAGree.Count - 1
+        '                strListAgree &= listAGree(i)
+        '                If i < listAGree.Count - 1 Then
+        '                    strListAgree &= ",'"
+        '                Else : strListAgree &= "'"
+        '                End If
+        '            Next
+        '            strListAgree &= ")"
+
+        '        End If
+        '        If Not IsNothing(listDist) Then
+        '            strListDist = "IN('"
+        '            For i As Integer = 0 To listDist.Count - 1
+        '                strListDist &= listDist(i)
+        '                If i < listDist.Count - 1 Then
+        '                    strListDist &= ",'"
+        '                Else : strListDist &= "'"
+        '                End If
+        '            Next
+        '            strListDist &= ")"
+        '        End If
+        '        Dim StartDate As DateTime = Nothing, EndDate As DateTime = Nothing, StartDateF1 As DateTime = Nothing, EndDateF1 As DateTime = Nothing, StartDateF2 As DateTime = Nothing, EndDateF2 As DateTime = Nothing, _
+        '           StartDateF3 As DateTime = Nothing, EndDateF3 As DateTime = Nothing
+        '        If Not IsNothing(listAGree) And Not IsNothing(listDist) Then
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '            " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID WHERE AA.AGREEMENT_NO " & strListAgree & vbCrLf & _
+        '            " AND BB.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+        '        ElseIf Not IsNothing(listAGree) Then
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '                    " SELECT TOP 1 START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO " & strListAgree
+        '        ElseIf Not IsNothing(listDist) Then
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '                    " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID INNER JOIN DISTRIBUTOR_AGREEMENT DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO WHERE DA.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+        '                    " AND BB.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1) " & vbCrLf & _
+        '                    " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101)"
+        '        ElseIf IsNothing(listAGree) And IsNothing(listDist) Then ''current agreement
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '            " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) " & vbCrLf & _
+        '             " AND BB.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1) "
+        '        End If
+        '        If Not IsNothing(Me.SqlCom) Then : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+        '        Else : Me.CreateCommandSql("sp_executesql", "")
+        '        End If
+        '        Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+        '        Me.OpenConnection()
+        '        SqlRe = Me.SqlCom.ExecuteReader()
+        '        While Me.SqlRe.Read()
+        '            StartDate = SqlRe.GetDateTime(0)
+        '            EndDate = SqlRe.GetDateTime(1)
+        '        End While : Me.SqlRe.Close() : Me.ClearCommandParameters()
+        '        If IsNothing(StartDate) Or IsNothing(EndDate) Then
+        '            Me.CloseConnection()
+        '            Throw New Exception("Can not find current and going agreement")
+        '        End If
+        '        Select Case Flag
+        '            Case "F1"
+        '                strTargetFMP &= "1"
+        '            Case "F2"
+        '                strTargetFMP &= "2"
+        '            Case "F3"
+        '                strTargetFMP &= "3"
+        '        End Select
+        '        StartDateF1 = StartDate
+        '        EndDateF1 = StartDateF1.AddMonths(4).AddDays(-1)
+        '        StartDateF2 = EndDateF1.AddDays(1)
+        '        EndDateF2 = StartDateF2.AddMonths(4).AddDays(-1)
+        '        StartDateF3 = EndDateF2.AddDays(1)
+        '        EndDateF3 = EndDate
+        '        ''hapus table temporari jika masih ada
+
+        '        Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '        " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Ach_PODetail_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+        '        " BEGIN " & vbCrLf & _
+        '        "   DROP TABLE tempdb..##T_Ach_PODetail_" & Me.ComputerName & ";" & vbCrLf & _
+        '        " END "
+        '        Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+        '        Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+        '        Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+        '        Query = "SET NOCOUNT ON;SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
+        '                "SELECT REG.REGIONAL_AREA,TER.TERRITORY_AREA,DR.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,AA.AGREEMENT_NO,AA.END_DATE,ABI.BRAND_ID,BR_1.BRAND_NAME," & vbCrLf & _
+        '                "ISCombined = CASE WHEN ABI.COMB_AGREE_BRAND_ID IS NOT NULL THEN 'YES' ELSE 'NO' END, FLAG = '" & Flag & "'," & vbCrLf & _
+        '                "ABI." & strTargetFMP & " AS TOTAL_TARGET,ISNULL(BR.ACTUAL,0)AS TOTAL_PO,ISNULL(BR.ACTUAL,0) - ABI.TARGET_FMP1 AS BALANCE, ABI." & strTargetFMP & " / ISNULL(BR.ACTUAL,0) AS ACHIEVEMENT_DISPRO FROM AGREE_BRAND_INCLUDE ABI INNER JOIN BRND_BRAND BR_1" & vbCrLf & _
+        '                "ON ABI.BRAND_ID = BR_1.BRAND_ID" & vbCrLf & _
+        '                "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO" & vbCrLf & _
+        '                "INNER JOIN DISTRIBUTOR_AGREEMENT DA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO" & vbCrLf & _
+        '                "INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = DA.DISTRIBUTOR_ID" & vbCrLf & _
+        '                "INNER JOIN TERRITORY TER ON TER.TERRITORY_ID = DR.TERRITORY_ID " & vbCrLf & _
+        '                "INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TER.REGIONAL_ID " & vbCrLf & _
+        '                "LEFT OUTER JOIN(" & vbCrLf & _
+        '                "               SELECT ABI_1.AGREE_BRAND_ID,ISNULL(SUM(OPO.ACTUAL),0)AS ACTUAL FROM AGREE_BRANDPACK_INCLUDE ABI_1" & vbCrLf & _
+        '                "               INNER JOIN(" & vbCrLf & _
+        '                "               SELECT ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS ACTUAL FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+        '                "               ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID " & vbCrLf & _
+        '                "               INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO" & vbCrLf & _
+        '                "               WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf
+        '        If Not IsNothing(listDist) Then
+        '            Query &= "AND OPO.DISTRIBUTOR_ID " & strListDist & vbCrLf
+        '            Query &= vbCrLf
+        '        End If
+        '        If Not IsNothing(listAGree) Then
+        '            Query &= " AND ABI_2.AGREEMENT_NO "
+        '            Query &= strListAgree
+        '            Query &= vbCrLf
+        '        End If
+        '        Query &= " GROUP BY ABI_2.AGREE_BRANDPACK_ID" & vbCrLf & _
+        '                 "           )OPO " & vbCrLf & _
+        '                 "   ON OPO.AGREE_BRANDPACK_ID = ABI_1.AGREE_BRANDPACK_ID  GROUP BY ABI_1.AGREE_BRAND_ID " & vbCrLf & _
+        '                 " )BR " & vbCrLf & _
+        '                 " ON BR.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID  " & vbCrLf
+
+        '        If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+        '            Query &= " WHERE ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+        '                    " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf
+        '            Query &= "AND BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+
+        '        ElseIf Not IsNothing(listDist) Then
+        '            Query &= " WHERE DR.DISTRIBUTOR_ID "
+        '            Query &= strListDist & vbCrLf
+        '            Query &= "AND BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf & _
+        '            " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) "
+        '        ElseIf Not IsNothing(listAGree) Then
+        '            Query &= " WHERE ABI.AGREEMENT_NO "
+        '            Query &= strListAgree & vbCrLf
+        '            Query &= " AND BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+        '        Else
+        '            Query &= " WHERE BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf & _
+        '            " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) "
+        '        End If
+        '        Me.ResetCommandText(CommandType.Text, Query)
+        '        Select Case Flag
+        '            Case "F1"
+        '                Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF1)
+        '                Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF1)
+        '            Case "F2"
+        '                Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF2)
+        '                Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF2)
+        '            Case "F3"
+        '                Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF3)
+        '                Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF3)
+        '        End Select
+        '        Dim tblHeader As New DataTable("DPD_ACHIEVEMENT_NUFARM")
+        '        setDataAdapter(Me.SqlCom).Fill(tblHeader)
+
+
+        '        If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '                    "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+        '                    " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+        '                    "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = OPO.DISTRIBUTOR_ID " & vbCrLf & _
+        '                    " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+        '                    " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+        '                    " AND ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+        '                    " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+        '                    " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+        '            Query &= vbCrLf
+        '        ElseIf Not IsNothing(listDist) Then
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '                    "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+        '                    " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+        '                    "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = OPO.DISTRIBUTOR_ID " & vbCrLf & _
+        '                    " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+        '                    " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+        '                    " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+        '                    " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+        '            Query &= vbCrLf
+        '        ElseIf Not IsNothing(listAGree) Then
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '                    "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+        '                    " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+        '                    " INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO " & vbCrLf & _
+        '                    " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+        '                    " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+        '                    " AND ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+        '                    " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+        '            Query &= vbCrLf
+        '        Else
+        '            Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '                       "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+        '                       " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+        '                       " INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
+        '                       "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO " & vbCrLf & _
+        '                       " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+        '                       " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) " & vbCrLf & _
+        '                       " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf
+        '        End If
+        '        Query &= " GROUP BY ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID;"
+        '        Me.ResetCommandText(CommandType.Text, Query)
+        '        Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+
+        '        Query = "SET NOCOUNT ON;" & vbCrLf & _
+        '        " SELECT DR.DISTRIBUTOR_NAME,BB.BRANDPACK_NAME,TPO.AGREE_BRAND_ID,TPO.TOTAL_PO FROM DIST_DISTRIBUTOR DR INNER JOIN DISTRIBUTOR_AGREEMENT DA " & vbCrLf & _
+        '        " ON DR.DISTRIBUTOR_ID = DA.DISTRIBUTOR_ID INNER JOIN AGREE_BRANDPACK_INCLUDE ABI ON ABI.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
+        '        " INNER JOIN BRND_BRANDPACK BB ON BB.BRANDPACK_ID = ABI.BRANDPACK_ID INNER JOIN TEMPDB..##T_Ach_PODetail_" & Me.ComputerName & " TPO " & vbCrLf & _
+        '        " ON TPO.AGREE_BRANDPACK_ID = ABI.AGREE_BRANDPACK_ID " & vbCrLf
+        '        If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+        '            Query &= "WHERE ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+        '                    " AND DR.DISTRIBUTOR_ID " & strListDist
+        '        ElseIf Not IsNothing(listDist) Then
+        '            Query &= "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) AND DR.DISTRIBUTOR_ID " & strListDist
+
+        '        ElseIf Not IsNothing(listAGree) Then
+        '            Query &= "WHERE ABI.AGREEMENT_NO " & strListAgree
+        '        Else
+        '            Query &= "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101);"
+        '        End If
+
+        '        ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+        '        Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+        '        Dim tblDetail As New DataTable("TOTAL_PO_DETAIL")
+        '        setDataAdapter(Me.SqlCom).Fill(tblDetail) : Me.ClearCommandParameters()
+        '        Dim ds As New DataSet()
+        '        ds.Tables.Add(tblHeader)
+        '        ds.Tables.Add(tblDetail)
+        '        Return ds
+        '        ''get data PO by BrandPack
+
+        '        'get startdate & 
+        '        'jika flag di pilih semua - aman langsung proses sesuai query diatas tinggal ambil startdate and enddate
+        '        'jika flag di pilih distributor di pilih - ambil agreement current(yg berlaku tahun ini)
+        '        'jika flag di pilih agreement di pilih - ambil startdate dan enddate dari agreement tsb
+
+        '        ''protect user jangan salah pilih(campur agreement sekarang dan tahun sebelumnya)     
+
+
+        '    Catch ex As Exception
+        '        If Not IsNothing(Me.SqlRe) Then
+        '            If Not Me.SqlRe.IsClosed Then
+        '                Me.SqlRe.Close()
+        '            End If
+        '        End If
+        '        Me.DisposeTempDB()
+        '        Me.CloseConnection() : Me.ClearCommandParameters()
+        '        Throw ex
+        '    End Try
+        'End Function
         'get accrued
-        Public Shadows Function getAchievement(ByVal Flag As String, Optional ByVal DISTRIBUTOR_ID As String = "", Optional ByVal ListAGREEMENT_NO As List(Of String) = Nothing) As DataSet
+        Public Shadows Function getAchievementDPD(ByVal Flag As String, Optional ByVal DISTRIBUTOR_ID As String = "", Optional ByVal ListAGREEMENT_NO As List(Of String) = Nothing) As DataSet
 
             Try
                 Dim strAgreementNos As String = "IN('"
@@ -2936,13 +3418,13 @@ Namespace DistributorAgreement
 
                 '-----------------------------------Header Query -->achievement header--------------------------
                 Query = "SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
-                        "SELECT ACRH.ACH_HEADER_ID,ACRH.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ACRH.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,ACRH.FLAG,ACRH.BRAND_ID,BB.BRAND_NAME," & vbCrLf & _
+                        "SELECT ACRH.ACH_HEADER_ID,REG.REGIONAL_AREA,TER.TERRITORY_AREA,ACRH.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,ACRH.AGREEMENT_NO,AA.START_DATE,AA.END_DATE,ACRH.FLAG,ACRH.BRAND_ID,BB.BRAND_NAME," & vbCrLf & _
                         "ISNULL(AP.AVGPRICE,0) AS AVG_PRICE_FM,ISNULL(AP.AVGPRICE_PL,0) AS AVG_PRICE_PL,ACRH.TARGET_FM,ACRH.TARGET_PL,ISNULL(AP.AVGPRICE,0) * ACRH.TOTAL_TARGET AS TARGET_VALUE,ACRH.TOTAL_PO_VALUE,ACRH.TOTAL_TARGET," & vbCrLf & _
                         " ACRH.TOTAL_PO,ACRH.TOTAL_ACTUAL,ACRH.BALANCE,ACRH.ACH_BY_CAT/100 AS ACH_BY_CAT,ACRH.ACH_DISPRO/100 AS ACHIEVEMENT_DISPRO,ACRH.DISPRO/100 AS DISPRO,  " & vbCrLf & _
                         " ACRH.DISC_QTY, ACRH.TOTAL_CPQ1,ACRH.TOTAL_PBS2,ISTARGET_GROUP,COMBINED_BRAND = CASE WHEN (ACRH.COMBINED_BRAND_ID IS NOT NULL) THEN 1 ELSE 0 END, " & vbCrLf & _
                         " ACRH.TOTAL_CPF1,ACRH.TOTAL_CPF2,TOTAL_PBF3,ACRH.[DESCRIPTIONS],ACRH.ACTUAL_DIST,ACRH.PO_DIST,ACRH.PO_VALUE_DIST,ACRH.DISC_DIST,ACRH.CPQ1_DIST,ACRH.CPQ2_DIST,ACRH.CPQ3_DIST,ACRH.CPF1_DIST,ACRH.CPF2_DIST,ACRH.PBF3_DIST,ACRH.PBS2_DIST " & vbCrLf & _
                         " FROM ACHIEVEMENT_HEADER ACRH INNER JOIN AGREE_AGREEMENT AA ON ACRH.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN DIST_DISTRIBUTOR DR ON ACRH.DISTRIBUTOR_ID " & vbCrLf & _
-                        " = DR.DISTRIBUTOR_ID INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ACRH.BRAND_ID " & vbCrLf & _
+                        " = DR.DISTRIBUTOR_ID INNER JOIN TERRITORY TER ON TER.TERRITORY_ID = DR.TERRITORY_ID INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TER.REGIONAL_ID INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ACRH.BRAND_ID " & vbCrLf & _
                         "  LEFT OUTER JOIN BRND_AVGPRICE AP ON AP.IDApp = ACRH.AvgPriceID " & vbCrLf
                 If ((DISTRIBUTOR_ID <> "") And (Not IsNothing(ListAGREEMENT_NO))) Then
                     If ListAGREEMENT_NO.Count > 0 Then
@@ -3152,7 +3634,7 @@ Namespace DistributorAgreement
                 For i As Integer = 0 To tblDistAgreement.Rows.Count - 1
                     ListAgreement.Add(tblDistAgreement.Rows(i)("AGREEMENT_NO").ToString().Trim())
                 Next
-                Dim Ds As DataSet = Me.getAchievement(Flag, DISTRIBUTOR_ID, ListAgreement)
+                Dim Ds As DataSet = Me.getAchievementDPD(Flag, DISTRIBUTOR_ID, ListAgreement)
                 Me.DisposeTempDB()
                 Return Ds
             Catch ex As Exception
@@ -4692,6 +5174,246 @@ Namespace DistributorAgreement
             End If
             tblAchHeader.AcceptChanges()
             Return True
+        End Function
+        Public Function getAchivementDPDByPO(ByVal Flag As String, Optional ByVal listAGree As List(Of String) = Nothing, Optional ByVal listDist As List(Of String) = Nothing) As DataSet
+            Try
+                Dim strListAgree As String = "", strListDist As String = "", strTargetFMP As String = "TARGET_FMP"
+                If Not IsNothing(listAGree) Then
+                    strListAgree = "IN('"
+                    For i As Integer = 0 To listAGree.Count - 1
+                        strListAgree &= listAGree(i)
+                        If i < listAGree.Count - 1 Then
+                            strListAgree &= ",'"
+                        Else : strListAgree &= "'"
+                        End If
+                    Next
+                    strListAgree &= ")"
+
+                End If
+                If Not IsNothing(listDist) Then
+                    strListDist = "IN('"
+                    For i As Integer = 0 To listDist.Count - 1
+                        strListDist &= listDist(i)
+                        If i < listDist.Count - 1 Then
+                            strListDist &= ",'"
+                        Else : strListDist &= "'"
+                        End If
+                    Next
+                    strListDist &= ")"
+                End If
+                Dim StartDate As DateTime = Nothing, EndDate As DateTime = Nothing, StartDateF1 As DateTime = Nothing, EndDateF1 As DateTime = Nothing, StartDateF2 As DateTime = Nothing, EndDateF2 As DateTime = Nothing, _
+                   StartDateF3 As DateTime = Nothing, EndDateF3 As DateTime = Nothing
+                If Not IsNothing(listAGree) And Not IsNothing(listDist) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID WHERE AA.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                    " AND BB.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                ElseIf Not IsNothing(listAGree) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            " SELECT TOP 1 START_DATE,END_DATE FROM AGREE_AGREEMENT WHERE AGREEMENT_NO " & strListAgree
+                ElseIf Not IsNothing(listDist) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID INNER JOIN DISTRIBUTOR_AGREEMENT DA ON AA.AGREEMENT_NO = DA.AGREEMENT_NO WHERE DA.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+                            " AND BB.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1) " & vbCrLf & _
+                            " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101)"
+                ElseIf IsNothing(listAGree) And IsNothing(listDist) Then ''current agreement
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                    " SELECT TOP 1 AA.START_DATE,AA.END_DATE FROM AGREE_AGREEMENT AA INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREEMENT_NO = AA.AGREEMENT_NO INNER JOIN BRND_BRAND BB ON BB.BRAND_ID = ABI.BRAND_ID WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) " & vbCrLf & _
+                     " AND BB.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1) "
+                End If
+                If Not IsNothing(Me.SqlCom) Then : Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Else : Me.CreateCommandSql("sp_executesql", "")
+                End If
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.OpenConnection()
+                SqlRe = Me.SqlCom.ExecuteReader()
+                While Me.SqlRe.Read()
+                    StartDate = SqlRe.GetDateTime(0)
+                    EndDate = SqlRe.GetDateTime(1)
+                End While : Me.SqlRe.Close() : Me.ClearCommandParameters()
+                If IsNothing(StartDate) Or IsNothing(EndDate) Then
+                    Me.CloseConnection()
+                    Throw New Exception("Can not find current and going agreement")
+                End If
+                Select Case Flag
+                    Case "F1"
+                        strTargetFMP &= "1"
+                    Case "F2"
+                        strTargetFMP &= "2"
+                    Case "F3"
+                        strTargetFMP &= "3"
+                End Select
+                StartDateF1 = StartDate
+                EndDateF1 = StartDateF1.AddMonths(4).AddDays(-1)
+                StartDateF2 = EndDateF1.AddDays(1)
+                EndDateF2 = StartDateF2.AddMonths(4).AddDays(-1)
+                StartDateF3 = EndDateF2.AddDays(1)
+                EndDateF3 = EndDate
+                ''hapus table temporari jika masih ada
+
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " IF EXISTS(SELECT [NAME] FROM [tempdb].[sys].[objects] WHERE [NAME] = '##T_Ach_PODetail_" & Me.ComputerName & "' AND TYPE = 'U')" & vbCrLf & _
+                " BEGIN " & vbCrLf & _
+                "   DROP TABLE tempdb..##T_Ach_PODetail_" & Me.ComputerName & ";" & vbCrLf & _
+                " END "
+                Me.ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+                Query = "SET NOCOUNT ON;SET DEADLOCK_PRIORITY NORMAL; SET NOCOUNT ON; SET ANSI_WARNINGS OFF ;" & vbCrLf & _
+                        "SELECT REG.REGIONAL_AREA,TER.TERRITORY_AREA,DR.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,AA.AGREEMENT_NO,AA.END_DATE,ABI.BRAND_ID,BR_1.BRAND_NAME," & vbCrLf & _
+                        "ISCombined = CASE WHEN ABI.COMB_AGREE_BRAND_ID IS NOT NULL THEN 'YES' ELSE 'NO' END, FLAG = '" & Flag & "'," & vbCrLf & _
+                        "ABI." & strTargetFMP & " AS TOTAL_TARGET,ISNULL(BR.ACTUAL,0)AS TOTAL_PO,ISNULL(BR.ACTUAL,0) - ABI.TARGET_FMP1 AS BALANCE, ABI." & strTargetFMP & " / ISNULL(BR.ACTUAL,0) AS ACHIEVEMENT_DISPRO FROM AGREE_BRAND_INCLUDE ABI INNER JOIN BRND_BRAND BR_1" & vbCrLf & _
+                        "ON ABI.BRAND_ID = BR_1.BRAND_ID" & vbCrLf & _
+                        "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO" & vbCrLf & _
+                        "INNER JOIN DISTRIBUTOR_AGREEMENT DA ON DA.AGREEMENT_NO = AA.AGREEMENT_NO" & vbCrLf & _
+                        "INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = DA.DISTRIBUTOR_ID" & vbCrLf & _
+                        "INNER JOIN TERRITORY TER ON TER.TERRITORY_ID = DR.TERRITORY_ID " & vbCrLf & _
+                        "INNER JOIN DIST_REGIONAL REG ON REG.REGIONAL_ID = TER.REGIONAL_ID " & vbCrLf & _
+                        "LEFT OUTER JOIN(" & vbCrLf & _
+                        "               SELECT ABI_1.AGREE_BRAND_ID,ISNULL(SUM(OPO.ACTUAL),0)AS ACTUAL FROM AGREE_BRANDPACK_INCLUDE ABI_1" & vbCrLf & _
+                        "               INNER JOIN(" & vbCrLf & _
+                        "               SELECT ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS ACTUAL FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                        "               ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID " & vbCrLf & _
+                        "               INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO" & vbCrLf & _
+                        "               WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf
+                If Not IsNothing(listDist) Then
+                    Query &= "AND OPO.DISTRIBUTOR_ID " & strListDist & vbCrLf
+                    Query &= vbCrLf
+                End If
+                If Not IsNothing(listAGree) Then
+                    Query &= " AND ABI_2.AGREEMENT_NO "
+                    Query &= strListAgree
+                    Query &= vbCrLf
+                End If
+                Query &= " GROUP BY ABI_2.AGREE_BRANDPACK_ID" & vbCrLf & _
+                         "           )OPO " & vbCrLf & _
+                         "   ON OPO.AGREE_BRANDPACK_ID = ABI_1.AGREE_BRANDPACK_ID  GROUP BY ABI_1.AGREE_BRAND_ID " & vbCrLf & _
+                         " )BR " & vbCrLf & _
+                         " ON BR.AGREE_BRAND_ID = ABI.AGREE_BRAND_ID  " & vbCrLf
+
+                If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+                    Query &= " WHERE ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf
+                    Query &= "AND BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+
+                ElseIf Not IsNothing(listDist) Then
+                    Query &= " WHERE DR.DISTRIBUTOR_ID "
+                    Query &= strListDist & vbCrLf
+                    Query &= "AND BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf & _
+                    " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) "
+                ElseIf Not IsNothing(listAGree) Then
+                    Query &= " WHERE ABI.AGREEMENT_NO "
+                    Query &= strListAgree & vbCrLf
+                    Query &= " AND BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                Else
+                    Query &= " WHERE BR_1.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf & _
+                    " AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) "
+                End If
+                Me.ResetCommandText(CommandType.Text, Query)
+                Select Case Flag
+                    Case "F1"
+                        Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF1)
+                        Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF1)
+                    Case "F2"
+                        Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF2)
+                        Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF2)
+                    Case "F3"
+                        Me.AddParameter("@START_DATE", SqlDbType.SmallDateTime, StartDateF3)
+                        Me.AddParameter("@END_DATE", SqlDbType.SmallDateTime, EndDateF3)
+                End Select
+                Dim tblHeader As New DataTable("DPD_ACHIEVEMENT_NUFARM")
+                setDataAdapter(Me.SqlCom).Fill(tblHeader)
+
+
+                If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                            " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                            "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = OPO.DISTRIBUTOR_ID " & vbCrLf & _
+                            " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                            " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+                            " AND ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+                            " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                    Query &= vbCrLf
+                ElseIf Not IsNothing(listDist) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                            " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                            "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO INNER JOIN DIST_DISTRIBUTOR DR ON DR.DISTRIBUTOR_ID = OPO.DISTRIBUTOR_ID " & vbCrLf & _
+                            " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                            " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist & vbCrLf & _
+                            " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                    Query &= vbCrLf
+                ElseIf Not IsNothing(listAGree) Then
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                            "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                            " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                            " INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO " & vbCrLf & _
+                            " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                            " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE" & vbCrLf & _
+                            " AND ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)"
+                    Query &= vbCrLf
+                Else
+                    Query = "SET NOCOUNT ON;" & vbCrLf & _
+                               "SELECT ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID,ISNULL(SUM(OPB.PO_ORIGINAL_QTY),0) AS TOTAL_PO INTO ##T_Ach_PODetail_" & Me.ComputerName & " FROM ORDR_PO_BRANDPACK OPB INNER JOIN AGREE_BRANDPACK_INCLUDE ABI_2" & vbCrLf & _
+                               " ON ABI_2.BRANDPACK_ID = OPB.BRANDPACK_ID  INNER JOIN AGREE_BRAND_INCLUDE ABI ON ABI.AGREE_BRAND_ID = ABI_2.AGREE_BRAND_ID " & vbCrLf & _
+                               " INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO " & vbCrLf & _
+                               "INNER JOIN ORDR_PURCHASE_ORDER OPO ON OPB.PO_REF_NO = OPO.PO_REF_NO " & vbCrLf & _
+                               " INNER JOIN BRND_BRAND BR ON BR.BRAND_ID = ABI.BRAND_ID " & vbCrLf & _
+                               " WHERE OPO.PO_REF_DATE <= @END_DATE AND OPO.PO_REF_DATE >= @START_DATE AND AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) " & vbCrLf & _
+                               " AND BR.BRAND_NAME NOT IN(SELECT BRAND_NAME FROM BRND_BRAND WHERE BRAND_NAME LIKE 'ROUNDUP%' AND IsActive = 1)" & vbCrLf
+                End If
+                Query &= " GROUP BY ABI.AGREE_BRAND_ID,ABI_2.AGREE_BRANDPACK_ID;"
+                Me.ResetCommandText(CommandType.Text, Query)
+                Me.SqlCom.ExecuteScalar() : Me.ClearCommandParameters()
+
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " SELECT DR.DISTRIBUTOR_NAME,BB.BRANDPACK_NAME,TPO.AGREE_BRAND_ID,TPO.TOTAL_PO FROM DIST_DISTRIBUTOR DR INNER JOIN DISTRIBUTOR_AGREEMENT DA " & vbCrLf & _
+                " ON DR.DISTRIBUTOR_ID = DA.DISTRIBUTOR_ID INNER JOIN AGREE_BRANDPACK_INCLUDE ABI ON ABI.AGREEMENT_NO = DA.AGREEMENT_NO " & vbCrLf & _
+                " INNER JOIN BRND_BRANDPACK BB ON BB.BRANDPACK_ID = ABI.BRANDPACK_ID INNER JOIN TEMPDB..##T_Ach_PODetail_" & Me.ComputerName & " TPO " & vbCrLf & _
+                " ON TPO.AGREE_BRANDPACK_ID = ABI.AGREE_BRANDPACK_ID " & vbCrLf
+                If Not IsNothing(listDist) And Not IsNothing(listAGree) Then
+                    Query &= "WHERE ABI.AGREEMENT_NO " & strListAgree & vbCrLf & _
+                            " AND DR.DISTRIBUTOR_ID " & strListDist
+                ElseIf Not IsNothing(listDist) Then
+                    Query &= "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101) AND DR.DISTRIBUTOR_ID " & strListDist
+
+                ElseIf Not IsNothing(listAGree) Then
+                    Query &= "WHERE ABI.AGREEMENT_NO " & strListAgree
+                Else
+                    Query &= "INNER JOIN AGREE_AGREEMENT AA ON AA.AGREEMENT_NO = ABI.AGREEMENT_NO WHERE AA.START_DATE <= CONVERT(VARCHAR(100),GETDATE(),101) AND AA.END_DATE >= CONVERT(VARCHAR(100),GETDATE(),101);"
+                End If
+
+                ResetCommandText(CommandType.StoredProcedure, "sp_executesql")
+                Me.AddParameter("@stmt", SqlDbType.NVarChar, Query)
+                Dim tblDetail As New DataTable("TOTAL_PO_DETAIL")
+                setDataAdapter(Me.SqlCom).Fill(tblDetail) : Me.ClearCommandParameters()
+                Dim ds As New DataSet()
+                ds.Tables.Add(tblHeader)
+                ds.Tables.Add(tblDetail)
+                Return ds
+                ''get data PO by BrandPack
+
+                'get startdate & 
+                'jika flag di pilih semua - aman langsung proses sesuai query diatas tinggal ambil startdate and enddate
+                'jika flag di pilih distributor di pilih - ambil agreement current(yg berlaku tahun ini)
+                'jika flag di pilih agreement di pilih - ambil startdate dan enddate dari agreement tsb
+
+                ''protect user jangan salah pilih(campur agreement sekarang dan tahun sebelumnya)     
+
+
+            Catch ex As Exception
+                If Not IsNothing(Me.SqlRe) Then
+                    If Not Me.SqlRe.IsClosed Then
+                        Me.SqlRe.Close()
+                    End If
+                End If
+                Me.DisposeTempDB()
+                Me.CloseConnection() : Me.ClearCommandParameters()
+                Throw ex
+            End Try
         End Function
         Private Sub SetTotalPeriodeBeforeDetail(ByVal tbltemp As DataTable, ByRef tblAchDetail As DataTable, ByVal AgreementNo As String, ByVal Flag As String, ByVal ColTotalPBFlag As String, Optional ByVal colTotalAmountFlag As String = "")
             Dim rows() As DataRow = Nothing

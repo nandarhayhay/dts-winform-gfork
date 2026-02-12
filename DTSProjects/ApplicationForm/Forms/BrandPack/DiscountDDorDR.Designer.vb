@@ -531,7 +531,7 @@ Partial Class DiscountDDOrDR
         Me.grdProgDisc.TabIndex = 6
         Me.grdProgDisc.UpdateOnLeave = False
         Me.grdProgDisc.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
-        Me.grdProgDisc.WatermarkImage.Image = CType(resources.GetObject("resource.Image"), System.Drawing.Image)
+        Me.grdProgDisc.WatermarkImage.Image = CType(resources.GetObject("grdProgDisc.WatermarkImage.Image"), System.Drawing.Image)
         Me.grdProgDisc.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
         '
         'Panel1

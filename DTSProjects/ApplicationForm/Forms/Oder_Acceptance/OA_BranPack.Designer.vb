@@ -24,11 +24,11 @@ Partial Class OA_BranPack
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(OA_BranPack))
         Dim mcbBrandPack_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
         Dim GridEX1_DesignTimeLayout As Janus.Windows.GridEX.GridEXLayout = New Janus.Windows.GridEX.GridEXLayout
-        Dim UiComboBoxItem11 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem12 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem13 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem14 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
-        Dim UiComboBoxItem15 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem1 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem2 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem3 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem4 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
+        Dim UiComboBoxItem5 As Janus.Windows.EditControls.UIComboBoxItem = New Janus.Windows.EditControls.UIComboBoxItem
         Dim ButtonBarGroup1 As Janus.Windows.ButtonBar.ButtonBarGroup = New Janus.Windows.ButtonBar.ButtonBarGroup
         Dim ButtonBarItem1 As Janus.Windows.ButtonBar.ButtonBarItem = New Janus.Windows.ButtonBar.ButtonBarItem
         Dim ButtonBarItem2 As Janus.Windows.ButtonBar.ButtonBarItem = New Janus.Windows.ButtonBar.ButtonBarItem
@@ -83,38 +83,6 @@ Partial Class OA_BranPack
         Me.btnChekExisting = New Janus.Windows.EditControls.UIButton
         Me.ExpandableSplitter1 = New DevComponents.DotNetBar.ExpandableSplitter
         Me.NavigationPane1 = New DevComponents.DotNetBar.NavigationPane
-        Me.pnlOtherDiscount = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.rdbDP = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbDK = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbUncategorized = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbCBD = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbDR = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbDD = New Janus.Windows.EditControls.UIRadioButton
-        Me.btnGenerateOtherDiscount = New Janus.Windows.EditControls.UIButton
-        Me.btnOtherDiscount = New DevComponents.DotNetBar.ButtonItem
-        Me.NavigationPanePanel4 = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.NavigationPanePanel3 = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.NavigationPanePanel1 = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.btnRefixUnmatched = New Janus.Windows.EditControls.UIButton
-        Me.pnlRemainding = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.btnbrRemainding = New Janus.Windows.ButtonBar.ButtonBar
-        Me.NavigationPanePanel2 = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.btnRemainding = New DevComponents.DotNetBar.ButtonItem
-        Me.pnlProject = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.btnProject = New DevComponents.DotNetBar.ButtonItem
-        Me.pnlAgreement = New DevComponents.DotNetBar.NavigationPanePanel
-        Me.pnlAgreementDiscount = New DevComponents.DotNetBar.ExpandablePanel
-        Me.rdbYearlyDiscount = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbSemesterly2Discount = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbSemesterly1Discount = New Janus.Windows.EditControls.UIRadioButton
-        Me.btnNewGiven = New Janus.Windows.EditControls.UIButton
-        Me.btnGenerateAgreement = New Janus.Windows.EditControls.UIButton
-        Me.rdbPeriodDiscount4 = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbPeriodDiscount3 = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbPeriodDiscount2 = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbPeriodDiscount1 = New Janus.Windows.EditControls.UIRadioButton
-        Me.rdbGivenDiscount = New Janus.Windows.EditControls.UIRadioButton
-        Me.btnAgreement = New DevComponents.DotNetBar.ButtonItem
         Me.pnlMarketing = New DevComponents.DotNetBar.NavigationPanePanel
         Me.pnlMarketingDiscount = New DevComponents.DotNetBar.ExpandablePanel
         Me.sdBarCPD = New DevComponents.DotNetBar.SideBar
@@ -136,6 +104,38 @@ Partial Class OA_BranPack
         Me.rdbTSDiscountMarketing = New Janus.Windows.EditControls.UIRadioButton
         Me.rdbGivenDiscountMarketing = New Janus.Windows.EditControls.UIRadioButton
         Me.btnMarketing = New DevComponents.DotNetBar.ButtonItem
+        Me.NavigationPanePanel4 = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.NavigationPanePanel3 = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.NavigationPanePanel1 = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.btnRefixUnmatched = New Janus.Windows.EditControls.UIButton
+        Me.pnlRemainding = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.btnbrRemainding = New Janus.Windows.ButtonBar.ButtonBar
+        Me.pnlProject = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.btnProject = New DevComponents.DotNetBar.ButtonItem
+        Me.NavigationPanePanel2 = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.btnRemainding = New DevComponents.DotNetBar.ButtonItem
+        Me.pnlAgreement = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.pnlAgreementDiscount = New DevComponents.DotNetBar.ExpandablePanel
+        Me.rdbYearlyDiscount = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbSemesterly2Discount = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbSemesterly1Discount = New Janus.Windows.EditControls.UIRadioButton
+        Me.btnNewGiven = New Janus.Windows.EditControls.UIButton
+        Me.btnGenerateAgreement = New Janus.Windows.EditControls.UIButton
+        Me.rdbPeriodDiscount4 = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbPeriodDiscount3 = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbPeriodDiscount2 = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbPeriodDiscount1 = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbGivenDiscount = New Janus.Windows.EditControls.UIRadioButton
+        Me.btnAgreement = New DevComponents.DotNetBar.ButtonItem
+        Me.pnlOtherDiscount = New DevComponents.DotNetBar.NavigationPanePanel
+        Me.rdbDP = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbDK = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbUncategorized = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbCBD = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbDR = New Janus.Windows.EditControls.UIRadioButton
+        Me.rdbDD = New Janus.Windows.EditControls.UIRadioButton
+        Me.btnGenerateOtherDiscount = New Janus.Windows.EditControls.UIButton
+        Me.btnOtherDiscount = New DevComponents.DotNetBar.ButtonItem
         Me.GridEX2 = New Janus.Windows.GridEX.GridEX
         Me.pnlOADiscount = New DevComponents.DotNetBar.ExpandablePanel
         Me.pnlTotalRemainder = New DevComponents.DotNetBar.PanelEx
@@ -156,14 +156,14 @@ Partial Class OA_BranPack
         Me.pnlGridBrandPack.SuspendLayout()
         Me.pnlPrint.SuspendLayout()
         Me.NavigationPane1.SuspendLayout()
-        Me.pnlOtherDiscount.SuspendLayout()
+        Me.pnlMarketing.SuspendLayout()
+        Me.pnlMarketingDiscount.SuspendLayout()
         Me.NavigationPanePanel1.SuspendLayout()
         Me.pnlRemainding.SuspendLayout()
         CType(Me.btnbrRemainding, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlAgreement.SuspendLayout()
         Me.pnlAgreementDiscount.SuspendLayout()
-        Me.pnlMarketing.SuspendLayout()
-        Me.pnlMarketingDiscount.SuspendLayout()
+        Me.pnlOtherDiscount.SuspendLayout()
         CType(Me.GridEX2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlOADiscount.SuspendLayout()
         CType(Me.GridEX3, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -571,27 +571,27 @@ Partial Class OA_BranPack
         '
         Me.cmbKiloLitre.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.cmbKiloLitre.BorderStyle = Janus.Windows.UI.BorderStyle.Flat
-        UiComboBoxItem11.FormatStyle.Alpha = 0
-        UiComboBoxItem11.IsSeparator = False
-        UiComboBoxItem11.Text = "LITRE"
-        UiComboBoxItem11.Value = "LITRE"
-        UiComboBoxItem12.FormatStyle.Alpha = 0
-        UiComboBoxItem12.IsSeparator = False
-        UiComboBoxItem12.Text = "KILO"
-        UiComboBoxItem12.Value = "KILO"
-        UiComboBoxItem13.FormatStyle.Alpha = 0
-        UiComboBoxItem13.IsSeparator = False
-        UiComboBoxItem13.Text = "BAGS"
-        UiComboBoxItem13.Value = "BAGS"
-        UiComboBoxItem14.FormatStyle.Alpha = 0
-        UiComboBoxItem14.IsSeparator = False
-        UiComboBoxItem14.Text = "SACHET"
-        UiComboBoxItem14.Value = "SACHET"
-        UiComboBoxItem15.FormatStyle.Alpha = 0
-        UiComboBoxItem15.IsSeparator = False
-        UiComboBoxItem15.Text = "TABLET"
-        UiComboBoxItem15.Value = "TABLET"
-        Me.cmbKiloLitre.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem11, UiComboBoxItem12, UiComboBoxItem13, UiComboBoxItem14, UiComboBoxItem15})
+        UiComboBoxItem1.FormatStyle.Alpha = 0
+        UiComboBoxItem1.IsSeparator = False
+        UiComboBoxItem1.Text = "LITRE"
+        UiComboBoxItem1.Value = "LITRE"
+        UiComboBoxItem2.FormatStyle.Alpha = 0
+        UiComboBoxItem2.IsSeparator = False
+        UiComboBoxItem2.Text = "KILO"
+        UiComboBoxItem2.Value = "KILO"
+        UiComboBoxItem3.FormatStyle.Alpha = 0
+        UiComboBoxItem3.IsSeparator = False
+        UiComboBoxItem3.Text = "BAGS"
+        UiComboBoxItem3.Value = "BAGS"
+        UiComboBoxItem4.FormatStyle.Alpha = 0
+        UiComboBoxItem4.IsSeparator = False
+        UiComboBoxItem4.Text = "SACHET"
+        UiComboBoxItem4.Value = "SACHET"
+        UiComboBoxItem5.FormatStyle.Alpha = 0
+        UiComboBoxItem5.IsSeparator = False
+        UiComboBoxItem5.Text = "TABLET"
+        UiComboBoxItem5.Value = "TABLET"
+        Me.cmbKiloLitre.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3, UiComboBoxItem4, UiComboBoxItem5})
         Me.cmbKiloLitre.ItemsFormatStyle.BackColor = System.Drawing.Color.FromArgb(CType(CType(194, Byte), Integer), CType(CType(217, Byte), Integer), CType(CType(247, Byte), Integer))
         Me.cmbKiloLitre.Location = New System.Drawing.Point(188, 208)
         Me.cmbKiloLitre.Name = "cmbKiloLitre"
@@ -669,15 +669,15 @@ Partial Class OA_BranPack
         'NavigationPane1
         '
         Me.NavigationPane1.CanCollapse = True
-        Me.NavigationPane1.Controls.Add(Me.pnlAgreement)
+        Me.NavigationPane1.Controls.Add(Me.pnlMarketing)
         Me.NavigationPane1.Controls.Add(Me.NavigationPanePanel4)
         Me.NavigationPane1.Controls.Add(Me.NavigationPanePanel3)
         Me.NavigationPane1.Controls.Add(Me.NavigationPanePanel1)
         Me.NavigationPane1.Controls.Add(Me.pnlRemainding)
         Me.NavigationPane1.Controls.Add(Me.pnlProject)
         Me.NavigationPane1.Controls.Add(Me.NavigationPanePanel2)
+        Me.NavigationPane1.Controls.Add(Me.pnlAgreement)
         Me.NavigationPane1.Controls.Add(Me.pnlOtherDiscount)
-        Me.NavigationPane1.Controls.Add(Me.pnlMarketing)
         Me.NavigationPane1.Dock = System.Windows.Forms.DockStyle.Left
         Me.NavigationPane1.Images = Me.ImageList1
         Me.NavigationPane1.ItemPaddingBottom = 2
@@ -707,500 +707,17 @@ Partial Class OA_BranPack
         Me.NavigationPane1.TitlePanel.Style.GradientAngle = 90
         Me.NavigationPane1.TitlePanel.Style.MarginLeft = 4
         Me.NavigationPane1.TitlePanel.TabIndex = 0
-        Me.NavigationPane1.TitlePanel.Text = "Agreement Discount"
-        '
-        'pnlOtherDiscount
-        '
-        Me.pnlOtherDiscount.Controls.Add(Me.rdbDP)
-        Me.pnlOtherDiscount.Controls.Add(Me.rdbDK)
-        Me.pnlOtherDiscount.Controls.Add(Me.rdbUncategorized)
-        Me.pnlOtherDiscount.Controls.Add(Me.rdbCBD)
-        Me.pnlOtherDiscount.Controls.Add(Me.rdbDR)
-        Me.pnlOtherDiscount.Controls.Add(Me.rdbDD)
-        Me.pnlOtherDiscount.Controls.Add(Me.btnGenerateOtherDiscount)
-        Me.pnlOtherDiscount.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlOtherDiscount.Location = New System.Drawing.Point(1, 1)
-        Me.pnlOtherDiscount.Name = "pnlOtherDiscount"
-        Me.pnlOtherDiscount.ParentItem = Me.btnOtherDiscount
-        Me.pnlOtherDiscount.Size = New System.Drawing.Size(139, 641)
-        Me.pnlOtherDiscount.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlOtherDiscount.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.pnlOtherDiscount.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
-        Me.pnlOtherDiscount.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.pnlOtherDiscount.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
-        Me.pnlOtherDiscount.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText
-        Me.pnlOtherDiscount.Style.GradientAngle = 90
-        Me.pnlOtherDiscount.TabIndex = 5
-        '
-        'rdbDP
-        '
-        Me.rdbDP.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbDP.Location = New System.Drawing.Point(0, 92)
-        Me.rdbDP.Name = "rdbDP"
-        Me.rdbDP.Size = New System.Drawing.Size(139, 23)
-        Me.rdbDP.TabIndex = 22
-        Me.rdbDP.Text = "DP"
-        Me.rdbDP.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbDK
-        '
-        Me.rdbDK.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbDK.Location = New System.Drawing.Point(0, 69)
-        Me.rdbDK.Name = "rdbDK"
-        Me.rdbDK.Size = New System.Drawing.Size(139, 23)
-        Me.rdbDK.TabIndex = 21
-        Me.rdbDK.Text = "DK"
-        Me.rdbDK.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbUncategorized
-        '
-        Me.rdbUncategorized.Location = New System.Drawing.Point(0, 120)
-        Me.rdbUncategorized.Name = "rdbUncategorized"
-        Me.rdbUncategorized.Size = New System.Drawing.Size(139, 23)
-        Me.rdbUncategorized.TabIndex = 20
-        Me.rdbUncategorized.Text = "UnCategorized"
-        Me.rdbUncategorized.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbCBD
-        '
-        Me.rdbCBD.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbCBD.Location = New System.Drawing.Point(0, 46)
-        Me.rdbCBD.Name = "rdbCBD"
-        Me.rdbCBD.Size = New System.Drawing.Size(139, 23)
-        Me.rdbCBD.TabIndex = 19
-        Me.rdbCBD.Text = "CBD"
-        Me.rdbCBD.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbDR
-        '
-        Me.rdbDR.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbDR.Location = New System.Drawing.Point(0, 23)
-        Me.rdbDR.Name = "rdbDR"
-        Me.rdbDR.Size = New System.Drawing.Size(139, 23)
-        Me.rdbDR.TabIndex = 18
-        Me.rdbDR.Text = "DR"
-        Me.rdbDR.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbDD
-        '
-        Me.rdbDD.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbDD.Location = New System.Drawing.Point(0, 0)
-        Me.rdbDD.Name = "rdbDD"
-        Me.rdbDD.Size = New System.Drawing.Size(139, 23)
-        Me.rdbDD.TabIndex = 17
-        Me.rdbDD.Text = "DD"
-        Me.rdbDD.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'btnGenerateOtherDiscount
-        '
-        Me.btnGenerateOtherDiscount.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
-        Me.btnGenerateOtherDiscount.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.btnGenerateOtherDiscount.Location = New System.Drawing.Point(0, 618)
-        Me.btnGenerateOtherDiscount.Name = "btnGenerateOtherDiscount"
-        Me.btnGenerateOtherDiscount.Size = New System.Drawing.Size(139, 23)
-        Me.btnGenerateOtherDiscount.TabIndex = 16
-        Me.btnGenerateOtherDiscount.Text = "Set Discount"
-        Me.btnGenerateOtherDiscount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'btnOtherDiscount
-        '
-        Me.btnOtherDiscount.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
-        Me.btnOtherDiscount.Image = CType(resources.GetObject("btnOtherDiscount.Image"), System.Drawing.Image)
-        Me.btnOtherDiscount.Name = "btnOtherDiscount"
-        Me.btnOtherDiscount.OptionGroup = "navBar"
-        Me.btnOtherDiscount.Text = "Other Discount"
-        Me.btnOtherDiscount.Tooltip = "Other Discount"
-        '
-        'NavigationPanePanel4
-        '
-        Me.NavigationPanePanel4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.NavigationPanePanel4.Location = New System.Drawing.Point(1, 1)
-        Me.NavigationPanePanel4.Name = "NavigationPanePanel4"
-        Me.NavigationPanePanel4.ParentItem = Nothing
-        Me.NavigationPanePanel4.Size = New System.Drawing.Size(139, 469)
-        Me.NavigationPanePanel4.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.NavigationPanePanel4.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.NavigationPanePanel4.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
-        Me.NavigationPanePanel4.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
-        Me.NavigationPanePanel4.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.NavigationPanePanel4.Style.GradientAngle = 90
-        Me.NavigationPanePanel4.TabIndex = 10
-        '
-        'NavigationPanePanel3
-        '
-        Me.NavigationPanePanel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.NavigationPanePanel3.Location = New System.Drawing.Point(1, 1)
-        Me.NavigationPanePanel3.Name = "NavigationPanePanel3"
-        Me.NavigationPanePanel3.ParentItem = Nothing
-        Me.NavigationPanePanel3.Size = New System.Drawing.Size(139, 469)
-        Me.NavigationPanePanel3.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.NavigationPanePanel3.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.NavigationPanePanel3.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
-        Me.NavigationPanePanel3.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
-        Me.NavigationPanePanel3.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.NavigationPanePanel3.Style.GradientAngle = 90
-        Me.NavigationPanePanel3.TabIndex = 9
-        '
-        'NavigationPanePanel1
-        '
-        Me.NavigationPanePanel1.Controls.Add(Me.btnRefixUnmatched)
-        Me.NavigationPanePanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.NavigationPanePanel1.Location = New System.Drawing.Point(1, 1)
-        Me.NavigationPanePanel1.Name = "NavigationPanePanel1"
-        Me.NavigationPanePanel1.ParentItem = Nothing
-        Me.NavigationPanePanel1.Size = New System.Drawing.Size(139, 469)
-        Me.NavigationPanePanel1.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.NavigationPanePanel1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.NavigationPanePanel1.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
-        Me.NavigationPanePanel1.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
-        Me.NavigationPanePanel1.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.NavigationPanePanel1.Style.GradientAngle = 90
-        Me.NavigationPanePanel1.TabIndex = 7
-        '
-        'btnRefixUnmatched
-        '
-        Me.btnRefixUnmatched.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
-        Me.btnRefixUnmatched.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.btnRefixUnmatched.Location = New System.Drawing.Point(0, 446)
-        Me.btnRefixUnmatched.Name = "btnRefixUnmatched"
-        Me.btnRefixUnmatched.Size = New System.Drawing.Size(139, 23)
-        Me.btnRefixUnmatched.TabIndex = 0
-        Me.btnRefixUnmatched.Text = "Fix Discount"
-        Me.btnRefixUnmatched.VisualStyle = Janus.Windows.UI.VisualStyle.Office2007
-        '
-        'pnlRemainding
-        '
-        Me.pnlRemainding.Controls.Add(Me.btnbrRemainding)
-        Me.pnlRemainding.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlRemainding.Location = New System.Drawing.Point(1, 1)
-        Me.pnlRemainding.Name = "pnlRemainding"
-        Me.pnlRemainding.ParentItem = Nothing
-        Me.pnlRemainding.Size = New System.Drawing.Size(139, 469)
-        Me.pnlRemainding.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlRemainding.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.pnlRemainding.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
-        Me.pnlRemainding.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
-        Me.pnlRemainding.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.pnlRemainding.Style.GradientAngle = 90
-        Me.pnlRemainding.TabIndex = 6
-        '
-        'btnbrRemainding
-        '
-        Me.btnbrRemainding.Dock = System.Windows.Forms.DockStyle.Fill
-        ButtonBarGroup1.ImageIndex = 9
-        ButtonBarItem1.Key = "Given"
-        ButtonBarItem1.LargeImageIndex = 7
-        ButtonBarItem1.SmallImageIndex = 7
-        ButtonBarItem1.Text = "Given"
-        ButtonBarItem2.Key = "Quarter"
-        ButtonBarItem2.LargeImageIndex = 7
-        ButtonBarItem2.SmallImageIndex = 7
-        ButtonBarItem2.Text = "Quarter"
-        ButtonBarItem3.Key = "Semester"
-        ButtonBarItem3.LargeImageIndex = 7
-        ButtonBarItem3.SmallImageIndex = 7
-        ButtonBarItem3.Text = "Semester"
-        ButtonBarItem4.Key = "Year"
-        ButtonBarItem4.LargeImageIndex = 7
-        ButtonBarItem4.SmallImageIndex = 7
-        ButtonBarItem4.Text = "Year"
-        ButtonBarGroup1.Items.AddRange(New Janus.Windows.ButtonBar.ButtonBarItem() {ButtonBarItem1, ButtonBarItem2, ButtonBarItem3, ButtonBarItem4})
-        ButtonBarGroup1.Key = "Agreement"
-        ButtonBarGroup1.Text = "Agreement"
-        ButtonBarGroup2.ImageIndex = 4
-        ButtonBarItem5.Key = "GivenSales"
-        ButtonBarItem5.LargeImageIndex = 7
-        ButtonBarItem5.SmallImageIndex = 7
-        ButtonBarItem5.Text = "Given(/RPK)"
-        ButtonBarItem6.Key = "Target"
-        ButtonBarItem6.LargeImageIndex = 7
-        ButtonBarItem6.SmallImageIndex = 7
-        ButtonBarItem6.Text = "Target"
-        ButtonBarItem7.Key = "Stepping"
-        ButtonBarItem7.LargeImageIndex = 7
-        ButtonBarItem7.SmallImageIndex = 7
-        ButtonBarItem7.Text = "Stepping"
-        ButtonBarItem8.Key = "Given_PKPP"
-        ButtonBarItem8.LargeImageIndex = 7
-        ButtonBarItem8.SmallImageIndex = 7
-        ButtonBarItem8.Text = "Given_PKPP"
-        ButtonBarItem9.Key = "Given_CP"
-        ButtonBarItem9.LargeImageIndex = 7
-        ButtonBarItem9.SmallImageIndex = 7
-        ButtonBarItem9.Text = "Given_CP(D)"
-        ButtonBarItem10.Key = "Given_CPR"
-        ButtonBarItem10.Text = "Given_CP(R)"
-        ButtonBarItem11.Key = "Given_DK"
-        ButtonBarItem11.LargeImageIndex = 7
-        ButtonBarItem11.SmallImageIndex = 7
-        ButtonBarItem11.Text = "Given_DK"
-        ButtonBarGroup2.Items.AddRange(New Janus.Windows.ButtonBar.ButtonBarItem() {ButtonBarItem5, ButtonBarItem6, ButtonBarItem7, ButtonBarItem8, ButtonBarItem9, ButtonBarItem10, ButtonBarItem11})
-        ButtonBarGroup2.Key = "SalesProgram"
-        ButtonBarGroup2.Text = "Sales Program"
-        ButtonBarGroup3.ImageIndex = 10
-        ButtonBarItem12.Key = "LeftProjectDetail"
-        ButtonBarItem12.LargeImageIndex = 7
-        ButtonBarItem12.SmallImageIndex = 7
-        ButtonBarItem12.Text = "Left Project Detail"
-        ButtonBarGroup3.Items.AddRange(New Janus.Windows.ButtonBar.ButtonBarItem() {ButtonBarItem12})
-        ButtonBarGroup3.Key = "Project"
-        ButtonBarGroup3.Text = "Project"
-        Me.btnbrRemainding.Groups.AddRange(New Janus.Windows.ButtonBar.ButtonBarGroup() {ButtonBarGroup1, ButtonBarGroup2, ButtonBarGroup3})
-        Me.btnbrRemainding.LargeImageList = Me.ImageList1
-        Me.btnbrRemainding.Location = New System.Drawing.Point(0, 0)
-        Me.btnbrRemainding.Name = "btnbrRemainding"
-        Me.btnbrRemainding.Size = New System.Drawing.Size(139, 469)
-        Me.btnbrRemainding.SmallImageList = Me.ImageList1
-        Me.btnbrRemainding.TabIndex = 0
-        Me.btnbrRemainding.Text = "Choose Remainding Type"
-        Me.btnbrRemainding.VisualStyle = Janus.Windows.ButtonBar.VisualStyle.Office2003
-        '
-        'NavigationPanePanel2
-        '
-        Me.NavigationPanePanel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.NavigationPanePanel2.Location = New System.Drawing.Point(1, 1)
-        Me.NavigationPanePanel2.Name = "NavigationPanePanel2"
-        Me.NavigationPanePanel2.ParentItem = Me.btnRemainding
-        Me.NavigationPanePanel2.Size = New System.Drawing.Size(139, 641)
-        Me.NavigationPanePanel2.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.NavigationPanePanel2.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
-        Me.NavigationPanePanel2.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
-        Me.NavigationPanePanel2.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
-        Me.NavigationPanePanel2.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.NavigationPanePanel2.Style.GradientAngle = 90
-        Me.NavigationPanePanel2.TabIndex = 8
-        '
-        'btnRemainding
-        '
-        Me.btnRemainding.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
-        Me.btnRemainding.Image = CType(resources.GetObject("btnRemainding.Image"), System.Drawing.Image)
-        Me.btnRemainding.Name = "btnRemainding"
-        Me.btnRemainding.OptionGroup = "navBar"
-        Me.btnRemainding.Text = "Remaining"
-        '
-        'pnlProject
-        '
-        Me.pnlProject.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlProject.Location = New System.Drawing.Point(1, 1)
-        Me.pnlProject.Name = "pnlProject"
-        Me.pnlProject.ParentItem = Me.btnProject
-        Me.pnlProject.Size = New System.Drawing.Size(139, 469)
-        Me.pnlProject.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlProject.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.pnlProject.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
-        Me.pnlProject.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.pnlProject.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.pnlProject.Style.GradientAngle = 90
-        Me.pnlProject.StyleMouseDown.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlProject.StyleMouseDown.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground
-        Me.pnlProject.StyleMouseDown.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground2
-        Me.pnlProject.StyleMouseDown.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBorder
-        Me.pnlProject.StyleMouseDown.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedText
-        Me.pnlProject.StyleMouseOver.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlProject.StyleMouseOver.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground
-        Me.pnlProject.StyleMouseOver.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground2
-        Me.pnlProject.StyleMouseOver.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBorder
-        Me.pnlProject.StyleMouseOver.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotText
-        Me.pnlProject.TabIndex = 4
-        Me.pnlProject.Text = " "
-        '
-        'btnProject
-        '
-        Me.btnProject.ImageFixedSize = New System.Drawing.Size(16, 16)
-        Me.btnProject.ImageIndex = 5
-        Me.btnProject.Name = "btnProject"
-        Me.btnProject.OptionGroup = "navBar"
-        Me.btnProject.Text = "Project Discount"
-        Me.btnProject.Tooltip = "Project Discount"
-        Me.btnProject.Visible = False
-        '
-        'pnlAgreement
-        '
-        Me.pnlAgreement.Controls.Add(Me.pnlAgreementDiscount)
-        Me.pnlAgreement.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlAgreement.Location = New System.Drawing.Point(1, 25)
-        Me.pnlAgreement.Name = "pnlAgreement"
-        Me.pnlAgreement.ParentItem = Me.btnAgreement
-        Me.pnlAgreement.Size = New System.Drawing.Size(139, 445)
-        Me.pnlAgreement.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlAgreement.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
-        Me.pnlAgreement.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
-        Me.pnlAgreement.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.pnlAgreement.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.pnlAgreement.Style.GradientAngle = 90
-        Me.pnlAgreement.StyleMouseDown.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlAgreement.StyleMouseDown.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground
-        Me.pnlAgreement.StyleMouseDown.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground2
-        Me.pnlAgreement.StyleMouseDown.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBorder
-        Me.pnlAgreement.StyleMouseDown.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedText
-        Me.pnlAgreement.StyleMouseOver.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlAgreement.StyleMouseOver.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground
-        Me.pnlAgreement.StyleMouseOver.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground2
-        Me.pnlAgreement.StyleMouseOver.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBorder
-        Me.pnlAgreement.StyleMouseOver.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotText
-        Me.pnlAgreement.TabIndex = 2
-        '
-        'pnlAgreementDiscount
-        '
-        Me.pnlAgreementDiscount.CanvasColor = System.Drawing.SystemColors.Control
-        Me.pnlAgreementDiscount.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbYearlyDiscount)
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbSemesterly2Discount)
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbSemesterly1Discount)
-        Me.pnlAgreementDiscount.Controls.Add(Me.btnNewGiven)
-        Me.pnlAgreementDiscount.Controls.Add(Me.btnGenerateAgreement)
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount4)
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount3)
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount2)
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount1)
-        Me.pnlAgreementDiscount.Controls.Add(Me.rdbGivenDiscount)
-        Me.pnlAgreementDiscount.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlAgreementDiscount.ExpandButtonVisible = False
-        Me.pnlAgreementDiscount.Location = New System.Drawing.Point(0, 0)
-        Me.pnlAgreementDiscount.Name = "pnlAgreementDiscount"
-        Me.pnlAgreementDiscount.Size = New System.Drawing.Size(139, 445)
-        Me.pnlAgreementDiscount.Style.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlAgreementDiscount.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(223, Byte), Integer), CType(CType(237, Byte), Integer), CType(CType(254, Byte), Integer))
-        Me.pnlAgreementDiscount.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
-        Me.pnlAgreementDiscount.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.pnlAgreementDiscount.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarDockedBorder
-        Me.pnlAgreementDiscount.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
-        Me.pnlAgreementDiscount.Style.GradientAngle = 90
-        Me.pnlAgreementDiscount.TabIndex = 9
-        Me.pnlAgreementDiscount.TitleHeight = 0
-        Me.pnlAgreementDiscount.TitleStyle.Alignment = System.Drawing.StringAlignment.Center
-        Me.pnlAgreementDiscount.TitleStyle.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground
-        Me.pnlAgreementDiscount.TitleStyle.BackColor2.Color = System.Drawing.SystemColors.InactiveCaptionText
-        Me.pnlAgreementDiscount.TitleStyle.Border = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.pnlAgreementDiscount.TitleStyle.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
-        Me.pnlAgreementDiscount.TitleStyle.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText
-        Me.pnlAgreementDiscount.TitleStyle.GradientAngle = 90
-        Me.pnlAgreementDiscount.TitleText = "Discount Type"
-        '
-        'rdbYearlyDiscount
-        '
-        Me.rdbYearlyDiscount.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbYearlyDiscount.Location = New System.Drawing.Point(0, 161)
-        Me.rdbYearlyDiscount.Name = "rdbYearlyDiscount"
-        Me.rdbYearlyDiscount.Size = New System.Drawing.Size(139, 23)
-        Me.rdbYearlyDiscount.TabIndex = 13
-        Me.rdbYearlyDiscount.Text = "Yearly Discount"
-        Me.rdbYearlyDiscount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbSemesterly2Discount
-        '
-        Me.rdbSemesterly2Discount.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbSemesterly2Discount.Location = New System.Drawing.Point(0, 138)
-        Me.rdbSemesterly2Discount.Name = "rdbSemesterly2Discount"
-        Me.rdbSemesterly2Discount.Size = New System.Drawing.Size(139, 23)
-        Me.rdbSemesterly2Discount.TabIndex = 16
-        Me.rdbSemesterly2Discount.Text = "Semesterly 2"
-        Me.rdbSemesterly2Discount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbSemesterly1Discount
-        '
-        Me.rdbSemesterly1Discount.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbSemesterly1Discount.Location = New System.Drawing.Point(0, 115)
-        Me.rdbSemesterly1Discount.Name = "rdbSemesterly1Discount"
-        Me.rdbSemesterly1Discount.Size = New System.Drawing.Size(139, 23)
-        Me.rdbSemesterly1Discount.TabIndex = 15
-        Me.rdbSemesterly1Discount.Text = "Semesterly 1"
-        Me.rdbSemesterly1Discount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'btnNewGiven
-        '
-        Me.btnNewGiven.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
-        Me.btnNewGiven.Location = New System.Drawing.Point(4, 388)
-        Me.btnNewGiven.Name = "btnNewGiven"
-        Me.btnNewGiven.Size = New System.Drawing.Size(129, 23)
-        Me.btnNewGiven.TabIndex = 10
-        Me.btnNewGiven.Text = "set New &Given"
-        Me.btnNewGiven.Visible = False
-        Me.btnNewGiven.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'btnGenerateAgreement
-        '
-        Me.btnGenerateAgreement.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
-        Me.btnGenerateAgreement.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.btnGenerateAgreement.ImageIndex = 3
-        Me.btnGenerateAgreement.ImageList = Me.ImageList1
-        Me.btnGenerateAgreement.Location = New System.Drawing.Point(0, 424)
-        Me.btnGenerateAgreement.Name = "btnGenerateAgreement"
-        Me.btnGenerateAgreement.Size = New System.Drawing.Size(139, 21)
-        Me.btnGenerateAgreement.TabIndex = 14
-        Me.btnGenerateAgreement.Text = "Generate Discount"
-        Me.btnGenerateAgreement.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbPeriodDiscount4
-        '
-        Me.rdbPeriodDiscount4.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbPeriodDiscount4.Location = New System.Drawing.Point(0, 92)
-        Me.rdbPeriodDiscount4.Name = "rdbPeriodDiscount4"
-        Me.rdbPeriodDiscount4.Size = New System.Drawing.Size(139, 23)
-        Me.rdbPeriodDiscount4.TabIndex = 12
-        Me.rdbPeriodDiscount4.Text = "Quarterly 4"
-        Me.rdbPeriodDiscount4.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbPeriodDiscount3
-        '
-        Me.rdbPeriodDiscount3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbPeriodDiscount3.Location = New System.Drawing.Point(0, 69)
-        Me.rdbPeriodDiscount3.Name = "rdbPeriodDiscount3"
-        Me.rdbPeriodDiscount3.Size = New System.Drawing.Size(139, 23)
-        Me.rdbPeriodDiscount3.TabIndex = 11
-        Me.rdbPeriodDiscount3.Text = "Quarterly 3"
-        Me.rdbPeriodDiscount3.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbPeriodDiscount2
-        '
-        Me.rdbPeriodDiscount2.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbPeriodDiscount2.Location = New System.Drawing.Point(0, 46)
-        Me.rdbPeriodDiscount2.Name = "rdbPeriodDiscount2"
-        Me.rdbPeriodDiscount2.Size = New System.Drawing.Size(139, 23)
-        Me.rdbPeriodDiscount2.TabIndex = 10
-        Me.rdbPeriodDiscount2.Text = "Quarterly 2"
-        Me.rdbPeriodDiscount2.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbPeriodDiscount1
-        '
-        Me.rdbPeriodDiscount1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbPeriodDiscount1.Location = New System.Drawing.Point(0, 23)
-        Me.rdbPeriodDiscount1.Name = "rdbPeriodDiscount1"
-        Me.rdbPeriodDiscount1.Size = New System.Drawing.Size(139, 23)
-        Me.rdbPeriodDiscount1.TabIndex = 9
-        Me.rdbPeriodDiscount1.Text = "Quarterly 1"
-        Me.rdbPeriodDiscount1.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'rdbGivenDiscount
-        '
-        Me.rdbGivenDiscount.Dock = System.Windows.Forms.DockStyle.Top
-        Me.rdbGivenDiscount.Location = New System.Drawing.Point(0, 0)
-        Me.rdbGivenDiscount.Name = "rdbGivenDiscount"
-        Me.rdbGivenDiscount.Size = New System.Drawing.Size(139, 23)
-        Me.rdbGivenDiscount.TabIndex = 8
-        Me.rdbGivenDiscount.Text = "Given Discount"
-        Me.rdbGivenDiscount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
-        '
-        'btnAgreement
-        '
-        Me.btnAgreement.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
-        Me.btnAgreement.Checked = True
-        Me.btnAgreement.ImageIndex = 6
-        Me.btnAgreement.Name = "btnAgreement"
-        Me.btnAgreement.OptionGroup = "navBar"
-        Me.btnAgreement.Text = "Agreement Discount"
-        Me.btnAgreement.Tooltip = "Agreement Discount"
-        Me.btnAgreement.Visible = False
+        Me.NavigationPane1.TitlePanel.Text = "Sales Discount"
         '
         'pnlMarketing
         '
         Me.pnlMarketing.CanvasColor = System.Drawing.Color.Transparent
         Me.pnlMarketing.Controls.Add(Me.pnlMarketingDiscount)
         Me.pnlMarketing.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlMarketing.Location = New System.Drawing.Point(1, 1)
+        Me.pnlMarketing.Location = New System.Drawing.Point(1, 25)
         Me.pnlMarketing.Name = "pnlMarketing"
         Me.pnlMarketing.ParentItem = Me.btnMarketing
-        Me.pnlMarketing.Size = New System.Drawing.Size(139, 641)
+        Me.pnlMarketing.Size = New System.Drawing.Size(139, 445)
         Me.pnlMarketing.Style.Alignment = System.Drawing.StringAlignment.Center
         Me.pnlMarketing.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.pnlMarketing.Style.BackColor2.Color = System.Drawing.SystemColors.MenuBar
@@ -1236,7 +753,7 @@ Partial Class OA_BranPack
         Me.pnlMarketingDiscount.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlMarketingDiscount.Location = New System.Drawing.Point(0, 0)
         Me.pnlMarketingDiscount.Name = "pnlMarketingDiscount"
-        Me.pnlMarketingDiscount.Size = New System.Drawing.Size(139, 641)
+        Me.pnlMarketingDiscount.Size = New System.Drawing.Size(139, 445)
         Me.pnlMarketingDiscount.Style.Alignment = System.Drawing.StringAlignment.Center
         Me.pnlMarketingDiscount.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.pnlMarketingDiscount.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
@@ -1419,7 +936,7 @@ Partial Class OA_BranPack
         Me.btnGenerateMarketing.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.btnGenerateMarketing.ImageIndex = 3
         Me.btnGenerateMarketing.ImageList = Me.ImageList1
-        Me.btnGenerateMarketing.Location = New System.Drawing.Point(0, 618)
+        Me.btnGenerateMarketing.Location = New System.Drawing.Point(0, 422)
         Me.btnGenerateMarketing.Name = "btnGenerateMarketing"
         Me.btnGenerateMarketing.Size = New System.Drawing.Size(139, 23)
         Me.btnGenerateMarketing.TabIndex = 15
@@ -1462,6 +979,7 @@ Partial Class OA_BranPack
         'btnMarketing
         '
         Me.btnMarketing.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
+        Me.btnMarketing.Checked = True
         Me.btnMarketing.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
         Me.btnMarketing.HotForeColor = System.Drawing.Color.Black
         Me.btnMarketing.ImageIndex = 4
@@ -1469,6 +987,488 @@ Partial Class OA_BranPack
         Me.btnMarketing.OptionGroup = "navBar"
         Me.btnMarketing.Text = "Sales Discount"
         Me.btnMarketing.Tooltip = "Sales Discount "
+        '
+        'NavigationPanePanel4
+        '
+        Me.NavigationPanePanel4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.NavigationPanePanel4.Location = New System.Drawing.Point(1, 1)
+        Me.NavigationPanePanel4.Name = "NavigationPanePanel4"
+        Me.NavigationPanePanel4.ParentItem = Nothing
+        Me.NavigationPanePanel4.Size = New System.Drawing.Size(139, 469)
+        Me.NavigationPanePanel4.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.NavigationPanePanel4.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
+        Me.NavigationPanePanel4.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
+        Me.NavigationPanePanel4.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
+        Me.NavigationPanePanel4.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.NavigationPanePanel4.Style.GradientAngle = 90
+        Me.NavigationPanePanel4.TabIndex = 10
+        '
+        'NavigationPanePanel3
+        '
+        Me.NavigationPanePanel3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.NavigationPanePanel3.Location = New System.Drawing.Point(1, 1)
+        Me.NavigationPanePanel3.Name = "NavigationPanePanel3"
+        Me.NavigationPanePanel3.ParentItem = Nothing
+        Me.NavigationPanePanel3.Size = New System.Drawing.Size(139, 469)
+        Me.NavigationPanePanel3.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.NavigationPanePanel3.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
+        Me.NavigationPanePanel3.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
+        Me.NavigationPanePanel3.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
+        Me.NavigationPanePanel3.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.NavigationPanePanel3.Style.GradientAngle = 90
+        Me.NavigationPanePanel3.TabIndex = 9
+        '
+        'NavigationPanePanel1
+        '
+        Me.NavigationPanePanel1.Controls.Add(Me.btnRefixUnmatched)
+        Me.NavigationPanePanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.NavigationPanePanel1.Location = New System.Drawing.Point(1, 1)
+        Me.NavigationPanePanel1.Name = "NavigationPanePanel1"
+        Me.NavigationPanePanel1.ParentItem = Nothing
+        Me.NavigationPanePanel1.Size = New System.Drawing.Size(139, 469)
+        Me.NavigationPanePanel1.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.NavigationPanePanel1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
+        Me.NavigationPanePanel1.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
+        Me.NavigationPanePanel1.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
+        Me.NavigationPanePanel1.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.NavigationPanePanel1.Style.GradientAngle = 90
+        Me.NavigationPanePanel1.TabIndex = 7
+        '
+        'btnRefixUnmatched
+        '
+        Me.btnRefixUnmatched.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
+        Me.btnRefixUnmatched.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.btnRefixUnmatched.Location = New System.Drawing.Point(0, 446)
+        Me.btnRefixUnmatched.Name = "btnRefixUnmatched"
+        Me.btnRefixUnmatched.Size = New System.Drawing.Size(139, 23)
+        Me.btnRefixUnmatched.TabIndex = 0
+        Me.btnRefixUnmatched.Text = "Fix Discount"
+        Me.btnRefixUnmatched.VisualStyle = Janus.Windows.UI.VisualStyle.Office2007
+        '
+        'pnlRemainding
+        '
+        Me.pnlRemainding.Controls.Add(Me.btnbrRemainding)
+        Me.pnlRemainding.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlRemainding.Location = New System.Drawing.Point(1, 1)
+        Me.pnlRemainding.Name = "pnlRemainding"
+        Me.pnlRemainding.ParentItem = Nothing
+        Me.pnlRemainding.Size = New System.Drawing.Size(139, 469)
+        Me.pnlRemainding.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlRemainding.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
+        Me.pnlRemainding.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
+        Me.pnlRemainding.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
+        Me.pnlRemainding.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.pnlRemainding.Style.GradientAngle = 90
+        Me.pnlRemainding.TabIndex = 6
+        '
+        'btnbrRemainding
+        '
+        Me.btnbrRemainding.Dock = System.Windows.Forms.DockStyle.Fill
+        ButtonBarGroup1.ImageIndex = 9
+        ButtonBarItem1.Key = "Given"
+        ButtonBarItem1.LargeImageIndex = 7
+        ButtonBarItem1.SmallImageIndex = 7
+        ButtonBarItem1.Text = "Given"
+        ButtonBarItem2.Key = "Quarter"
+        ButtonBarItem2.LargeImageIndex = 7
+        ButtonBarItem2.SmallImageIndex = 7
+        ButtonBarItem2.Text = "Quarter"
+        ButtonBarItem3.Key = "Semester"
+        ButtonBarItem3.LargeImageIndex = 7
+        ButtonBarItem3.SmallImageIndex = 7
+        ButtonBarItem3.Text = "Semester"
+        ButtonBarItem4.Key = "Year"
+        ButtonBarItem4.LargeImageIndex = 7
+        ButtonBarItem4.SmallImageIndex = 7
+        ButtonBarItem4.Text = "Year"
+        ButtonBarGroup1.Items.AddRange(New Janus.Windows.ButtonBar.ButtonBarItem() {ButtonBarItem1, ButtonBarItem2, ButtonBarItem3, ButtonBarItem4})
+        ButtonBarGroup1.Key = "Agreement"
+        ButtonBarGroup1.Text = "Agreement"
+        ButtonBarGroup2.ImageIndex = 4
+        ButtonBarItem5.Key = "GivenSales"
+        ButtonBarItem5.LargeImageIndex = 7
+        ButtonBarItem5.SmallImageIndex = 7
+        ButtonBarItem5.Text = "Given(/RPK)"
+        ButtonBarItem6.Key = "Target"
+        ButtonBarItem6.LargeImageIndex = 7
+        ButtonBarItem6.SmallImageIndex = 7
+        ButtonBarItem6.Text = "Target"
+        ButtonBarItem7.Key = "Stepping"
+        ButtonBarItem7.LargeImageIndex = 7
+        ButtonBarItem7.SmallImageIndex = 7
+        ButtonBarItem7.Text = "Stepping"
+        ButtonBarItem8.Key = "Given_PKPP"
+        ButtonBarItem8.LargeImageIndex = 7
+        ButtonBarItem8.SmallImageIndex = 7
+        ButtonBarItem8.Text = "Given_PKPP"
+        ButtonBarItem9.Key = "Given_CP"
+        ButtonBarItem9.LargeImageIndex = 7
+        ButtonBarItem9.SmallImageIndex = 7
+        ButtonBarItem9.Text = "Given_CP(D)"
+        ButtonBarItem10.Key = "Given_CPR"
+        ButtonBarItem10.Text = "Given_CP(R)"
+        ButtonBarItem11.Key = "Given_DK"
+        ButtonBarItem11.LargeImageIndex = 7
+        ButtonBarItem11.SmallImageIndex = 7
+        ButtonBarItem11.Text = "Given_DK"
+        ButtonBarGroup2.Items.AddRange(New Janus.Windows.ButtonBar.ButtonBarItem() {ButtonBarItem5, ButtonBarItem6, ButtonBarItem7, ButtonBarItem8, ButtonBarItem9, ButtonBarItem10, ButtonBarItem11})
+        ButtonBarGroup2.Key = "SalesProgram"
+        ButtonBarGroup2.Text = "Sales Program"
+        ButtonBarGroup3.ImageIndex = 10
+        ButtonBarItem12.Key = "LeftProjectDetail"
+        ButtonBarItem12.LargeImageIndex = 7
+        ButtonBarItem12.SmallImageIndex = 7
+        ButtonBarItem12.Text = "Left Project Detail"
+        ButtonBarGroup3.Items.AddRange(New Janus.Windows.ButtonBar.ButtonBarItem() {ButtonBarItem12})
+        ButtonBarGroup3.Key = "Project"
+        ButtonBarGroup3.Text = "Project"
+        Me.btnbrRemainding.Groups.AddRange(New Janus.Windows.ButtonBar.ButtonBarGroup() {ButtonBarGroup1, ButtonBarGroup2, ButtonBarGroup3})
+        Me.btnbrRemainding.LargeImageList = Me.ImageList1
+        Me.btnbrRemainding.Location = New System.Drawing.Point(0, 0)
+        Me.btnbrRemainding.Name = "btnbrRemainding"
+        Me.btnbrRemainding.Size = New System.Drawing.Size(139, 469)
+        Me.btnbrRemainding.SmallImageList = Me.ImageList1
+        Me.btnbrRemainding.TabIndex = 0
+        Me.btnbrRemainding.Text = "Choose Remainding Type"
+        Me.btnbrRemainding.VisualStyle = Janus.Windows.ButtonBar.VisualStyle.Office2003
+        '
+        'pnlProject
+        '
+        Me.pnlProject.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlProject.Location = New System.Drawing.Point(1, 1)
+        Me.pnlProject.Name = "pnlProject"
+        Me.pnlProject.ParentItem = Me.btnProject
+        Me.pnlProject.Size = New System.Drawing.Size(139, 469)
+        Me.pnlProject.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlProject.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.pnlProject.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
+        Me.pnlProject.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.pnlProject.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.pnlProject.Style.GradientAngle = 90
+        Me.pnlProject.StyleMouseDown.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlProject.StyleMouseDown.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground
+        Me.pnlProject.StyleMouseDown.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground2
+        Me.pnlProject.StyleMouseDown.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBorder
+        Me.pnlProject.StyleMouseDown.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedText
+        Me.pnlProject.StyleMouseOver.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlProject.StyleMouseOver.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground
+        Me.pnlProject.StyleMouseOver.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground2
+        Me.pnlProject.StyleMouseOver.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBorder
+        Me.pnlProject.StyleMouseOver.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotText
+        Me.pnlProject.TabIndex = 4
+        Me.pnlProject.Text = " "
+        '
+        'btnProject
+        '
+        Me.btnProject.ImageFixedSize = New System.Drawing.Size(16, 16)
+        Me.btnProject.ImageIndex = 5
+        Me.btnProject.Name = "btnProject"
+        Me.btnProject.OptionGroup = "navBar"
+        Me.btnProject.Text = "Project Discount"
+        Me.btnProject.Tooltip = "Project Discount"
+        Me.btnProject.Visible = False
+        '
+        'NavigationPanePanel2
+        '
+        Me.NavigationPanePanel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.NavigationPanePanel2.Location = New System.Drawing.Point(1, 1)
+        Me.NavigationPanePanel2.Name = "NavigationPanePanel2"
+        Me.NavigationPanePanel2.ParentItem = Me.btnRemainding
+        Me.NavigationPanePanel2.Size = New System.Drawing.Size(139, 469)
+        Me.NavigationPanePanel2.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.NavigationPanePanel2.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
+        Me.NavigationPanePanel2.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
+        Me.NavigationPanePanel2.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
+        Me.NavigationPanePanel2.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.NavigationPanePanel2.Style.GradientAngle = 90
+        Me.NavigationPanePanel2.TabIndex = 8
+        '
+        'btnRemainding
+        '
+        Me.btnRemainding.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
+        Me.btnRemainding.Image = CType(resources.GetObject("btnRemainding.Image"), System.Drawing.Image)
+        Me.btnRemainding.Name = "btnRemainding"
+        Me.btnRemainding.OptionGroup = "navBar"
+        Me.btnRemainding.Text = "Remaining"
+        '
+        'pnlAgreement
+        '
+        Me.pnlAgreement.Controls.Add(Me.pnlAgreementDiscount)
+        Me.pnlAgreement.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlAgreement.Location = New System.Drawing.Point(1, 1)
+        Me.pnlAgreement.Name = "pnlAgreement"
+        Me.pnlAgreement.ParentItem = Me.btnAgreement
+        Me.pnlAgreement.Size = New System.Drawing.Size(139, 469)
+        Me.pnlAgreement.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlAgreement.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.pnlAgreement.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
+        Me.pnlAgreement.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.pnlAgreement.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.pnlAgreement.Style.GradientAngle = 90
+        Me.pnlAgreement.StyleMouseDown.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlAgreement.StyleMouseDown.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground
+        Me.pnlAgreement.StyleMouseDown.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBackground2
+        Me.pnlAgreement.StyleMouseDown.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedBorder
+        Me.pnlAgreement.StyleMouseDown.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemPressedText
+        Me.pnlAgreement.StyleMouseOver.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlAgreement.StyleMouseOver.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground
+        Me.pnlAgreement.StyleMouseOver.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBackground2
+        Me.pnlAgreement.StyleMouseOver.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotBorder
+        Me.pnlAgreement.StyleMouseOver.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemHotText
+        Me.pnlAgreement.TabIndex = 2
+        '
+        'pnlAgreementDiscount
+        '
+        Me.pnlAgreementDiscount.CanvasColor = System.Drawing.SystemColors.Control
+        Me.pnlAgreementDiscount.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbYearlyDiscount)
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbSemesterly2Discount)
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbSemesterly1Discount)
+        Me.pnlAgreementDiscount.Controls.Add(Me.btnNewGiven)
+        Me.pnlAgreementDiscount.Controls.Add(Me.btnGenerateAgreement)
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount4)
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount3)
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount2)
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbPeriodDiscount1)
+        Me.pnlAgreementDiscount.Controls.Add(Me.rdbGivenDiscount)
+        Me.pnlAgreementDiscount.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlAgreementDiscount.ExpandButtonVisible = False
+        Me.pnlAgreementDiscount.Location = New System.Drawing.Point(0, 0)
+        Me.pnlAgreementDiscount.Name = "pnlAgreementDiscount"
+        Me.pnlAgreementDiscount.Size = New System.Drawing.Size(139, 469)
+        Me.pnlAgreementDiscount.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlAgreementDiscount.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(223, Byte), Integer), CType(CType(237, Byte), Integer), CType(CType(254, Byte), Integer))
+        Me.pnlAgreementDiscount.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
+        Me.pnlAgreementDiscount.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.pnlAgreementDiscount.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarDockedBorder
+        Me.pnlAgreementDiscount.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText
+        Me.pnlAgreementDiscount.Style.GradientAngle = 90
+        Me.pnlAgreementDiscount.TabIndex = 9
+        Me.pnlAgreementDiscount.TitleHeight = 0
+        Me.pnlAgreementDiscount.TitleStyle.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlAgreementDiscount.TitleStyle.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground
+        Me.pnlAgreementDiscount.TitleStyle.BackColor2.Color = System.Drawing.SystemColors.InactiveCaptionText
+        Me.pnlAgreementDiscount.TitleStyle.Border = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.pnlAgreementDiscount.TitleStyle.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
+        Me.pnlAgreementDiscount.TitleStyle.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText
+        Me.pnlAgreementDiscount.TitleStyle.GradientAngle = 90
+        Me.pnlAgreementDiscount.TitleText = "Discount Type"
+        '
+        'rdbYearlyDiscount
+        '
+        Me.rdbYearlyDiscount.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbYearlyDiscount.Location = New System.Drawing.Point(0, 161)
+        Me.rdbYearlyDiscount.Name = "rdbYearlyDiscount"
+        Me.rdbYearlyDiscount.Size = New System.Drawing.Size(139, 23)
+        Me.rdbYearlyDiscount.TabIndex = 13
+        Me.rdbYearlyDiscount.Text = "Yearly Discount"
+        Me.rdbYearlyDiscount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbSemesterly2Discount
+        '
+        Me.rdbSemesterly2Discount.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbSemesterly2Discount.Location = New System.Drawing.Point(0, 138)
+        Me.rdbSemesterly2Discount.Name = "rdbSemesterly2Discount"
+        Me.rdbSemesterly2Discount.Size = New System.Drawing.Size(139, 23)
+        Me.rdbSemesterly2Discount.TabIndex = 16
+        Me.rdbSemesterly2Discount.Text = "Semesterly 2"
+        Me.rdbSemesterly2Discount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbSemesterly1Discount
+        '
+        Me.rdbSemesterly1Discount.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbSemesterly1Discount.Location = New System.Drawing.Point(0, 115)
+        Me.rdbSemesterly1Discount.Name = "rdbSemesterly1Discount"
+        Me.rdbSemesterly1Discount.Size = New System.Drawing.Size(139, 23)
+        Me.rdbSemesterly1Discount.TabIndex = 15
+        Me.rdbSemesterly1Discount.Text = "Semesterly 1"
+        Me.rdbSemesterly1Discount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'btnNewGiven
+        '
+        Me.btnNewGiven.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
+        Me.btnNewGiven.Location = New System.Drawing.Point(4, 388)
+        Me.btnNewGiven.Name = "btnNewGiven"
+        Me.btnNewGiven.Size = New System.Drawing.Size(129, 23)
+        Me.btnNewGiven.TabIndex = 10
+        Me.btnNewGiven.Text = "set New &Given"
+        Me.btnNewGiven.Visible = False
+        Me.btnNewGiven.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'btnGenerateAgreement
+        '
+        Me.btnGenerateAgreement.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
+        Me.btnGenerateAgreement.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.btnGenerateAgreement.ImageIndex = 3
+        Me.btnGenerateAgreement.ImageList = Me.ImageList1
+        Me.btnGenerateAgreement.Location = New System.Drawing.Point(0, 448)
+        Me.btnGenerateAgreement.Name = "btnGenerateAgreement"
+        Me.btnGenerateAgreement.Size = New System.Drawing.Size(139, 21)
+        Me.btnGenerateAgreement.TabIndex = 14
+        Me.btnGenerateAgreement.Text = "Generate Discount"
+        Me.btnGenerateAgreement.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbPeriodDiscount4
+        '
+        Me.rdbPeriodDiscount4.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbPeriodDiscount4.Location = New System.Drawing.Point(0, 92)
+        Me.rdbPeriodDiscount4.Name = "rdbPeriodDiscount4"
+        Me.rdbPeriodDiscount4.Size = New System.Drawing.Size(139, 23)
+        Me.rdbPeriodDiscount4.TabIndex = 12
+        Me.rdbPeriodDiscount4.Text = "Quarterly 4"
+        Me.rdbPeriodDiscount4.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbPeriodDiscount3
+        '
+        Me.rdbPeriodDiscount3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbPeriodDiscount3.Location = New System.Drawing.Point(0, 69)
+        Me.rdbPeriodDiscount3.Name = "rdbPeriodDiscount3"
+        Me.rdbPeriodDiscount3.Size = New System.Drawing.Size(139, 23)
+        Me.rdbPeriodDiscount3.TabIndex = 11
+        Me.rdbPeriodDiscount3.Text = "Quarterly 3"
+        Me.rdbPeriodDiscount3.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbPeriodDiscount2
+        '
+        Me.rdbPeriodDiscount2.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbPeriodDiscount2.Location = New System.Drawing.Point(0, 46)
+        Me.rdbPeriodDiscount2.Name = "rdbPeriodDiscount2"
+        Me.rdbPeriodDiscount2.Size = New System.Drawing.Size(139, 23)
+        Me.rdbPeriodDiscount2.TabIndex = 10
+        Me.rdbPeriodDiscount2.Text = "Quarterly 2"
+        Me.rdbPeriodDiscount2.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbPeriodDiscount1
+        '
+        Me.rdbPeriodDiscount1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbPeriodDiscount1.Location = New System.Drawing.Point(0, 23)
+        Me.rdbPeriodDiscount1.Name = "rdbPeriodDiscount1"
+        Me.rdbPeriodDiscount1.Size = New System.Drawing.Size(139, 23)
+        Me.rdbPeriodDiscount1.TabIndex = 9
+        Me.rdbPeriodDiscount1.Text = "Quarterly 1"
+        Me.rdbPeriodDiscount1.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbGivenDiscount
+        '
+        Me.rdbGivenDiscount.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbGivenDiscount.Location = New System.Drawing.Point(0, 0)
+        Me.rdbGivenDiscount.Name = "rdbGivenDiscount"
+        Me.rdbGivenDiscount.Size = New System.Drawing.Size(139, 23)
+        Me.rdbGivenDiscount.TabIndex = 8
+        Me.rdbGivenDiscount.Text = "Given Discount"
+        Me.rdbGivenDiscount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'btnAgreement
+        '
+        Me.btnAgreement.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
+        Me.btnAgreement.ImageIndex = 6
+        Me.btnAgreement.Name = "btnAgreement"
+        Me.btnAgreement.OptionGroup = "navBar"
+        Me.btnAgreement.Text = "Agreement Discount"
+        Me.btnAgreement.Tooltip = "Agreement Discount"
+        Me.btnAgreement.Visible = False
+        '
+        'pnlOtherDiscount
+        '
+        Me.pnlOtherDiscount.Controls.Add(Me.rdbDP)
+        Me.pnlOtherDiscount.Controls.Add(Me.rdbDK)
+        Me.pnlOtherDiscount.Controls.Add(Me.rdbUncategorized)
+        Me.pnlOtherDiscount.Controls.Add(Me.rdbCBD)
+        Me.pnlOtherDiscount.Controls.Add(Me.rdbDR)
+        Me.pnlOtherDiscount.Controls.Add(Me.rdbDD)
+        Me.pnlOtherDiscount.Controls.Add(Me.btnGenerateOtherDiscount)
+        Me.pnlOtherDiscount.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlOtherDiscount.Location = New System.Drawing.Point(1, 1)
+        Me.pnlOtherDiscount.Name = "pnlOtherDiscount"
+        Me.pnlOtherDiscount.ParentItem = Me.btnOtherDiscount
+        Me.pnlOtherDiscount.Size = New System.Drawing.Size(139, 469)
+        Me.pnlOtherDiscount.Style.Alignment = System.Drawing.StringAlignment.Center
+        Me.pnlOtherDiscount.Style.BackColor1.Color = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.pnlOtherDiscount.Style.BackColor2.Color = System.Drawing.SystemColors.InactiveCaption
+        Me.pnlOtherDiscount.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.pnlOtherDiscount.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
+        Me.pnlOtherDiscount.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText
+        Me.pnlOtherDiscount.Style.GradientAngle = 90
+        Me.pnlOtherDiscount.TabIndex = 5
+        '
+        'rdbDP
+        '
+        Me.rdbDP.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbDP.Location = New System.Drawing.Point(0, 92)
+        Me.rdbDP.Name = "rdbDP"
+        Me.rdbDP.Size = New System.Drawing.Size(139, 23)
+        Me.rdbDP.TabIndex = 22
+        Me.rdbDP.Text = "DP"
+        Me.rdbDP.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbDK
+        '
+        Me.rdbDK.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbDK.Location = New System.Drawing.Point(0, 69)
+        Me.rdbDK.Name = "rdbDK"
+        Me.rdbDK.Size = New System.Drawing.Size(139, 23)
+        Me.rdbDK.TabIndex = 21
+        Me.rdbDK.Text = "DK"
+        Me.rdbDK.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbUncategorized
+        '
+        Me.rdbUncategorized.Location = New System.Drawing.Point(0, 120)
+        Me.rdbUncategorized.Name = "rdbUncategorized"
+        Me.rdbUncategorized.Size = New System.Drawing.Size(139, 23)
+        Me.rdbUncategorized.TabIndex = 20
+        Me.rdbUncategorized.Text = "UnCategorized"
+        Me.rdbUncategorized.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbCBD
+        '
+        Me.rdbCBD.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbCBD.Location = New System.Drawing.Point(0, 46)
+        Me.rdbCBD.Name = "rdbCBD"
+        Me.rdbCBD.Size = New System.Drawing.Size(139, 23)
+        Me.rdbCBD.TabIndex = 19
+        Me.rdbCBD.Text = "CBD"
+        Me.rdbCBD.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbDR
+        '
+        Me.rdbDR.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbDR.Location = New System.Drawing.Point(0, 23)
+        Me.rdbDR.Name = "rdbDR"
+        Me.rdbDR.Size = New System.Drawing.Size(139, 23)
+        Me.rdbDR.TabIndex = 18
+        Me.rdbDR.Text = "DR"
+        Me.rdbDR.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'rdbDD
+        '
+        Me.rdbDD.Dock = System.Windows.Forms.DockStyle.Top
+        Me.rdbDD.Location = New System.Drawing.Point(0, 0)
+        Me.rdbDD.Name = "rdbDD"
+        Me.rdbDD.Size = New System.Drawing.Size(139, 23)
+        Me.rdbDD.TabIndex = 17
+        Me.rdbDD.Text = "DD"
+        Me.rdbDD.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'btnGenerateOtherDiscount
+        '
+        Me.btnGenerateOtherDiscount.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
+        Me.btnGenerateOtherDiscount.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.btnGenerateOtherDiscount.Location = New System.Drawing.Point(0, 446)
+        Me.btnGenerateOtherDiscount.Name = "btnGenerateOtherDiscount"
+        Me.btnGenerateOtherDiscount.Size = New System.Drawing.Size(139, 23)
+        Me.btnGenerateOtherDiscount.TabIndex = 16
+        Me.btnGenerateOtherDiscount.Text = "Set Discount"
+        Me.btnGenerateOtherDiscount.VisualStyle = Janus.Windows.UI.VisualStyle.Office2003
+        '
+        'btnOtherDiscount
+        '
+        Me.btnOtherDiscount.ButtonStyle = DevComponents.DotNetBar.eButtonStyle.ImageAndText
+        Me.btnOtherDiscount.Image = CType(resources.GetObject("btnOtherDiscount.Image"), System.Drawing.Image)
+        Me.btnOtherDiscount.Name = "btnOtherDiscount"
+        Me.btnOtherDiscount.OptionGroup = "navBar"
+        Me.btnOtherDiscount.Text = "Other Discount"
+        Me.btnOtherDiscount.Tooltip = "Other Discount"
         '
         'GridEX2
         '
@@ -1722,14 +1722,14 @@ Partial Class OA_BranPack
         Me.pnlGridBrandPack.ResumeLayout(False)
         Me.pnlPrint.ResumeLayout(False)
         Me.NavigationPane1.ResumeLayout(False)
-        Me.pnlOtherDiscount.ResumeLayout(False)
+        Me.pnlMarketing.ResumeLayout(False)
+        Me.pnlMarketingDiscount.ResumeLayout(False)
         Me.NavigationPanePanel1.ResumeLayout(False)
         Me.pnlRemainding.ResumeLayout(False)
         CType(Me.btnbrRemainding, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlAgreement.ResumeLayout(False)
         Me.pnlAgreementDiscount.ResumeLayout(False)
-        Me.pnlMarketing.ResumeLayout(False)
-        Me.pnlMarketingDiscount.ResumeLayout(False)
+        Me.pnlOtherDiscount.ResumeLayout(False)
         CType(Me.GridEX2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlOADiscount.ResumeLayout(False)
         CType(Me.GridEX3, System.ComponentModel.ISupportInitialize).EndInit()

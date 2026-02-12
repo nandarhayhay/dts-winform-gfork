@@ -5893,4 +5893,8 @@ Public Class OA_BranPack
             Me.Cursor = Cursors.Default
         End If
     End Sub
+
+    Private Sub GridEX2_FormattingRow(ByVal sender As System.Object, ByVal e As Janus.Windows.GridEX.RowLoadEventArgs) Handles GridEX2.FormattingRow
+
+    End Sub
 End Class

@@ -123,7 +123,6 @@ Partial Class DailyGON
         '
         'GridEX1
         '
-        Me.GridEX1.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
         Me.GridEX1.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX1.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.GridEX1.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both

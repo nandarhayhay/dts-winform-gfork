@@ -686,7 +686,7 @@ Partial Class PO
         Me.Bar1.DockSide = DevComponents.DotNetBar.eDockSide.Document
         Me.Bar1.Location = New System.Drawing.Point(499, 434)
         Me.Bar1.Name = "Bar1"
-        Me.Bar1.Size = New System.Drawing.Size(69, 193)
+        Me.Bar1.Size = New System.Drawing.Size(69, 197)
         Me.Bar1.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2003
         Me.Bar1.TabIndex = 3
         Me.Bar1.TabStop = False

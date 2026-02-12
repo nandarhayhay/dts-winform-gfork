@@ -167,7 +167,7 @@ Namespace PurchaseOrder
         Optional ByVal EndDate As Object = Nothing) As DataView
             Try
                 Query = "SET NOCOUNT ON ;" & vbCrLf & _
-                        "SELECT OPO.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,OPO.PO_REF_NO,OPO.PO_REF_DATE,OPO.PROJ_REF_NO,P.PROJECT_NAME,OPB.PO_BRANDPACK_ID,BB.BRANDPACK_NAME," & vbCrLf & _
+                        "SELECT OPO.DISTRIBUTOR_ID,DR.DISTRIBUTOR_NAME,OPO.PO_REF_NO,OPO.PO_REF_DATE,OPO.PROJ_REF_NO,P.PROJECT_NAME,OPB.PO_BRANDPACK_ID,BR.BRAND_ID,BR.BRAND_NAME,BB.BRANDPACK_NAME," & vbCrLf & _
                         " OPB.PO_ORIGINAL_QTY AS QUANTITY,OPB.PO_PRICE_PERQTY AS [PRICE/QTY],PL.PLANTATION_NAME," & vbCrLf & _
                         " OPB.PO_ORIGINAL_QTY * OPB.PO_PRICE_PERQTY AS TOTAL," & vbCrLf & _
                         " OPB.BRANDPACK_ID,OPB.DESCRIPTIONS,OPB.DESCRIPTIONS2, " & vbCrLf & _
@@ -176,7 +176,8 @@ Namespace PurchaseOrder
                         " LEFT OUTER JOIN PROJ_PROJECT P ON P.PROJ_REF_NO = OPO.PROJ_REF_NO " & vbCrLf & _
                         " LEFT OUTER JOIN ORDR_PO_BRANDPACK OPB ON OPB.PO_REF_NO = OPO.PO_REF_NO  " & vbCrLf & _
                         " LEFT OUTER JOIN PLANTATION PL ON PL.PLANTATION_ID = OPB.PLANTATION_ID " & vbCrLf & _
-                        " LEFT OUTER JOIN BRND_BRANDPACK BB ON OPB.BRANDPACK_ID = BB.BRANDPACK_ID  " & vbCrLf  'WHERE OPO.PO_REF_DATE >= @StartDate AND OPO.PO_REF_DATE <= @EndDate AND OPO.DISTRIBUTOR_ID = @DistributorID ;"
+                        " LEFT OUTER JOIN BRND_BRANDPACK BB ON OPB.BRANDPACK_ID = BB.BRANDPACK_ID  " & vbCrLf & _
+                        " LEFT OUTER JOIN BRND_BRAND BR ON BB.BRAND_ID = BR.BRAND_ID " & vbCrLf   'WHERE OPO.PO_REF_DATE >= @StartDate AND OPO.PO_REF_DATE <= @EndDate AND OPO.DISTRIBUTOR_ID = @DistributorID ;"
                 Dim HasWhereClause As Boolean = False
                 If (Not IsNothing(StartDate) And Not IsNothing(EndDate)) Then
                     Query &= " WHERE OPO.PO_REF_DATE >= @StartDate AND OPO.PO_REF_DATE <= @EndDate " & vbCrLf

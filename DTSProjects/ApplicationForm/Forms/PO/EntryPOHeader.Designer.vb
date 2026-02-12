@@ -411,7 +411,6 @@ Partial Class EntryPOHeader
         Me.grdPO.TabIndex = 0
         Me.grdPO.UpdateOnLeave = False
         Me.grdPO.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
-        Me.grdPO.WatermarkImage.Image = CType(resources.GetObject("grdPO.WatermarkImage.Image"), System.Drawing.Image)
         Me.grdPO.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
         '
         'PanelEx1

@@ -37,8 +37,8 @@ Partial Class AchievementF
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ShowDataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.cxmnComputeByVolume = New System.Windows.Forms.ToolStripMenuItem
-        Me.ctmnComputeByValue = New System.Windows.Forms.ToolStripMenuItem
+        Me.cmbRoundUpByPackSize = New System.Windows.Forms.ToolStripMenuItem
+        Me.cmbRoundupByCategory = New System.Windows.Forms.ToolStripMenuItem
         Me.Bar2 = New DevComponents.DotNetBar.Bar
         Me.btnGrid = New DevComponents.DotNetBar.ButtonItem
         Me.btnColumn = New DevComponents.DotNetBar.ButtonItem
@@ -64,6 +64,9 @@ Partial Class AchievementF
         Me.Panel1 = New System.Windows.Forms.Panel
         Me.GridEX1 = New Janus.Windows.GridEX.GridEX
         Me.ExpandablePanel1 = New DevComponents.DotNetBar.ExpandablePanel
+        Me.ItemPanel1 = New DevComponents.DotNetBar.ItemPanel
+        Me.btnGeneratedDPD = New DevComponents.DotNetBar.ButtonItem
+        Me.btnPerAchOnly = New DevComponents.DotNetBar.ButtonItem
         Me.cmbFlag = New Janus.Windows.EditControls.UIComboBox
         Me.Label3 = New System.Windows.Forms.Label
         Me.chkDistributors = New Janus.Windows.GridEX.EditControls.CheckedComboBox
@@ -151,22 +154,22 @@ Partial Class AchievementF
         '
         'ShowDataToolStripMenuItem
         '
-        Me.ShowDataToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnComputeByVolume, Me.ctmnComputeByValue})
+        Me.ShowDataToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmbRoundUpByPackSize, Me.cmbRoundupByCategory})
         Me.ShowDataToolStripMenuItem.Name = "ShowDataToolStripMenuItem"
         Me.ShowDataToolStripMenuItem.Size = New System.Drawing.Size(130, 22)
         Me.ShowDataToolStripMenuItem.Text = "Show Data"
         '
-        'cxmnComputeByVolume
+        'cmbRoundUpByPackSize
         '
-        Me.cxmnComputeByVolume.Name = "cxmnComputeByVolume"
-        Me.cxmnComputeByVolume.Size = New System.Drawing.Size(245, 22)
-        Me.cxmnComputeByVolume.Text = "(Computed)Discount By Volume"
+        Me.cmbRoundUpByPackSize.Name = "cmbRoundUpByPackSize"
+        Me.cmbRoundUpByPackSize.Size = New System.Drawing.Size(244, 22)
+        Me.cmbRoundUpByPackSize.Text = "Achievement R By PackSize"
         '
-        'ctmnComputeByValue
+        'cmbRoundupByCategory
         '
-        Me.ctmnComputeByValue.Name = "ctmnComputeByValue"
-        Me.ctmnComputeByValue.Size = New System.Drawing.Size(245, 22)
-        Me.ctmnComputeByValue.Text = "(Computed)Discount By Value"
+        Me.cmbRoundupByCategory.Name = "cmbRoundupByCategory"
+        Me.cmbRoundupByCategory.Size = New System.Drawing.Size(244, 22)
+        Me.cmbRoundupByCategory.Text = "Achievement R By Size Category"
         '
         'Bar2
         '
@@ -182,7 +185,7 @@ Partial Class AchievementF
         Me.Bar2.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnGrid, Me.btnFilter, Me.btnExport, Me.btnRefresh, Me.cmbDPDType, Me.btnFlag})
         Me.Bar2.Location = New System.Drawing.Point(0, 0)
         Me.Bar2.Name = "Bar2"
-        Me.Bar2.Size = New System.Drawing.Size(1001, 27)
+        Me.Bar2.Size = New System.Drawing.Size(1151, 27)
         Me.Bar2.Stretch = True
         Me.Bar2.Style = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
         Me.Bar2.TabIndex = 23
@@ -334,7 +337,7 @@ Partial Class AchievementF
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.Location = New System.Drawing.Point(0, 72)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1001, 210)
+        Me.Panel1.Size = New System.Drawing.Size(1151, 210)
         Me.Panel1.TabIndex = 24
         '
         'GridEX1
@@ -358,12 +361,12 @@ Partial Class AchievementF
         Me.GridEX1.GroupRowVisualStyle = Janus.Windows.GridEX.GroupRowVisualStyle.Outlook2003
         Me.GridEX1.GroupTotals = Janus.Windows.GridEX.GroupTotals.ExpandedGroup
         Me.GridEX1.ImageList = Me.ImageList1
-        Me.GridEX1.Location = New System.Drawing.Point(0, 39)
+        Me.GridEX1.Location = New System.Drawing.Point(0, 51)
         Me.GridEX1.Name = "GridEX1"
         Me.GridEX1.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX1.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
         Me.GridEX1.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.GridEX1.Size = New System.Drawing.Size(1001, 171)
+        Me.GridEX1.Size = New System.Drawing.Size(1151, 159)
         Me.GridEX1.TabIndex = 38
         Me.GridEX1.TableHeaderFormatStyle.FontBold = Janus.Windows.GridEX.TriState.[True]
         Me.GridEX1.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
@@ -376,6 +379,7 @@ Partial Class AchievementF
         '
         Me.ExpandablePanel1.CanvasColor = System.Drawing.SystemColors.Control
         Me.ExpandablePanel1.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.Office2007
+        Me.ExpandablePanel1.Controls.Add(Me.ItemPanel1)
         Me.ExpandablePanel1.Controls.Add(Me.cmbFlag)
         Me.ExpandablePanel1.Controls.Add(Me.Label3)
         Me.ExpandablePanel1.Controls.Add(Me.chkDistributors)
@@ -388,7 +392,7 @@ Partial Class AchievementF
         Me.ExpandablePanel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.ExpandablePanel1.Location = New System.Drawing.Point(0, 0)
         Me.ExpandablePanel1.Name = "ExpandablePanel1"
-        Me.ExpandablePanel1.Size = New System.Drawing.Size(1001, 39)
+        Me.ExpandablePanel1.Size = New System.Drawing.Size(1151, 51)
         Me.ExpandablePanel1.Style.Alignment = System.Drawing.StringAlignment.Center
         Me.ExpandablePanel1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
         Me.ExpandablePanel1.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2
@@ -407,6 +411,45 @@ Partial Class AchievementF
         Me.ExpandablePanel1.TitleStyle.GradientAngle = 90
         Me.ExpandablePanel1.TitleText = "Agreement Distributor"
         '
+        'ItemPanel1
+        '
+        '
+        '
+        '
+        Me.ItemPanel1.BackgroundStyle.BackColor = System.Drawing.SystemColors.InactiveCaption
+        Me.ItemPanel1.BackgroundStyle.BackColor2 = System.Drawing.Color.Transparent
+        Me.ItemPanel1.BackgroundStyle.BorderBottom = DevComponents.DotNetBar.eStyleBorderType.Solid
+        Me.ItemPanel1.BackgroundStyle.BorderBottomWidth = 1
+        Me.ItemPanel1.BackgroundStyle.BorderColor = System.Drawing.Color.FromArgb(CType(CType(127, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(185, Byte), Integer))
+        Me.ItemPanel1.BackgroundStyle.BorderLeft = DevComponents.DotNetBar.eStyleBorderType.Solid
+        Me.ItemPanel1.BackgroundStyle.BorderLeftWidth = 1
+        Me.ItemPanel1.BackgroundStyle.BorderRight = DevComponents.DotNetBar.eStyleBorderType.Solid
+        Me.ItemPanel1.BackgroundStyle.BorderRightWidth = 1
+        Me.ItemPanel1.BackgroundStyle.BorderTop = DevComponents.DotNetBar.eStyleBorderType.Solid
+        Me.ItemPanel1.BackgroundStyle.BorderTopWidth = 1
+        Me.ItemPanel1.BackgroundStyle.PaddingBottom = 1
+        Me.ItemPanel1.BackgroundStyle.PaddingLeft = 1
+        Me.ItemPanel1.BackgroundStyle.PaddingRight = 1
+        Me.ItemPanel1.BackgroundStyle.PaddingTop = 1
+        Me.ItemPanel1.Images = Me.ImageList1
+        Me.ItemPanel1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnGeneratedDPD, Me.btnPerAchOnly})
+        Me.ItemPanel1.Location = New System.Drawing.Point(794, 18)
+        Me.ItemPanel1.Name = "ItemPanel1"
+        Me.ItemPanel1.Size = New System.Drawing.Size(197, 28)
+        Me.ItemPanel1.TabIndex = 9
+        Me.ItemPanel1.Text = "ItemPanel1"
+        '
+        'btnGeneratedDPD
+        '
+        Me.btnGeneratedDPD.Name = "btnGeneratedDPD"
+        Me.btnGeneratedDPD.Text = "Generated DPD"
+        '
+        'btnPerAchOnly
+        '
+        Me.btnPerAchOnly.Checked = True
+        Me.btnPerAchOnly.Name = "btnPerAchOnly"
+        Me.btnPerAchOnly.Text = "% Achivement Only"
+        '
         'cmbFlag
         '
         Me.cmbFlag.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
@@ -423,7 +466,7 @@ Partial Class AchievementF
         UiComboBoxItem3.Text = "4 MONTHS PERIODE 3"
         UiComboBoxItem3.Value = "4 MONTHS PERIODE 3"
         Me.cmbFlag.Items.AddRange(New Janus.Windows.EditControls.UIComboBoxItem() {UiComboBoxItem1, UiComboBoxItem2, UiComboBoxItem3})
-        Me.cmbFlag.Location = New System.Drawing.Point(43, 17)
+        Me.cmbFlag.Location = New System.Drawing.Point(43, 20)
         Me.cmbFlag.Name = "cmbFlag"
         Me.cmbFlag.Size = New System.Drawing.Size(146, 20)
         Me.cmbFlag.TabIndex = 10
@@ -446,10 +489,10 @@ Partial Class AchievementF
         Me.chkDistributors.DesignTimeLayout = chkDistributors_DesignTimeLayout
         Me.chkDistributors.DropDownDisplayMember = "AGREEMENT_NO"
         Me.chkDistributors.DropDownValueMember = "AGREEMENT_NO"
-        Me.chkDistributors.Location = New System.Drawing.Point(564, 17)
+        Me.chkDistributors.Location = New System.Drawing.Point(558, 22)
         Me.chkDistributors.Name = "chkDistributors"
         Me.chkDistributors.SaveSettings = False
-        Me.chkDistributors.Size = New System.Drawing.Size(202, 20)
+        Me.chkDistributors.Size = New System.Drawing.Size(208, 20)
         Me.chkDistributors.TabIndex = 8
         Me.chkDistributors.ValuesDataMember = Nothing
         Me.chkDistributors.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
@@ -457,7 +500,7 @@ Partial Class AchievementF
         'btnAplyRange
         '
         Me.btnAplyRange.Appearance = Janus.Windows.UI.Appearance.FlatBorderless
-        Me.btnAplyRange.Location = New System.Drawing.Point(792, 18)
+        Me.btnAplyRange.Location = New System.Drawing.Point(1021, 24)
         Me.btnAplyRange.Name = "btnAplyRange"
         Me.btnAplyRange.Size = New System.Drawing.Size(75, 18)
         Me.btnAplyRange.TabIndex = 7
@@ -466,7 +509,7 @@ Partial Class AchievementF
         '
         'btnSearchAgreement
         '
-        Me.btnSearchAgreement.Location = New System.Drawing.Point(770, 18)
+        Me.btnSearchAgreement.Location = New System.Drawing.Point(770, 22)
         Me.btnSearchAgreement.Name = "btnSearchAgreement"
         Me.btnSearchAgreement.Size = New System.Drawing.Size(18, 18)
         Me.btnSearchAgreement.TabIndex = 5
@@ -477,7 +520,7 @@ Partial Class AchievementF
         mcbDistributor_DesignTimeLayout.LayoutString = resources.GetString("mcbDistributor_DesignTimeLayout.LayoutString")
         Me.mcbDistributor.DesignTimeLayout = mcbDistributor_DesignTimeLayout
         Me.mcbDistributor.HoverMode = Janus.Windows.GridEX.HoverMode.Highlight
-        Me.mcbDistributor.Location = New System.Drawing.Point(280, 17)
+        Me.mcbDistributor.Location = New System.Drawing.Point(280, 19)
         Me.mcbDistributor.Name = "mcbDistributor"
         Me.mcbDistributor.SelectedIndex = -1
         Me.mcbDistributor.SelectedItem = Nothing
@@ -487,7 +530,7 @@ Partial Class AchievementF
         '
         'btnSearchDistributor
         '
-        Me.btnSearchDistributor.Location = New System.Drawing.Point(462, 18)
+        Me.btnSearchDistributor.Location = New System.Drawing.Point(462, 21)
         Me.btnSearchDistributor.Name = "btnSearchDistributor"
         Me.btnSearchDistributor.Size = New System.Drawing.Size(17, 18)
         Me.btnSearchDistributor.TabIndex = 4
@@ -495,7 +538,7 @@ Partial Class AchievementF
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(195, 20)
+        Me.Label1.Location = New System.Drawing.Point(195, 23)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(81, 13)
         Me.Label1.TabIndex = 0
@@ -504,7 +547,7 @@ Partial Class AchievementF
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(483, 20)
+        Me.Label2.Location = New System.Drawing.Point(483, 24)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(75, 13)
         Me.Label2.TabIndex = 2
@@ -524,7 +567,7 @@ Partial Class AchievementF
         Me.FilterEditor1.Office2007ColorScheme = Janus.Windows.Common.Office2007ColorScheme.[Default]
         Me.FilterEditor1.ScrollMode = Janus.Windows.UI.Dock.ScrollMode.Both
         Me.FilterEditor1.ScrollStep = 15
-        Me.FilterEditor1.Size = New System.Drawing.Size(1001, 45)
+        Me.FilterEditor1.Size = New System.Drawing.Size(1151, 45)
         Me.FilterEditor1.SortFieldList = False
         Me.FilterEditor1.Visible = False
         '
@@ -535,7 +578,7 @@ Partial Class AchievementF
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel2.Location = New System.Drawing.Point(0, 286)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(1001, 167)
+        Me.Panel2.Size = New System.Drawing.Size(1151, 167)
         Me.Panel2.TabIndex = 25
         '
         'pnlCheckBox
@@ -544,7 +587,7 @@ Partial Class AchievementF
         Me.pnlCheckBox.Dock = System.Windows.Forms.DockStyle.Top
         Me.pnlCheckBox.Location = New System.Drawing.Point(0, 0)
         Me.pnlCheckBox.Name = "pnlCheckBox"
-        Me.pnlCheckBox.Size = New System.Drawing.Size(1001, 26)
+        Me.pnlCheckBox.Size = New System.Drawing.Size(1151, 26)
         Me.pnlCheckBox.TabIndex = 28
         '
         'ChkFilterDetail
@@ -563,7 +606,6 @@ Partial Class AchievementF
         Me.GridEX2.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.GridEX2.AutoEdit = True
         Me.GridEX2.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both
-        Me.GridEX2.ContextMenuStrip = Me.ContextMenuStrip1
         Me.GridEX2.DefaultFilterRowComparison = Janus.Windows.GridEX.FilterConditionOperator.Contains
         GridEX2_DesignTimeLayout.LayoutString = resources.GetString("GridEX2_DesignTimeLayout.LayoutString")
         Me.GridEX2.DesignTimeLayout = GridEX2_DesignTimeLayout
@@ -583,7 +625,7 @@ Partial Class AchievementF
         Me.GridEX2.NewRowEnterKeyBehavior = Janus.Windows.GridEX.NewRowEnterKeyBehavior.AddRowAndStayInCurrentCell
         Me.GridEX2.Office2007ColorScheme = Janus.Windows.GridEX.Office2007ColorScheme.Blue
         Me.GridEX2.RowHeaders = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.GridEX2.Size = New System.Drawing.Size(1001, 167)
+        Me.GridEX2.Size = New System.Drawing.Size(1151, 167)
         Me.GridEX2.TabIndex = 27
         Me.GridEX2.TableHeaderFormatStyle.FontBold = Janus.Windows.GridEX.TriState.[True]
         Me.GridEX2.TableHeaderFormatStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Center
@@ -621,7 +663,7 @@ Partial Class AchievementF
         Me.ExpandableSplitter2.HotGripLightColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground
         Me.ExpandableSplitter2.Location = New System.Drawing.Point(0, 282)
         Me.ExpandableSplitter2.Name = "ExpandableSplitter2"
-        Me.ExpandableSplitter2.Size = New System.Drawing.Size(1001, 4)
+        Me.ExpandableSplitter2.Size = New System.Drawing.Size(1151, 4)
         Me.ExpandableSplitter2.Style = DevComponents.DotNetBar.eSplitterStyle.Office2007
         Me.ExpandableSplitter2.TabIndex = 28
         Me.ExpandableSplitter2.TabStop = False
@@ -629,7 +671,7 @@ Partial Class AchievementF
         'AchievementF
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.ClientSize = New System.Drawing.Size(1001, 453)
+        Me.ClientSize = New System.Drawing.Size(1151, 453)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.ExpandableSplitter2)
         Me.Controls.Add(Me.Panel2)
@@ -660,8 +702,8 @@ Partial Class AchievementF
     Private WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
     Private WithEvents ContextMenuStrip1 As System.Windows.Forms.ContextMenuStrip
     Private WithEvents ShowDataToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Private WithEvents cxmnComputeByVolume As System.Windows.Forms.ToolStripMenuItem
-    Private WithEvents ctmnComputeByValue As System.Windows.Forms.ToolStripMenuItem
+    Private WithEvents cmbRoundUpByPackSize As System.Windows.Forms.ToolStripMenuItem
+    Private WithEvents cmbRoundupByCategory As System.Windows.Forms.ToolStripMenuItem
     Private WithEvents Bar2 As DevComponents.DotNetBar.Bar
     Private WithEvents btnGrid As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnColumn As DevComponents.DotNetBar.ButtonItem
@@ -703,5 +745,8 @@ Partial Class AchievementF
     Private WithEvents cmbItemUnchoosed As DevComponents.Editors.ComboItem
     Private WithEvents DPDTypeNufarm As DevComponents.Editors.ComboItem
     Private WithEvents DPDTypeRoundUp As DevComponents.Editors.ComboItem
+    Private WithEvents ItemPanel1 As DevComponents.DotNetBar.ItemPanel
+    Private WithEvents btnGeneratedDPD As DevComponents.DotNetBar.ButtonItem
+    Private WithEvents btnPerAchOnly As DevComponents.DotNetBar.ButtonItem
 
 End Class

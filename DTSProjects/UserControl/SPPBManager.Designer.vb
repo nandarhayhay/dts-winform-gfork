@@ -325,7 +325,6 @@ Partial Class SPPBManager
         'grdDetail
         '
         Me.grdDetail.AllowDelete = Janus.Windows.GridEX.InheritableBoolean.[True]
-        Me.grdDetail.AllowEdit = Janus.Windows.GridEX.InheritableBoolean.[False]
         Me.grdDetail.AllowRemoveColumns = Janus.Windows.GridEX.InheritableBoolean.[True]
         Me.grdDetail.BackColor = System.Drawing.Color.FromArgb(CType(CType(158, Byte), Integer), CType(CType(190, Byte), Integer), CType(CType(245, Byte), Integer))
         Me.grdDetail.CardViewGridlines = Janus.Windows.GridEX.CardViewGridlines.Both

@@ -21,6 +21,7 @@ Public Class DailyGON
             Me.GridEX1.RetrieveStructure()
 
             For Each col As Janus.Windows.GridEX.GridEXColumn In GridEX1.RootTable.Columns
+                col.EditType = Janus.Windows.GridEX.EditType.NoEdit
                 If col.Type Is Type.GetType("System.Int32") Then
                     col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
                     If col.Key.Contains("IDApp") Then
@@ -29,7 +30,13 @@ Public Class DailyGON
                     End If
                 ElseIf col.Type Is Type.GetType("System.Decimal") Then
                     col.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
-                    col.FormatString = "#,##0.0000"
+                    If col.Key = "SALES_QTY" Or col.Key = "GON_DISC_QTY" Then
+                        col.FormatString = "#,##0.00"
+                        col.EditType = Janus.Windows.GridEX.EditType.TextBox
+                    Else
+                        col.FormatString = "#,##0.0000"
+                    End If
+
                     If col.Key = "UNIT1" Or col.Key = "VOL1" Or col.Key = "UNIT2" Or col.Key = "VOL2" Or col.Key = "GON_QTY" Then
                         col.Visible = False
                     End If
