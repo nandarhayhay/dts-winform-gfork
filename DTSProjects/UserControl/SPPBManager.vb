@@ -1446,7 +1446,7 @@ Public Class SPPBManager
             For i As Integer = 0 To tbl.Rows.Count - 1
                 Dim row As DataRow = tbl.Rows(i)
                 row.BeginEdit()
-                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, Address)
+                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, UCase(Address))
                 row("POREF_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", PORefNO, PoRefDate)
                 row("SPPB_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", SppbNo, SppbDate)
                 row("VAR_GON_DATE_STR") = String.Format(info, "Date : {0:dd/MM/yyyy}", gonDate)
@@ -1664,7 +1664,7 @@ Public Class SPPBManager
                 Dim gonDate As Date = row("GON_DATE")
 
                 row.BeginEdit()
-                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, Address)
+                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, UCase(Address))
                 row("POREF_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", PORefNO, PoRefDate)
                 row("SPPB_NO_AND_DATE") = String.Format(info, "{0} - {1:dd/MM/yyyy}", SppbNo, SppbDate)
                 row("VAR_GON_DATE_STR") = String.Format(info, "Date : {0:dd/MM/yyyy}", gonDate)

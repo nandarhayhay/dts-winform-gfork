@@ -1,6 +1,6 @@
 Imports System.Data
 Imports System.Globalization
-Public Class QtyConvertion
+Public Class SPMB
     Private m_clsBrandPack As NufarmBussinesRules.Brandpack.BrandPack
     Private isLoadingRow As Boolean = False
     Private ReadOnly Property clsBrandPack() As NufarmBussinesRules.Brandpack.BrandPack
@@ -45,7 +45,7 @@ Public Class QtyConvertion
     End Sub
     Private ReadOnly Property CreateOrRecreateResult(Optional ByVal replaceNew As Boolean = False) As DataView
         Get
-            Dim tblResult As New DataTable("CONVERTION_RESULT")
+            Dim tblResult As New DataTable("SPMB")
             If replaceNew Or Me.m_DVResult Is Nothing Then
                 With tblResult
                     .Columns.Add(New DataColumn("BRANDPACK_ID", Type.GetType("System.String")))
@@ -235,7 +235,7 @@ Public Class QtyConvertion
             Dim FE As New Janus.Windows.GridEX.Export.GridEXExporter()
             Me.Cursor = Cursors.WaitCursor
             FE.IncludeHeaders = True
-            FE.SheetName = "CONVERTION_RESULT"
+            FE.SheetName = "SPMB_"
             FE.IncludeFormatStyle = False
             FE.IncludeExcelProcessingInstruction = True
             FE.ExportMode = Janus.Windows.GridEX.ExportMode.AllRows

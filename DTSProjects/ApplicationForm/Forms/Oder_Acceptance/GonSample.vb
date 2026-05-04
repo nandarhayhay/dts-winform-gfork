@@ -396,6 +396,14 @@ Public Class GonSample
                 Return False
             End If
         End If
+        If Me.Mode = SaveMode.Insert Then
+            'check existing
+            Dim existedGoN As Boolean = Me.clsGonNonPO.GonMaster.HasExistsGONNumber(Me.txtGONNO.Text.Trim(), True)
+            If existedGoN Then
+                Me.ShowMessageInfo(Me.MessageDataHasExisted)
+                Return False
+            End If
+        End If
         Return True
     End Function
     Friend Sub initializedData()

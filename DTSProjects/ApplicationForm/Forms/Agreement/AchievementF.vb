@@ -711,9 +711,8 @@ Public Class AchievementF
                     Me.Flag = "F1"
                     Btn = btnRecomputeF1
                     Me.btnRecomputeF1.Checked = True
-                    '================UNCOMMENT THIS AFTER DEBUGGING===================
-
                     Me.SP = StatusProgress.ProcessingDisc
+                    '================UNCOMMENT THIS AFTER DEBUGGING===================
                     ThreadProcess = New Thread(AddressOf ShowLoading)
                     ThreadProcess.Start()
                     '=================================================================
@@ -726,8 +725,8 @@ Public Class AchievementF
                     End If
                     Me.Flag = "F2"
                     Btn = btnRecomputeF2 : Me.btnRecomputeF2.Checked = True
-                    '================UNCOMMENT THIS AFTER DEBUGGING===================
                     Me.SP = StatusProgress.ProcessingDisc
+                    '================UNCOMMENT THIS AFTER DEBUGGING===================
                     ThreadProcess = New Thread(AddressOf ShowLoading)
                     ThreadProcess.Start()
                     '=================================================================
@@ -739,8 +738,9 @@ Public Class AchievementF
                         Return
                     End If
                     Me.Flag = "F3" : Me.btnRecomputeF3.Checked = True
-                    '================UNCOMMENT THIS AFTER DEBUGGING===================
                     Me.SP = StatusProgress.ProcessingDisc
+                    '================UNCOMMENT THIS AFTER DEBUGGING===================
+
                     ThreadProcess = New Thread(AddressOf ShowLoading)
                     ThreadProcess.Start()
                     '================================================================

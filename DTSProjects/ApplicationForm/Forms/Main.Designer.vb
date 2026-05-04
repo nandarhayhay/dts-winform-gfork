@@ -73,7 +73,7 @@ Partial Class Main
         Me.btnGonDetailData = New DevComponents.DotNetBar.ButtonItem
         Me.btnTransporter = New DevComponents.DotNetBar.ButtonItem
         Me.btnGONArea = New DevComponents.DotNetBar.ButtonItem
-        Me.btnManualQtyConv = New DevComponents.DotNetBar.ButtonItem
+        Me.btnSPMB = New DevComponents.DotNetBar.ButtonItem
         Me.btnGenerate = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscMarketing = New DevComponents.DotNetBar.ButtonItem
         Me.btnDiscAgreement = New DevComponents.DotNetBar.ButtonItem
@@ -506,7 +506,7 @@ Partial Class Main
         'btnSPPbAndGon
         '
         Me.btnSPPbAndGon.Name = "btnSPPbAndGon"
-        Me.btnSPPbAndGon.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnSPPB, Me.btnGONNonPODistributor, Me.btnGonDetailData, Me.btnTransporter, Me.btnGONArea, Me.btnManualQtyConv})
+        Me.btnSPPbAndGon.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.btnSPPB, Me.btnGONNonPODistributor, Me.btnGonDetailData, Me.btnTransporter, Me.btnGONArea, Me.btnSPMB})
         Me.btnSPPbAndGon.Text = "SPPB And GON"
         '
         'btnSPPB
@@ -539,10 +539,10 @@ Partial Class Main
         Me.btnGONArea.Name = "btnGONArea"
         Me.btnGONArea.Text = "G O N Area"
         '
-        'btnManualQtyConv
+        'btnSPMB
         '
-        Me.btnManualQtyConv.Name = "btnManualQtyConv"
-        Me.btnManualQtyConv.Text = "Manually Qty Convertion"
+        Me.btnSPMB.Name = "btnSPMB"
+        Me.btnSPMB.Text = "SPMB"
         '
         'btnGenerate
         '
@@ -861,6 +861,6 @@ Partial Class Main
     Friend WithEvents btnSPPbAndGon As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnGonDetailData As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents btnOtherProduct As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents btnManualQtyConv As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents btnSPMB As DevComponents.DotNetBar.ButtonItem
     Private WithEvents btnGeneralPricePlantation As DevComponents.DotNetBar.ButtonItem
 End Class

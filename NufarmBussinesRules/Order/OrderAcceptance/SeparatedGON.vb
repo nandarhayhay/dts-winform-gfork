@@ -11,6 +11,29 @@ Namespace OrderAcceptance
             MyBase.New()
             GonMaster = New NufarmBussinesRules.OrderAcceptance.SPPBEntryGON()
         End Sub
+        Public Function hasExistedGoNNo(ByVal gonNo As String, ByVal mustCloseConnection As Boolean) As Boolean
+            Try
+                Query = "SET NOCOUNT ON;" & vbCrLf & _
+                " SELECT 1 WHERE EXISTS(SELECT GON_NO FROM GON_HEADER WHERE GON_NO = @GON_NO) " & vbCrLf & _
+                " OR EXISTS(SELECT GON_NUMBER FROM GON_SEPARATED_HEADER WHERE GON_NUMBER = @GON_NO)"
+                If IsNothing(Me.SqlCom) Then : Me.CreateCommandSql("", Query)
+                Else : Me.ResetCommandText(CommandType.Text, Query)
+                End If
+                Me.AddParameter("@GON_NO", SqlDbType.VarChar, gonNo, 25)
+                Me.OpenConnection()
+                Dim retval As Object = Me.SqlCom.ExecuteScalar()
+                Me.ClearCommandParameters()
+                If mustCloseConnection Then : Me.CloseConnection() : End If
+                If Not IsNothing(retval) And Not IsDBNull(retval) Then
+                    If CInt(retval) > 0 Then
+                        Return True
+                    End If
+                End If
+                Return False
+            Catch ex As Exception
+                Me.CloseConnection() : Me.ClearCommandParameters() : Throw ex
+            End Try
+        End Function
         Public Function getProdConvertion(ByVal closeConnection As Boolean) As DataView
             Try
 

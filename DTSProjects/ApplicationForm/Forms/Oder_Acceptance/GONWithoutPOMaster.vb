@@ -483,7 +483,7 @@ Public Class GONWithoutPOMaster
                 newRow("COLLY_PACKSIZE") = collyPackSize
                 newRow("PO_ORIGINAL") = POOriginal
                 newRow("STATUS") = row("STATUS")
-                newRow("SHIP_TO_CUSTOMER") = row("SHIP_TO_CUSTOMER")
+                newRow("SHIP_TO_CUSTOMER") = UCase(row("SHIP_TO_CUSTOMER"))
                 Dim UnitOfMeasure = row("UnitOfMeasure").ToString()
                 newRow("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", POOriginal, UnitOfMeasure.ToString())
                 newRow.EndEdit()
@@ -653,7 +653,7 @@ Public Class GONWithoutPOMaster
             newRow("COLLY_BOX") = collyBox
             newRow("COLLY_PACKSIZE") = collyPackSize
             newRow("STATUS") = row("STATUS")
-            newRow("SHIP_TO_CUSTOMER") = row("SHIP_TO_CUSTOMER")
+            newRow("SHIP_TO_CUSTOMER") = UCase(row("SHIP_TO_CUSTOMER"))
             Dim UnitOfMeasure = row("UnitOfMeasure").ToString()
             newRow("QUANTITY") = String.Format(info, "{0:#,##0.000} {1}", POOriginal, UnitOfMeasure.ToString())
             newRow.EndEdit()

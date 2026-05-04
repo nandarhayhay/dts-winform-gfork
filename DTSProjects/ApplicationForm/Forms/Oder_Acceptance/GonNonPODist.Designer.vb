@@ -396,6 +396,7 @@ Partial Class GonNonPODist
         Me.grdGon.TabIndex = 0
         Me.grdGon.VisualStyle = Janus.Windows.GridEX.VisualStyle.Office2007
         Me.grdGon.WatermarkImage.Image = CType(resources.GetObject("grdGon.WatermarkImage.Image"), System.Drawing.Image)
+        Me.grdGon.WatermarkImage.Size = New System.Drawing.Size(110, 32)
         Me.grdGon.WatermarkImage.WashMode = Janus.Windows.GridEX.WashMode.UseWashColor
         '
         'PanelEx1
@@ -734,7 +735,7 @@ Partial Class GonNonPODist
         'txtGONNO
         '
         Me.txtGONNO.Location = New System.Drawing.Point(118, 47)
-        Me.txtGONNO.MaxLength = 50
+        Me.txtGONNO.MaxLength = 25
         Me.txtGONNO.Name = "txtGONNO"
         Me.txtGONNO.Size = New System.Drawing.Size(205, 20)
         Me.txtGONNO.TabIndex = 0

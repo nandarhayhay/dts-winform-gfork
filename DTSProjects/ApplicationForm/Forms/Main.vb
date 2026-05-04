@@ -41,9 +41,9 @@ Public Class Main
     Private frmConfProd As ConvertionProduct
     Private frmGonNonPO As GONWithoutPOMaster
     Private frmOtherProd As OtherProduct
-    Private frmQtyConv As QtyConvertion
+    Private frmQtyConv As SPMB
     Private frmGenPlantPrice As GeneralPricePlantation
-private frmGonDetailData as GonDetailData 
+    Private frmGonDetailData As GonDetailData
 #End Region
 
     Private ThreadProgress As Thread = Nothing
@@ -169,7 +169,7 @@ private frmGonDetailData as GonDetailData
             Case "ConvertionProduct" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.ConvertionProduct
             Case "GonDetailData" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.GonDetailData
             Case "OtherProduct" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.OtherProduct
-            Case "QtyConvertion" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.QtyConvertion
+            Case "SPMB" : Return NufarmBussinesRules.User.Privilege.ALLOW_VIEW.SPMB
         End Select
     End Function
 
@@ -216,7 +216,7 @@ private frmGonDetailData as GonDetailData
         Me.btnGONNonPODistributor.Visible = Me.IsHasPrivilege("GONWithoutPOMaster")
         Me.btnGonDetailData.Visible = Me.IsHasPrivilege("GonDetailData")
         Me.btnOtherProduct.Visible = Me.IsHasPrivilege("OtherProduct")
-        Me.btnManualQtyConv.Visible = Me.IsHasPrivilege("QtyConvertion")
+        Me.btnSPMB.Visible = Me.IsHasPrivilege("SPMB")
         Me.btnGeneralPricePlantation.Visible = Me.IsHasPrivilege("PlantationPrice")
         Me.btnCompareBrandPack.Visible = False
         Me.btnManageUser.Visible = False
@@ -262,7 +262,7 @@ private frmGonDetailData as GonDetailData
             Me.btnSPPbAndGon.Visible = True
             Me.btnGonDetailData.Visible = True
             Me.btnOtherProduct.Visible = True
-            btnManualQtyConv.Visible = True
+            btnSPMB.Visible = True
         ElseIf NufarmBussinesRules.User.UserLogin.IsAdmin Then ' ITSupport
             Me.getCommonPriviledge()
             Me.btnSetting.Visible = True
@@ -274,7 +274,7 @@ private frmGonDetailData as GonDetailData
             Me.btnSPPbAndGon.Visible = True
             Me.btnGonDetailData.Visible = True
             Me.btnOtherProduct.Visible = True
-            btnManualQtyConv.Visible = True
+            btnSPMB.Visible = True
         Else
             btnSetting.Visible = False : Me.btnLogIn.Visible = False
             Me.btnLogout.Visible = True
@@ -1526,12 +1526,12 @@ private frmGonDetailData as GonDetailData
         If NufarmBussinesRules.User.UserLogin.HasLogin = True Then
             Me.FormLoading = StatusForm.Loading
             ' Me.tmrHoldShowForm.Enabled = True
-            frmQtyConv = New QtyConvertion() : FrmActive = frmQtyConv
+            frmQtyConv = New SPMB() : FrmActive = frmQtyConv
             frmQtyConv.Owner = Me
             frmQtyConv.ShowInTaskbar = False : frmQtyConv.Show() : Me.ReadAcces()
         Else
             Me.DOLogin() : If NufarmBussinesRules.User.UserLogin.HasLogin = True Then
-                frmQtyConv = New QtyConvertion() : FrmActive = frmQtyConv
+                frmQtyConv = New SPMB() : FrmActive = frmQtyConv
                 'frmQtyConv.ShowInTaskbar = False
                 Me.Timer1.Enabled = True : Me.Timer1.Start()
             End If
@@ -1638,7 +1638,7 @@ private frmGonDetailData as GonDetailData
                 Case "btnGONNonPODistributor" : Me.ShowGonNonPODistr()
                 Case "btnGonDetailData" : Me.ShowGonDetailData()
                 Case "btnOtherProduct" : Me.ShowOtherProduct()
-                Case "btnManualQtyConv" : Me.ShowQtyConv()
+                Case "btnSPMB" : Me.ShowQtyConv()
                 Case "btnGeneralPricePlantation" : Me.ShowGeneralPlantPrice()
             End Select
         Catch ex As Exception
@@ -1716,7 +1716,7 @@ private frmGonDetailData as GonDetailData
                     Case "btnAchievementDPDR" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmAchievementR.Show()
                     Case "btnProdconv" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmConfProd.ShowDialog(Me)
                     Case "btnOtherProduct" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmOtherProd.Show()
-                    Case "btnManualQtyConv" : Me.Timer1.Enabled = False : Me.Timer1.Stop()
+                    Case "btnSPMB" : Me.Timer1.Enabled = False : Me.Timer1.Stop()
                         Me.frmQtyConv.Owner = Me
                         Me.frmQtyConv.Show()
                     Case "btnGeneralPricePlantation" : Me.Timer1.Enabled = False : Me.Timer1.Stop() : Me.frmGenPlantPrice.Show()

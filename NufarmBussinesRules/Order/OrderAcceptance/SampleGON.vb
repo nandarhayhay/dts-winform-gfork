@@ -831,7 +831,7 @@ Namespace OrderAcceptance
                             commandInsert.Parameters.Add("@COLLY_BOX", SqlDbType.VarChar, 50, "COLLY_BOX")
                             commandInsert.Parameters.Add("@COLLY_PACKSIZE", SqlDbType.VarChar, 50, "COLLY_PACKSIZE")
                             commandInsert.Parameters.Add("@BATCH_NO", SqlDbType.NVarChar, 50, "BATCH_NO")
-                            commandInsert.Parameters.Add("PO_NUMBER", SqlDbType.VarChar, 50).Value = OSPPBHeader.PONumber
+                            commandInsert.Parameters.Add("@PO_NUMBER", SqlDbType.VarChar, 50).Value = OSPPBHeader.PONumber
                             commandInsert.Parameters.Add("@CreatedBy", SqlDbType.VarChar, 50).Value = OGonHeader.ModifiedBy
                             If Information.IsNothing(commandInsert.Transaction) Then
                                 commandInsert.Transaction = Me.SqlTrans

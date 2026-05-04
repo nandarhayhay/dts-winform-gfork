@@ -1479,6 +1479,33 @@ Public Class SPPBEntryGON
     End Function
     Private Function SaveData() As Boolean
         'save any changes to database
+        Dim ChangedGON As Boolean = Me.HasChangedGONData()
+        Dim ChangedSPPB As Boolean = Me.HasChangedSPPBData()
+        Dim objSPPBHeader As NuFarm.Domain.SPPBHeader = Nothing
+        Dim ObjGONHeader As NuFarm.Domain.GONHeader = Nothing
+        If ChangedGON = False And ChangedSPPB = False Then
+            If Me.HasChangedGONHeader() Then
+                'check existing data gon
+                If Me.Mode = SaveMode.Insert Then
+                    If Me.clsSPPB.HasExistsGONNumber(Me.txtGONNO.Text.Trim(), True) Then
+                        Me.ShowMessageInfo("GON Number has existed")
+                        Me.txtGONNO.Focus()
+                        Return False
+                    End If
+                End If
+                ''insert / update gon
+                Dim GonHeader As NuFarm.Domain.GONHeader = Me.CreateGONHeader()
+                Me.clsSPPB.SaveOrUpdateGON(GonHeader)
+                Me.OGONHeader = GonHeader
+                'Me.DS = NewDS
+                Me.frmParent.MustReloadData = True
+                isNewGON = False
+                Return True
+            Else
+                Return False
+            End If
+        End If
+
         Dim NewDS As New DataSet("DSSPPB_GON") : NewDS.Clear()
         If Not IsNothing(Me.grdGon.DataSource) Then
             If Me.grdGon.RecordCount > 0 Then
@@ -1491,24 +1518,7 @@ Public Class SPPBEntryGON
             End If
         End If
         Dim SuccessSaving As Boolean = False
-        Dim ChangedGON As Boolean = Me.HasChangedGONData()
-        Dim ChangedSPPB As Boolean = Me.HasChangedSPPBData()
-        Dim objSPPBHeader As Nufarm.Domain.SPPBHeader = Nothing
-        Dim ObjGONHeader As Nufarm.Domain.GONHeader = Nothing
-        If ChangedGON = False And ChangedSPPB = False Then
-            If Me.HasChangedGONHeader() Then
-                ''insert / update gon
-                Dim GonHeader As Nufarm.Domain.GONHeader = Me.CreateGONHeader()
-                Me.clsSPPB.SaveOrUpdateGON(GonHeader)
-                Me.OGONHeader = GonHeader
-                'Me.DS = NewDS
-                Me.frmParent.MustReloadData = True
-                isNewGON = False
-                Return True
-            Else
-                Return False
-            End If
-        End If
+
         If ChangedGON Or ChangedSPPB Then
             objSPPBHeader = New Nufarm.Domain.SPPBHeader()
             With objSPPBHeader
@@ -2992,7 +3002,7 @@ Public Class SPPBEntryGON
                 Dim row As DataRow = tbl_ref_gon.NewRow()
                 row("DISTRIBUTOR_NAME") = DistributorName
                 row("ADDRESS") = Address
-                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, Address)
+                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", DistributorName, UCase(Address))
                
                 row("PO_REF_NO") = PORefNo
                 row("PO_REF_DATE") = PORefDate
@@ -3118,7 +3128,12 @@ Public Class SPPBEntryGON
                 Me.Text = "SPPB  " & Me.txtSPPBNO.Text.Trim() & ", GON " & Me.txtGONNO.Text.Trim()
             End If
         End If
+        Try
+            'check existing
 
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Private Sub txtGONNO_Leave(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtGONNO.Leave

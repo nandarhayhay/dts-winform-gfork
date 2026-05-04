@@ -290,7 +290,7 @@ Namespace User
             NufarmBussinesRules.User.Privilege.ALLOW_INSERT.GonDetailData = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_DELETE.GonDetailData = InitBool
 
-            NufarmBussinesRules.User.Privilege.ALLOW_VIEW.QtyConvertion = InitBool
+            NufarmBussinesRules.User.Privilege.ALLOW_VIEW.SPMB = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.QtyConvertion = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_INSERT.QtyConvertion = InitBool
             NufarmBussinesRules.User.Privilege.ALLOW_DELETE.QtyConvertion = InitBool
@@ -574,7 +574,7 @@ Namespace User
                         NufarmBussinesRules.User.Privilege.ALLOW_INSERT.OtherProduct = CBool(tblPrivilege.Rows(i)("ALLOW_INSERT"))
                         NufarmBussinesRules.User.Privilege.ALLOW_DELETE.OtherProduct = CBool(tblPrivilege.Rows(i)("ALLOW_DELETE"))
                     Case "QtyConvertion"
-                        NufarmBussinesRules.User.Privilege.ALLOW_VIEW.QtyConvertion = CBool(tblPrivilege.Rows(i)("ALLOW_VIEW"))
+                        NufarmBussinesRules.User.Privilege.ALLOW_VIEW.SPMB = CBool(tblPrivilege.Rows(i)("ALLOW_VIEW"))
                         NufarmBussinesRules.User.Privilege.ALLOW_UPDATE.QtyConvertion = CBool(tblPrivilege.Rows(i)("ALLOW_UPDATE"))
                         NufarmBussinesRules.User.Privilege.ALLOW_INSERT.QtyConvertion = CBool(tblPrivilege.Rows(i)("ALLOW_INSERT"))
                         NufarmBussinesRules.User.Privilege.ALLOW_DELETE.QtyConvertion = CBool(tblPrivilege.Rows(i)("ALLOW_DELETE"))

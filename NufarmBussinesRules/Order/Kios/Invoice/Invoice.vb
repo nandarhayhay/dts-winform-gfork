@@ -161,8 +161,8 @@ Namespace PurchaseOrder
         End Sub
         Public Function GetInvoice(ByVal StartDate As DateTime, ByVal EndDate As DateTime, ByVal isRefDateByPO As Boolean, ByVal IsDateChanged As Boolean, ByRef t2 As DataTable, Optional ByVal DistributorID As String = "") As DataView
             Try
-                Dim LeadTimeStart As DateTime = StartDate.AddMonths(-6)
-                Dim LeadTimeEnd As DateTime = EndDate.AddMonths(6)
+                Dim LeadTimeStart As DateTime = StartDate.AddMonths(-10)
+                Dim LeadTimeEnd As DateTime = EndDate.AddMonths(10)
                 Dim strDecEndDate As String = common.CommonClass.getNumericFromDate(EndDate)
                 Dim strDecStartDate As String = ""
                 If Not isRefDateByPO Then

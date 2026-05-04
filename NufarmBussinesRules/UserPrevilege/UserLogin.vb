@@ -151,7 +151,7 @@ Namespace User
             Public ConvertionProduct As Boolean
             Public GonDetailData As Boolean
             Public OtherProduct As Boolean
-            Public QtyConvertion As Boolean
+            Public SPMB As Boolean
 
         End Structure
 

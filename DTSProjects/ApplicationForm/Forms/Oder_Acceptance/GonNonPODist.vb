@@ -396,6 +396,15 @@ Public Class GonNonPODist
                 Return False
             End If
         End If
+
+        If Me.Mode = SaveMode.Insert Then
+            'check existing
+            Dim existedGoN As Boolean = Me.clsGonNonPO.hasExistedGoNNo(Me.txtGONNO.Text.Trim(), True)
+            If existedGoN Then
+                Me.ShowMessageInfo(Me.MessageDataHasExisted)
+                Return False
+            End If
+        End If
         Return True
     End Function
     Friend Sub initializedData()
@@ -2627,7 +2636,7 @@ Public Class GonNonPODist
                 row("DISTRIBUTOR_NAME") = CustomerName
 
                 row("ADDRESS") = Address
-                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", CustomerName, Address)
+                row("VAR_DIST_ADDRESS") = String.Format("{0}" & vbCrLf & "{1}", CustomerName, UCase(Address))
                 Dim PORefNo As String = Me.txtPORefNo.Text.Trim()
                 Dim PORefDate As System.DateTime = Convert.ToDateTime(Me.dtPicPODate.Value.ToShortDateString())
                 row("PO_REF_NO") = PORefNo
@@ -2847,7 +2856,7 @@ Public Class GonNonPODist
                 End If
                 newRow("PO_ORIGINAL") = POOriginal
                 newRow("STATUS") = row("STATUS")
-                newRow("SHIP_TO_CUSTOMER") = Me.txtDefShipto.Text.Trim()
+                newRow("SHIP_TO_CUSTOMER") = UCase(Me.txtDefShipto.Text.Trim())
                 Dim BrandPackID As String = row("BRANDPACK_ID")
                 Dim Index As Integer = Me.DVMConversiProduct.Find(BrandPackID)
                 Dim BrandPackName As String = "Unregistered product convertion"
@@ -2938,5 +2947,24 @@ Public Class GonNonPODist
             Me.ExportToExcell("SPPB_" & Me.txtSPPBNo.Text, Me.GridEX1)
         End If
         Me.Cursor = Cursors.Default
+    End Sub
+
+    Private Sub txtGONNO_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtGONNO.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            If Me.Mode = SaveMode.Insert Then
+                'check existing
+                Try
+                    Dim existedGon As Boolean = Me.clsGonNonPO.hasExistedGoNNo(Me.txtGONNO.Text.Trim(), True)
+                Catch ex As Exception
+                    Me.ShowMessageError(ex.Message)
+                End Try
+            End If
+        End If
+    End Sub
+
+    Private Sub txtGONNO_Leave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtGONNO.Leave
+        If Not Me.txtGONNO.Text = "" Then
+            Me.txtGONNO.Text = Me.txtGONNO.Text.Trim()
+        End If
     End Sub
 End Class
